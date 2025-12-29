@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Murat Ogur | Tasarım & Yazılım</title>
+    <style>
+        body { margin: 0; font-family: 'Arial', sans-serif; background-color: #111; color: white; text-align: center; }
+        header { padding: 50px; background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); }
+        h1 { margin: 0; font-size: 3em; }
+        p { font-size: 1.2em; color: #ccc; }
+        .container { padding: 20px; }
+        
+        /* Uygulama Penceresi (Iframe) */
+        .app-window {
+            width: 100%;
+            height: 800px; /* Uygulama yüksekliği */
+            border: 2px solid #333;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Murat Ogur</h1>
+        <p>Görsel İletişim Tasarımı | Python Geliştirici</p>
+    </header>
+
+    <div class="container">
+        <h2>Projelerim</h2>
+        <p>Aşağıda geliştirdiğim yapay zeka destekli futbol analiz uygulamasını deneyebilirsiniz.</p>
+        
+        <iframe class="app-window" src="https://quantum-football.onrender.com" frameborder="0"></iframe>
+    </div>
+
+</body>
+</html>
