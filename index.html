@@ -3,80 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Murat Ogur | Tasarım & Yazılım</title>
+    <title>Murat Ogur | Quantum Football AI</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5159712906546501"
      crossorigin="anonymous"></script>
+
     <style>
-        /* Genel Ayarlar */
-        body { 
-            margin: 0; 
-            font-family: 'Segoe UI', sans-serif; 
-            background-color: #121212; 
-            color: #e0e0e0; 
-            text-align: center;
+        /* --- TEMEL AYARLAR --- */
+        :root {
+            --primary-color: #00ff88; /* Neon Yeşil */
+            --bg-dark: #0f172a;       /* Koyu Lacivert/Siyah */
+            --glass-bg: rgba(255, 255, 255, 0.05); /* Buzlu Cam */
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-x: hidden;
         }
-        
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 40px 20px; 
+
+        /* --- HEADER (ÜST KISIM) --- */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: radial-gradient(circle at center, rgba(0,255,136,0.1) 0%, transparent 70%);
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 3.5rem;
+            margin: 0;
+            background: linear-gradient(to right, #fff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+            letter-spacing: -2px;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* --- SOSYAL MEDYA BUTONLARI --- */
+        .social-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-btn {
+            background: var(--glass-bg);
+            color: white;
+            text-decoration: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .social-btn:hover {
+            background: var(--primary-color);
+            color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px var(--primary-color);
+        }
+
+        /* --- ANA İÇERİK KUTUSU --- */
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
             flex: 1;
+            position: relative;
+            z-index: 2;
         }
-        
-        h1 { color: #4CAF50; font-size: 2.5rem; margin-bottom: 10px; }
-        p.subtitle { font-size: 1.2rem; color: #a0a0a0; margin-bottom: 30px; }
-        
-        /* Uygulama Penceresi */
+
+        /* Iframe Çerçevesi (Glassmorphism) */
+        .app-wrapper {
+            background: var(--glass-bg);
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            margin-bottom: 40px;
+        }
+
         iframe {
             width: 100%;
-            height: 850px;
-            border: 1px solid #333;
+            height: 900px; /* Uygulama yüksekliği */
+            border: none;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            background-color: #1e1e1e;
+            background-color: #0e1117; /* Streamlit'in koyu rengiyle uyumlu */
         }
 
-        /* Footer */
+        /* --- FOOTER --- */
         footer {
-            background-color: #0a0a0a;
-            color: #666;
-            padding: 20px;
-            font-size: 0.85rem;
-            border-top: 1px solid #333;
-            margin-top: 40px;
+            background-color: #020617;
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid #1e293b;
+            font-size: 0.9rem;
+            color: #64748b;
         }
-        
-        footer p { margin: 5px 0; }
 
-        .disclaimer {
-            color: #888;
+        .disclaimer-box {
+            background: rgba(255, 50, 50, 0.05);
+            border: 1px solid rgba(255, 50, 50, 0.2);
+            padding: 15px;
+            border-radius: 8px;
             max-width: 800px;
-            margin: 10px auto;
-            line-height: 1.5;
+            margin: 0 auto 20px;
+            color: #aaa;
+        }
+
+        .copyright {
+            opacity: 0.7;
+        }
+
+        /* --- MOBİL UYUMLULUK --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            iframe { height: 800px; }
+            .app-wrapper { padding: 5px; }
         }
     </style>
 </head>
 <body>
 
+    <header>
+        <h1>MURAT OGUR</h1>
+        <p class="subtitle">
+            Görsel İletişim Tasarımcısı & Python Geliştirici.<br>
+            <span style="color: #00ff88;">Quantum Football AI</span> projesine hoş geldiniz.
+        </p>
+
+        <div class="social-links">
+            <a href="https://github.com/muratLola" target="_blank" class="social-btn" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://twitter.com/muratLola" target="_blank" class="social-btn" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+            <a href="mailto:lolamurat26@gmail.com" class="social-btn" title="Mail At"><i class="fas fa-envelope"></i></a>
+            </div>
+    </header>
+
     <div class="container">
-        <h1>Murat Ogur - Portfolio</h1>
-        <p class="subtitle">Görsel İletişim Tasarımı & Python Geliştirici | Quantum Football Projesi</p>
-        
-        <iframe src="https://quantum-football.onrender.com"></iframe>
+        <div class="app-wrapper">
+            <iframe src="https://quantum-football.onrender.com"></iframe>
+        </div>
     </div>
 
     <footer>
-        <p class="disclaimer">
-            ⚠️ <strong>YASAL UYARI:</strong> Bu site sadece istatistiksel veri analizi ve eğlence amaçlıdır. 
+        <div class="disclaimer-box">
+            <i class="fas fa-exclamation-triangle"></i> <strong>YASAL UYARI:</strong><br>
+            Bu site sadece istatistiksel veri analizi ve eğlence amaçlıdır. 
             Kesinlikle bahis oynamayı teşvik etmez ve yatırım tavsiyesi içermez. 
             Verilen tahminlerin garantisi yoktur. 18 yaşından küçükler için uygun değildir.
+        </div>
+        
+        <p class="copyright">
+            &copy; 2025 Murat Ogur. Design & Code by <strong style="color: #00ff88;">MuratLola</strong>
         </p>
-        <br>
-        <p>&copy; 2025 Murat Ogur. Tüm Hakları Saklıdır.</p>
     </footer>
 
 </body>
