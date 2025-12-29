@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>muratLola | Digital Creator</title>
+    <title>muratLola | Global</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700;900&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -34,14 +34,41 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        /* --- DİL SEÇİCİ (SAĞ ÜST) --- */
+        .lang-wrapper {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        select.lang-select {
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        select.lang-select:hover {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
         }
 
         /* --- HEADER --- */
         header {
             text-align: center;
-            padding-top: 60px;
+            padding-top: 80px;
             margin-bottom: 50px;
             animation: fadeIn 1s ease-in;
+            width: 90%;
         }
 
         h1 {
@@ -115,6 +142,15 @@
             text-align: left;
         }
 
+        /* ARAPÇA (RTL) İÇİN KART DÜZENİ */
+        body[dir="rtl"] .project-card {
+            text-align: right;
+        }
+        
+        body[dir="rtl"] {
+            font-family: 'Cairo', sans-serif; /* Arapça için özel font */
+        }
+
         .project-card:hover {
             transform: translateY(-10px);
             border-color: var(--neon-green);
@@ -150,7 +186,7 @@
             color: #000;
         }
 
-        /* --- MODAL (AÇILIR PENCERE) AYARLARI --- */
+        /* --- MODAL --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -175,21 +211,20 @@
             position: relative;
             box-shadow: 0 0 50px rgba(0, 255, 136, 0.1);
             border: 1px solid #333;
-            overflow: hidden; /* Taşmaları gizle */
+            overflow: hidden;
         }
 
-        /* YENİ KAPAT BUTONU (İÇERİDE VE BELİRGİN) */
         .close-btn {
             position: absolute;
             top: 15px;
             right: 20px;
             background: rgba(0, 0, 0, 0.8);
-            color: var(--neon-red); /* Kırmızımsı uyarı rengi */
+            color: var(--neon-red);
             border: 1px solid var(--neon-red);
             padding: 8px 15px;
             border-radius: 8px;
             cursor: pointer;
-            z-index: 10000; /* En üstte olsun */
+            z-index: 10000;
             font-family: 'Inter', sans-serif;
             font-weight: 600;
             font-size: 0.9rem;
@@ -197,6 +232,13 @@
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+        
+        /* Arapça modunda kapat butonunu sola al */
+        body[dir="rtl"] .close-btn {
+            right: auto;
+            left: 20px;
+            flex-direction: row-reverse;
         }
 
         .close-btn:hover {
@@ -227,24 +269,28 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Mobil Düzenlemeler */
         @media (max-width: 768px) {
             h1 { font-size: 2.2rem; }
-            .modal-content { height: 95%; width: 100%; }
-            .close-btn { 
-                top: 10px; 
-                right: 10px; 
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
+            .lang-wrapper { top: 10px; right: 10px; }
+            header { padding-top: 60px; }
         }
     </style>
 </head>
 <body>
 
+    <div class="lang-wrapper">
+        <select class="lang-select" onchange="setLanguage(this.value)">
+            <option value="tr">🇹🇷 Türkçe</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="ar">🇸🇦 العربية</option>
+        </select>
+    </div>
+
     <header>
         <h1>muratLola</h1>
-        <p class="tagline">Visual Communication Designer & Developer</p>
+        <p class="tagline" id="txt-tagline">Visual Communication Designer & Developer</p>
 
         <div class="social-links">
             <a href="https://github.com/muratLola" target="_blank" class="social-btn"><i class="fa-brands fa-github"></i></a>
@@ -259,9 +305,9 @@
             <div style="color: var(--neon-green); font-size: 2rem; margin-bottom: 15px;">
                 <i class="fa-solid fa-microchip"></i>
             </div>
-            <h3>Quantum AI</h3>
-            <p>IBM Kuantum bilgisayar algoritmalarıyla güçlendirilmiş futbol analiz sistemi.</p>
-            <span class="btn-launch">BAŞLAT <i class="fa-solid fa-play"></i></span>
+            <h3 id="txt-card-title">Quantum AI</h3>
+            <p id="txt-card-desc">IBM Kuantum bilgisayar algoritmalarıyla güçlendirilmiş futbol analiz sistemi.</p>
+            <span class="btn-launch"><span id="txt-launch">BAŞLAT</span> <i class="fa-solid fa-play"></i></span>
         </div>
 
     </div>
@@ -269,20 +315,82 @@
     <div id="appModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-btn" onclick="closeApp()">
-                <i class="fa-solid fa-right-from-bracket"></i> ÇIKIŞ
+                <i class="fa-solid fa-right-from-bracket"></i> <span id="txt-exit">ÇIKIŞ</span>
             </button>
-            
             <iframe class="modal-iframe" src="https://quantum-football.onrender.com" allowfullscreen></iframe>
         </div>
     </div>
 
     <footer>
-        ⚠️ Yasal Uyarı: Bu site sadece istatistiksel veri analizi amaçlıdır. Bahis tavsiyesi içermez.
+        <span id="txt-footer">⚠️ Yasal Uyarı: Bu site sadece istatistiksel veri analizi amaçlıdır. Bahis tavsiyesi içermez.</span>
         <br><br>
         &copy; 2025 muratLola.
     </footer>
 
     <script>
+        // --- DİL VERİTABANI (SÖZLÜK) ---
+        const translations = {
+            tr: {
+                tagline: "Görsel İletişim Tasarımcısı & Geliştirici",
+                cardTitle: "Quantum AI",
+                cardDesc: "IBM Kuantum bilgisayar algoritmalarıyla güçlendirilmiş futbol analiz sistemi.",
+                launch: "BAŞLAT",
+                exit: "ÇIKIŞ",
+                footer: "⚠️ Yasal Uyarı: Bu site sadece istatistiksel veri analizi amaçlıdır. Bahis tavsiyesi içermez."
+            },
+            en: {
+                tagline: "Visual Communication Designer & Developer",
+                cardTitle: "Quantum AI",
+                cardDesc: "Football analysis system powered by IBM Quantum computing algorithms.",
+                launch: "LAUNCH",
+                exit: "EXIT",
+                footer: "⚠️ Legal Warning: This site is for statistical analysis purposes only. No betting advice included."
+            },
+            de: {
+                tagline: "Visueller Kommunikationsdesigner & Entwickler",
+                cardTitle: "Quanten-KI",
+                cardDesc: "Fußball-Analysesystem, unterstützt durch IBM Quantencomputer-Algorithmen.",
+                launch: "STARTEN",
+                exit: "SCHLIESSEN",
+                footer: "⚠️ Rechtlicher Hinweis: Diese Seite dient nur statistischen Analysezwecken. Keine Wettberatung."
+            },
+            fr: {
+                tagline: "Concepteur de Communication Visuelle & Développeur",
+                cardTitle: "IA Quantique",
+                cardDesc: "Système d'analyse de football propulsé par les algorithmes quantiques d'IBM.",
+                launch: "LANCER",
+                exit: "SORTIE",
+                footer: "⚠️ Avertissement légal : Ce site est uniquement à des fins d'analyse statistique."
+            },
+            ar: {
+                tagline: "مصمم الاتصالات البصرية والمطور",
+                cardTitle: "الذكاء الاصطناعي الكمي",
+                cardDesc: "نظام تحليل كرة القدم مدعوم بخوارزميات الحوسبة الكمومية من IBM.",
+                launch: "يبدأ",
+                exit: "خروج",
+                footer: "⚠️ تحذير قانوني: هذا الموقع لأغراض التحليل الإحصائي فقط. لا يتضمن نصائح للمراهنة."
+            }
+        };
+
+        // --- DİL DEĞİŞTİRME FONKSİYONU ---
+        function setLanguage(lang) {
+            // 1. Metinleri Değiştir
+            document.getElementById('txt-tagline').innerText = translations[lang].tagline;
+            document.getElementById('txt-card-title').innerText = translations[lang].cardTitle;
+            document.getElementById('txt-card-desc').innerText = translations[lang].cardDesc;
+            document.getElementById('txt-launch').innerText = translations[lang].launch;
+            document.getElementById('txt-exit').innerText = translations[lang].exit;
+            document.getElementById('txt-footer').innerText = translations[lang].footer;
+
+            // 2. Arapça ise Sayfa Yönünü Değiştir (RTL)
+            if (lang === 'ar') {
+                document.body.setAttribute('dir', 'rtl');
+            } else {
+                document.body.setAttribute('dir', 'ltr');
+            }
+        }
+
+        // --- MODAL FONKSİYONLARI ---
         function openApp() {
             document.getElementById("appModal").style.display = "flex";
         }
