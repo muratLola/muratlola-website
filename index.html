@@ -5,35 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Murat Ogur | Tasarım & Yazılım</title>
     <style>
-        body { margin: 0; font-family: 'Arial', sans-serif; background-color: #111; color: white; text-align: center; }
-        header { padding: 50px; background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); }
-        h1 { margin: 0; font-size: 3em; }
-        p { font-size: 1.2em; color: #ccc; }
-        .container { padding: 20px; }
+        /* Genel Ayarlar */
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: #121212; 
+            color: #e0e0e0; 
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Footer'ı en alta itmek için */
+        }
         
-        /* Uygulama Penceresi (Iframe) */
-        .app-window {
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 40px 20px; 
+            flex: 1; /* İçerik alanı büyüsün */
+        }
+        
+        h1 { color: #4CAF50; font-size: 2.5rem; margin-bottom: 10px; }
+        p.subtitle { font-size: 1.2rem; color: #a0a0a0; margin-bottom: 30px; }
+        
+        /* Uygulama Penceresi */
+        iframe {
             width: 100%;
-            height: 800px; /* Uygulama yüksekliği */
-            border: 2px solid #333;
-            border-radius: 10px;
-            margin-top: 20px;
+            height: 850px;
+            border: 1px solid #333;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            background-color: #1e1e1e;
+        }
+
+        /* --- YENİ EKLENEN FOOTER (ALT KISIM) --- */
+        footer {
+            background-color: #0a0a0a;
+            color: #666;
+            padding: 20px;
+            font-size: 0.85rem;
+            border-top: 1px solid #333;
+            margin-top: 40px;
+        }
+        
+        footer p {
+            margin: 5px 0;
+        }
+
+        .disclaimer {
+            color: #888;
+            max-width: 800px;
+            margin: 10px auto;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Murat Ogur</h1>
-        <p>Görsel İletişim Tasarımı | Python Geliştirici</p>
-    </header>
-
     <div class="container">
-        <h2>Projelerim</h2>
-        <p>Aşağıda geliştirdiğim yapay zeka destekli futbol analiz uygulamasını deneyebilirsiniz.</p>
+        <h1>Murat Ogur - Portfolio</h1>
+        <p class="subtitle">Görsel İletişim Tasarımı & Python Geliştirici | Quantum Football Projesi</p>
         
-        <iframe class="app-window" src="https://quantum-football.onrender.com" frameborder="0"></iframe>
+        <iframe src="https://quantum-football.onrender.com"></iframe>
     </div>
+
+    <footer>
+        <p class="disclaimer">
+            ⚠️ <strong>YASAL UYARI:</strong> Bu site sadece istatistiksel veri analizi ve eğlence amaçlıdır. 
+            Kesinlikle bahis oynamayı teşvik etmez ve yatırım tavsiyesi içermez. 
+            Verilen tahminlerin garantisi yoktur. 18 yaşından küçükler için uygun değildir.
+        </p>
+        <br>
+        <p>&copy; 2025 Murat Ogur. Tüm Hakları Saklıdır.</p>
+    </footer>
 
 </body>
 </html>
