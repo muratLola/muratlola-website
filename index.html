@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="google-adsense-account" content="ca-pub-5159712906546501">
+
     <title>muratLola | Global</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -148,7 +151,7 @@
         }
         
         body[dir="rtl"] {
-            font-family: 'Cairo', sans-serif; /* Arapça için özel font */
+            font-family: 'Cairo', sans-serif;
         }
 
         .project-card:hover {
@@ -234,7 +237,6 @@
             gap: 8px;
         }
         
-        /* Arapça modunda kapat butonunu sola al */
         body[dir="rtl"] .close-btn {
             right: auto;
             left: 20px;
@@ -300,7 +302,6 @@
     </header>
 
     <div class="projects-grid">
-        
         <div class="project-card" onclick="openApp()">
             <div style="color: var(--neon-green); font-size: 2rem; margin-bottom: 15px;">
                 <i class="fa-solid fa-microchip"></i>
@@ -309,7 +310,6 @@
             <p id="txt-card-desc">IBM Kuantum bilgisayar algoritmalarıyla güçlendirilmiş futbol analiz sistemi.</p>
             <span class="btn-launch"><span id="txt-launch">BAŞLAT</span> <i class="fa-solid fa-play"></i></span>
         </div>
-
     </div>
 
     <div id="appModal" class="modal-overlay">
@@ -328,7 +328,6 @@
     </footer>
 
     <script>
-        // --- DİL VERİTABANI (SÖZLÜK) ---
         const translations = {
             tr: {
                 tagline: "Görsel İletişim Tasarımcısı & Geliştirici",
@@ -372,32 +371,19 @@
             }
         };
 
-        // --- DİL DEĞİŞTİRME FONKSİYONU ---
         function setLanguage(lang) {
-            // 1. Metinleri Değiştir
             document.getElementById('txt-tagline').innerText = translations[lang].tagline;
             document.getElementById('txt-card-title').innerText = translations[lang].cardTitle;
             document.getElementById('txt-card-desc').innerText = translations[lang].cardDesc;
             document.getElementById('txt-launch').innerText = translations[lang].launch;
             document.getElementById('txt-exit').innerText = translations[lang].exit;
             document.getElementById('txt-footer').innerText = translations[lang].footer;
-
-            // 2. Arapça ise Sayfa Yönünü Değiştir (RTL)
-            if (lang === 'ar') {
-                document.body.setAttribute('dir', 'rtl');
-            } else {
-                document.body.setAttribute('dir', 'ltr');
-            }
+            if (lang === 'ar') { document.body.setAttribute('dir', 'rtl'); } 
+            else { document.body.setAttribute('dir', 'ltr'); }
         }
 
-        // --- MODAL FONKSİYONLARI ---
-        function openApp() {
-            document.getElementById("appModal").style.display = "flex";
-        }
-
-        function closeApp() {
-            document.getElementById("appModal").style.display = "none";
-        }
+        function openApp() { document.getElementById("appModal").style.display = "flex"; }
+        function closeApp() { document.getElementById("appModal").style.display = "none"; }
     </script>
 
 </body>
