@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <meta name="google-adsense-account" content="ca-pub-5159712906546501">
 
     <title>muratLola | Global</title>
@@ -11,11 +10,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700;900&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5159712906546501"
-     crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5159712906546501" crossorigin="anonymous"></script>
 
     <style>
         /* --- GENEL AYARLAR --- */
@@ -40,12 +40,14 @@
             transition: all 0.3s ease;
         }
 
-        /* --- DİL SEÇİCİ (SAĞ ÜST) --- */
+        /* --- DİL SEÇİCİ --- */
         .lang-wrapper {
             position: absolute;
             top: 20px;
             right: 20px;
             z-index: 100;
+            display: flex;
+            gap: 10px;
         }
 
         select.lang-select {
@@ -60,9 +62,24 @@
             transition: 0.3s;
         }
 
-        select.lang-select:hover {
-            border-color: var(--neon-green);
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        /* --- USER LOGIN BUTONU --- */
+        .auth-btn {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .auth-btn:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
         }
 
         /* --- HEADER --- */
@@ -91,7 +108,6 @@
             font-size: 1rem;
         }
 
-        /* --- SOSYAL MEDYA --- */
         .social-links {
             display: flex;
             justify-content: center;
@@ -145,14 +161,8 @@
             text-align: left;
         }
 
-        /* ARAPÇA (RTL) İÇİN KART DÜZENİ */
-        body[dir="rtl"] .project-card {
-            text-align: right;
-        }
-        
-        body[dir="rtl"] {
-            font-family: 'Cairo', sans-serif;
-        }
+        body[dir="rtl"] .project-card { text-align: right; }
+        body[dir="rtl"] { font-family: 'Cairo', sans-serif; }
 
         .project-card:hover {
             transform: translateY(-10px);
@@ -189,7 +199,7 @@
             color: #000;
         }
 
-        /* --- MODAL --- */
+        /* --- MODALS (APP & LOGIN) --- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -216,6 +226,32 @@
             border: 1px solid #333;
             overflow: hidden;
         }
+        
+        /* LOGIN MODAL ÖZEL STİL */
+        .login-box {
+            max-width: 400px;
+            height: auto;
+            padding: 40px;
+            text-align: center;
+            background: #0f1219;
+            border: 1px solid var(--neon-green);
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            color: white;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        
+        .login-input:focus {
+            border-color: var(--neon-green);
+            outline: none;
+        }
 
         .close-btn {
             position: absolute;
@@ -237,23 +273,10 @@
             gap: 8px;
         }
         
-        body[dir="rtl"] .close-btn {
-            right: auto;
-            left: 20px;
-            flex-direction: row-reverse;
-        }
+        body[dir="rtl"] .close-btn { right: auto; left: 20px; flex-direction: row-reverse; }
+        .close-btn:hover { background: var(--neon-red); color: white; transform: scale(1.05); }
 
-        .close-btn:hover {
-            background: var(--neon-red);
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .modal-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        .modal-iframe { width: 100%; height: 100%; border: none; }
 
         /* --- FOOTER --- */
         footer {
@@ -265,6 +288,13 @@
             width: 100%;
             border-top: 1px solid #1a2332;
         }
+        
+        .legal-warning {
+            color: #888;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: block;
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -273,14 +303,18 @@
 
         @media (max-width: 768px) {
             h1 { font-size: 2.2rem; }
-            .lang-wrapper { top: 10px; right: 10px; }
-            header { padding-top: 60px; }
+            .lang-wrapper { top: 10px; right: 10px; flex-direction: column; align-items: flex-end; }
+            header { padding-top: 80px; }
         }
     </style>
 </head>
 <body>
 
     <div class="lang-wrapper">
+        <button id="authBtn" class="auth-btn" onclick="openLogin()">
+            <i class="fa-solid fa-user"></i> <span id="txt-login-btn">GİRİŞ YAP</span>
+        </button>
+
         <select class="lang-select" onchange="setLanguage(this.value)">
             <option value="tr">🇹🇷 Türkçe</option>
             <option value="en">🇬🇧 English</option>
@@ -302,11 +336,11 @@
     </header>
 
     <div class="projects-grid">
-        <div class="project-card" onclick="openApp()">
+        <div class="project-card" onclick="checkAuthAndOpen()">
             <div style="color: var(--neon-green); font-size: 2rem; margin-bottom: 15px;">
-                <i class="fa-solid fa-microchip"></i>
+                <i class="fa-solid fa-futbol"></i>
             </div>
-            <h3 id="txt-card-title">Quantum AI</h3>
+            <h3 id="txt-card-title">Quantum Football</h3>
             <p id="txt-card-desc">IBM Kuantum bilgisayar algoritmalarıyla güçlendirilmiş futbol analiz sistemi.</p>
             <span class="btn-launch"><span id="txt-launch">BAŞLAT</span> <i class="fa-solid fa-play"></i></span>
         </div>
@@ -321,53 +355,172 @@
         </div>
     </div>
 
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content login-box">
+            <button class="close-btn" style="position:absolute; right:10px; top:10px;" onclick="closeLogin()">X</button>
+            <h2 style="font-family:'Orbitron'; color:var(--neon-green);">MEMBER ACCESS</h2>
+            <p style="color:#aaa; font-size:0.9rem;">Quantum Football analizlerine erişmek için giriş yapın.</p>
+            
+            <input type="email" id="email" class="login-input" placeholder="E-Posta Adresi">
+            <input type="password" id="password" class="login-input" placeholder="Şifre">
+            
+            <div style="display:flex; gap:10px; margin-top:15px; justify-content:center;">
+                <button class="auth-btn" onclick="loginUser()">GİRİŞ YAP</button>
+                <button class="auth-btn" style="background:transparent; color:#fff; border-color:#555;" onclick="registerUser()">KAYIT OL</button>
+            </div>
+            <p id="auth-msg" style="color:var(--neon-red); font-size:0.8rem; margin-top:10px;"></p>
+        </div>
+    </div>
+
     <footer>
         <span id="txt-footer">⚠️ Yasal Uyarı: Bu site sadece istatistiksel veri analizi amaçlıdır. Bahis tavsiyesi içermez.</span>
-        <br><br>
-        &copy; 2025 muratLola.
+        <span class="legal-warning">Copyright &copy; 2025 muratLola. Model: Quantum Engine v45. All rights reserved.</span>
     </footer>
 
     <script>
+        // --- FIREBASE AYARLARI (SENİN BİLGİLERİN YERLEŞTİRİLDİ) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVCbrPO5e9oZBbZKjbApo6av1M13_OT9k",
+            authDomain: "muratlola-web.firebaseapp.com",
+            projectId: "muratlola-web",
+            storageBucket: "muratlola-web.firebasestorage.app",
+            messagingSenderId: "742719225290",
+            appId: "1:742719225290:web:48207035df11d40f35e333",
+            measurementId: "G-7HE6027N6X"
+        };
+
+        // Firebase Başlat
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        let currentUser = null;
+
+        // Kullanıcı durumunu dinle
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                // Kullanıcı giriş yaptıysa butonu değiştir
+                const btn = document.getElementById('authBtn');
+                btn.innerHTML = '<i class="fa-solid fa-user-check"></i> HESABIM';
+                btn.onclick = logoutUser; 
+                console.log("Giriş yapıldı:", user.email);
+                // Eğer login modalı açıksa kapat
+                closeLogin();
+            } else {
+                currentUser = null;
+                // Kullanıcı çıktıysa butonu eski haline getir
+                const btn = document.getElementById('authBtn');
+                btn.innerHTML = '<i class="fa-solid fa-user"></i> <span id="txt-login-btn">GİRİŞ YAP</span>';
+                btn.onclick = openLogin;
+            }
+        });
+
+        // --- AUTH FONKSİYONLARI ---
+        function registerUser() {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('password').value;
+            if(!e || !p) { alert("Lütfen e-posta ve şifre girin."); return; }
+            
+            auth.createUserWithEmailAndPassword(e, p)
+                .then(() => {
+                    alert("Hesap başarıyla oluşturuldu! Otomatik giriş yapılıyor...");
+                })
+                .catch(err => {
+                    let msg = err.message;
+                    if(err.code === 'auth/email-already-in-use') msg = "Bu e-posta zaten kullanımda.";
+                    if(err.code === 'auth/weak-password') msg = "Şifre en az 6 karakter olmalı.";
+                    if(err.code === 'auth/invalid-email') msg = "Geçersiz e-posta adresi.";
+                    document.getElementById('auth-msg').innerText = msg;
+                });
+        }
+
+        function loginUser() {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('password').value;
+            if(!e || !p) { alert("Lütfen bilgileri girin."); return; }
+
+            auth.signInWithEmailAndPassword(e, p)
+                .then(() => {
+                    // onAuthStateChanged zaten tetiklenecek ve modalı kapatacak
+                })
+                .catch(err => {
+                    let msg = "Giriş başarısız.";
+                    if(err.code === 'auth/wrong-password') msg = "Şifre yanlış.";
+                    if(err.code === 'auth/user-not-found') msg = "Kullanıcı bulunamadı.";
+                    document.getElementById('auth-msg').innerText = msg;
+                });
+        }
+
+        function logoutUser() {
+            if(confirm("Çıkış yapmak istiyor musunuz?")) {
+                auth.signOut().then(() => {
+                    alert("Çıkış yapıldı.");
+                    closeApp(); // Çıkış yapınca uygulamayı da kapat
+                });
+            }
+        }
+
+        // --- UI KONTROLLERİ ---
+        function checkAuthAndOpen() {
+            if (currentUser) {
+                openApp();
+            } else {
+                openLogin(); 
+                document.getElementById('auth-msg').innerText = "Devam etmek için lütfen giriş yapın.";
+            }
+        }
+
+        function openLogin() { document.getElementById("loginModal").style.display = "flex"; }
+        function closeLogin() { document.getElementById("loginModal").style.display = "none"; }
+
+        function openApp() { document.getElementById("appModal").style.display = "flex"; }
+        function closeApp() { document.getElementById("appModal").style.display = "none"; }
+
+        // --- DİL ÇEVİRİLERİ ---
         const translations = {
             tr: {
                 tagline: "Görsel İletişim Tasarımcısı & Geliştirici",
-                cardTitle: "Quantum AI",
+                cardTitle: "Quantum Football",
                 cardDesc: "IBM Kuantum bilgisayar algoritmalarıyla güçlendirilmiş futbol analiz sistemi.",
                 launch: "BAŞLAT",
                 exit: "ÇIKIŞ",
-                footer: "⚠️ Yasal Uyarı: Bu site sadece istatistiksel veri analizi amaçlıdır. Bahis tavsiyesi içermez."
+                footer: "⚠️ Yasal Uyarı: Bu site sadece istatistiksel veri analizi amaçlıdır. Bahis tavsiyesi içermez.",
+                loginBtn: "GİRİŞ YAP"
             },
             en: {
                 tagline: "Visual Communication Designer & Developer",
-                cardTitle: "Quantum AI",
+                cardTitle: "Quantum Football",
                 cardDesc: "Football analysis system powered by IBM Quantum computing algorithms.",
                 launch: "LAUNCH",
                 exit: "EXIT",
-                footer: "⚠️ Legal Warning: This site is for statistical analysis purposes only. No betting advice included."
+                footer: "⚠️ Legal Warning: This site is for statistical analysis purposes only. No betting advice included.",
+                loginBtn: "LOGIN"
             },
             de: {
                 tagline: "Visueller Kommunikationsdesigner & Entwickler",
-                cardTitle: "Quanten-KI",
+                cardTitle: "Quantum Football",
                 cardDesc: "Fußball-Analysesystem, unterstützt durch IBM Quantencomputer-Algorithmen.",
                 launch: "STARTEN",
                 exit: "SCHLIESSEN",
-                footer: "⚠️ Rechtlicher Hinweis: Diese Seite dient nur statistischen Analysezwecken. Keine Wettberatung."
+                footer: "⚠️ Rechtlicher Hinweis: Diese Seite dient nur statistischen Analysezwecken. Keine Wettberatung.",
+                loginBtn: "ANMELDEN"
             },
             fr: {
                 tagline: "Concepteur de Communication Visuelle & Développeur",
-                cardTitle: "IA Quantique",
+                cardTitle: "Quantum Football",
                 cardDesc: "Système d'analyse de football propulsé par les algorithmes quantiques d'IBM.",
                 launch: "LANCER",
                 exit: "SORTIE",
-                footer: "⚠️ Avertissement légal : Ce site est uniquement à des fins d'analyse statistique."
+                footer: "⚠️ Avertissement légal : Ce site est uniquement à des fins d'analyse statistique.",
+                loginBtn: "CONNEXION"
             },
             ar: {
                 tagline: "مصمم الاتصالات البصرية والمطور",
-                cardTitle: "الذكاء الاصطناعي الكمي",
+                cardTitle: "Quantum Football",
                 cardDesc: "نظام تحليل كرة القدم مدعوم بخوارزميات الحوسبة الكمومية من IBM.",
                 launch: "يبدأ",
                 exit: "خروج",
-                footer: "⚠️ تحذير قانوني: هذا الموقع لأغراض التحليل الإحصائي فقط. لا يتضمن نصائح للمراهنة."
+                footer: "⚠️ تحذير قانوني: هذا الموقع لأغراض التحليل الإحصائي فقط. لا يتضمن نصائح للمراهنة.",
+                loginBtn: "تسجيل الدخول"
             }
         };
 
@@ -378,12 +531,14 @@
             document.getElementById('txt-launch').innerText = translations[lang].launch;
             document.getElementById('txt-exit').innerText = translations[lang].exit;
             document.getElementById('txt-footer').innerText = translations[lang].footer;
+            
+            if(!currentUser && document.getElementById('txt-login-btn')) {
+                document.getElementById('txt-login-btn').innerText = translations[lang].loginBtn;
+            }
+
             if (lang === 'ar') { document.body.setAttribute('dir', 'rtl'); } 
             else { document.body.setAttribute('dir', 'ltr'); }
         }
-
-        function openApp() { document.getElementById("appModal").style.display = "flex"; }
-        function closeApp() { document.getElementById("appModal").style.display = "none"; }
     </script>
 
 </body>
