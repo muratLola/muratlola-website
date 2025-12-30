@@ -117,18 +117,6 @@
         }
         .google-btn:hover { background: #f1f1f1; transform: scale(1.02); }
 
-        .phone-section {
-            margin-top: 15px;
-            border-top: 1px solid #333;
-            padding-top: 15px;
-        }
-        
-        #recaptcha-container {
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-        }
-
         /* --- HEADER --- */
         header {
             text-align: center;
@@ -278,8 +266,8 @@
         .login-box {
             max-width: 400px;
             height: auto;
-            max-height: 90vh; /* Taşmayı önle */
-            overflow-y: auto; /* Scroll eklendi */
+            max-height: 90vh;
+            overflow-y: auto;
             padding: 40px;
             text-align: center;
             background: #0f1219;
@@ -423,22 +411,6 @@
             <button class="google-btn" onclick="loginWithGoogle()">
                 <i class="fa-brands fa-google"></i> Google ile Giriş Yap
             </button>
-
-            <div class="phone-section">
-                <p style="color:#aaa; font-size:0.8rem; margin-bottom:5px;">Telefon ile Giriş (SMS)</p>
-                <div id="phone-step-1">
-                    <input type="tel" id="phoneNumber" class="login-input" placeholder="+90 5XX XXX XX XX" value="+90">
-                    <button class="auth-btn" style="width:100%; margin-top:5px;" onclick="sendOtp()">SMS Gönder</button>
-                </div>
-                
-                <div id="phone-step-2" style="display:none;">
-                    <input type="text" id="otpCode" class="login-input" placeholder="Gelen 6 Haneli Kod">
-                    <button class="auth-btn" style="width:100%; margin-top:5px; background:var(--neon-green); color:#000;" onclick="verifyOtp()">Doğrula ve Gir</button>
-                </div>
-                
-                <div id="recaptcha-container"></div>
-            </div>
-
             <p id="auth-msg" style="color:var(--neon-red); font-size:0.8rem; margin-top:10px;"></p>
         </div>
     </div>
@@ -472,20 +444,9 @@
         // Firebase Başlat
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        auth.languageCode = 'tr'; // SMS ve Google ekran dili Türkçe
+        auth.languageCode = 'tr'; 
 
         let currentUser = null;
-        let confirmationResult = null; // SMS doğrulaması için
-
-        // Recaptcha Verifier Kurulumu (Telefon için zorunlu)
-        window.onload = function() {
-            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-                'size': 'invisible', // Kullanıcıya görünmeden çalışır
-                'callback': (response) => {
-                    // reCAPTCHA çözüldü
-                }
-            });
-        };
 
         // Kullanıcı durumunu dinle
         auth.onAuthStateChanged(user => {
@@ -495,8 +456,7 @@
                 const btn = document.getElementById('authBtn');
                 btn.innerHTML = '<i class="fa-solid fa-user-check"></i> HESABIM';
                 btn.onclick = logoutUser; 
-                console.log("Giriş yapıldı:", user.email || user.phoneNumber);
-                // Login modal açıksa kapat
+                console.log("Giriş yapıldı:", user.email);
                 closeLogin();
             } else {
                 currentUser = null;
@@ -518,47 +478,6 @@
                 }).catch((error) => {
                     handleError(error);
                 });
-        }
-
-        // --- TELEFON GİRİŞ (SMS) ---
-        function sendOtp() {
-            const phoneNumber = document.getElementById('phoneNumber').value;
-            const appVerifier = window.recaptchaVerifier;
-
-            if(phoneNumber.length < 10) {
-                alert("Lütfen geçerli bir numara girin (+90...)");
-                return;
-            }
-
-            auth.signInWithPhoneNumber(phoneNumber, appVerifier)
-                .then((result) => {
-                    // SMS gönderildi
-                    confirmationResult = result;
-                    document.getElementById('phone-step-1').style.display = 'none';
-                    document.getElementById('phone-step-2').style.display = 'block';
-                    document.getElementById('auth-msg').innerText = "Telefonuna gelen kodu gir.";
-                    document.getElementById('auth-msg').style.color = "var(--neon-green)";
-                }).catch((error) => {
-                    console.error(error);
-                    handleError(error);
-                    // Hata durumunda recaptcha reset
-                    if(window.recaptchaVerifier) window.recaptchaVerifier.render().then(function(widgetId) {
-                        grecaptcha.reset(widgetId);
-                    });
-                });
-        }
-
-        function verifyOtp() {
-            const code = document.getElementById('otpCode').value;
-            if(!confirmationResult) return;
-
-            confirmationResult.confirm(code).then((result) => {
-                // Başarılı giriş
-                const user = result.user;
-            }).catch((error) => {
-                document.getElementById('auth-msg').innerText = "Hatalı kod girdiniz.";
-                document.getElementById('auth-msg').style.color = "var(--neon-red)";
-            });
         }
 
         // --- E-POSTA AUTH FONKSİYONLARI ---
