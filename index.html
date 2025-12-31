@@ -388,7 +388,7 @@
             <button class="close-btn" onclick="closeApp()">
                 <i class="fa-solid fa-right-from-bracket"></i> <span id="txt-exit">ÇIKIŞ</span>
             </button>
-            <iframe class="modal-iframe" src="https://quantum-football.onrender.com" allowfullscreen></iframe>
+            <iframe class="modal-iframe" src="" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -510,28 +510,28 @@
                 auth.signOut().then(() => {
                     alert("Çıkış yapıldı.");
                     closeApp(); 
-                    window.location.reload(); // Temiz bir sayfa yenilemesi
+                    window.location.reload(); 
                 });
             }
         }
 
         // Hata Mesajları Yönetimi
-function handleError(err) {
-    console.log("Hata Kodu:", err.code); // Konsoldan hatayı görmek için
-    let msg = "Bir hata oluştu: " + err.message;
-    
-    // Hata kodlarını Türkçeleştir
-    if(err.code === 'auth/email-already-in-use') msg = "Bu e-posta adresi zaten kayıtlı.";
-    if(err.code === 'auth/wrong-password') msg = "Şifre yanlış.";
-    if(err.code === 'auth/user-not-found') msg = "Böyle bir kullanıcı bulunamadı. Önce kayıt olun.";
-    if(err.code === 'auth/invalid-email') msg = "Geçersiz e-posta adresi formatı.";
-    if(err.code === 'auth/weak-password') msg = "Şifre çok zayıf (en az 6 karakter olmalı).";
-    if(err.code === 'auth/invalid-login-credentials') msg = "E-posta veya şifre hatalı (Veya kayıtlı değilsiniz).";
-    if(err.code === 'auth/too-many-requests') msg = "Çok fazla hatalı deneme. Lütfen biraz bekleyin.";
-    
-    document.getElementById('auth-msg').innerText = msg;
-    document.getElementById('auth-msg').style.color = "var(--neon-red)";
-}
+        function handleError(err) {
+            console.log("Hata Kodu:", err.code); 
+            let msg = "Bir hata oluştu: " + err.message;
+            
+            if(err.code === 'auth/email-already-in-use') msg = "Bu e-posta adresi zaten kayıtlı.";
+            if(err.code === 'auth/wrong-password') msg = "Şifre yanlış.";
+            if(err.code === 'auth/user-not-found') msg = "Böyle bir kullanıcı bulunamadı. Önce kayıt olun.";
+            if(err.code === 'auth/invalid-email') msg = "Geçersiz e-posta adresi formatı.";
+            if(err.code === 'auth/weak-password') msg = "Şifre çok zayıf (en az 6 karakter olmalı).";
+            if(err.code === 'auth/invalid-login-credentials') msg = "E-posta veya şifre hatalı (Veya kayıtlı değilsiniz).";
+            if(err.code === 'auth/too-many-requests') msg = "Çok fazla hatalı deneme. Lütfen biraz bekleyin.";
+            
+            document.getElementById('auth-msg').innerText = msg;
+            document.getElementById('auth-msg').style.color = "var(--neon-red)";
+        }
+
         // --- UI KONTROLLERİ ---
         function checkAuthAndOpen() {
             if (currentUser) {
@@ -545,8 +545,23 @@ function handleError(err) {
         function openLogin() { document.getElementById("loginModal").style.display = "flex"; }
         function closeLogin() { document.getElementById("loginModal").style.display = "none"; }
 
-        function openApp() { document.getElementById("appModal").style.display = "flex"; }
         function closeApp() { document.getElementById("appModal").style.display = "none"; }
+
+        // --- KÖPRÜ (BRIDGE) FONKSİYONU: EMAİL'İ PYTHON'A GÖNDERME ---
+        function openApp() { 
+            document.getElementById("appModal").style.display = "flex"; 
+            
+            // Kullanıcı giriş yapmışsa emailini al
+            let userEmail = currentUser ? currentUser.email : "Ziyaretci";
+            
+            // Iframe'i bul
+            let iframe = document.querySelector(".modal-iframe");
+            
+            // Render URL'sine kullanıcının emailini ekle
+            // Bu sayede Python kodu kimin giriş yaptığını bilecek
+            let baseUrl = "https://quantum-football.onrender.com"; 
+            iframe.src = `${baseUrl}/?user_email=${encodeURIComponent(userEmail)}`;
+        }
 
         // --- DİL ÇEVİRİLERİ ---
         const translations = {
@@ -616,4 +631,3 @@ function handleError(err) {
 
 </body>
 </html>
-
