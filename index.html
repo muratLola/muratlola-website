@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-adsense-account" content="ca-pub-5159712906546501">
     <title>muratLola | Global Lab</title>
     
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5159712906546501"
+     crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script> <style>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
+
+    <style>
         /* --- CORE STYLES --- */
         :root { --neon: #00ff88; --dark: #0b0f19; --glass: rgba(255, 255, 255, 0.05); }
         body {
@@ -142,12 +145,34 @@
         </div>
     </div>
 
+    <div style="max-width: 800px; margin: 50px auto; color: #ccc; font-size: 0.9rem; line-height: 1.6; padding: 20px; border-top: 1px solid #333;">
+        <h2 style="color: var(--neon); font-family: 'Orbitron'; font-size: 1.5rem;">Quantum Football Teknolojisi</h2>
+        <p>
+            Quantum Football, standart tahmin araçlarından farklı olarak, duygusal faktörleri dışarıda bırakan 
+            saf bir matematiksel analiz laboratuvarıdır. Python tabanlı algoritmamız, <strong>Poisson Dağılımı</strong> 
+            ve <strong>Dixon-Coles</strong> modellerini kullanarak takımların hücum ve savunma güçlerini hesaplar.
+        </p>
+        
+        <h3 style="color: #fff; margin-top: 20px;">Nasıl Çalışır?</h3>
+        <p>
+            Sistemimiz, son 50.000 maç simülasyonunu saniyeler içinde gerçekleştirir. Bu simülasyonlarda;
+            hava durumu, sakat oyuncular, ev sahibi avantajı ve takım form grafikleri dikkate alınır. 
+            Sonuçlar, size en olası senaryoları (Örneğin: %74 ihtimalle 2.5 Gol Üstü) sunar.
+        </p>
+
+        <h3 style="color: #fff; margin-top: 20px;">Yasal Uyarı & Gizlilik</h3>
+        <p>
+            Bu web sitesinde sunulan veriler tamamen istatistiksel amaçlıdır. Hiçbir içerik finansal yatırım tavsiyesi 
+            veya kesin bahis önerisi niteliği taşımaz. Verileriniz (e-posta) sadece sistemi kişiselleştirmek için kullanılır 
+            ve 3. şahıslarla paylaşılmaz.
+        </p>
+    </div>
+
     <footer>
-        <p style="color:#555; font-size:0.8rem; margin-top:50px;">© 2025 muratLola | Quantum Engine</p>
+        <p style="color:#555; font-size:0.8rem; margin-top:20px;">© 2025 muratLola | Quantum Engine</p>
     </footer>
 
     <script>
-        // --- FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyAVCbrPO5e9oZBbZKjbApo6av1M13_OT9k",
             authDomain: "muratlola-web.firebaseapp.com",
@@ -155,19 +180,13 @@
             storageBucket: "muratlola-web.firebasestorage.app",
             messagingSenderId: "742719225290",
             appId: "1:742719225290:web:48207035df11d40f35e333",
-            measurementId: "G-7HE6027N6X" // Analytics ID'n burada
+            measurementId: "G-7HE6027N6X"
         };
-
-        // Firebase Başlat
         firebase.initializeApp(firebaseConfig);
-        
-        // --- BURASI EKLENDİ (Veri Akışını Başlatır) ---
-        const analytics = firebase.analytics(); 
-        
+        const analytics = firebase.analytics();
         const auth = firebase.auth();
         let currentUser = null;
 
-        // --- AUTH LOGIC ---
         auth.onAuthStateChanged(user => {
             if(user) {
                 currentUser = user;
@@ -179,26 +198,20 @@
             }
         });
 
-        function loginWithGoogle() {
-            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => document.getElementById('msg').innerText = e.message);
-        }
+        function loginWithGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => document.getElementById('msg').innerText = e.message); }
         function loginUser() {
             const e = document.getElementById('email').value;
             const p = document.getElementById('password').value;
             auth.signInWithEmailAndPassword(e, p).catch(err => document.getElementById('msg').innerText = err.message);
         }
 
-        // --- APP LAUNCH LOGIC (THE BRIDGE) ---
         function checkAuthAndOpen() {
             if(currentUser) {
                 const modal = document.getElementById("appModal");
                 const frame = document.getElementById("appFrame");
                 const loader = document.getElementById("loader");
-                
                 modal.style.display = "flex";
                 loader.style.display = "flex";
-
-                // Render Linki
                 const baseUrl = "https://quantum-football.onrender.com"; 
                 frame.src = `${baseUrl}/?user_email=${encodeURIComponent(currentUser.email)}`;
             } else {
