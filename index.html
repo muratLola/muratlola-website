@@ -12,8 +12,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
-    <style>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script> <style>
         /* --- CORE STYLES --- */
         :root { --neon: #00ff88; --dark: #0b0f19; --glass: rgba(255, 255, 255, 0.05); }
         body {
@@ -155,9 +154,16 @@
             projectId: "muratlola-web",
             storageBucket: "muratlola-web.firebasestorage.app",
             messagingSenderId: "742719225290",
-            appId: "1:742719225290:web:48207035df11d40f35e333"
+            appId: "1:742719225290:web:48207035df11d40f35e333",
+            measurementId: "G-7HE6027N6X" // Analytics ID'n burada
         };
+
+        // Firebase Başlat
         firebase.initializeApp(firebaseConfig);
+        
+        // --- BURASI EKLENDİ (Veri Akışını Başlatır) ---
+        const analytics = firebase.analytics(); 
+        
         const auth = firebase.auth();
         let currentUser = null;
 
@@ -192,7 +198,7 @@
                 modal.style.display = "flex";
                 loader.style.display = "flex";
 
-                // *** RENDER LINKIN BURAYA EKLENDI ***
+                // Render Linki
                 const baseUrl = "https://quantum-football.onrender.com"; 
                 frame.src = `${baseUrl}/?user_email=${encodeURIComponent(currentUser.email)}`;
             } else {
