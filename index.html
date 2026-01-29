@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5159712906546501" crossorigin="anonymous"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -16,289 +16,181 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 
     <style>
-        /* --- 1. CORE AESTHETICS --- */
         :root {
             --neon: #00ff88;
-            --alert: #ff4444;
             --bg: #05070a;
             --card-bg: #0e121b;
-            --glass: rgba(255, 255, 255, 0.03);
             --border: rgba(0, 255, 136, 0.2);
         }
 
         body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
+            margin: 0; font-family: 'Inter', sans-serif;
             background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 50% 0%, #11221c 0%, var(--bg) 60%),
+            background-image: radial-gradient(circle at 50% 0%, #11221c 0%, var(--bg) 60%),
                 linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
             background-size: 100% 100%, 40px 40px, 40px 40px;
-            color: #e0e0e0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            color: #e0e0e0; min-height: 100vh; display: flex; flex-direction: column; align-items: center;
             overflow-x: hidden;
         }
 
-        /* --- 2. HEADER & NAV --- */
+        /* ARABIC SUPPORT */
+        body.rtl { direction: rtl; font-family: 'Tajawal', sans-serif; }
+        body.rtl h1, body.rtl h2, body.rtl h3, body.rtl .btn-tech, body.rtl .launch-btn { font-family: 'Tajawal', sans-serif; font-weight: 700; }
+
+        /* NAV */
         .nav-bar {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 15px;
-            z-index: 100;
-            box-sizing: border-box;
-            backdrop-filter: blur(5px);
+            position: fixed; top: 0; left: 0; width: 100%; padding: 20px 40px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; backdrop-filter: blur(5px); box-sizing: border-box;
         }
+
+        .nav-right { display: flex; gap: 15px; align-items: center; }
+
+        .lang-select {
+            background: rgba(0,0,0,0.6); border: 1px solid var(--border); color: var(--neon);
+            padding: 8px 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+            cursor: pointer; border-radius: 4px; outline: none; text-transform: uppercase;
+        }
+        .lang-select option { background: #000; color: #fff; }
 
         .btn-tech {
-            background: rgba(0,0,0,0.6);
-            border: 1px solid var(--border);
-            color: var(--neon);
-            padding: 10px 20px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            background: rgba(0,0,0,0.6); border: 1px solid var(--border); color: var(--neon);
+            padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px;
         }
-        .btn-tech:hover {
-            background: var(--neon);
-            color: black;
-            box-shadow: 0 0 15px rgba(0,255,136,0.4);
-        }
+        .btn-tech:hover { background: var(--neon); color: black; box-shadow: 0 0 15px rgba(0,255,136,0.4); }
 
-        header {
-            text-align: center;
-            margin-top: 100px;
-            width: 90%;
-            max-width: 800px;
-            position: relative;
-        }
-
+        /* HEADER */
+        header { text-align: center; margin-top: 100px; width: 90%; max-width: 800px; }
         h1 {
-            font-family: 'Orbitron';
-            font-size: 4rem;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            background: linear-gradient(180deg, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(255,255,255,0.1);
+            font-family: 'Orbitron'; font-size: 4rem; margin: 0; letter-spacing: 4px;
+            background: linear-gradient(180deg, #fff, #888); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(255,255,255,0.1);
         }
+        .subtitle { font-family: 'JetBrains Mono'; color: var(--neon); margin-top: 10px; font-size: 0.9rem; opacity: 0.8; }
 
-        .subtitle {
-            font-family: 'JetBrains Mono', monospace;
-            color: var(--neon);
-            margin-top: 10px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        /* --- 3. MAIN CARD --- */
-        .grid {
-            display: flex;
-            justify-content: center;
-            margin-top: 60px;
-            width: 100%;
-        }
-
+        /* CARD */
+        .grid { display: flex; justify-content: center; margin-top: 60px; width: 100%; }
         .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 40px;
-            width: 380px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.4s;
-            position: relative;
-            overflow: hidden;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px;
+            padding: 40px; width: 380px; text-align: center; cursor: pointer;
+            transition: 0.4s; position: relative; overflow: hidden;
         }
-
         .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 2px;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
             background: linear-gradient(90deg, transparent, var(--neon), transparent);
             animation: scan 2s infinite linear;
         }
-
-        .card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(0,255,136,0.1);
-            border-color: var(--neon);
-        }
-
-        .status-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-family: 'JetBrains Mono';
-            font-size: 0.6rem;
-            color: var(--neon);
-            border: 1px solid var(--neon);
-            padding: 2px 6px;
-            border-radius: 2px;
-        }
-
+        .card:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(0,255,136,0.1); border-color: var(--neon); }
+        
         .launch-btn {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 15px 40px;
-            background: var(--neon);
-            color: black;
-            font-family: 'Orbitron';
-            font-weight: 900;
-            border: none;
-            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            display: inline-block; margin-top: 30px; padding: 15px 40px;
+            background: var(--neon); color: black; font-family: 'Orbitron'; font-weight: 900;
+            border: none; clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
             transition: 0.3s;
         }
-        
-        .launch-btn:hover {
-            background: white;
-            box-shadow: 0 0 20px white;
-        }
+        .launch-btn:hover { background: white; box-shadow: 0 0 20px white; }
 
-        /* --- 4. INFO SECTION --- */
+        /* INFO */
         .info-section {
-            max-width: 900px;
-            margin: 80px auto;
-            border-top: 1px solid #333;
-            padding-top: 40px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            max-width: 900px; margin: 80px auto; border-top: 1px solid #333; padding-top: 40px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
         }
+        .info-col h3 { font-family: 'Orbitron'; color: #fff; border-left: 3px solid var(--neon); padding-left: 10px; }
+        body.rtl .info-col h3 { border-left: none; border-right: 3px solid var(--neon); padding-left: 0; padding-right: 10px; }
+        .info-col p { color: #888; font-size: 0.9rem; line-height: 1.6; }
 
-        .info-col h3 {
-            font-family: 'Orbitron';
-            color: #fff;
-            border-left: 3px solid var(--neon);
-            padding-left: 10px;
-        }
-
-        .info-col p {
-            color: #888;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        /* --- 5. MODAL & LOADER --- */
-        .modal {
+        /* MODALS */
+        .modal, .login-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: black; z-index: 999;
         }
-        
-        .modal-inner {
-            width: 100%; height: 100%; position: relative;
-        }
-
+        .login-overlay { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); justify-content: center; align-items: center; }
+        .modal-inner { width: 100%; height: 100%; position: relative; }
         .close-app {
-            position: absolute; top: 20px; right: 20px;
-            background: black; color: white; border: 1px solid #333;
-            padding: 10px 20px; z-index: 1001; cursor: pointer;
-            font-family: 'JetBrains Mono';
+            position: absolute; top: 20px; right: 20px; background: black; color: white;
+            border: 1px solid #333; padding: 10px 20px; z-index: 1001; cursor: pointer; font-family: 'JetBrains Mono';
         }
         .close-app:hover { border-color: red; color: red; }
-
-        iframe { width: 100%; height: 100%; border: none; }
-
-        /* Spinner */
+        body.rtl .close-app { right: auto; left: 20px; }
+        
         .loader-overlay {
-            position: absolute; top:0; left:0; width:100%; height:100%;
-            background: #0b0f19; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 1000;
+            position: absolute; top:0; left:0; width:100%; height:100%; background: #0b0f19;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;
         }
+        .matrix-text { font-family: 'JetBrains Mono'; color: var(--neon); margin-top: 20px; animation: blink 1s infinite; }
         
-        .matrix-text {
-            font-family: 'JetBrains Mono'; color: var(--neon); margin-top: 20px;
-            animation: blink 1s infinite;
-        }
+        .login-box { background: #111; border: 1px solid #333; padding: 40px; width: 350px; text-align: center; }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #444; color: white; }
 
-        /* Login */
-        .login-overlay {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
-            z-index: 2000; display: none; justify-content: center; align-items: center;
-        }
-        .login-box {
-            background: #111; border: 1px solid #333; padding: 40px; width: 350px;
-            text-align: center; position: relative;
-        }
-        .login-box input {
-            width: 100%; padding: 12px; margin: 10px 0; background: #222;
-            border: 1px solid #444; color: white; font-family: 'Inter';
-        }
-        
         @keyframes scan { 0% {top:0; opacity:0;} 50% {opacity:1;} 100% {top:100%; opacity:0;} }
         @keyframes blink { 50% {opacity: 0;} }
-
+        
+        @media (max-width: 768px) {
+            .info-section { grid-template-columns: 1fr; padding: 20px; }
+            h1 { font-size: 2.5rem; }
+            .nav-bar { padding: 15px; }
+        }
     </style>
 </head>
 <body>
 
     <div class="nav-bar">
-        <button id="authBtn" class="btn-tech" onclick="openLogin()">
-            <i class="fa-solid fa-terminal"></i> LOGIN
-        </button>
-        <div style="font-family: 'JetBrains Mono'; color:#555; font-size:0.8rem;">
-            SYS.STATUS: <span style="color:var(--neon)">OPERATIONAL</span>
+        <div style="font-family:'JetBrains Mono'; font-size:0.8rem; color:#555;">
+            SYS: <span style="color:var(--neon)">ONLINE</span>
+        </div>
+        <div class="nav-right">
+            <select id="langSelector" class="lang-select" onchange="setLanguage(this.value)">
+                <option value="EN">EN - English</option>
+                <option value="TR">TR - Türkçe</option>
+                <option value="DE">DE - Deutsch</option>
+                <option value="FR">FR - Français</option>
+                <option value="ES">ES - Español</option>
+                <option value="IT">IT - Italiano</option>
+                <option value="AR">AR - العربية</option>
+            </select>
+            <button id="authBtn" class="btn-tech" onclick="openLogin()">
+                <i class="fa-solid fa-terminal"></i> <span id="txt_login_btn">LOGIN</span>
+            </button>
         </div>
     </div>
 
     <header>
         <h1>MURATLOLA</h1>
-        <div class="subtitle">QUANTUM ANALYTICS RESEARCH LAB</div>
-        
+        <div class="subtitle" id="txt_subtitle">QUANTUM ANALYTICS RESEARCH LAB</div>
         <div style="margin-top: 20px; display:flex; justify-content:center; gap:15px;">
-            <a href="https://github.com/muratLola" class="social-btn" style="color:#555; font-size:1.5rem;"><i class="fa-brands fa-github"></i></a>
-            <a href="https://twitter.com/MuratLola" class="social-btn" style="color:#555; font-size:1.5rem;"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://github.com/muratLola" style="color:#555; font-size:1.5rem;"><i class="fa-brands fa-github"></i></a>
+            <a href="https://twitter.com/MuratLola" style="color:#555; font-size:1.5rem;"><i class="fa-brands fa-x-twitter"></i></a>
         </div>
     </header>
 
     <div class="grid">
         <div class="card" onclick="checkAuthAndOpen()">
-            <div class="status-badge">v24.0 STABLE</div>
-            
+            <div class="status-badge" style="position:absolute; top:15px; right:15px; border:1px solid var(--neon); color:var(--neon); padding:2px 6px; font-size:0.6rem; font-family:'JetBrains Mono';">v24.0 STABLE</div>
             <i class="fa-solid fa-atom fa-3x" style="color:var(--neon); margin-bottom:20px;"></i>
-            
-            <h2 style="font-family:'Orbitron'; margin:0;">QUANTUM ENGINE</h2>
-            <p style="color:#666; font-size:0.85rem; margin:15px 0;">
-                Hybrid AI Architecture<br>
-                Poisson • Monte Carlo • Gemini LLM
+            <h2 style="font-family:'Orbitron'; margin:0;" id="txt_card_title">QUANTUM ENGINE</h2>
+            <p style="color:#666; font-size:0.85rem; margin:15px 0;" id="txt_card_desc">
+                Hybrid AI Architecture<br>Poisson • Monte Carlo • Gemini LLM
             </p>
-            
-            <button class="launch-btn">INITIALIZE</button>
+            <button class="launch-btn" id="txt_launch">INITIALIZE</button>
         </div>
     </div>
 
     <div class="info-section">
         <div class="info-col">
-            <h3>Pure Science. No Gambling.</h3>
-            <p>
-                Quantum Football, spor analitiğine akademik bir yaklaşım getirir. Klasik tahminlerin aksine; 
-                <strong>Dinamik Rho Katsayıları</strong> ve <strong>Split-Vector Analizi</strong> kullanarak, 
-                maçları 50.000 farklı senaryoda simüle eder.
+            <h3 id="txt_info1_title">Pure Science. No Gambling.</h3>
+            <p id="txt_info1_desc">
+                Quantum Football brings an academic approach to sports analytics. Unlike classic predictions, 
+                it uses <strong>Dynamic Rho Coefficients</strong> and <strong>Split-Vector Analysis</strong> 
+                to simulate matches in 50,000 scenarios.
             </p>
         </div>
         <div class="info-col">
-            <h3>How It Works?</h3>
-            <p>
-                Sistem, takımların iç saha/deplasman performanslarını ayrıştırarak (Granular Data), 
-                form durumunu <strong>Exponential Decay</strong> yöntemiyle ağırlıklandırır. 
-                Sonuçlar Google Gemini AI tarafından yorumlanır.
+            <h3 id="txt_info2_title">How It Works?</h3>
+            <p id="txt_info2_desc">
+                The system separates home/away performance vectors (Granular Data) and weights form using 
+                <strong>Exponential Decay</strong>. Results are interpreted by Google Gemini AI.
             </p>
         </div>
     </div>
@@ -309,36 +201,177 @@
 
     <div id="appModal" class="modal">
         <div class="modal-inner">
-            <button class="close-app" onclick="closeApp()"><i class="fa-solid fa-power-off"></i> SHUTDOWN</button>
-            
+            <button class="close-app" onclick="closeApp()"><i class="fa-solid fa-power-off"></i> <span id="txt_shutdown">SHUTDOWN</span></button>
             <div id="loader" class="loader-overlay">
                 <i class="fa-solid fa-circle-notch fa-spin fa-2x" style="color:var(--neon)"></i>
-                <div class="matrix-text">CONNECTING TO NEURAL NET...</div>
+                <div class="matrix-text" id="txt_loading">CONNECTING TO NEURAL NET...</div>
             </div>
-            
             <iframe id="appFrame" src="" onload="hideLoader()"></iframe>
         </div>
     </div>
 
     <div id="loginModal" class="login-overlay">
         <div class="login-box">
-            <div style="text-align:right;"><span style="cursor:pointer; color:#555;" onclick="closeLogin()">[CLOSE]</span></div>
-            <h3 style="font-family:'Orbitron'; color:var(--neon); margin-bottom:30px;">ACCESS CONTROL</h3>
-            
+            <div style="text-align:right;"><span style="cursor:pointer; color:#555;" onclick="closeLogin()">[X]</span></div>
+            <h3 style="font-family:'Orbitron'; color:var(--neon); margin-bottom:30px;" id="txt_access">ACCESS CONTROL</h3>
             <input type="email" id="email" placeholder="USER ID (EMAIL)">
             <input type="password" id="password" placeholder="ACCESS KEY">
-            
-            <button class="btn-tech" style="width:100%; justify-content:center; margin-top:20px;" onclick="loginUser()">AUTHENTICATE</button>
+            <button class="btn-tech" style="width:100%; justify-content:center; margin-top:20px;" onclick="loginUser()" id="txt_auth_btn">AUTHENTICATE</button>
             <button class="btn-tech" style="width:100%; justify-content:center; margin-top:10px; background:white; color:black; border:none;" onclick="loginWithGoogle()">
                 <i class="fa-brands fa-google"></i> GOOGLE AUTH
             </button>
-            
             <p id="msg" style="color:#ff4444; font-size:0.8rem; margin-top:15px; font-family:'JetBrains Mono';"></p>
         </div>
     </div>
 
     <script>
-        // --- SENİN BİLGİLERİNLE GÜNCELLENMİŞ FIREBASE AYARLARI ---
+        // --- TRANSLATIONS DATABASE ---
+        const langData = {
+            "EN": {
+                subtitle: "QUANTUM ANALYTICS RESEARCH LAB",
+                loginBtn: "LOGIN",
+                cardTitle: "QUANTUM ENGINE",
+                cardDesc: "Hybrid AI Architecture<br>Poisson • Monte Carlo • Gemini LLM",
+                launch: "INITIALIZE",
+                info1T: "Pure Science. No Gambling.",
+                info1D: "Quantum Football brings an academic approach to sports analytics. Unlike classic predictions, it uses <strong>Dynamic Rho Coefficients</strong> and <strong>Split-Vector Analysis</strong> to simulate matches in 50,000 scenarios.",
+                info2T: "How It Works?",
+                info2D: "The system separates home/away performance vectors (Granular Data) and weights form using <strong>Exponential Decay</strong>. Results are interpreted by Google Gemini AI.",
+                shutdown: "SHUTDOWN",
+                loading: "CONNECTING TO NEURAL NET...",
+                access: "ACCESS CONTROL",
+                authBtn: "AUTHENTICATE"
+            },
+            "TR": {
+                subtitle: "KUANTUM ANALİTİK ARAŞTIRMA LAB",
+                loginBtn: "GİRİŞ",
+                cardTitle: "KUANTUM MOTORU",
+                cardDesc: "Hibrit YZ Mimarisi<br>Poisson • Monte Carlo • Gemini LLM",
+                launch: "BAŞLAT",
+                info1T: "Saf Bilim. Kumar Yok.",
+                info1D: "Quantum Football, spor analitiğine akademik yaklaşır. Klasik tahminlerin aksine, maçları 50.000 senaryoda simüle etmek için <strong>Dinamik Rho Katsayıları</strong> ve <strong>Vektör Analizi</strong> kullanır.",
+                info2T: "Nasıl Çalışır?",
+                info2D: "Sistem, iç/dış saha performansını ayrıştırır (Granüler Veri) ve formu <strong>Üstel Azalma</strong> ile ağırlıklandırır. Sonuçlar Google Gemini YZ tarafından yorumlanır.",
+                shutdown: "KAPAT",
+                loading: "SİNİR AĞINA BAĞLANIYOR...",
+                access: "ERİŞİM KONTROLÜ",
+                authBtn: "DOĞRULA"
+            },
+            "DE": {
+                subtitle: "QUANTUM ANALYTICS FORSCHUNGSLABOR",
+                loginBtn: "ANMELDEN",
+                cardTitle: "QUANTUM ENGINE",
+                cardDesc: "Hybride KI-Architektur<br>Poisson • Monte Carlo • Gemini LLM",
+                launch: "STARTEN",
+                info1T: "Reine Wissenschaft. Kein Glücksspiel.",
+                info1D: "Quantum Football bringt einen akademischen Ansatz. Es verwendet <strong>Dynamische Rho-Koeffizienten</strong>, um Spiele in 50.000 Szenarien zu simulieren.",
+                info2T: "Wie funktioniert es?",
+                info2D: "Das System trennt Heim-/Auswärtsvektoren und gewichtet die Form mittels <strong>Exponentiellen Zerfalls</strong>. Ergebnisse werden von Gemini AI interpretiert.",
+                shutdown: "BEENDEN",
+                loading: "VERBINDUNG ZUM NEURALEN NETZ...",
+                access: "ZUGRIFFSKONTROLLE",
+                authBtn: "AUTHENTIFIZIEREN"
+            },
+            "FR": {
+                subtitle: "LABORATOIRE DE RECHERCHE QUANTIQUE",
+                loginBtn: "CONNEXION",
+                cardTitle: "MOTEUR QUANTIQUE",
+                cardDesc: "Architecture IA Hybride<br>Poisson • Monte Carlo • Gemini LLM",
+                launch: "INITIALISER",
+                info1T: "Science pure. Pas de jeu.",
+                info1D: "Approche académique de l'analytique sportive. Utilise des <strong>Coefficients Rho Dynamiques</strong> pour simuler des matchs dans 50 000 scénarios.",
+                info2T: "Comment ça marche ?",
+                info2D: "Le système sépare les vecteurs domicile/extérieur et pondère la forme avec une <strong>Décroissance Exponentielle</strong>. Résultats interprétés par Gemini AI.",
+                shutdown: "ÉTEINDRE",
+                loading: "CONNEXION AU RÉSEAU NEURONAL...",
+                access: "CONTRÔLE D'ACCÈS",
+                authBtn: "AUTHENTIFIER"
+            },
+            "ES": {
+                subtitle: "LABORATORIO DE INVESTIGACIÓN CUÁNTICA",
+                loginBtn: "ACCESO",
+                cardTitle: "MOTOR CUÁNTICO",
+                cardDesc: "Arquitectura IA Híbrida<br>Poisson • Monte Carlo • Gemini LLM",
+                launch: "INICIAR",
+                info1T: "Ciencia Pura. Sin Apuestas.",
+                info1D: "Enfoque académico. Utiliza <strong>Coeficientes Rho Dinámicos</strong> y análisis vectorial para simular partidos en 50.000 escenarios.",
+                info2T: "¿Cómo funciona?",
+                info2D: "El sistema separa el rendimiento local/visitante y pondera la forma usando <strong>Decaimiento Exponencial</strong>. Interpretado por Gemini AI.",
+                shutdown: "APAGAR",
+                loading: "CONECTANDO A RED NEURONAL...",
+                access: "CONTROL DE ACCESO",
+                authBtn: "AUTENTICAR"
+            },
+            "IT": {
+                subtitle: "LABORATORIO DI RICERCA QUANTISTICA",
+                loginBtn: "ACCEDI",
+                cardTitle: "MOTORE QUANTISTICO",
+                cardDesc: "Architettura AI Ibrida<br>Poisson • Monte Carlo • Gemini LLM",
+                launch: "AVVIARE",
+                info1T: "Scienza Pura. Niente Gioco d'Azzardo.",
+                info1D: "Approccio accademico. Utilizza <strong>Coefficienti Rho Dinamici</strong> per simulare le partite in 50.000 scenari.",
+                info2T: "Come funziona?",
+                info2D: "Il sistema separa i vettori casa/trasferta e pondera la forma usando il <strong>Decadimento Esponenziale</strong>. Interpretato da Gemini AI.",
+                shutdown: "SPEGNI",
+                loading: "CONNESSIONE ALLA RETE NEURALE...",
+                access: "CONTROLLO ACCESSO",
+                authBtn: "AUTENTICARE"
+            },
+            "AR": {
+                subtitle: "مختبر تحليلات الكم",
+                loginBtn: "دخول",
+                cardTitle: "المحرك الكمي",
+                cardDesc: "بنية الذكاء الاصطناعي الهجين<br>بواسون • مونت كارلو • جيمناي",
+                launch: "بدء التشغيل",
+                info1T: "علم خالص. لا للمقامرة.",
+                info1D: "نهج أكاديمي للتحليل الرياضي. يستخدم <strong>معاملات رو الديناميكية</strong> لمحاكاة المباريات في 50,000 سيناريو.",
+                info2T: "كيف يعمل؟",
+                info2D: "يفصل النظام أداء الفريق داخل/خارج الأرض ويزن النموذج باستخدام <strong>الاضمحلال الأسي</strong>. يتم التفسير بواسطة Gemini AI.",
+                shutdown: "إيقاف",
+                loading: "جاري الاتصال بالشبكة العصبية...",
+                access: "التحكم في الوصول",
+                authBtn: "توثيق"
+            }
+        };
+
+        function setLanguage(lang) {
+            const d = langData[lang];
+            if (!d) return;
+
+            // Update Text
+            document.getElementById('txt_subtitle').innerText = d.subtitle;
+            document.getElementById('txt_login_btn').innerText = d.loginBtn;
+            document.getElementById('txt_card_title').innerText = d.cardTitle;
+            document.getElementById('txt_card_desc').innerHTML = d.cardDesc;
+            document.getElementById('txt_launch').innerText = d.launch;
+            document.getElementById('txt_info1_title').innerText = d.info1T;
+            document.getElementById('txt_info1_desc').innerHTML = d.info1D;
+            document.getElementById('txt_info2_title').innerText = d.info2T;
+            document.getElementById('txt_info2_desc').innerHTML = d.info2D;
+            document.getElementById('txt_shutdown').innerText = d.shutdown;
+            document.getElementById('txt_loading').innerText = d.loading;
+            document.getElementById('txt_access').innerText = d.access;
+            document.getElementById('txt_auth_btn').innerText = d.authBtn;
+
+            // Handle RTL for Arabic
+            if (lang === 'AR') {
+                document.body.classList.add('rtl');
+            } else {
+                document.body.classList.remove('rtl');
+            }
+
+            // Save preference
+            localStorage.setItem('ql_lang', lang);
+        }
+
+        // Initialize Language
+        window.onload = function() {
+            const savedLang = localStorage.getItem('ql_lang') || 'EN';
+            document.getElementById('langSelector').value = savedLang;
+            setLanguage(savedLang);
+        };
+
+        // --- FIREBASE CONFIG (Your Keys) ---
         const firebaseConfig = {
             apiKey: "AIzaSyAVCbrPO5e9oZBbZKjbApo6av1M13_OT9k",
             authDomain: "muratlola-web.firebaseapp.com",
@@ -353,22 +386,25 @@
         const auth = firebase.auth();
         let currentUser = null;
 
-        // Auth Listener
         auth.onAuthStateChanged(user => {
-            const btn = document.getElementById('authBtn');
+            const btnText = document.getElementById('txt_login_btn');
+            const authBtn = document.getElementById('authBtn');
             if(user) {
                 currentUser = user;
-                btn.innerHTML = `<i class="fa-solid fa-user-astronaut"></i> ${user.email.split('@')[0].toUpperCase()}`;
-                btn.style.borderColor = "var(--neon)";
+                authBtn.innerHTML = `<i class="fa-solid fa-user-astronaut"></i> ${user.email.split('@')[0].toUpperCase()}`;
+                authBtn.style.borderColor = "var(--neon)";
+                authBtn.style.color = "var(--neon)";
                 closeLogin();
             } else {
                 currentUser = null;
-                btn.innerHTML = `<i class="fa-solid fa-terminal"></i> LOGIN`;
-                btn.style.borderColor = "var(--border)";
+                // Re-apply current language text for 'LOGIN'
+                const currentLang = document.getElementById('langSelector').value;
+                authBtn.innerHTML = `<i class="fa-solid fa-terminal"></i> <span id="txt_login_btn">${langData[currentLang].loginBtn}</span>`;
+                authBtn.style.borderColor = "var(--border)";
+                authBtn.style.color = "var(--neon)";
             }
         });
 
-        // Functions
         function loginWithGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => document.getElementById('msg').innerText = "ERR: " + e.message); }
         function loginUser() {
             const e = document.getElementById('email').value;
@@ -381,11 +417,9 @@
                 const modal = document.getElementById("appModal");
                 const frame = document.getElementById("appFrame");
                 const loader = document.getElementById("loader");
-                
                 modal.style.display = "block";
                 loader.style.display = "flex";
-                
-                // Streamlit URL
+                // Pass language to Streamlit if needed via URL param, currently just user_email
                 const baseUrl = "https://quantum-football.onrender.com"; 
                 frame.src = `${baseUrl}/?user_email=${encodeURIComponent(currentUser.email)}`;
             } else {
