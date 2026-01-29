@@ -138,7 +138,7 @@
 
     <div class="nav-bar">
         <div style="font-family:'JetBrains Mono'; font-size:0.8rem; color:#555;">
-            SYS: <span style="color:var(--neon)">ONLINE</span>
+            <span id="txt_sys">SYS:</span> <span style="color:var(--neon)" id="txt_status">ONLINE</span>
         </div>
         <div class="nav-right">
             <select id="langSelector" class="lang-select" onchange="setLanguage(this.value)">
@@ -167,7 +167,7 @@
 
     <div class="grid">
         <div class="card" onclick="checkAuthAndOpen()">
-            <div class="status-badge" style="position:absolute; top:15px; right:15px; border:1px solid var(--neon); color:var(--neon); padding:2px 6px; font-size:0.6rem; font-family:'JetBrains Mono';">v24.0 STABLE</div>
+            <div class="status-badge" id="txt_status_badge" style="position:absolute; top:15px; right:15px; border:1px solid var(--neon); color:var(--neon); padding:2px 6px; font-size:0.6rem; font-family:'JetBrains Mono';">v24.0 STABLE</div>
             <i class="fa-solid fa-atom fa-3x" style="color:var(--neon); margin-bottom:20px;"></i>
             <h2 style="font-family:'Orbitron'; margin:0;" id="txt_card_title">QUANTUM ENGINE</h2>
             <p style="color:#666; font-size:0.85rem; margin:15px 0;" id="txt_card_desc">
@@ -196,7 +196,7 @@
     </div>
 
     <footer style="text-align:center; padding:40px; color:#333; font-size:0.8rem;">
-        <p>BUILD: v24.0.1-APEX | © 2026 QUANTUM LABS</p>
+        <p id="txt_footer">BUILD: v24.0.1-APEX | © 2026 QUANTUM LABS</p>
     </footer>
 
     <div id="appModal" class="modal">
@@ -228,6 +228,9 @@
         // --- TRANSLATIONS DATABASE ---
         const langData = {
             "EN": {
+                sys: "SYS:",
+                status: "ONLINE",
+                statusBadge: "v24.0 STABLE",
                 subtitle: "QUANTUM ANALYTICS RESEARCH LAB",
                 loginBtn: "LOGIN",
                 cardTitle: "QUANTUM ENGINE",
@@ -237,12 +240,16 @@
                 info1D: "Quantum Football brings an academic approach to sports analytics. Unlike classic predictions, it uses <strong>Dynamic Rho Coefficients</strong> and <strong>Split-Vector Analysis</strong> to simulate matches in 50,000 scenarios.",
                 info2T: "How It Works?",
                 info2D: "The system separates home/away performance vectors (Granular Data) and weights form using <strong>Exponential Decay</strong>. Results are interpreted by Google Gemini AI.",
+                footer: "BUILD: v24.0.1-APEX | © 2026 QUANTUM LABS",
                 shutdown: "SHUTDOWN",
                 loading: "CONNECTING TO NEURAL NET...",
                 access: "ACCESS CONTROL",
                 authBtn: "AUTHENTICATE"
             },
             "TR": {
+                sys: "SİSTEM:",
+                status: "ÇEVRİMİÇİ",
+                statusBadge: "v24.0 KARARLI",
                 subtitle: "KUANTUM ANALİTİK ARAŞTIRMA LAB",
                 loginBtn: "GİRİŞ",
                 cardTitle: "KUANTUM MOTORU",
@@ -252,12 +259,16 @@
                 info1D: "Quantum Football, spor analitiğine akademik yaklaşır. Klasik tahminlerin aksine, maçları 50.000 senaryoda simüle etmek için <strong>Dinamik Rho Katsayıları</strong> ve <strong>Vektör Analizi</strong> kullanır.",
                 info2T: "Nasıl Çalışır?",
                 info2D: "Sistem, iç/dış saha performansını ayrıştırır (Granüler Veri) ve formu <strong>Üstel Azalma</strong> ile ağırlıklandırır. Sonuçlar Google Gemini YZ tarafından yorumlanır.",
+                footer: "SÜRÜM: v24.0.1-APEX | © 2026 QUANTUM LABS",
                 shutdown: "KAPAT",
                 loading: "SİNİR AĞINA BAĞLANIYOR...",
                 access: "ERİŞİM KONTROLÜ",
                 authBtn: "DOĞRULA"
             },
             "DE": {
+                sys: "SYS:",
+                status: "ONLINE",
+                statusBadge: "v24.0 STABIL",
                 subtitle: "QUANTUM ANALYTICS FORSCHUNGSLABOR",
                 loginBtn: "ANMELDEN",
                 cardTitle: "QUANTUM ENGINE",
@@ -267,12 +278,16 @@
                 info1D: "Quantum Football bringt einen akademischen Ansatz. Es verwendet <strong>Dynamische Rho-Koeffizienten</strong>, um Spiele in 50.000 Szenarien zu simulieren.",
                 info2T: "Wie funktioniert es?",
                 info2D: "Das System trennt Heim-/Auswärtsvektoren und gewichtet die Form mittels <strong>Exponentiellen Zerfalls</strong>. Ergebnisse werden von Gemini AI interpretiert.",
+                footer: "VERSION: v24.0.1-APEX | © 2026 QUANTUM LABS",
                 shutdown: "BEENDEN",
                 loading: "VERBINDUNG ZUM NEURALEN NETZ...",
                 access: "ZUGRIFFSKONTROLLE",
                 authBtn: "AUTHENTIFIZIEREN"
             },
             "FR": {
+                sys: "SYS :",
+                status: "EN LIGNE",
+                statusBadge: "v24.0 STABLE",
                 subtitle: "LABORATOIRE DE RECHERCHE QUANTIQUE",
                 loginBtn: "CONNEXION",
                 cardTitle: "MOTEUR QUANTIQUE",
@@ -282,12 +297,16 @@
                 info1D: "Approche académique de l'analytique sportive. Utilise des <strong>Coefficients Rho Dynamiques</strong> pour simuler des matchs dans 50 000 scénarios.",
                 info2T: "Comment ça marche ?",
                 info2D: "Le système sépare les vecteurs domicile/extérieur et pondère la forme avec une <strong>Décroissance Exponentielle</strong>. Résultats interprétés par Gemini AI.",
+                footer: "VERSION : v24.0.1-APEX | © 2026 QUANTUM LABS",
                 shutdown: "ÉTEINDRE",
                 loading: "CONNEXION AU RÉSEAU NEURONAL...",
                 access: "CONTRÔLE D'ACCÈS",
                 authBtn: "AUTHENTIFIER"
             },
             "ES": {
+                sys: "SIS:",
+                status: "EN LÍNEA",
+                statusBadge: "v24.0 ESTABLE",
                 subtitle: "LABORATORIO DE INVESTIGACIÓN CUÁNTICA",
                 loginBtn: "ACCESO",
                 cardTitle: "MOTOR CUÁNTICO",
@@ -297,12 +316,16 @@
                 info1D: "Enfoque académico. Utiliza <strong>Coeficientes Rho Dinámicos</strong> y análisis vectorial para simular partidos en 50.000 escenarios.",
                 info2T: "¿Cómo funciona?",
                 info2D: "El sistema separa el rendimiento local/visitante y pondera la forma usando <strong>Decaimiento Exponencial</strong>. Interpretado por Gemini AI.",
+                footer: "VERSIÓN: v24.0.1-APEX | © 2026 QUANTUM LABS",
                 shutdown: "APAGAR",
                 loading: "CONECTANDO A RED NEURONAL...",
                 access: "CONTROL DE ACCESO",
                 authBtn: "AUTENTICAR"
             },
             "IT": {
+                sys: "SIS:",
+                status: "ONLINE",
+                statusBadge: "v24.0 STABILE",
                 subtitle: "LABORATORIO DI RICERCA QUANTISTICA",
                 loginBtn: "ACCEDI",
                 cardTitle: "MOTORE QUANTISTICO",
@@ -312,12 +335,16 @@
                 info1D: "Approccio accademico. Utilizza <strong>Coefficienti Rho Dinamici</strong> per simulare le partite in 50.000 scenari.",
                 info2T: "Come funziona?",
                 info2D: "Il sistema separa i vettori casa/trasferta e pondera la forma usando il <strong>Decadimento Esponenziale</strong>. Interpretato da Gemini AI.",
+                footer: "VERSIONE: v24.0.1-APEX | © 2026 QUANTUM LABS",
                 shutdown: "SPEGNI",
                 loading: "CONNESSIONE ALLA RETE NEURALE...",
                 access: "CONTROLLO ACCESSO",
                 authBtn: "AUTENTICARE"
             },
             "AR": {
+                sys: "النظام:",
+                status: "متصل",
+                statusBadge: "v24.0 مستقر",
                 subtitle: "مختبر تحليلات الكم",
                 loginBtn: "دخول",
                 cardTitle: "المحرك الكمي",
@@ -327,6 +354,7 @@
                 info1D: "نهج أكاديمي للتحليل الرياضي. يستخدم <strong>معاملات رو الديناميكية</strong> لمحاكاة المباريات في 50,000 سيناريو.",
                 info2T: "كيف يعمل؟",
                 info2D: "يفصل النظام أداء الفريق داخل/خارج الأرض ويزن النموذج باستخدام <strong>الاضمحلال الأسي</strong>. يتم التفسير بواسطة Gemini AI.",
+                footer: "الإصدار: v24.0.1-APEX | © 2026 مختبرات الكم",
                 shutdown: "إيقاف",
                 loading: "جاري الاتصال بالشبكة العصبية...",
                 access: "التحكم في الوصول",
@@ -338,7 +366,10 @@
             const d = langData[lang];
             if (!d) return;
 
-            // Update Text
+            // Update Text Elements
+            document.getElementById('txt_sys').innerText = d.sys;
+            document.getElementById('txt_status').innerText = d.status;
+            document.getElementById('txt_status_badge').innerText = d.statusBadge;
             document.getElementById('txt_subtitle').innerText = d.subtitle;
             document.getElementById('txt_login_btn').innerText = d.loginBtn;
             document.getElementById('txt_card_title').innerText = d.cardTitle;
@@ -348,6 +379,7 @@
             document.getElementById('txt_info1_desc').innerHTML = d.info1D;
             document.getElementById('txt_info2_title').innerText = d.info2T;
             document.getElementById('txt_info2_desc').innerHTML = d.info2D;
+            document.getElementById('txt_footer').innerText = d.footer;
             document.getElementById('txt_shutdown').innerText = d.shutdown;
             document.getElementById('txt_loading').innerText = d.loading;
             document.getElementById('txt_access').innerText = d.access;
@@ -419,7 +451,6 @@
                 const loader = document.getElementById("loader");
                 modal.style.display = "block";
                 loader.style.display = "flex";
-                // Pass language to Streamlit if needed via URL param, currently just user_email
                 const baseUrl = "https://quantum-football.onrender.com"; 
                 frame.src = `${baseUrl}/?user_email=${encodeURIComponent(currentUser.email)}`;
             } else {
