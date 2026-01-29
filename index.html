@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>muratLola | Global Lab</title>
+    <title>QUANTUM FOOTBALL | AI Analytics Lab</title>
     
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5159712906546501"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5159712906546501" crossorigin="anonymous"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -17,164 +16,329 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 
     <style>
-        /* --- CORE STYLES --- */
-        :root { --neon: #00ff88; --dark: #0b0f19; --glass: rgba(255, 255, 255, 0.05); }
+        /* --- 1. CORE AESTHETICS --- */
+        :root {
+            --neon: #00ff88;
+            --alert: #ff4444;
+            --bg: #05070a;
+            --card-bg: #0e121b;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(0, 255, 136, 0.2);
+        }
+
         body {
-            margin: 0; font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at 50% 0%, #1a2332 0%, var(--dark) 80%);
-            color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 50% 0%, #11221c 0%, var(--bg) 60%),
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
         }
 
-        /* --- HEADER & NAV --- */
-        .nav-bar { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 99; }
-        .btn-glass {
-            background: var(--glass); border: 1px solid rgba(255,255,255,0.1); color: white;
-            padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: 0.3s;
+        /* --- 2. HEADER & NAV --- */
+        .nav-bar {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+            z-index: 100;
+            box-sizing: border-box;
+            backdrop-filter: blur(5px);
         }
-        .btn-glass:hover { border-color: var(--neon); color: var(--neon); }
 
-        header { text-align: center; margin-top: 80px; width: 90%; }
+        .btn-tech {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--border);
+            color: var(--neon);
+            padding: 10px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-tech:hover {
+            background: var(--neon);
+            color: black;
+            box-shadow: 0 0 15px rgba(0,255,136,0.4);
+        }
+
+        header {
+            text-align: center;
+            margin-top: 100px;
+            width: 90%;
+            max-width: 800px;
+            position: relative;
+        }
+
         h1 {
-            font-family: 'Orbitron'; font-size: 3.5rem; margin: 0;
-            background: linear-gradient(90deg, #fff, var(--neon)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron';
+            font-size: 4rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: linear-gradient(180deg, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255,255,255,0.1);
         }
-        .socials { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
-        .social-btn {
-            width: 40px; height: 40px; border-radius: 50%; background: var(--glass); display: flex;
-            align-items: center; justify-content: center; color: white; text-decoration: none; transition: 0.3s;
-        }
-        .social-btn:hover { background: var(--neon); color: black; box-shadow: 0 0 15px var(--neon); }
 
-        /* --- PROJECTS --- */
-        .grid { display: flex; justify-content: center; margin-top: 50px; }
+        .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon);
+            margin-top: 10px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* --- 3. MAIN CARD --- */
+        .grid {
+            display: flex;
+            justify-content: center;
+            margin-top: 60px;
+            width: 100%;
+        }
+
         .card {
-            background: rgba(20,25,40,0.6); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px; padding: 30px; width: 320px; text-align: left;
-            cursor: pointer; transition: 0.4s; backdrop-filter: blur(10px);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 40px;
+            width: 380px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
         }
-        .card:hover { transform: translateY(-10px); border-color: var(--neon); box-shadow: 0 10px 30px rgba(0,255,136,0.15); }
-        .launch-btn {
-            display: inline-block; margin-top: 20px; padding: 10px 20px;
-            border: 1px solid var(--neon); color: var(--neon); border-radius: 5px; font-weight: bold;
-        }
-        .card:hover .launch-btn { background: var(--neon); color: black; }
 
-        /* --- FULLSCREEN MODAL --- */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon), transparent);
+            animation: scan 2s infinite linear;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(0,255,136,0.1);
+            border-color: var(--neon);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-family: 'JetBrains Mono';
+            font-size: 0.6rem;
+            color: var(--neon);
+            border: 1px solid var(--neon);
+            padding: 2px 6px;
+            border-radius: 2px;
+        }
+
+        .launch-btn {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: var(--neon);
+            color: black;
+            font-family: 'Orbitron';
+            font-weight: 900;
+            border: none;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            transition: 0.3s;
+        }
+        
+        .launch-btn:hover {
+            background: white;
+            box-shadow: 0 0 20px white;
+        }
+
+        /* --- 4. INFO SECTION --- */
+        .info-section {
+            max-width: 900px;
+            margin: 80px auto;
+            border-top: 1px solid #333;
+            padding-top: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .info-col h3 {
+            font-family: 'Orbitron';
+            color: #fff;
+            border-left: 3px solid var(--neon);
+            padding-left: 10px;
+        }
+
+        .info-col p {
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* --- 5. MODAL & LOADER --- */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
+            background: black; z-index: 999;
         }
-        .modal-inner {
-            width: 100%; max-width: 1400px; height: 95%; background: #151922; border-radius: 15px;
-            border: 1px solid #333; position: relative; overflow: hidden;
-        }
-        .close-app {
-            position: absolute; top: 15px; right: 20px; background: rgba(255,0,0,0.2);
-            color: #ff5555; border: 1px solid #ff5555; padding: 5px 15px; border-radius: 5px; cursor: pointer; z-index: 1000;
-        }
-        iframe { width: 100%; height: 100%; border: none; }
         
-        /* --- LOADER --- */
-        .loader-container {
-            position: absolute; top:0; left:0; width:100%; height:100%; background: #0e1117;
-            display: flex; justify-content: center; align-items: center; z-index: 500;
+        .modal-inner {
+            width: 100%; height: 100%; position: relative;
         }
-        .spinner {
-            width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1);
-            border-top: 3px solid var(--neon); border-radius: 50%; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);} }
 
-        /* --- LOGIN BOX --- */
-        .login-box {
-            background: #0f1219; border: 1px solid var(--neon); padding: 40px; text-align: center;
-            max-width: 400px; border-radius: 15px; position: relative;
+        .close-app {
+            position: absolute; top: 20px; right: 20px;
+            background: black; color: white; border: 1px solid #333;
+            padding: 10px 20px; z-index: 1001; cursor: pointer;
+            font-family: 'JetBrains Mono';
         }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05); border: 1px solid #333; color: white; border-radius: 5px; box-sizing: border-box;}
-        button.action-btn { width: 100%; padding: 12px; background: var(--neon); border: none; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 5px;}
+        .close-app:hover { border-color: red; color: red; }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* Spinner */
+        .loader-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: #0b0f19; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        
+        .matrix-text {
+            font-family: 'JetBrains Mono'; color: var(--neon); margin-top: 20px;
+            animation: blink 1s infinite;
+        }
+
+        /* Login */
+        .login-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            z-index: 2000; display: none; justify-content: center; align-items: center;
+        }
+        .login-box {
+            background: #111; border: 1px solid #333; padding: 40px; width: 350px;
+            text-align: center; position: relative;
+        }
+        .login-box input {
+            width: 100%; padding: 12px; margin: 10px 0; background: #222;
+            border: 1px solid #444; color: white; font-family: 'Inter';
+        }
+        
+        @keyframes scan { 0% {top:0; opacity:0;} 50% {opacity:1;} 100% {top:100%; opacity:0;} }
+        @keyframes blink { 50% {opacity: 0;} }
+
     </style>
 </head>
 <body>
 
     <div class="nav-bar">
-        <button id="authBtn" class="btn-glass" onclick="openLogin()"><i class="fa-solid fa-user"></i> GİRİŞ</button>
-        <select class="btn-glass" style="background:black;" onchange="alert('Çoklu dil yakında...')">
-            <option>TR</option><option>EN</option>
-        </select>
+        <button id="authBtn" class="btn-tech" onclick="openLogin()">
+            <i class="fa-solid fa-terminal"></i> LOGIN
+        </button>
+        <div style="font-family: 'JetBrains Mono'; color:#555; font-size:0.8rem;">
+            SYS.STATUS: <span style="color:var(--neon)">OPERATIONAL</span>
+        </div>
     </div>
 
     <header>
-        <h1>muratLola</h1>
-        <p style="color:#888;">Visual Communication Designer & Developer</p>
-        <div class="socials">
-            <a href="https://github.com/muratLola" class="social-btn"><i class="fa-brands fa-github"></i></a>
-            <a href="https://twitter.com/MuratLola" class="social-btn"><i class="fa-brands fa-x-twitter"></i></a>
+        <h1>MURATLOLA</h1>
+        <div class="subtitle">QUANTUM ANALYTICS RESEARCH LAB</div>
+        
+        <div style="margin-top: 20px; display:flex; justify-content:center; gap:15px;">
+            <a href="https://github.com/muratLola" class="social-btn" style="color:#555; font-size:1.5rem;"><i class="fa-brands fa-github"></i></a>
+            <a href="https://twitter.com/MuratLola" class="social-btn" style="color:#555; font-size:1.5rem;"><i class="fa-brands fa-x-twitter"></i></a>
         </div>
     </header>
 
     <div class="grid">
         <div class="card" onclick="checkAuthAndOpen()">
-            <div style="color: var(--neon); font-size: 2rem; margin-bottom: 15px;"><i class="fa-solid fa-futbol"></i></div>
-            <h3>Quantum Football</h3>
-            <p style="color:#aaa; font-size: 0.9rem;">IBM algoritmalarıyla güçlendirilmiş v7.3 veri laboratuvarı.</p>
-            <span class="launch-btn">BAŞLAT <i class="fa-solid fa-play"></i></span>
+            <div class="status-badge">v24.0 STABLE</div>
+            
+            <i class="fa-solid fa-atom fa-3x" style="color:var(--neon); margin-bottom:20px;"></i>
+            
+            <h2 style="font-family:'Orbitron'; margin:0;">QUANTUM ENGINE</h2>
+            <p style="color:#666; font-size:0.85rem; margin:15px 0;">
+                Hybrid AI Architecture<br>
+                Poisson • Monte Carlo • Gemini LLM
+            </p>
+            
+            <button class="launch-btn">INITIALIZE</button>
         </div>
     </div>
 
+    <div class="info-section">
+        <div class="info-col">
+            <h3>Pure Science. No Gambling.</h3>
+            <p>
+                Quantum Football, spor analitiğine akademik bir yaklaşım getirir. Klasik tahminlerin aksine; 
+                <strong>Dinamik Rho Katsayıları</strong> ve <strong>Split-Vector Analizi</strong> kullanarak, 
+                maçları 50.000 farklı senaryoda simüle eder.
+            </p>
+        </div>
+        <div class="info-col">
+            <h3>How It Works?</h3>
+            <p>
+                Sistem, takımların iç saha/deplasman performanslarını ayrıştırarak (Granular Data), 
+                form durumunu <strong>Exponential Decay</strong> yöntemiyle ağırlıklandırır. 
+                Sonuçlar Google Gemini AI tarafından yorumlanır.
+            </p>
+        </div>
+    </div>
+
+    <footer style="text-align:center; padding:40px; color:#333; font-size:0.8rem;">
+        <p>BUILD: v24.0.1-APEX | © 2026 QUANTUM LABS</p>
+    </footer>
+
     <div id="appModal" class="modal">
         <div class="modal-inner">
-            <button class="close-app" onclick="closeApp()">KAPAT</button>
-            <div id="loader" class="loader-container">
-                <div style="text-align:center;">
-                    <div class="spinner"></div>
-                    <p style="margin-top:10px; font-family:'Orbitron'; color:var(--neon);">LAB BAĞLANIYOR...</p>
-                </div>
+            <button class="close-app" onclick="closeApp()"><i class="fa-solid fa-power-off"></i> SHUTDOWN</button>
+            
+            <div id="loader" class="loader-overlay">
+                <i class="fa-solid fa-circle-notch fa-spin fa-2x" style="color:var(--neon)"></i>
+                <div class="matrix-text">CONNECTING TO NEURAL NET...</div>
             </div>
+            
             <iframe id="appFrame" src="" onload="hideLoader()"></iframe>
         </div>
     </div>
 
-    <div id="loginModal" class="modal">
+    <div id="loginModal" class="login-overlay">
         <div class="login-box">
-            <button class="close-app" style="position:absolute; top:10px; right:10px; border:none;" onclick="closeLogin()">X</button>
-            <h2 style="font-family:'Orbitron'; color:var(--neon);">MEMBER ACCESS</h2>
-            <input type="email" id="email" placeholder="E-Posta">
-            <input type="password" id="password" placeholder="Şifre">
-            <button class="action-btn" onclick="loginUser()">GİRİŞ YAP</button>
-            <button class="action-btn" style="background:#fff;" onclick="loginWithGoogle()"><i class="fa-brands fa-google"></i> Google</button>
-            <p id="msg" style="color:#ff5555; font-size:0.8rem; margin-top:10px;"></p>
+            <div style="text-align:right;"><span style="cursor:pointer; color:#555;" onclick="closeLogin()">[CLOSE]</span></div>
+            <h3 style="font-family:'Orbitron'; color:var(--neon); margin-bottom:30px;">ACCESS CONTROL</h3>
+            
+            <input type="email" id="email" placeholder="USER ID (EMAIL)">
+            <input type="password" id="password" placeholder="ACCESS KEY">
+            
+            <button class="btn-tech" style="width:100%; justify-content:center; margin-top:20px;" onclick="loginUser()">AUTHENTICATE</button>
+            <button class="btn-tech" style="width:100%; justify-content:center; margin-top:10px; background:white; color:black; border:none;" onclick="loginWithGoogle()">
+                <i class="fa-brands fa-google"></i> GOOGLE AUTH
+            </button>
+            
+            <p id="msg" style="color:#ff4444; font-size:0.8rem; margin-top:15px; font-family:'JetBrains Mono';"></p>
         </div>
     </div>
 
-    <div style="max-width: 800px; margin: 50px auto; color: #ccc; font-size: 0.9rem; line-height: 1.6; padding: 20px; border-top: 1px solid #333;">
-        <h2 style="color: var(--neon); font-family: 'Orbitron'; font-size: 1.5rem;">Quantum Football Teknolojisi</h2>
-        <p>
-            Quantum Football, standart tahmin araçlarından farklı olarak, duygusal faktörleri dışarıda bırakan 
-            saf bir matematiksel analiz laboratuvarıdır. Python tabanlı algoritmamız, <strong>Poisson Dağılımı</strong> 
-            ve <strong>Dixon-Coles</strong> modellerini kullanarak takımların hücum ve savunma güçlerini hesaplar.
-        </p>
-        
-        <h3 style="color: #fff; margin-top: 20px;">Nasıl Çalışır?</h3>
-        <p>
-            Quantum Football, klasik istatistiklerin ötesine geçer. Yapay zeka motorumuz, seçtiğiniz maçı sanal ortamda 
-            <strong>tam 500.000 kez</strong> oynatır. Bu yarım milyon senaryoda; hava durumu, kadro kalitesi, 
-            oyuncu eksikleri ve takım DNA'sı saniye saniye işlenir. Sonuç olarak size şansı değil, 
-            matematiksel olarak en güçlü ihtimalleri (Örn: %74 Güvenle 2.5 Üst) sunar.
-        </p>
-
-        <h3 style="color: #fff; margin-top: 20px;">Yasal Uyarı & Gizlilik</h3>
-        <p>
-            Bu web sitesinde sunulan veriler tamamen istatistiksel amaçlıdır. Hiçbir içerik finansal yatırım tavsiyesi 
-            veya kesin bahis önerisi niteliği taşımaz. Verileriniz (e-posta) sadece sistemi kişiselleştirmek için kullanılır 
-            ve 3. şahıslarla paylaşılmaz.
-        </p>
-    </div>
-
-    <footer>
-        <p style="color:#555; font-size:0.8rem; margin-top:20px;">© 2025 muratLola | Quantum Engine</p>
-    </footer>
-
     <script>
+        // --- SENİN BİLGİLERİNLE GÜNCELLENMİŞ FIREBASE AYARLARI ---
         const firebaseConfig = {
             apiKey: "AIzaSyAVCbrPO5e9oZBbZKjbApo6av1M13_OT9k",
             authDomain: "muratlola-web.firebaseapp.com",
@@ -184,27 +348,32 @@
             appId: "1:742719225290:web:48207035df11d40f35e333",
             measurementId: "G-7HE6027N6X"
         };
+
         firebase.initializeApp(firebaseConfig);
-        const analytics = firebase.analytics();
         const auth = firebase.auth();
         let currentUser = null;
 
+        // Auth Listener
         auth.onAuthStateChanged(user => {
+            const btn = document.getElementById('authBtn');
             if(user) {
                 currentUser = user;
-                document.getElementById('authBtn').innerHTML = `<i class="fa-solid fa-check"></i> ${user.email.split('@')[0]}`;
+                btn.innerHTML = `<i class="fa-solid fa-user-astronaut"></i> ${user.email.split('@')[0].toUpperCase()}`;
+                btn.style.borderColor = "var(--neon)";
                 closeLogin();
             } else {
                 currentUser = null;
-                document.getElementById('authBtn').innerHTML = `<i class="fa-solid fa-user"></i> GİRİŞ`;
+                btn.innerHTML = `<i class="fa-solid fa-terminal"></i> LOGIN`;
+                btn.style.borderColor = "var(--border)";
             }
         });
 
-        function loginWithGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => document.getElementById('msg').innerText = e.message); }
+        // Functions
+        function loginWithGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => document.getElementById('msg').innerText = "ERR: " + e.message); }
         function loginUser() {
             const e = document.getElementById('email').value;
             const p = document.getElementById('password').value;
-            auth.signInWithEmailAndPassword(e, p).catch(err => document.getElementById('msg').innerText = err.message);
+            auth.signInWithEmailAndPassword(e, p).catch(err => document.getElementById('msg').innerText = "ACCESS DENIED");
         }
 
         function checkAuthAndOpen() {
@@ -212,8 +381,11 @@
                 const modal = document.getElementById("appModal");
                 const frame = document.getElementById("appFrame");
                 const loader = document.getElementById("loader");
-                modal.style.display = "flex";
+                
+                modal.style.display = "block";
                 loader.style.display = "flex";
+                
+                // Streamlit URL
                 const baseUrl = "https://quantum-football.onrender.com"; 
                 frame.src = `${baseUrl}/?user_email=${encodeURIComponent(currentUser.email)}`;
             } else {
