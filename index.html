@@ -1,492 +1,348 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUANTUM FOOTBALL | AI Analytics Lab</title>
+import streamlit as st
+import pandas as pd
+import numpy as np
+import requests
+import time
+import os
+import gc
+import json
+import math
+import altair as alt
+from datetime import datetime, timedelta
+
+# ==========================================
+# 1. AYARLAR
+# ==========================================
+st.set_page_config(
+    page_title="QUANTUM FOOTBALL",
+    page_icon="⚡",
+    layout="wide",
+    initial_sidebar_state="collapsed" # Sidebar kapalı başlasın
+)
+
+# --- SİTE PARAMETRELERİ ---
+query_params = st.query_params
+IS_EMBEDDED = query_params.get("embed", "false").lower() == "true"
+USER_EMAIL = query_params.get("user_email", "Guest")
+
+ADMIN_PASS = "admin" 
+DB_FILE = "elo_v58.json"
+
+try:
+    TOKEN = st.secrets["SPORTMONKS_TOKEN"]
+except:
+    TOKEN = os.getenv("SPORTMONKS_TOKEN")
+
+# ==========================================
+# 2. CSS (VİTRİN VE DASHBOARD İÇİN)
+# ==========================================
+def load_css():
+    st.markdown("""
+        <style>
+        .stApp { background-color: #050505; font-family: 'Inter', sans-serif; }
+        [data-testid="stSidebar"] { background-color: #000000; border-right: 1px solid #222; }
+        
+        /* GİZLEME */
+        header[data-testid="stHeader"] { visibility: hidden; }
+        footer { visibility: hidden; }
+        #MainMenu { visibility: hidden; }
+        
+        /* VİTRİN MODU STİLLERİ */
+        .cover-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 80vh; text-align: center;
+        }
+        .cover-title {
+            font-size: 4rem; font-weight: 900; color: #fff; letter-spacing: 5px;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.3); margin-bottom: 10px;
+        }
+        .cover-subtitle {
+            font-size: 1.2rem; color: #00ff88; font-family: monospace; letter-spacing: 2px;
+            margin-bottom: 40px; text-transform: uppercase;
+        }
+        .pulse-circle {
+            width: 100px; height: 100px; background: #00ff88; border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7);
+            animation: pulse 2s infinite; margin-bottom: 30px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(0, 255, 136, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+        }
+        
+        /* DASHBOARD KARTLARI */
+        .match-card {
+            background: rgba(20, 20, 25, 0.7); backdrop-filter: blur(10px);
+            border: 1px solid #333; border-radius: 12px; padding: 15px; margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        .match-card:hover { border-color: #00ff88; transform: translateY(-3px); }
+        .elo-badge { background: #111; color: #00ff88; padding: 2px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #333; }
+        .stButton button { background: linear-gradient(90deg, #111, #222); color: #eee; border: 1px solid #444; border-radius: 6px; }
+        .stButton button:hover { border-color: #00ff88; color: #00ff88; }
+        </style>
+    """, unsafe_allow_html=True)
+
+load_css()
+
+# ==========================================
+# 3. BACKEND (GİZLİ MOTOR)
+# ==========================================
+# Burası değişmedi, sadece admin görünce çalışacak
+session = requests.Session()
+def make_request(endpoint, params=None):
+    if not TOKEN: return None
+    if params is None: params = {}
+    params['api_token'] = TOKEN
+    params['tz'] = 'Europe/Istanbul'
+    if 'include' in params and isinstance(params['include'], list): params['include'] = ';'.join(params['include'])
+    try:
+        r = session.get(f"https://api.sportmonks.com/v3/football{endpoint}", params=params, timeout=20)
+        return r.json() if r.status_code == 200 else None
+    except: return None
+
+@st.cache_data(ttl=900)
+def get_upcoming_fixtures():
+    s = datetime.now().strftime("%Y-%m-%d"); e = (datetime.now() + timedelta(days=4)).strftime("%Y-%m-%d")
+    d = make_request(f"/fixtures/between/{s}/{e}", {"include": ["participants", "league.country", "state", "odds.market"], "per_page": 50})
+    return d.get('data', []) if d else []
+
+@st.cache_data(ttl=600)
+def get_fixture_detail(fid):
+    inc = ["participants", "league", "scores", "statistics.type", "xGFixture.type", "pressure.participant", "trends.type", "events.type", "lineups.player", "weatherReport", "referee"]
+    d = make_request(f"/fixtures/{fid}", {"include": inc})
+    return d.get('data', {}) if d else {}
+
+@st.cache_data(ttl=900)
+def get_past_fixtures():
+    e = datetime.now().strftime("%Y-%m-%d"); s = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
+    d = make_request(f"/fixtures/between/{s}/{e}", {"include": ["participants", "league.country", "scores", "state"], "per_page": 50})
+    return d.get('data', []) if d else []
+
+class TeamStats:
+    __slots__ = ['name', 'logo', 'league', 'rating', 'form', 'matches', 'att', 'def_r']
+    def __init__(self, name="Team", logo="", league="-", rating=1500.0, form=None, matches=0, att=1.0, def_r=1.0):
+        self.name = name; self.logo = logo; self.league = league
+        self.rating = float(rating); self.form = form if form else []; self.matches = matches
+        self.att = att; self.def_r = def_r
+    def to_dict(self): return {'name': self.name, 'logo': self.logo, 'league': self.league, 'rating': self.rating, 'form': self.form, 'matches': self.matches, 'att': self.att, 'def': self.def_r}
+
+def get_db(safe_mode=True):
+    default = (datetime.now() - timedelta(days=365)).strftime('%Y-%m-%d')
+    if not os.path.exists(DB_FILE): return {}, default
+    try:
+        with open(DB_FILE, 'r') as f: data = json.load(f)
+        return {int(k): TeamStats(**v) for k, v in data['teams'].items()}, data.get('last_processed', default)
+    except: return {}, default
+
+def save_db(db, date_str):
+    try:
+        with open(DB_FILE, 'w') as f: json.dump({'last_processed': date_str, 'teams': {k: v.to_dict() for k, v in db.items()}}, f)
+    except: pass
+
+def run_safe_update(days_chunk=30):
+    db, l_date = get_db(False)
+    try: last = datetime.strptime(l_date, '%Y-%m-%d')
+    except: last = datetime.now() - timedelta(days=365)
+    if last > datetime.now(): last = datetime.now() - timedelta(days=365)
     
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5159712906546501" crossorigin="anonymous"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
-
-    <style>
-        :root {
-            --neon: #00ff88;
-            --bg: #05070a;
-            --card-bg: #0e121b;
-            --border: rgba(0, 255, 136, 0.2);
-        }
-
-        body {
-            margin: 0; font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            background-image: radial-gradient(circle at 50% 0%, #11221c 0%, var(--bg) 60%),
-                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
-            color: #e0e0e0; min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-            overflow-x: hidden;
-        }
-
-        /* ARABIC SUPPORT */
-        body.rtl { direction: rtl; font-family: 'Tajawal', sans-serif; }
-        body.rtl h1, body.rtl h2, body.rtl h3, body.rtl .btn-tech, body.rtl .launch-btn { font-family: 'Tajawal', sans-serif; font-weight: 700; }
-
-        /* NAV */
-        .nav-bar {
-            position: fixed; top: 0; left: 0; width: 100%; padding: 20px 40px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; backdrop-filter: blur(5px); box-sizing: border-box;
-        }
-
-        .nav-right { display: flex; gap: 15px; align-items: center; }
-
-        .lang-select {
-            background: rgba(0,0,0,0.6); border: 1px solid var(--border); color: var(--neon);
-            padding: 8px 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
-            cursor: pointer; border-radius: 4px; outline: none; text-transform: uppercase;
-        }
-        .lang-select option { background: #000; color: #fff; }
-
-        .btn-tech {
-            background: rgba(0,0,0,0.6); border: 1px solid var(--border); color: var(--neon);
-            padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
-            cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px;
-        }
-        .btn-tech:hover { background: var(--neon); color: black; box-shadow: 0 0 15px rgba(0,255,136,0.4); }
-
-        /* HEADER */
-        header { text-align: center; margin-top: 100px; width: 90%; max-width: 800px; }
-        h1 {
-            font-family: 'Orbitron'; font-size: 4rem; margin: 0; letter-spacing: 4px;
-            background: linear-gradient(180deg, #fff, #888); -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(255,255,255,0.1);
-        }
-        .subtitle { font-family: 'JetBrains Mono'; color: var(--neon); margin-top: 10px; font-size: 0.9rem; opacity: 0.8; }
-
-        /* CARD */
-        .grid { display: flex; justify-content: center; margin-top: 60px; width: 100%; }
-        .card {
-            background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px;
-            padding: 40px; width: 380px; text-align: center; cursor: pointer;
-            transition: 0.4s; position: relative; overflow: hidden;
-        }
-        .card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--neon), transparent);
-            animation: scan 2s infinite linear;
-        }
-        .card:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(0,255,136,0.1); border-color: var(--neon); }
+    target = last + timedelta(days=days_chunk)
+    if target > datetime.now(): target = datetime.now()
+    
+    s_str = last.strftime('%Y-%m-%d'); e_str = target.strftime('%Y-%m-%d')
+    page = 1; processed = 0
+    IGNORED = ["champions", "europa", "conference", "cup", "kupa", "friendly", "world", "euro"]
+    
+    while page <= 20:
+        r = make_request(f"/fixtures/between/{s_str}/{e_str}", {"include": ["participants", "league", "scores"], "per_page": 50, "page": page})
+        if not r or not r.get('data'): break
+        matches = r['data']; matches.sort(key=lambda x: x.get('starting_at', ''))
         
-        .launch-btn {
-            display: inline-block; margin-top: 30px; padding: 15px 40px;
-            background: var(--neon); color: black; font-family: 'Orbitron'; font-weight: 900;
-            border: none; clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-            transition: 0.3s;
-        }
-        .launch-btn:hover { background: white; box-shadow: 0 0 20px white; }
+        for m in matches:
+            try:
+                if m.get('state', {}).get('short_name') not in ['FT','AET','PEN']: continue
+                h = next(p for p in m['participants'] if p['meta']['location']=='home')
+                a = next(p for p in m['participants'] if p['meta']['location']=='away')
+                sc = m.get('scores', [])
+                sh = next((s['score']['goals'] for s in sc if s['description'] in ['FT','AET'] and s['score']['participant']=='home'), None)
+                sa = next((s['score']['goals'] for s in sc if s['description'] in ['FT','AET'] and s['score']['participant']=='away'), None)
+                if sh is None: continue
+                
+                hid, aid = h['id'], a['id']
+                lname = m.get('league', {}).get('name', 'Genel')
+                cname = m.get('league', {}).get('country', {}).get('name') if m.get('league', {}).get('country') else ""
+                fl = f"{lname} ({cname})" if cname else lname
+                cup = any(x in lname.lower() for x in IGNORED)
+                
+                if hid not in db: db[hid] = TeamStats(h['name'], h['image_path'], fl)
+                if aid not in db: db[aid] = TeamStats(a['name'], a['image_path'], fl)
+                if not cup: db[hid].league = fl; db[aid].league = fl
+                elif db[hid].league=="-": db[hid].league=fl
+                elif db[aid].league=="-": db[aid].league=fl
+                
+                rh, ra = db[hid].rating, db[aid].rating
+                K = 50 if any(x in str(fl).lower() for x in ["premier", "liga", "bundesliga", "serie", "süper"]) else 40
+                diff = abs(sh-sa); gm = math.log(diff+2) if diff>1 else 1.0
+                ach = 1.0 if sh>sa else 0.5 if sh==sa else 0.0
+                exh = 1/(1+10**((ra-(rh+50))/400))
+                chg = K*gm*(ach-exh)
+                
+                db[hid].rating += chg; db[aid].rating -= chg
+                res = 1.0 if sh>sa else 0.0 if sh<sa else 0.5
+                db[hid].form.append(res); db[aid].form.append(1.0-res)
+                if len(db[hid].form)>5: db[hid].form=db[hid].form[-5:]
+                if len(db[aid].form)>5: db[aid].form=db[aid].form[-5:]
+                
+                alpha = 0.1
+                db[hid].att = db[hid].att*(1-alpha) + (sh/1.35*alpha)
+                db[hid].def_r = db[hid].def_r*(1-alpha) + (sa/1.35*alpha)
+                db[aid].att = db[aid].att*(1-alpha) + (sa/1.35*alpha)
+                db[aid].def_r = db[aid].def_r*(1-alpha) + (sh/1.35*alpha)
+                processed += 1
+            except: continue
+        if not r.get('pagination', {}).get('has_more', False): break
+        page += 1; gc.collect()
+    save_db(db, e_str)
+    return e_str
 
-        /* INFO */
-        .info-section {
-            max-width: 900px; margin: 80px auto; border-top: 1px solid #333; padding-top: 40px;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
-        }
-        .info-col h3 { font-family: 'Orbitron'; color: #fff; border-left: 3px solid var(--neon); padding-left: 10px; }
-        body.rtl .info-col h3 { border-left: none; border-right: 3px solid var(--neon); padding-left: 0; padding-right: 10px; }
-        .info-col p { color: #888; font-size: 0.9rem; line-height: 1.6; }
+def run_simulation(rh, ra, h_xg=0, a_xg=0):
+    prob = 1/(1+10**((ra-(rh+50))/400))
+    if h_xg==0: h_xg = 1.45*(1+(prob-0.5))
+    if a_xg==0: a_xg = 1.20*(1-(prob-0.5))
+    h_s = np.random.poisson(h_xg, 2000); a_s = np.random.poisson(a_xg, 2000)
+    wh = np.sum(h_s > a_s)/2000; wa = np.sum(a_s > h_s)/2000; wd = 1.0-wh-wa
+    import collections
+    sc = [f"{h}-{a}" for h,a in zip(h_s,a_s)]
+    sco = collections.Counter(sc).most_common(1)[0][0]
+    return {"h": wh, "d": wd, "a": wa, "score": sco}
 
-        /* --- MODAL FIX & IFRAME FULLSCREEN --- */
-        .modal {
-            display: none; 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; z-index: 9999;
-        }
+# ==========================================
+# 8. ANA UI (VİTRİN vs DASHBOARD)
+# ==========================================
+def main():
+    if 'page' not in st.session_state: st.session_state.page = 'Dashboard'
+    if 'auth' not in st.session_state: st.session_state.auth = False # Giriş durumu
+    
+    # --- YAN MENÜ (LOGIN) ---
+    with st.sidebar:
+        st.title("QUANTUM FOOTBALL")
         
-        .modal-inner {
-            width: 100vw; /* Viewport Width */
-            height: 100vh; /* Viewport Height */
-            position: relative;
-            overflow: hidden;
-        }
+        if not st.session_state.auth:
+            st.info("Yönetici Girişi")
+            pwd = st.text_input("Şifre", type="password")
+            if st.button("Giriş Yap"):
+                if pwd == ADMIN_PASS:
+                    st.session_state.auth = True
+                    st.rerun()
+                else:
+                    st.error("Hatalı Şifre")
+        else:
+            st.success("Admin Modu Aktif")
+            menu = st.radio("MENÜ", ["📅 Fikstür", "⏮️ Geçmiş", "🏆 Sıralama", "⚙️ Admin"])
+            if st.button("Çıkış Yap"):
+                st.session_state.auth = False
+                st.rerun()
 
-        /* IFRAME ZORLA TAM EKRAN */
-        iframe { 
-            position: absolute; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            border: none; 
-            z-index: 1;
-        }
-
-        .close-app {
-            position: absolute; top: 20px; right: 20px; background: black; color: white;
-            border: 1px solid #333; padding: 10px 20px; z-index: 10000; cursor: pointer; font-family: 'JetBrains Mono';
-        }
-        .close-app:hover { border-color: red; color: red; }
-        body.rtl .close-app { right: auto; left: 20px; }
-        
-        .loader-overlay {
-            position: absolute; top:0; left:0; width:100%; height:100%; background: #0b0f19;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 5000;
-        }
-        .matrix-text { font-family: 'JetBrains Mono'; color: var(--neon); margin-top: 20px; animation: blink 1s infinite; }
-        
-        /* LOGIN */
-        .login-overlay {
-            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 2000;
-            justify-content: center; align-items: center;
-        }
-        .login-box { background: #111; border: 1px solid #333; padding: 40px; width: 350px; text-align: center; }
-        .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #444; color: white; }
-
-        @keyframes scan { 0% {top:0; opacity:0;} 50% {opacity:1;} 100% {top:100%; opacity:0;} }
-        @keyframes blink { 50% {opacity: 0;} }
-        
-        @media (max-width: 768px) {
-            .info-section { grid-template-columns: 1fr; padding: 20px; }
-            h1 { font-size: 2.5rem; }
-            .nav-bar { padding: 15px; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="nav-bar">
-        <div style="font-family:'JetBrains Mono'; font-size:0.8rem; color:#555;">
-            <span id="txt_sys">SYS:</span> <span style="color:var(--neon)" id="txt_status">ONLINE</span>
-        </div>
-        <div class="nav-right">
-            <select id="langSelector" class="lang-select" onchange="setLanguage(this.value)">
-                <option value="EN">EN - English</option>
-                <option value="TR">TR - Türkçe</option>
-                <option value="DE">DE - Deutsch</option>
-                <option value="FR">FR - Français</option>
-                <option value="ES">ES - Español</option>
-                <option value="IT">IT - Italiano</option>
-                <option value="AR">AR - العربية</option>
-            </select>
-            <button id="authBtn" class="btn-tech" onclick="openLogin()">
-                <i class="fa-solid fa-terminal"></i> <span id="txt_login_btn">LOGIN</span>
-            </button>
-        </div>
-    </div>
-
-    <header>
-        <h1>MURATLOLA</h1>
-        <div class="subtitle" id="txt_subtitle">QUANTUM ANALYTICS RESEARCH LAB</div>
-        <div style="margin-top: 20px; display:flex; justify-content:center; gap:15px;">
-            <a href="https://github.com/muratLola" style="color:#555; font-size:1.5rem;"><i class="fa-brands fa-github"></i></a>
-            <a href="https://twitter.com/MuratLola" style="color:#555; font-size:1.5rem;"><i class="fa-brands fa-x-twitter"></i></a>
-        </div>
-    </header>
-
-    <div class="grid">
-        <div class="card" onclick="checkAuthAndOpen()">
-            <div class="status-badge" id="txt_status_badge" style="position:absolute; top:15px; right:15px; border:1px solid var(--neon); color:var(--neon); padding:2px 6px; font-size:0.6rem; font-family:'JetBrains Mono';">v24.0 STABLE</div>
-            <i class="fa-solid fa-atom fa-3x" style="color:var(--neon); margin-bottom:20px;"></i>
-            <h2 style="font-family:'Orbitron'; margin:0;" id="txt_card_title">QUANTUM ENGINE</h2>
-            <p style="color:#666; font-size:0.85rem; margin:15px 0;" id="txt_card_desc">
-                Hybrid AI Architecture<br>Poisson • Monte Carlo • Gemini LLM
-            </p>
-            <button class="launch-btn" id="txt_launch">INITIALIZE</button>
-        </div>
-    </div>
-
-    <div class="info-section">
-        <div class="info-col">
-            <h3 id="txt_info1_title">Pure Science. No Gambling.</h3>
-            <p id="txt_info1_desc">
-                Quantum Football brings an academic approach to sports analytics. Unlike classic predictions, 
-                it uses <strong>Dynamic Rho Coefficients</strong> and <strong>Split-Vector Analysis</strong> 
-                to simulate matches in 50,000 scenarios.
-            </p>
-        </div>
-        <div class="info-col">
-            <h3 id="txt_info2_title">How It Works?</h3>
-            <p id="txt_info2_desc">
-                The system separates home/away performance vectors (Granular Data) and weights form using 
-                <strong>Exponential Decay</strong>. Results are interpreted by Google Gemini AI.
-            </p>
-        </div>
-    </div>
-
-    <footer style="text-align:center; padding:40px; color:#333; font-size:0.8rem;">
-        <p id="txt_footer">BUILD: v24.0.1-APEX | © 2026 QUANTUM LABS</p>
-    </footer>
-
-    <div id="appModal" class="modal">
-        <div class="modal-inner">
-            <button class="close-app" onclick="closeApp()"><i class="fa-solid fa-power-off"></i> <span id="txt_shutdown">SHUTDOWN</span></button>
-            <div id="loader" class="loader-overlay">
-                <i class="fa-solid fa-circle-notch fa-spin fa-2x" style="color:var(--neon)"></i>
-                <div class="matrix-text" id="txt_loading">CONNECTING TO NEURAL NET...</div>
+    # --- DURUM 1: VİTRİN (HERKESİN GÖRDÜĞÜ) ---
+    if not st.session_state.auth:
+        st.markdown("""
+            <div class="cover-container">
+                <div class="pulse-circle"></div>
+                <div class="cover-title">QUANTUM FOOTBALL</div>
+                <div class="cover-subtitle">AI POWERED ANALYTICS SYSTEM</div>
+                <div style="color:#888; font-size:0.9rem; margin-top:20px;">
+                    <i class="fa-solid fa-server"></i> System Status: 
+                    <span style="color:#00ff88; font-weight:bold;">OPERATIONAL</span>
+                </div>
+                <div style="margin-top:40px; padding:20px; background:rgba(20,20,20,0.5); border:1px solid #333; border-radius:10px; max-width:600px;">
+                    <p style="color:#ccc; font-size:0.85rem;">
+                        Global veri tabanı senkronizasyonu devam ediyor. 
+                        Yapay zeka modelleri güncel maç verilerini işliyor.
+                        <br><br>
+                        <span style="color:#00ff88;">v58.0 UPDATE IN PROGRESS...</span>
+                    </p>
+                </div>
             </div>
-            <iframe id="appFrame" src="" onload="hideLoader()"></iframe>
-        </div>
-    </div>
+        """, unsafe_allow_html=True)
+        return # Kodun geri kalanını çalıştırma
 
-    <div id="loginModal" class="login-overlay">
-        <div class="login-box">
-            <div style="text-align:right;"><span style="cursor:pointer; color:#555;" onclick="closeLogin()">[X]</span></div>
-            <h3 style="font-family:'Orbitron'; color:var(--neon); margin-bottom:30px;" id="txt_access">ACCESS CONTROL</h3>
-            <input type="email" id="email" placeholder="USER ID (EMAIL)">
-            <input type="password" id="password" placeholder="ACCESS KEY">
-            <button class="btn-tech" style="width:100%; justify-content:center; margin-top:20px;" onclick="loginUser()" id="txt_auth_btn">AUTHENTICATE</button>
-            <button class="btn-tech" style="width:100%; justify-content:center; margin-top:10px; background:white; color:black; border:none;" onclick="loginWithGoogle()">
-                <i class="fa-brands fa-google"></i> GOOGLE AUTH
-            </button>
-            <p id="msg" style="color:#ff4444; font-size:0.8rem; margin-top:15px; font-family:'JetBrains Mono';"></p>
-        </div>
-    </div>
+    # --- DURUM 2: DASHBOARD (SADECE ADMIN GÖRÜR) ---
+    
+    db, last_date = get_db(safe_mode=True)
+    
+    if menu == "📅 Fikstür":
+        st.subheader("Gelecek Maçlar")
+        matches = get_upcoming_fixtures()
+        if matches:
+            leagues = sorted(list(set([m.get('league',{}).get('name','Diğer') for m in matches if m.get('league')])))
+            sel_league = st.selectbox("Lig:", ["Tümü"] + leagues)
+            filtered = [m for m in matches if sel_league == "Tümü" or m.get('league',{}).get('name') == sel_league]
+            
+            for m in filtered:
+                if m.get('state', {}).get('short_name') != 'NS': continue
+                try:
+                    h = next(p for p in m['participants'] if p['meta']['location']=='home')
+                    a = next(p for p in m['participants'] if p['meta']['location']=='away')
+                    rh = int(db.get(h['id'], TeamStats()).rating) if db else 1500
+                    ra = int(db.get(a['id'], TeamStats()).rating) if db else 1500
+                    st.markdown(f"""<div class="match-card"><div style="font-size:10px;color:#888">{m.get('league',{}).get('name')}</div><div style="display:flex;justify-content:space-between;margin-top:5px"><div><b>{h['name']}</b> <span class="elo-badge">{rh}</span></div><div style="color:#00ff88">VS</div><div style="text-align:right"><b>{a['name']}</b> <span class="elo-badge">{ra}</span></div></div></div>""", unsafe_allow_html=True)
+                    if st.button(f"ANALİZ #{m['id']}", key=m['id']):
+                        st.session_state.tm = m; st.session_state.rh=rh; st.session_state.ra=ra; st.session_state.page = 'Analiz_View'; st.rerun()
+                except: continue
+        else: st.info("Maç Yok")
 
-    <script>
-        // --- TRANSLATIONS DATABASE ---
-        const langData = {
-            "EN": {
-                sys: "SYS:",
-                status: "ONLINE",
-                statusBadge: "v24.0 STABLE",
-                subtitle: "QUANTUM ANALYTICS RESEARCH LAB",
-                loginBtn: "LOGIN",
-                cardTitle: "QUANTUM ENGINE",
-                cardDesc: "Hybrid AI Architecture<br>Poisson • Monte Carlo • Gemini LLM",
-                launch: "INITIALIZE",
-                info1T: "Pure Science. No Gambling.",
-                info1D: "Quantum Football brings an academic approach to sports analytics. Unlike classic predictions, it uses <strong>Dynamic Rho Coefficients</strong> and <strong>Split-Vector Analysis</strong> to simulate matches in 50,000 scenarios.",
-                info2T: "How It Works?",
-                info2D: "The system separates home/away performance vectors (Granular Data) and weights form using <strong>Exponential Decay</strong>. Results are interpreted by Google Gemini AI.",
-                footer: "BUILD: v24.0.1-APEX | © 2026 QUANTUM LABS",
-                shutdown: "SHUTDOWN",
-                loading: "CONNECTING TO NEURAL NET...",
-                access: "ACCESS CONTROL",
-                authBtn: "AUTHENTICATE"
-            },
-            "TR": {
-                sys: "SİSTEM:",
-                status: "ÇEVRİMİÇİ",
-                statusBadge: "v24.0 KARARLI",
-                subtitle: "KUANTUM ANALİTİK ARAŞTIRMA LAB",
-                loginBtn: "GİRİŞ",
-                cardTitle: "KUANTUM MOTORU",
-                cardDesc: "Hibrit YZ Mimarisi<br>Poisson • Monte Carlo • Gemini LLM",
-                launch: "BAŞLAT",
-                info1T: "Saf Bilim. Kumar Yok.",
-                info1D: "Quantum Football, spor analitiğine akademik yaklaşır. Klasik tahminlerin aksine, maçları 50.000 senaryoda simüle etmek için <strong>Dinamik Rho Katsayıları</strong> ve <strong>Vektör Analizi</strong> kullanır.",
-                info2T: "Nasıl Çalışır?",
-                info2D: "Sistem, iç/dış saha performansını ayrıştırır (Granüler Veri) ve formu <strong>Üstel Azalma</strong> ile ağırlıklandırır. Sonuçlar Google Gemini YZ tarafından yorumlanır.",
-                footer: "SÜRÜM: v24.0.1-APEX | © 2026 QUANTUM LABS",
-                shutdown: "KAPAT",
-                loading: "SİNİR AĞINA BAĞLANIYOR...",
-                access: "ERİŞİM KONTROLÜ",
-                authBtn: "DOĞRULA"
-            },
-            "DE": {
-                sys: "SYS:",
-                status: "ONLINE",
-                statusBadge: "v24.0 STABIL",
-                subtitle: "QUANTUM ANALYTICS FORSCHUNGSLABOR",
-                loginBtn: "ANMELDEN",
-                cardTitle: "QUANTUM ENGINE",
-                cardDesc: "Hybride KI-Architektur<br>Poisson • Monte Carlo • Gemini LLM",
-                launch: "STARTEN",
-                info1T: "Reine Wissenschaft. Kein Glücksspiel.",
-                info1D: "Quantum Football bringt einen akademischen Ansatz. Es verwendet <strong>Dynamische Rho-Koeffizienten</strong>, um Spiele in 50.000 Szenarien zu simulieren.",
-                info2T: "Wie funktioniert es?",
-                info2D: "Das System trennt Heim-/Auswärtsvektoren und gewichtet die Form mittels <strong>Exponentiellen Zerfalls</strong>. Ergebnisse werden von Gemini AI interpretiert.",
-                footer: "VERSION: v24.0.1-APEX | © 2026 QUANTUM LABS",
-                shutdown: "BEENDEN",
-                loading: "VERBINDUNG ZUM NEURALEN NETZ...",
-                access: "ZUGRIFFSKONTROLLE",
-                authBtn: "AUTHENTIFIZIEREN"
-            },
-            "FR": {
-                sys: "SYS :",
-                status: "EN LIGNE",
-                statusBadge: "v24.0 STABLE",
-                subtitle: "LABORATOIRE DE RECHERCHE QUANTIQUE",
-                loginBtn: "CONNEXION",
-                cardTitle: "MOTEUR QUANTIQUE",
-                cardDesc: "Architecture IA Hybride<br>Poisson • Monte Carlo • Gemini LLM",
-                launch: "INITIALISER",
-                info1T: "Science pure. Pas de jeu.",
-                info1D: "Approche académique de l'analytique sportive. Utilise des <strong>Coefficients Rho Dynamiques</strong> pour simuler des matchs dans 50 000 scénarios.",
-                info2T: "Comment ça marche ?",
-                info2D: "Le système sépare les vecteurs domicile/extérieur et pondère la forme avec une <strong>Décroissance Exponentielle</strong>. Résultats interprétés par Gemini AI.",
-                footer: "VERSION : v24.0.1-APEX | © 2026 QUANTUM LABS",
-                shutdown: "ÉTEINDRE",
-                loading: "CONNEXION AU RÉSEAU NEURONAL...",
-                access: "CONTRÔLE D'ACCÈS",
-                authBtn: "AUTHENTIFIER"
-            },
-            "ES": {
-                sys: "SIS:",
-                status: "EN LÍNEA",
-                statusBadge: "v24.0 ESTABLE",
-                subtitle: "LABORATORIO DE INVESTIGACIÓN CUÁNTICA",
-                loginBtn: "ACCESO",
-                cardTitle: "MOTOR CUÁNTICO",
-                cardDesc: "Arquitectura IA Híbrida<br>Poisson • Monte Carlo • Gemini LLM",
-                launch: "INICIAR",
-                info1T: "Ciencia Pura. Sin Apuestas.",
-                info1D: "Enfoque académico. Utiliza <strong>Coeficientes Rho Dinámicos</strong> y análisis vectorial para simular partidos en 50.000 escenarios.",
-                info2T: "¿Cómo funciona?",
-                info2D: "El sistema separa el rendimiento local/visitante y pondera la forma usando <strong>Decaimiento Exponencial</strong>. Interpretado por Gemini AI.",
-                footer: "VERSIÓN: v24.0.1-APEX | © 2026 QUANTUM LABS",
-                shutdown: "APAGAR",
-                loading: "CONECTANDO A RED NEURONAL...",
-                access: "CONTROL DE ACCESO",
-                authBtn: "AUTENTICAR"
-            },
-            "IT": {
-                sys: "SIS:",
-                status: "ONLINE",
-                statusBadge: "v24.0 STABILE",
-                subtitle: "LABORATORIO DI RICERCA QUANTISTICA",
-                loginBtn: "ACCEDI",
-                cardTitle: "MOTORE QUANTISTICO",
-                cardDesc: "Architettura AI Ibrida<br>Poisson • Monte Carlo • Gemini LLM",
-                launch: "AVVIARE",
-                info1T: "Scienza Pura. Niente Gioco d'Azzardo.",
-                info1D: "Approccio accademico. Utilizza <strong>Coefficienti Rho Dinamici</strong> per simulare le partite in 50.000 scenari.",
-                info2T: "Come funziona?",
-                info2D: "Il sistema separa i vettori casa/trasferta e pondera la forma usando il <strong>Decadimento Esponenziale</strong>. Interpretato da Gemini AI.",
-                footer: "VERSIONE: v24.0.1-APEX | © 2026 QUANTUM LABS",
-                shutdown: "SPEGNI",
-                loading: "CONNESSIONE ALLA RETE NEURALE...",
-                access: "CONTROLLO ACCESSO",
-                authBtn: "AUTENTICARE"
-            },
-            "AR": {
-                sys: "النظام:",
-                status: "متصل",
-                statusBadge: "v24.0 مستقر",
-                subtitle: "مختبر تحليلات الكم",
-                loginBtn: "دخول",
-                cardTitle: "المحرك الكمي",
-                cardDesc: "بنية الذكاء الاصطناعي الهجين<br>بواسون • مونت كارلو • جيمناي",
-                launch: "بدء التشغيل",
-                info1T: "علم خالص. لا للمقامرة.",
-                info1D: "نهج أكاديمي للتحليل الرياضي. يستخدم <strong>معاملات رو الديناميكية</strong> لمحاكاة المباريات في 50,000 سيناريو.",
-                info2T: "كيف يعمل؟",
-                info2D: "يفصل النظام أداء الفريق داخل/خارج الأرض ويزن النموذج باستخدام <strong>الاضمحلال الأسي</strong>. يتم التفسير بواسطة Gemini AI.",
-                footer: "الإصدار: v24.0.1-APEX | © 2026 مختبرات الكم",
-                shutdown: "إيقاف",
-                loading: "جاري الاتصال بالشبكة العصبية...",
-                access: "التحكم في الوصول",
-                authBtn: "توثيق"
-            }
-        };
+    elif menu == "⏮️ Geçmiş":
+        st.subheader("Geçmiş")
+        matches = get_past_fixtures()
+        if matches:
+            matches.sort(key=lambda x: x.get('starting_at'), reverse=True)
+            for m in matches:
+                try:
+                    if m.get('state', {}).get('short_name') not in ['FT','AET']: continue
+                    h = next(p for p in m['participants'] if p['meta']['location']=='home')
+                    a = next(p for p in m['participants'] if p['meta']['location']=='away')
+                    sc = m.get('scores', [])
+                    sh = next((s['score']['goals'] for s in sc if s['description'] in ['FT','AET'] and s['score']['participant']=='home'), 0)
+                    sa = next((s['score']['goals'] for s in sc if s['description'] in ['FT','AET'] and s['score']['participant']=='away'), 0)
+                    st.markdown(f"""<div class="match-card" style="border-left:3px solid #666"><div style="font-size:10px;color:#888">{m.get('league',{}).get('name')}</div><div style="display:flex;justify-content:space-between"><span>{h['name']}</span><span style="font-weight:bold;color:#fff">{sh}-{sa}</span><span>{a['name']}</span></div></div>""", unsafe_allow_html=True)
+                except: continue
 
-        function setLanguage(lang) {
-            const d = langData[lang];
-            if (!d) return;
+    elif st.session_state.page == 'Analiz_View':
+        st.divider(); 
+        if st.button("KAPAT"): st.session_state.page='Dashboard'; st.rerun()
+        m = st.session_state.tm
+        with st.spinner("Analiz..."):
+            detail = get_fixture_detail(m['id'])
+            h_xg, a_xg = 0, 0
+            # xG Parse logic here if needed
+            sim = run_simulation(st.session_state.rh, st.session_state.ra, h_xg, a_xg)
+            c1, c2, c3 = st.columns(3)
+            c1.metric("EV", f"%{sim['h']*100:.0f}"); c2.metric("X", f"%{sim['d']*100:.0f}"); c3.metric("DEP", f"%{sim['a']*100:.0f}")
+            st.info(f"Tahmin: {sim['score']}")
+            df = pd.DataFrame({'R':['1','X','2'], 'P':[sim['h'],sim['d'],sim['a']]})
+            st.altair_chart(alt.Chart(df).mark_bar().encode(x='R', y='P', color=alt.value('#00ff88')), use_container_width=True)
 
-            // Update Text Elements
-            document.getElementById('txt_sys').innerText = d.sys;
-            document.getElementById('txt_status').innerText = d.status;
-            document.getElementById('txt_status_badge').innerText = d.statusBadge;
-            document.getElementById('txt_subtitle').innerText = d.subtitle;
-            document.getElementById('txt_login_btn').innerText = d.loginBtn;
-            document.getElementById('txt_card_title').innerText = d.cardTitle;
-            document.getElementById('txt_card_desc').innerHTML = d.cardDesc;
-            document.getElementById('txt_launch').innerText = d.launch;
-            document.getElementById('txt_info1_title').innerText = d.info1T;
-            document.getElementById('txt_info1_desc').innerHTML = d.info1D;
-            document.getElementById('txt_info2_title').innerText = d.info2T;
-            document.getElementById('txt_info2_desc').innerHTML = d.info2D;
-            document.getElementById('txt_footer').innerText = d.footer;
-            document.getElementById('txt_shutdown').innerText = d.shutdown;
-            document.getElementById('txt_loading').innerText = d.loading;
-            document.getElementById('txt_access').innerText = d.access;
-            document.getElementById('txt_auth_btn').innerText = d.authBtn;
+    elif menu == "🏆 Sıralama":
+        st.subheader("Sıralama")
+        if db:
+            data = []
+            for t in db.values():
+                if len(t.form)>=3:
+                    fstr = "".join(['✅' if x==1 else '🔻' if x==0 else '➖' for x in t.form[-5:]])
+                    data.append({"Logo":t.logo,"Takım":t.name,"Lig":t.league,"ELO":int(t.rating),"Form":fstr})
+            df = pd.DataFrame(data).sort_values("ELO", ascending=False).reset_index(drop=True); df.index+=1
+            st.dataframe(df, column_config={"Logo": st.column_config.ImageColumn("Logo", width="small")}, use_container_width=True)
+        else: st.info("Veri Yok")
 
-            // Handle RTL for Arabic
-            if (lang === 'AR') {
-                document.body.classList.add('rtl');
-            } else {
-                document.body.classList.remove('rtl');
-            }
+    elif menu == "⚙️ Admin":
+        st.info(f"Son Tarih: {last_date}")
+        if st.button("🚀 GÜNCELLE (+30 Gün)"):
+            with st.spinner("İşleniyor..."):
+                nd = run_safe_update(30); st.success(f"Yeni: {nd}"); time.sleep(1); st.rerun()
+        if st.button("🗑️ SIFIRLA"):
+            if os.path.exists(DB_FILE): os.remove(DB_FILE); st.rerun()
 
-            // Save preference
-            localStorage.setItem('ql_lang', lang);
-        }
-
-        // Initialize Language
-        window.onload = function() {
-            const savedLang = localStorage.getItem('ql_lang') || 'EN';
-            document.getElementById('langSelector').value = savedLang;
-            setLanguage(savedLang);
-        };
-
-        // --- FIREBASE CONFIG (SİLMEYİN - AYARLARINIZ AŞAĞIDA) ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyAVCbrPO5e9oZBbZKjbApo6av1M13_OT9k",
-            authDomain: "muratlola-web.firebaseapp.com",
-            projectId: "muratlola-web",
-            storageBucket: "muratlola-web.firebasestorage.app",
-            messagingSenderId: "742719225290",
-            appId: "1:742719225290:web:48207035df11d40f35e333",
-            measurementId: "G-7HE6027N6X"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        let currentUser = null;
-
-        auth.onAuthStateChanged(user => {
-            const btnText = document.getElementById('txt_login_btn');
-            const authBtn = document.getElementById('authBtn');
-            if(user) {
-                currentUser = user;
-                authBtn.innerHTML = `<i class="fa-solid fa-user-astronaut"></i> ${user.email.split('@')[0].toUpperCase()}`;
-                authBtn.style.borderColor = "var(--neon)";
-                authBtn.style.color = "var(--neon)";
-                closeLogin();
-            } else {
-                currentUser = null;
-                const currentLang = document.getElementById('langSelector').value;
-                authBtn.innerHTML = `<i class="fa-solid fa-terminal"></i> <span id="txt_login_btn">${langData[currentLang].loginBtn}</span>`;
-                authBtn.style.borderColor = "var(--border)";
-                authBtn.style.color = "var(--neon)";
-            }
-        });
-
-        function loginWithGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => document.getElementById('msg').innerText = "ERR: " + e.message); }
-        function loginUser() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('password').value;
-            auth.signInWithEmailAndPassword(e, p).catch(err => document.getElementById('msg').innerText = "ACCESS DENIED");
-        }
-
-        function checkAuthAndOpen() {
-            if(currentUser) {
-                const modal = document.getElementById("appModal");
-                const frame = document.getElementById("appFrame");
-                const loader = document.getElementById("loader");
-                modal.style.display = "block";
-                loader.style.display = "flex";
-                // Streamlit URL'sine Karanlık Mod (Dark Mode) parametresi eklendi: &theme=dark
-                const baseUrl = "https://quantum-football.onrender.com"; 
-                frame.src = `${baseUrl}/?user_email=${encodeURIComponent(currentUser.email)}&embed=true&theme=dark`;
-            } else {
-                openLogin();
-            }
-        }
-
-        function hideLoader() { document.getElementById("loader").style.display = "none"; }
-        function openLogin() { document.getElementById("loginModal").style.display = "flex"; }
-        function closeLogin() { document.getElementById("loginModal").style.display = "none"; }
-        function closeApp() { 
-            document.getElementById("appModal").style.display = "none"; 
-            document.getElementById("appFrame").src = ""; 
-        }
-    </script>
-</body>
-</html>
+if __name__ == "__main__":
+    main()
