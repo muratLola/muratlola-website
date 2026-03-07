@@ -146,10 +146,21 @@
                 </div>
 
                 <div id="loginForm">
-                    <input type="email" id="loginEmail" placeholder="E-Posta Adresi">
+                    <input type="email" id="loginEmail" placeholder="E-Posta">
                     <input type="password" id="loginPassword" placeholder="Şifre">
+                    <div style="text-align:right;margin-bottom:15px;">
+                        <span onclick="resetPassword()" style="color:var(--gold);font-size:12px;cursor:pointer;text-decoration:underline;">Şifremi Unuttum</span>
+                    </div>
                     <button onclick="loginUser()">Giriş Yap</button>
-                    <button class="link-btn" onclick="resetPassword()">Şifremi Unuttum</button>
+
+                    <div style="text-align:center; margin: 15px 0; color: var(--text-dim); font-size: 12px; position: relative;">
+                        <span style="background: var(--bg2); padding: 0 10px; position: relative; z-index: 1;">VEYA</span>
+                        <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border); z-index: 0;"></div>
+                    </div>
+                    <button onclick="loginWithGoogle()" style="background:#fff; color:#333; font-weight:700; border:none; display:flex; align-items:center; justify-content:center; gap:10px; padding: 12px; margin-top: 5px;">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:20px; height:20px;">
+                        Google ile Devam Et
+                    </button>
                 </div>
 
                 <div id="registerForm" style="display:none;">
