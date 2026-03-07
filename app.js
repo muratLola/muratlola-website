@@ -1,7 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getFirestore, doc, setDoc, onSnapshot, collection, getDoc, getDocs, query, where, orderBy, limit, updateDoc, serverTimestamp, deleteDoc, addDoc, increment, runTransaction, startAfter, deleteField } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 const firebaseConfig = {
     apiKey: "AIzaSyAgWXDIgIR503HIK_z7dVYzI-kvg9VFGsk",
     authDomain: "halisaha-app-898e2.firebaseapp.com",
@@ -135,11 +134,18 @@ function renderEloChart(hist) {
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
-            const uDoc = await getDoc(doc(db, "users", user.uid));
+            let uDoc = await getDoc(doc(db, "users", user.uid));
+            
+            // Google ile kaydın tamamlanması için 1 saniyelik tolerans
+            if (!uDoc.exists()) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                uDoc = await getDoc(doc(db, "users", user.uid));
+            }
+
             if (uDoc.exists()) {
                 currentUser = { uid: user.uid, ...uDoc.data() };
                 document.getElementById('authScreen').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
+                if(document.getElementById('mainApp')) document.getElementById('mainApp').style.display = 'block';
                 updateProfileUI();
                 if (document.getElementById('userNameDisplay'))
                     document.getElementById('userNameDisplay').innerText = currentUser.name;
@@ -147,20 +153,13 @@ onAuthStateChanged(auth, async (user) => {
                 listenToNotifications();
                 setTimeout(() => window._postLoginInit?.(), 500);
             } else {
-                // User exists in Auth but not in Firestore yet — sign them out cleanly
                 await signOut(auth);
                 document.getElementById('authScreen').style.display = 'block';
                 if (document.getElementById('mainApp')) document.getElementById('mainApp').style.display = 'none';
             }
         } catch (err) {
-            console.error("Kullanıcı verisi yüklenemedi:", err.code, err.message);
-            // Permission error or network error — show auth screen, don't crash
-            if (err.code === 'permission-denied') {
-                showToast("Oturum izin hatası. Tekrar giriş yapın.", "error");
-                await signOut(auth);
-            }
+            console.error("Kullanıcı verisi yüklenemedi:", err);
             document.getElementById('authScreen').style.display = 'block';
-            if (document.getElementById('mainApp')) document.getElementById('mainApp').style.display = 'none';
         }
     } else {
         currentUser = null;
@@ -4662,3 +4661,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1000);
 });
+// ── GOOGLE İLE GİRİŞ ──
+const googleProvider = new GoogleAuthProvider();
+
+window.loginWithGoogle = async () => {
+    showToast("Google'a bağlanılıyor...", "info");
+    try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+
+        if (!userDoc.exists()) {
+            await setDoc(doc(db, "users", user.uid), {
+                name: user.displayName || "Yeni Oyuncu",
+                city: "İstanbul",
+                age: 18,
+                height: 175,
+                position: "Orta Saha", 
+                power: 1500,
+                goals: 0, assists: 0, matchesPlayed: 0,
+                photoURL: user.photoURL || null,
+                createdAt: serverTimestamp()
+            });
+            showToast("Hoş geldin, " + (user.displayName || "Oyuncu") + "! 🎉", "success");
+        } else {
+            showToast("Tekrar hoş geldin, " + (user.displayName || "Oyuncu") + "! 👋", "success");
+        }
+    } catch (error) {
+        console.error("Google Giriş Hatası:", error);
+        if (error.code !== 'auth/popup-closed-by-user') {
+            showToast("Google girişi başarısız oldu!", "error");
+        }
+    }
+};
