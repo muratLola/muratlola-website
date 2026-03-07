@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot, collection, getDoc, getDocs, query, where, orderBy, limit, updateDoc, serverTimestamp, deleteDoc, addDoc, increment, runTransaction, startAfter } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, onSnapshot, collection, getDoc, getDocs, query, where, orderBy, limit, updateDoc, serverTimestamp, deleteDoc, addDoc, increment, runTransaction, startAfter, deleteField } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -169,13 +169,72 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+// ── AVATAR HELPER ──
+// Returns inline HTML for a player avatar (photo > emoji > initial)
+function _avatarHTML(player, size = 36, radius = '10px') {
+    const name = player?.name || '?';
+    const initial = name.charAt(0).toUpperCase();
+    if (player?.photoURL) {
+        return `<div style="width:${size}px;height:${size}px;border-radius:${radius};background:url(${player.photoURL}) center/cover no-repeat;flex-shrink:0;"></div>`;
+    } else if (player?.avatarEmoji) {
+        return `<div class="player-avatar-sm" style="width:${size}px;height:${size}px;border-radius:${radius};font-size:${Math.round(size*0.52)}px;line-height:${size}px;">${player.avatarEmoji}</div>`;
+    } else {
+        return `<div class="player-avatar-sm" style="width:${size}px;height:${size}px;border-radius:${radius};line-height:${size}px;font-size:${Math.round(size*0.45)}px;">${initial}</div>`;
+    }
+}
+
 // ── PROFILE UI ──
 function updateProfileUI() {
     if (!document.getElementById('profileName')) return;
-    document.getElementById('profileName').innerText = currentUser.name;
-    document.getElementById('profileAvatar').innerText = currentUser.name?.charAt(0)?.toUpperCase() || '?';
-    document.getElementById('profilePosAge').innerText = `${currentUser.position} · ${currentUser.age} Yaş · ${currentUser.height}cm`;
+    document.getElementById('profileName').innerText = currentUser.name || '—';
+
+    // Avatar — photo > emoji > initial
+    const avatarEl = document.getElementById('profileAvatar');
+    if (avatarEl) {
+        if (currentUser.photoURL) {
+            avatarEl.style.backgroundImage = `url(${currentUser.photoURL})`;
+            avatarEl.style.backgroundSize = 'cover';
+            avatarEl.style.backgroundPosition = 'center';
+            avatarEl.style.fontSize = '0';
+            avatarEl.textContent = '';
+        } else if (currentUser.avatarEmoji) {
+            avatarEl.style.backgroundImage = '';
+            avatarEl.style.fontSize = '28px';
+            avatarEl.textContent = currentUser.avatarEmoji;
+        } else {
+            avatarEl.style.backgroundImage = '';
+            avatarEl.style.fontSize = '';
+            avatarEl.textContent = currentUser.name?.charAt(0)?.toUpperCase() || '?';
+        }
+    }
+
+    // Bio
+    const bioEl = document.getElementById('profileBio');
+    if (bioEl) bioEl.innerText = currentUser.bio || '';
+
+    // Position / age / height
+    let subParts = [currentUser.position];
+    if (currentUser.age) subParts.push(currentUser.age + ' Yaş');
+    if (currentUser.height) subParts.push(currentUser.height + 'cm');
+    if (currentUser.weight) subParts.push(currentUser.weight + 'kg');
+    document.getElementById('profilePosAge').innerText = subParts.join(' · ');
+
     document.getElementById('profileCity').innerText = `📍 ${currentUser.city || 'İstanbul'}`;
+
+    // Dominant foot badge
+    const footBadge = document.getElementById('profileFootBadge');
+    if (footBadge) {
+        if (currentUser.dominantFoot) { footBadge.textContent = `⚽ ${currentUser.dominantFoot}`; footBadge.style.display = 'inline-block'; }
+        else footBadge.style.display = 'none';
+    }
+
+    // Jersey badge
+    const jerseyBadge = document.getElementById('profileJerseyBadge');
+    if (jerseyBadge) {
+        if (currentUser.jerseyNo) { jerseyBadge.textContent = `#${currentUser.jerseyNo}`; jerseyBadge.style.display = 'inline-block'; }
+        else jerseyBadge.style.display = 'none';
+    }
+
     document.getElementById('profileBadges').innerHTML = calculateBadges(currentUser);
     const t = getTier(currentUser.power);
     document.getElementById('profileTier').innerText = `${t.n} · ${Math.round(currentUser.power)} ELO`;
@@ -183,19 +242,35 @@ function updateProfileUI() {
     document.getElementById('profileMatches').innerText = currentUser.matchesPlayed || 0;
     document.getElementById('profileGoals').innerText = currentUser.goals || 0;
     document.getElementById('profileAssists').innerText = currentUser.assists || 0;
+
+    // MVP count
+    const mvpEl = document.getElementById('profileMVP');
+    if (mvpEl) mvpEl.innerText = currentUser.mvpCount || 0;
+
+    // Win rate
+    const winRateEl = document.getElementById('profileWinRate');
+    if (winRateEl) {
+        const mp = currentUser.matchesPlayed || 0;
+        const wins = currentUser.wins || 0;
+        winRateEl.innerText = mp > 0 ? `${Math.round(wins/mp*100)}%` : '—';
+    }
+
     if (typeof window.updateProfileUI_XP === 'function') window.updateProfileUI_XP();
     if (typeof renderProfileRadar === 'function') renderProfileRadar(currentUser);
 
-    // Win streak badge
-    const streakVal = currentUser.winStreak || 0;
-    const reliabilityVal = currentUser.reliability;
+    // Badges: streak + reliability + scout
     const badgesEl = document.getElementById('profileBadges');
     if (badgesEl) {
         let extra = '';
+        const streakVal = currentUser.winStreak || 0;
         if (streakVal >= 3) extra += `<span class="badge" style="background:rgba(243,156,18,0.15);border-color:rgba(243,156,18,0.4);color:#f39c12;">🔥 ${streakVal} Seri</span>`;
+        const reliabilityVal = currentUser.reliability;
         if (reliabilityVal !== undefined) extra += `<span class="badge" style="font-size:10px;">${_getReliabilityBadge(reliabilityVal)}</span>`;
+        if (currentUser.scoutBadge) extra += `<span class="badge" style="background:rgba(155,89,182,0.15);border-color:rgba(155,89,182,0.4);color:#9b59b6;">🕵️ Scout</span>`;
+        if (currentUser.injured) extra += `<span class="badge" style="background:rgba(231,76,60,0.15);border-color:rgba(231,76,60,0.4);color:#e74c3c;">🤕 Sakat</span>`;
         if (extra) badgesEl.innerHTML += extra;
     }
+
     if (currentUser.city) {
         const fc = document.getElementById('filterCity');
         if (fc) fc.value = currentUser.city;
@@ -214,24 +289,231 @@ window.resetPassword = async () => {
     catch (e) { showToast("Mail gönderilemedi!", "error"); }
 };
 
+// ── EDIT PROFILE ──
+window.resetPassword = async () => {
+    const email = document.getElementById('loginEmail')?.value || prompt("E-posta adresinizi girin:");
+    if (!email) return;
+    try { await sendPasswordResetEmail(auth, email); showToast("Sıfırlama maili gönderildi!"); }
+    catch (e) { showToast("Mail gönderilemedi!", "error"); }
+};
+
+// Emoji avatar seçenekleri
+const AVATAR_EMOJIS = ['⚽','🧤','🛡️','⚡','🎯','🦁','🐯','🔥','💎','👑','🎖️','🏆','🦅','🐉','🌟','💫','🎭','🤺','🦊','🐺'];
+
 window.openEditModal = () => {
-    document.getElementById('editCity').value = currentUser.city;
-    document.getElementById('editAge').value = currentUser.age;
-    document.getElementById('editHeight').value = currentUser.height;
-    document.getElementById('editPosition').value = currentUser.position;
+    // Fill emoji grid
+    const grid = document.getElementById('emojiAvatarGrid');
+    if (grid) {
+        grid.innerHTML = '';
+        AVATAR_EMOJIS.forEach(em => {
+            const btn = document.createElement('button');
+            btn.textContent = em;
+            btn.title = em;
+            btn.style.cssText = `background:${currentUser.avatarEmoji===em?'rgba(212,175,55,0.25)':'rgba(255,255,255,0.05)'};border:1px solid ${currentUser.avatarEmoji===em?'rgba(212,175,55,0.6)':'var(--border)'};border-radius:8px;padding:7px 8px;font-size:18px;cursor:pointer;transition:all .2s;`;
+            btn.onclick = () => {
+                grid.querySelectorAll('button').forEach(b => {
+                    b.style.background='rgba(255,255,255,0.05)';
+                    b.style.border='1px solid var(--border)';
+                });
+                btn.style.background='rgba(212,175,55,0.25)';
+                btn.style.border='1px solid rgba(212,175,55,0.6)';
+                // Clear photo selection
+                window._selectedPhotoBase64 = null;
+                const prev = document.getElementById('editAvatarPreview');
+                if (prev) { prev.textContent = em; prev.style.backgroundImage = ''; prev.style.backgroundSize = ''; prev.style.fontSize = '26px'; }
+                window._selectedAvatarEmoji = em;
+            };
+            grid.appendChild(btn);
+        });
+    }
+
+    // Fill current values
+    const sel = document.getElementById('editCity');
+    if (sel) sel.value = currentUser.city || '';
+    document.getElementById('editAge').value = currentUser.age || '';
+    document.getElementById('editHeight').value = currentUser.height || '';
+    document.getElementById('editWeight').value = currentUser.weight || '';
+    document.getElementById('editPosition').value = currentUser.position || 'Orta Saha';
+    document.getElementById('editFoot').value = currentUser.dominantFoot || '';
+    document.getElementById('editJerseyNo').value = currentUser.jerseyNo || '';
+    document.getElementById('editName').value = currentUser.name || '';
+    document.getElementById('editBio').value = currentUser.bio || '';
+
+    // Avatar preview
+    const prev = document.getElementById('editAvatarPreview');
+    if (prev) {
+        if (currentUser.photoURL) {
+            prev.style.backgroundImage = `url(${currentUser.photoURL})`;
+            prev.style.backgroundSize = 'cover';
+            prev.style.backgroundPosition = 'center';
+            prev.textContent = '';
+        } else {
+            prev.textContent = currentUser.avatarEmoji || currentUser.name?.charAt(0)?.toUpperCase() || '?';
+            prev.style.backgroundImage = '';
+            prev.style.fontSize = '26px';
+        }
+    }
+
+    window._selectedPhotoBase64 = null;
+    window._selectedAvatarEmoji = currentUser.avatarEmoji || null;
     document.getElementById('editProfileModal').style.display = 'flex';
 };
+
 window.closeEditModal = () => document.getElementById('editProfileModal').style.display = 'none';
+
+window.previewProfilePhoto = function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) return showToast("Fotoğraf max 2MB olmalı!", "error");
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        window._selectedPhotoBase64 = e.target.result;
+        window._selectedAvatarEmoji = null;
+        const prev = document.getElementById('editAvatarPreview');
+        if (prev) {
+            prev.style.backgroundImage = `url(${e.target.result})`;
+            prev.style.backgroundSize = 'cover';
+            prev.style.backgroundPosition = 'center';
+            prev.textContent = '';
+            prev.style.fontSize = '0';
+        }
+    };
+    reader.readAsDataURL(file);
+};
+
+window.removeProfilePhoto = async function() {
+    window._selectedPhotoBase64 = null;
+    window._selectedAvatarEmoji = null;
+    const prev = document.getElementById('editAvatarPreview');
+    if (prev) {
+        prev.style.backgroundImage = '';
+        prev.textContent = currentUser.name?.charAt(0)?.toUpperCase() || '?';
+        prev.style.fontSize = '26px';
+    }
+    await updateDoc(doc(db, "users", currentUser.uid), { photoURL: deleteField() });
+    currentUser.photoURL = null;
+    showToast("Fotoğraf kaldırıldı.");
+    updateProfileUI();
+};
 
 window.saveProfileEdit = async () => {
     const city = document.getElementById('editCity').value;
-    const age = parseInt(document.getElementById('editAge').value);
-    const height = parseInt(document.getElementById('editHeight').value);
+    const age = parseInt(document.getElementById('editAge').value) || 0;
+    const height = parseInt(document.getElementById('editHeight').value) || 0;
+    const weight = parseInt(document.getElementById('editWeight').value) || 0;
     const pos = document.getElementById('editPosition').value;
-    if (isNaN(age) || isNaN(height)) return showToast("Sayısal değerleri doğru girin", "error");
-    await updateDoc(doc(db, "users", currentUser.uid), { city, age, height, position: pos });
-    currentUser = { ...currentUser, city, age, height, position: pos };
-    updateProfileUI(); closeEditModal(); showToast("Profil güncellendi!");
+    const foot = document.getElementById('editFoot').value;
+    const jerseyNo = parseInt(document.getElementById('editJerseyNo').value) || null;
+    const name = document.getElementById('editName').value?.trim();
+    const bio = document.getElementById('editBio').value?.trim().slice(0, 150);
+    if (!name) return showToast("İsim boş bırakılamaz!", "error");
+
+    const updates = { city, age, height, weight, position: pos, dominantFoot: foot, bio, name };
+    if (jerseyNo) updates.jerseyNo = jerseyNo;
+    if (window._selectedAvatarEmoji) { updates.avatarEmoji = window._selectedAvatarEmoji; updates.photoURL = null; }
+    if (window._selectedPhotoBase64) { updates.photoURL = window._selectedPhotoBase64; updates.avatarEmoji = null; }
+
+    const btn = document.querySelector('#editProfileModal button[onclick="saveProfileEdit()"]');
+    if (btn) { btn.textContent = 'Kaydediliyor...'; btn.disabled = true; }
+
+    try {
+        await updateDoc(doc(db, "users", currentUser.uid), updates);
+        currentUser = { ...currentUser, ...updates };
+        updateProfileUI();
+        closeEditModal();
+        showToast("Profil güncellendi! ✅");
+    } catch(e) {
+        showToast("Güncelleme başarısız: " + e.message, "error");
+    } finally {
+        if (btn) { btn.textContent = '💾 Kaydet'; btn.disabled = false; }
+    }
+};
+
+window.changePassword = async function() {
+    const newPass = prompt("Yeni şifrenizi girin (min 6 karakter):");
+    if (!newPass || newPass.length < 6) return showToast("Geçerli bir şifre girin!", "error");
+    try {
+        const { updatePassword } = await import('https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js');
+        await updatePassword(auth.currentUser, newPass);
+        showToast("Şifre başarıyla güncellendi! 🔑");
+    } catch(e) {
+        if (e.code === 'auth/requires-recent-login') {
+            showToast("Güvenlik için tekrar giriş yapıp deneyin.", "error");
+        } else { showToast("Hata: " + e.message, "error"); }
+    }
+};
+
+window.exportMyData = async function() {
+    showToast("Verileriniz hazırlanıyor...", "info");
+    try {
+        const userSnap = await getDoc(doc(db, "users", currentUser.uid));
+        const histSnap = await getDocs(collection(db, "users", currentUser.uid, "history"));
+        const history = [];
+        histSnap.forEach(d => history.push(d.data()));
+
+        const exportData = {
+            profile: userSnap.data(),
+            matchHistory: history,
+            exportedAt: new Date().toISOString()
+        };
+
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `halisaha_${currentUser.name?.replace(/\s/g,'_')}_${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("Verileriniz indirildi! 📦");
+    } catch(e) { showToast("Hata: " + e.message, "error"); }
+};
+
+window.confirmDeleteAccount = function() {
+    const modal = document.createElement('div');
+    modal.id = 'deleteConfirmModal';
+    modal.className = 'modal';
+    modal.style.cssText = 'display:flex;align-items:center;padding:20px;z-index:10000;';
+    modal.innerHTML = `<div class="modal-content" style="max-width:340px;width:100%;text-align:center;padding:28px;border:1px solid rgba(231,76,60,0.4);border-radius:20px;">
+        <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
+        <div style="font-size:18px;font-weight:800;color:#e74c3c;margin-bottom:8px;">Hesabı Sil</div>
+        <div style="font-size:13px;color:var(--text-dim);margin-bottom:20px;line-height:1.5;">Tüm maç geçmişin, ELO puanın ve rozetlerin <strong style="color:#e74c3c">kalıcı olarak silinecek.</strong> Bu işlem geri alınamaz!</div>
+        <input type="password" id="deleteConfirmPass" placeholder="Şifrenizi onaylamak için girin" style="margin-bottom:12px;border-color:rgba(231,76,60,0.4);">
+        <div style="display:flex;gap:8px;">
+            <button onclick="executeDeleteAccount()" style="flex:1;background:rgba(231,76,60,0.2);border:1px solid #e74c3c;color:#e74c3c;border-radius:10px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;">🗑️ Evet, Sil</button>
+            <button onclick="document.getElementById('deleteConfirmModal').remove()" class="btn-ghost" style="flex:1;padding:12px;">Vazgeç</button>
+        </div>
+    </div>`;
+    document.body.appendChild(modal);
+};
+
+window.executeDeleteAccount = async function() {
+    const pass = document.getElementById('deleteConfirmPass')?.value;
+    if (!pass) return showToast("Şifrenizi girin!", "error");
+
+    try {
+        const { EmailAuthProvider, reauthenticateWithCredential, deleteUser } = await import('https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js');
+        const credential = EmailAuthProvider.credential(auth.currentUser.email, pass);
+        await reauthenticateWithCredential(auth.currentUser, credential);
+
+        // Delete Firestore data
+        showToast("Veriler siliniyor...", "info");
+        const histSnap = await getDocs(collection(db, "users", currentUser.uid, "history"));
+        const notifSnap = await getDocs(collection(db, "users", currentUser.uid, "notifications"));
+        const dels = [];
+        histSnap.forEach(d => dels.push(deleteDoc(d.ref)));
+        notifSnap.forEach(d => dels.push(deleteDoc(d.ref)));
+        await Promise.all(dels);
+        await deleteDoc(doc(db, "users", currentUser.uid));
+
+        // Delete Auth account
+        await deleteUser(auth.currentUser);
+        document.getElementById('deleteConfirmModal')?.remove();
+        showToast("Hesabınız silindi. Güle güle! 👋");
+    } catch(e) {
+        if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+            showToast("Şifre yanlış!", "error");
+        } else { showToast("Hata: " + e.message, "error"); }
+    }
 };
 
 // ── AUTH ──
@@ -896,7 +1178,10 @@ window.saveMatchData = async function () {
             shots: increment(shots), saves: increment(saves),
             tackles: increment(tackles), interceptions: increment(interceptions),
             penaltiesMissed: increment(penMissed),
-            xp: newXP, level: newLevel
+            xp: newXP, level: newLevel,
+            wins: increment(resScore === 1 ? 1 : 0),
+            draws: increment(resScore === 0.5 ? 1 : 0),
+            losses: increment(resScore === 0 ? 1 : 0)
         });
 
         await setDoc(doc(db, "users", p.uid, "history", globalMatchId), {
@@ -2887,22 +3172,27 @@ window.loadTransferCenter = async function() {
             const streak = u.winStreak || 0;
             const rel = u.reliability;
             const injured = u.injured || false;
+            const mp = u.matchesPlayed || 0;
+            const wins = u.wins || 0;
+            const winRate = mp > 0 ? Math.round(wins/mp*100) + '%' : '—';
             list.innerHTML += `
             <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--glass);border:1px solid ${injured?'rgba(231,76,60,0.3)':'var(--border)'};border-radius:12px;margin-bottom:8px;opacity:${injured?0.7:1};">
-                <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,rgba(212,175,55,0.18),transparent);border:1px solid rgba(212,175,55,0.25);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0;position:relative;">
-                    ${(u.name||'?').charAt(0).toUpperCase()}
+                <div style="position:relative;flex-shrink:0;">
+                    ${_avatarHTML(u, 44, '50%')}
                     ${streak>=3 ? `<div style="position:absolute;bottom:-4px;right:-4px;font-size:10px;">🔥</div>` : ''}
                 </div>
                 <div style="flex:1;min-width:0;">
                     <div style="font-weight:700;font-size:14px;color:#fff;display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
                         ${escapeHTML(u.name)}
+                        ${u.jerseyNo ? `<span style="font-size:10px;color:var(--gold);">#${u.jerseyNo}</span>` : ''}
                         ${injured ? '<span style="font-size:10px;background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);color:#e74c3c;border-radius:6px;padding:1px 5px;">🤕 Sakat</span>' : ''}
                     </div>
-                    <div style="font-size:11px;color:var(--text-dim);margin:2px 0;">${u.position} · Lv.${u.level||1} · ⚽${u.goals||0} 🎯${u.assists||0} · ${u.city||'?'}</div>
+                    <div style="font-size:11px;color:var(--text-dim);margin:2px 0;">${u.position}${u.dominantFoot?' · '+u.dominantFoot:''} · Lv.${u.level||1} · ⚽${u.goals||0} 🎯${u.assists||0} · ${u.city||'?'}</div>
                     <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
                         <span class="elo-badge ${t.c}" style="font-size:9px;padding:1px 6px;">${Math.round(u.power||1500)}</span>
                         ${rel !== undefined ? `<span style="font-size:9px;">${_getReliabilityBadge(rel)}</span>` : ''}
                         ${streak>=3 ? `<span style="font-size:9px;color:#f39c12;">🔥 ${streak} seri</span>` : ''}
+                        <span style="font-size:9px;color:var(--text-dim);">G%${winRate}</span>
                     </div>
                 </div>
                 <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
