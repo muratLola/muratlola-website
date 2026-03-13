@@ -1,22 +1,8 @@
 /* ═══════════════════════════════════════════
    formaLOLA — app.js
-   Firebase-ready frontend logic (FULL VERSION)
 ═══════════════════════════════════════════ */
 
-/* ══════════ FIREBASE KURULUMU ══════════ */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  GoogleAuthProvider, 
-  GithubAuthProvider,
-  OAuthProvider,
-  signInWithPopup, 
-  onAuthStateChanged, 
-  signOut 
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-
+/* ══════════ FIREBASE INIT ══════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyCI7Ku7aF2gAf-lDpMwzYfBY0iC_ulg3gE",
   authDomain: "formalola-c4ba7.firebaseapp.com",
@@ -25,9 +11,8 @@ const firebaseConfig = {
   messagingSenderId: "67406520517",
   appId: "1:67406520517:web:a9d240d47a99d3c79690ac"
 };
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 /* ═══════════════════════════════════════ */
 
 /* ══════════ MOCK DATA ══════════ */
@@ -598,39 +583,103 @@ function dashTab(tab, btn) {
   }
 }
 
-/* ══════════ MODALS & UI ══════════ */
-function showModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.add('open');
-}
-function closeModal(id) {
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('open');
-}
-function outsideClose(e, id) {
-  if (e.target.id === id) closeModal(id);
+/* ══════════ AUTH (GERÇEK FIREBASE) ══════════ */
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    currentUser = { name: user.displayName || user.email.split('@')[0], email: user.email, uid: user.uid };
+    document.getElementById('navLoginBtn').classList.add('hidden');
+    document.getElementById('navAvatar').classList.remove('hidden');
+    document.getElementById('navAvatar').textContent = currentUser.name[0].toUpperCase();
+    
+    const dashAv = document.getElementById('dashAv');
+    if(dashAv) dashAv.textContent = currentUser.name[0].toUpperCase();
+    const dashUname = document.getElementById('dashUname');
+    if(dashUname) dashUname.textContent = currentUser.name;
+    
+  } else {
+    currentUser = null;
+    document.getElementById('navLoginBtn').classList.remove('hidden');
+    document.getElementById('navAvatar').classList.add('hidden');
+  }
+});
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) { showToast('E-posta ve şifre gerekli', 'error'); return; }
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+    closeModal('loginModal');
+    showToast('Hoş geldin! ✓', 'success');
+  } catch (error) {
+    showToast('Giriş başarısız.', 'error');
+  }
 }
 
-let toastTimer;
-function showToast(msg, type) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = `toast show${type ? ' ' + type : ''}`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+async function doRegister() {
+  const email = document.getElementById('regEmail').value;
+  const pass = document.getElementById('regPass').value;
+  if (!email || !pass) { showToast('Tüm alanları doldurun', 'error'); return; }
+  try {
+    await auth.createUserWithEmailAndPassword(email, pass);
+    closeModal('loginModal');
+    showToast('Kayıt başarılı!', 'success');
+  } catch (error) {
+    showToast('Kayıt olunamadı.', 'error');
+  }
 }
 
-function setTrendTab(btn) {
-  document.querySelectorAll('.ttab').forEach(t => t.classList.remove('active'));
+async function doGoogleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    await auth.signInWithPopup(provider);
+    closeModal('loginModal');
+    showToast('Google ile giriş yapıldı!', 'success');
+  } catch (error) {
+    showToast('Giriş iptal edildi.', 'error');
+  }
+}
+
+async function doGithubLogin() {
+  const provider = new firebase.auth.GithubAuthProvider();
+  try {
+    await auth.signInWithPopup(provider);
+    closeModal('loginModal');
+    showToast('GitHub ile giriş yapıldı!', 'success');
+  } catch (error) {
+    showToast('GitHub ile giriş iptal edildi.', 'error');
+  }
+}
+
+async function doAppleLogin() {
+  const provider = new firebase.auth.OAuthProvider('apple.com');
+  try {
+    await auth.signInWithPopup(provider);
+    closeModal('loginModal');
+    showToast('Apple ile giriş yapıldı!', 'success');
+  } catch (error) {
+    showToast('Apple ile giriş iptal edildi.', 'error');
+  }
+}
+
+async function doLogout() {
+  try {
+    await auth.signOut();
+    showPage('home');
+    showToast('Çıkış yapıldı', '');
+  } catch (error) {
+    showToast('Hata: ' + error.message, 'error');
+  }
+}
+
+function authTab(tab, btn) {
+  document.querySelectorAll('.m-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  renderHomeDesigns();
-}
-function toggleMobileNav() {
-  const menu = document.getElementById('navMobileMenu');
-  menu.classList.toggle('hidden');
+  document.getElementById('authLogin').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('authRegister').classList.toggle('hidden', tab !== 'register');
 }
 
-/* ══════════ UPLOAD / BUY ══════════ */
+/* ══════════ BUY MODAL ══════════ */
 function openBuyModal(id) {
   const d = MOCK_DESIGNS.find(x => x.id === id);
   if (!d) return;
@@ -670,12 +719,14 @@ function openBuyModal(id) {
   `;
   showModal('buyModal');
 }
+
 function selectBuyLicense(el, price) {
   document.querySelectorAll('.buy-lic-opt').forEach(o => o.classList.remove('sel'));
   el.classList.add('sel');
   el.querySelector('input').checked = true;
   document.getElementById('buyTotal').textContent = `₺${price.toLocaleString('tr-TR')}`;
 }
+
 function processBuy(id) {
   if (!currentUser) {
     closeModal('buyModal');
@@ -686,6 +737,8 @@ function processBuy(id) {
   closeModal('buyModal');
   showToast('🎉 Satın alma tamamlandı! Dosyalar hesabınıza eklendi.', 'success');
 }
+
+/* ══════════ UPLOAD ══════════ */
 function wizGo(step) {
   if (step === 2) {
     const req = ['s-front','s-back','s-detail','s-flat'];
@@ -713,6 +766,7 @@ function wizGo(step) {
   }
   currentUploadStep = step;
 }
+
 function previewSlot(input, slotId) {
   const file = input.files[0];
   if (!file) return;
@@ -726,6 +780,7 @@ function previewSlot(input, slotId) {
   };
   reader.readAsDataURL(file);
 }
+
 function submitDesign() {
   if (!document.getElementById('upCopyright').checked) {
     showToast('Telif beyanını onaylayın', 'error');
@@ -740,6 +795,7 @@ function submitDesign() {
   showToast('🚀 Tasarımın yayınlandı! İnceleme süreci 24 saat.', 'success');
   resetUploadForm();
 }
+
 function resetUploadForm() {
   wizGo(1);
   document.getElementById('upTitle').value = '';
@@ -755,6 +811,7 @@ function resetUploadForm() {
     }
   });
 }
+
 function calcEarnings() {
   const std = parseFloat(document.getElementById('stdPrice')?.value) || 0;
   const excl = parseFloat(document.getElementById('exclPrice')?.value) || 0;
@@ -763,6 +820,8 @@ function calcEarnings() {
   if (stdEl) stdEl.textContent = `₺${Math.round(std * 0.8).toLocaleString('tr-TR')}`;
   if (exclEl) exclEl.textContent = `₺${Math.round(excl * 0.8).toLocaleString('tr-TR')}`;
 }
+
+/* ══════════ COLOR SYNC ══════════ */
 function syncColor(colorId, hexId) {
   const el = document.getElementById(hexId);
   if (el) el.value = document.getElementById(colorId).value;
@@ -774,140 +833,50 @@ function syncHex(hexId, colorId) {
   }
 }
 
-/* ══════════ FIREBASE AUTH LOGIC ══════════ */
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    currentUser = { name: user.displayName || user.email.split('@')[0], email: user.email, uid: user.uid };
-    document.getElementById('navLoginBtn').classList.add('hidden');
-    document.getElementById('navAvatar').classList.remove('hidden');
-    document.getElementById('navAvatar').textContent = currentUser.name[0].toUpperCase();
-    
-    // Profildeyken yenileme olursa
-    const dashAv = document.getElementById('dashAv');
-    if(dashAv) dashAv.textContent = currentUser.name[0].toUpperCase();
-    const dashUname = document.getElementById('dashUname');
-    if(dashUname) dashUname.textContent = currentUser.name;
-    
+/* ══════════ FAVORITES ══════════ */
+function toggleFav(id, btn) {
+  if (favorites.has(id)) {
+    favorites.delete(id);
+    showToast('Favorilerden çıkarıldı', '');
+    if (btn) btn.textContent = btn.classList.contains('btn-fav-full') ? '♡ Favorilere Ekle' : '♡';
   } else {
-    currentUser = null;
-    document.getElementById('navLoginBtn').classList.remove('hidden');
-    document.getElementById('navAvatar').classList.add('hidden');
-  }
-});
-
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value;
-  const pass = document.getElementById('loginPass').value;
-  if (!email || !pass) { showToast('E-posta ve şifre gerekli', 'error'); return; }
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-    closeModal('loginModal');
-    showToast(`Hoş geldin! ✓`, 'success');
-  } catch (error) {
-    showToast('Giriş başarısız.', 'error');
+    favorites.add(id);
+    showToast('Favorilere eklendi ♥', 'success');
+    if (btn) btn.textContent = btn.classList.contains('btn-fav-full') ? '♥ Favorilerden Çıkar' : '♥';
   }
 }
 
-async function doRegister() {
-  const email = document.getElementById('regEmail').value;
-  const pass = document.getElementById('regPass').value;
-  if (!email || !pass) { showToast('Tüm alanları doldurun', 'error'); return; }
-  try {
-    await createUserWithEmailAndPassword(auth, email, pass);
-    closeModal('loginModal');
-    showToast('Kayıt başarılı!', 'success');
-  } catch (error) {
-    showToast('Kayıt olunamadı.', 'error');
-  }
+/* ══════════ MODALS ══════════ */
+function showModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('open');
+}
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+}
+function outsideClose(e, id) {
+  if (e.target.id === id) closeModal(id);
 }
 
-async function doGoogleLogin() {
-  const provider = new GoogleAuthProvider();
-  try {
-    await signInWithPopup(auth, provider);
-    closeModal('loginModal');
-    showToast('Google ile giriş yapıldı!', 'success');
-  } catch (error) {
-    showToast('Giriş iptal edildi.', 'error');
-  }
+/* ══════════ TOAST ══════════ */
+let toastTimer;
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show${type ? ' ' + type : ''}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-async function doGithubLogin() {
-  const provider = new GithubAuthProvider();
-  try {
-    await signInWithPopup(auth, provider);
-    closeModal('loginModal');
-    showToast('GitHub ile giriş yapıldı!', 'success');
-  } catch (error) {
-    showToast('GitHub ile giriş iptal edildi.', 'error');
-    console.error(error);
-  }
-}
-
-async function doAppleLogin() {
-  const provider = new OAuthProvider('apple.com');
-  try {
-    await signInWithPopup(auth, provider);
-    closeModal('loginModal');
-    showToast('Apple ile giriş yapıldı!', 'success');
-  } catch (error) {
-    showToast('Apple ile giriş iptal edildi.', 'error');
-    console.error(error);
-  }
-}
-
-async function doLogout() {
-  try {
-    await signOut(auth);
-    showPage('home');
-    showToast('Çıkış yapıldı', '');
-  } catch (error) {
-    console.error("Çıkış yaparken hata oluştu:", error);
-    showToast('Çıkış yapılamadı: ' + error.message, 'error');
-  }
-}
-
-function authTab(tab, btn) {
-  document.querySelectorAll('.m-tab').forEach(t => t.classList.remove('active'));
+/* ══════════ MISC ══════════ */
+function setTrendTab(btn) {
+  document.querySelectorAll('.ttab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('authLogin').classList.toggle('hidden', tab !== 'login');
-  document.getElementById('authRegister').classList.toggle('hidden', tab !== 'register');
+  renderHomeDesigns();
 }
 
-/* ══════════ EXPORT TO WINDOW (MODÜL ÇÖZÜMÜ) ══════════ */
-window.showPage = showPage;
-window.goBack = goBack;
-window.showModal = showModal;
-window.closeModal = closeModal;
-window.outsideClose = outsideClose;
-window.toggleMobileNav = toggleMobileNav;
-window.setTrendTab = setTrendTab;
-window.filterByCategory = filterByCategory;
-window.applyFilters = applyFilters;
-window.clearFilters = clearFilters;
-window.toggleFilterPanel = toggleFilterPanel;
-window.toggleSwatch = toggleSwatch;
-window.loadMore = loadMore;
-window.showDesignDetail = showDesignDetail;
-window.showDesignerProfile = showDesignerProfile;
-window.dashTab = dashTab;
-window.openBuyModal = openBuyModal;
-window.selectBuyLicense = selectBuyLicense;
-window.processBuy = processBuy;
-window.wizGo = wizGo;
-window.previewSlot = previewSlot;
-window.submitDesign = submitDesign;
-window.calcEarnings = calcEarnings;
-window.syncColor = syncColor;
-window.syncHex = syncHex;
-window.toggleFav = toggleFav;
-window.showToast = showToast;
-window.selectLicense = selectLicense;
-
-window.doLogin = doLogin;
-window.doRegister = doRegister;
-window.doGoogleLogin = doGoogleLogin;
-window.doGithubLogin = doGithubLogin;
-window.doAppleLogin = doAppleLogin;
-window.doLogout = doLogout;
-window.authTab = authTab;
+function toggleMobileNav() {
+  const menu = document.getElementById('navMobileMenu');
+  menu.classList.toggle('hidden');
+}
