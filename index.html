@@ -502,19 +502,277 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-top">
-      <div>
+      <div class="footer-brand-col">
         <div class="logo footer-logo"><span class="logo-forma">forma</span><span class="logo-lola">LOLA</span></div>
         <p>Forma tasarım ekosistemi.<br>Tasarımcılar, takımlar ve üreticiler için.</p>
+        <!-- ÖDEME LOGOLARI -->
+        <div class="payment-logos">
+          <div class="payment-logos-label">Güvenli Ödeme</div>
+          <div class="payment-logos-row">
+            <!-- iyzico logo -->
+            <div class="pay-logo pay-iyzico" title="iyzico">
+              <svg viewBox="0 0 80 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="80" height="28" rx="5" fill="#1A1A2E"/>
+                <text x="8" y="20" font-family="Arial" font-weight="bold" font-size="13" fill="#00D4AA">iyzico</text>
+              </svg>
+            </div>
+            <!-- Visa logo -->
+            <div class="pay-logo pay-visa" title="Visa">
+              <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="28" rx="5" fill="#1A1F71"/>
+                <text x="8" y="20" font-family="Arial" font-weight="900" font-size="14" fill="white" letter-spacing="1">VISA</text>
+              </svg>
+            </div>
+            <!-- Mastercard logo -->
+            <div class="pay-logo pay-mc" title="Mastercard">
+              <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="28" rx="5" fill="#252525"/>
+                <circle cx="22" cy="14" r="9" fill="#EB001B"/>
+                <circle cx="38" cy="14" r="9" fill="#F79E1B"/>
+                <path d="M30 7.2a9 9 0 0 1 0 13.6A9 9 0 0 1 30 7.2z" fill="#FF5F00"/>
+              </svg>
+            </div>
+            <!-- Troy logo -->
+            <div class="pay-logo pay-troy" title="Troy">
+              <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="28" rx="5" fill="#0066CC"/>
+                <text x="7" y="20" font-family="Arial" font-weight="bold" font-size="13" fill="white">troy</text>
+              </svg>
+            </div>
+            <!-- SSL badge -->
+            <div class="pay-logo pay-ssl" title="SSL Güvenli">
+              <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="60" height="28" rx="5" fill="#2D7D46"/>
+                <path d="M10 14 L10 10 Q10 7 13 7 L14 7 Q17 7 17 10 L17 14" stroke="white" stroke-width="1.5" fill="none"/>
+                <rect x="8" y="14" width="11" height="8" rx="1.5" fill="white"/>
+                <text x="22" y="20" font-family="Arial" font-weight="bold" font-size="11" fill="white">SSL</text>
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="footer-links">
-        <div class="fl-col"><h4>Platform</h4><a href="#" onclick="showPage('explore');return false;">Keşfet</a><a href="#" onclick="showPage('competitions');return false;">Yarışmalar</a><a href="#" onclick="showPage('designers');return false;">Tasarımcılar</a><a href="#" onclick="showPage('how');return false;">Nasıl Çalışır</a></div>
-        <div class="fl-col"><h4>Hesap</h4><a href="#" onclick="showModal('loginModal');return false;">Giriş Yap</a><a href="#" onclick="showModal('loginModal');return false;">Kayıt Ol</a><a href="#" onclick="showPage('dashboard');return false;">Dashboard</a></div>
-        <div class="fl-col"><h4>Destek</h4><a href="#">Yardım Merkezi</a><a href="#">Gizlilik</a><a href="#">Kullanım Şartları</a><a href="#">İletişim</a></div>
+        <div class="fl-col">
+          <h4>Platform</h4>
+          <a href="#" onclick="showPage('explore');return false;">Keşfet</a>
+          <a href="#" onclick="showPage('competitions');return false;">Yarışmalar</a>
+          <a href="#" onclick="showPage('designers');return false;">Tasarımcılar</a>
+          <a href="#" onclick="showPage('how');return false;">Nasıl Çalışır</a>
+        </div>
+        <div class="fl-col">
+          <h4>Hesap</h4>
+          <a href="#" onclick="showModal('loginModal');return false;">Giriş Yap</a>
+          <a href="#" onclick="showModal('loginModal');return false;">Kayıt Ol</a>
+          <a href="#" onclick="showPage('dashboard');return false;">Dashboard</a>
+        </div>
+        <div class="fl-col">
+          <h4>Yasal</h4>
+          <a href="#" onclick="showPage('legal-privacy');return false;">Gizlilik Politikası</a>
+          <a href="#" onclick="showPage('legal-sales');return false;">Mesafeli Satış Sözleşmesi</a>
+          <a href="#" onclick="showPage('legal-refund');return false;">İptal ve İade Koşulları</a>
+          <a href="#" onclick="showPage('legal-terms');return false;">Kullanım Koşulları</a>
+          <a href="#">İletişim</a>
+        </div>
       </div>
     </div>
-    <div class="footer-bottom"><span id="footer-copy-txt">© 2026 formaLOLA · Tüm hakları saklıdır</span><span id="footer-payment-txt">iyzico ile güvenli ödeme</span></div>
+    <div class="footer-bottom">
+      <span id="footer-copy-txt">© 2026 formaLOLA · Tüm hakları saklıdır</span>
+      <span id="footer-payment-txt">256-bit SSL ile şifrelenmiş güvenli ödeme</span>
+    </div>
   </div>
 </footer>
+
+<!-- ══════════ YASAL SAYFALAR ══════════ -->
+
+<!-- GİZLİLİK POLİTİKASI -->
+<div id="page-legal-privacy" class="page">
+  <div class="container legal-container">
+    <button class="back-btn" onclick="goBack()">← Geri</button>
+    <div class="legal-doc">
+      <h1>Gizlilik Politikası</h1>
+      <p class="legal-date">Son güncelleme: 13 Mart 2026</p>
+
+      <h2>1. Veri Sorumlusu</h2>
+      <p>Bu Gizlilik Politikası, <strong>formaLOLA</strong> ("Platform", "Biz") tarafından yönetilen <strong>muratlola.com</strong> alan adlı web sitesi için geçerlidir. Kişisel verilerinizin işlenmesine ilişkin her türlü soru ve talebiniz için <strong>info@muratlola.com</strong> adresine ulaşabilirsiniz.</p>
+
+      <h2>2. Toplanan Kişisel Veriler</h2>
+      <p>Platformumuzu kullandığınızda aşağıdaki kişisel veriler toplanabilir:</p>
+      <ul>
+        <li><strong>Kimlik Bilgileri:</strong> Ad, soyad, kullanıcı adı</li>
+        <li><strong>İletişim Bilgileri:</strong> E-posta adresi</li>
+        <li><strong>Ödeme Bilgileri:</strong> Kredi/banka kartı bilgileri (yalnızca iyzico Ödeme Sistemleri A.Ş. tarafından işlenir; tarafımızca depolanmaz)</li>
+        <li><strong>Teknik Veriler:</strong> IP adresi, tarayıcı türü, cihaz bilgisi, çerez verileri</li>
+        <li><strong>İşlem Verileri:</strong> Satın alma geçmişi, yüklenen tasarım bilgileri</li>
+      </ul>
+
+      <h2>3. Verilerin İşlenme Amaçları</h2>
+      <p>Kişisel verileriniz aşağıdaki amaçlarla işlenmektedir:</p>
+      <ul>
+        <li>Hesap oluşturma ve kimlik doğrulama</li>
+        <li>Satın alma işlemlerinin gerçekleştirilmesi ve faturalandırma</li>
+        <li>Tasarım yükleme ve platform hizmetlerinin sunulması</li>
+        <li>Müşteri desteği sağlanması</li>
+        <li>Yasal yükümlülüklerin yerine getirilmesi</li>
+        <li>Platform güvenliğinin sağlanması</li>
+      </ul>
+
+      <h2>4. Verilerin Saklanma Süresi</h2>
+      <p>Kişisel verileriniz, hesabınız aktif olduğu süre boyunca ve yasal yükümlülükler kapsamında zorunlu tutulan süreler boyunca saklanır. Hesabınızı silmeniz durumunda verileriniz, yasal saklama süreleri haricinde 30 gün içinde silinir.</p>
+
+      <h2>5. Üçüncü Taraflarla Paylaşım</h2>
+      <p>Kişisel verileriniz; ödeme altyapısı için <strong>iyzico Ödeme Sistemleri A.Ş.</strong> ile, görsel depolama için <strong>ImgBB</strong> ile ve platform altyapısı için <strong>Google Firebase</strong> ile paylaşılabilir. Bu üçüncü taraflar kendi gizlilik politikaları kapsamında veri işlemektedir.</p>
+
+      <h2>6. KVKK Kapsamındaki Haklarınız</h2>
+      <p>6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca aşağıdaki haklara sahipsiniz:</p>
+      <ul>
+        <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme</li>
+        <li>İşlenmişse buna ilişkin bilgi talep etme</li>
+        <li>Yanlış veya eksik verilerin düzeltilmesini isteme</li>
+        <li>Verilerin silinmesini veya yok edilmesini talep etme</li>
+        <li>İşleme itiraz etme</li>
+      </ul>
+      <p>Haklarınızı kullanmak için <strong>info@muratlola.com</strong> adresine yazabilirsiniz.</p>
+
+      <h2>7. Çerezler (Cookie)</h2>
+      <p>Platformumuz; oturum yönetimi, kullanıcı tercihlerinin hatırlanması ve platform performansının ölçülmesi amacıyla çerezler kullanmaktadır. Tarayıcı ayarlarınızdan çerezleri devre dışı bırakabilirsiniz; ancak bu durumda bazı platform özellikleri çalışmayabilir.</p>
+
+      <h2>8. İletişim</h2>
+      <p>Gizlilik politikamıza ilişkin sorularınız için: <strong>info@muratlola.com</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- MESAFELİ SATIŞ SÖZLEŞMESİ -->
+<div id="page-legal-sales" class="page">
+  <div class="container legal-container">
+    <button class="back-btn" onclick="goBack()">← Geri</button>
+    <div class="legal-doc">
+      <h1>Mesafeli Satış Sözleşmesi</h1>
+      <p class="legal-date">Son güncelleme: 13 Mart 2026</p>
+
+      <h2>Madde 1 — Taraflar</h2>
+      <p><strong>SATICI:</strong> formaLOLA (muratlola.com) — Türkiye<br>
+      <strong>E-posta:</strong> info@muratlola.com<br><br>
+      <strong>ALICI:</strong> Platforma kayıtlı kullanıcı (Tasarım satın alan kişi veya kuruluş)</p>
+
+      <h2>Madde 2 — Konu</h2>
+      <p>Bu sözleşme; ALICI'nın formaLOLA platformu üzerinden satın aldığı dijital forma tasarım dosyalarının teslimine ilişkin koşulları düzenler. Satışa konu ürünler, üretim için hazırlanmış dijital dosyalar (PNG, AI, SVG, PDF formatlarında) ve ilgili lisans hakkından ibarettir.</p>
+
+      <h2>Madde 3 — Ürün Bilgileri ve Fiyat</h2>
+      <p>Satışa sunulan her tasarımın adı, fiyatı, lisans türü ve içerdiği dosya formatları ürün sayfasında açıkça belirtilmiştir. Fiyatlar Türk Lirası (₺) cinsinden gösterilmekte olup Katma Değer Vergisi dahildir. Platform, tüm satışlar üzerinden <strong>%20 komisyon</strong> alır; geriye kalan <strong>%80 tasarımcıya</strong> ödenir.</p>
+
+      <h2>Madde 4 — Ödeme</h2>
+      <p>Ödemeler, <strong>iyzico Ödeme Sistemleri A.Ş.</strong> güvencesi altında gerçekleştirilmektedir. Kredi kartı bilgileriniz platformumuzda saklanmaz; tamamen iyzico'nun PCI-DSS uyumlu altyapısı üzerinden işlenir. Desteklenen ödeme yöntemleri: Kredi kartı, banka kartı (Visa, Mastercard, Troy).</p>
+
+      <h2>Madde 5 — Teslimat</h2>
+      <p>Ödemenin onaylanmasının ardından satın alınan tasarım dosyaları, ALICI'nın hesabına <strong>anında ve otomatik olarak</strong> iletilir. Teslimat fiziksel değil, dijital ortamda gerçekleşir; kargo veya posta yoluyla teslimat söz konusu değildir.</p>
+
+      <h2>Madde 6 — Lisans ve Kullanım Hakları</h2>
+      <p><strong>Standart Lisans:</strong> ALICI, satın aldığı tasarımı kendi takımı veya organizasyonu için fiziksel olarak üretebilir. Tasarım, platform üzerinde satışa devam edebilir; başka takımlar da aynı tasarımı satın alabilir.</p>
+      <p><strong>Exclusive Lisans:</strong> Satın alma gerçekleştiğinde tasarım platformdan kaldırılır ve yalnızca ALICI'ya özel telif hakkı devredilir. Tasarım başka hiçbir tarafça kullanılamaz.</p>
+      <p>Her iki lisans türünde de ALICI, tasarımı üçüncü taraflara satamaz, devredemez veya yeniden lisanslayamaz.</p>
+
+      <h2>Madde 7 — Cayma Hakkı</h2>
+      <p>6502 sayılı Tüketicinin Korunması Hakkında Kanun'un 49. maddesi ve Mesafeli Sözleşmeler Yönetmeliği uyarınca; dijital içerik niteliğindeki ürünlerde, teslimata onay verilmesi ve indirme işleminin başlamasıyla birlikte <strong>cayma hakkı ortadan kalkar</strong>. Satın alma ekranında bu konuda açık onay alınmaktadır.</p>
+
+      <h2>Madde 8 — Uyuşmazlık</h2>
+      <p>Bu sözleşmeden doğabilecek uyuşmazlıklarda Türkiye Cumhuriyeti mahkemeleri ve Tüketici Hakem Heyetleri yetkilidir. Yasal sınırlar dahilindeki uyuşmazlıklar için Tüketici Hakem Heyetleri'ne, sınırları aşan uyuşmazlıklar için Tüketici Mahkemeleri'ne başvurulabilir.</p>
+    </div>
+  </div>
+</div>
+
+<!-- İPTAL VE İADE KOŞULLARI -->
+<div id="page-legal-refund" class="page">
+  <div class="container legal-container">
+    <button class="back-btn" onclick="goBack()">← Geri</button>
+    <div class="legal-doc">
+      <h1>İptal ve İade Koşulları</h1>
+      <p class="legal-date">Son güncelleme: 13 Mart 2026</p>
+
+      <h2>1. Genel Kural</h2>
+      <p>formaLOLA platformunda satılan ürünler, <strong>dijital nitelikte</strong> (dosya formatında teslim edilen) ürünlerdir. Tüketicinin Korunması Hakkında Kanun'un ilgili hükümleri ve Mesafeli Sözleşmeler Yönetmeliği gereğince, dijital içerikler için aşağıdaki koşullar geçerlidir:</p>
+
+      <div class="legal-highlight">
+        <strong>Önemli:</strong> Satın alma işleminin tamamlanması ve dosyaların hesabınıza iletilmesiyle birlikte cayma hakkınız sona erer. Satın alma ekranında bu koşulu açıkça onaylamaktasınız.
+      </div>
+
+      <h2>2. İade Kabul Edilen Durumlar</h2>
+      <p>Aşağıdaki durumlarda iade talebiniz değerlendirilir:</p>
+      <ul>
+        <li>Satın aldığınız dosyalar teknik nedenlerle hesabınıza iletilmediyse</li>
+        <li>Teslim edilen dosyalar ürün sayfasında belirtilen formatları içermiyorsa (örn. AI dosyası vaat edilmiş ama teslim edilmemişse)</li>
+        <li>Aynı tasarım için mükerrer (çift) ödeme gerçekleştiyse</li>
+        <li>Satın alma işlemi sonrası 24 saat içinde dosyalara hiç erişilemiyorsa</li>
+      </ul>
+
+      <h2>3. İade Kabul Edilmeyen Durumlar</h2>
+      <p>Aşağıdaki durumlarda iade yapılmaz:</p>
+      <ul>
+        <li>Dosyalar başarıyla teslim edilmişse ve indirilmişse</li>
+        <li>"Tasarımı beğenmedim", "rengi değiştirmek istiyorum" gibi öznel nedenler</li>
+        <li>Üretim sürecinde ortaya çıkan sorunlar (bu sorunlar üretici firmaya aittir)</li>
+        <li>Satın alma tarihinden 7 günden fazla süre geçmişse</li>
+      </ul>
+
+      <h2>4. İade Süreci</h2>
+      <p>İade talebinizi <strong>info@muratlola.com</strong> adresine, sipariş numaranız ve sorunu açıklayan bir mesajla iletebilirsiniz. Talebiniz <strong>3 iş günü</strong> içinde incelenir. Onaylanan iadeler, ödemenizin yapıldığı kartınıza <strong>5-10 iş günü</strong> içinde yansıtılır.</p>
+
+      <h2>5. Exclusive Lisans İadeleri</h2>
+      <p>Exclusive Lisans satın alımlarında, satın alma gerçekleştiği anda tasarım platformdan kaldırıldığından ve telif hakkı devredildiğinden iade işlemi teknik olarak mümkün değildir. Dosya teslimat hatası durumları bu kapsam dışındadır.</p>
+
+      <h2>6. İletişim</h2>
+      <p>İptal ve iade talepleriniz için: <strong>info@muratlola.com</strong><br>
+      Yanıt süresi: En geç 3 iş günü</p>
+    </div>
+  </div>
+</div>
+
+<!-- KULLANIM KOŞULLARI -->
+<div id="page-legal-terms" class="page">
+  <div class="container legal-container">
+    <button class="back-btn" onclick="goBack()">← Geri</button>
+    <div class="legal-doc">
+      <h1>Kullanım Koşulları</h1>
+      <p class="legal-date">Son güncelleme: 13 Mart 2026</p>
+
+      <h2>1. Kabul</h2>
+      <p>formaLOLA platformunu kullanarak bu Kullanım Koşulları'nı kabul etmiş sayılırsınız. Koşulları kabul etmiyorsanız platformu kullanmayı bırakınız.</p>
+
+      <h2>2. Platform Hizmetleri</h2>
+      <p>formaLOLA, forma tasarımcıları ile takımlar/kulüpler arasında aracılık yapan dijital bir pazaryeridir. Platform; tasarım yükleme, satın alma, lisanslama ve dijital teslimat hizmetlerini kapsar.</p>
+
+      <h2>3. Tasarımcı Yükümlülükleri</h2>
+      <ul>
+        <li>Yüklenen tüm tasarımların orijinal olması ve tasarımcıya ait olması zorunludur.</li>
+        <li>Başkasına ait tasarımların, logolar veya markaların izinsiz kullanımı kesinlikle yasaktır.</li>
+        <li>Telif hakkı ihlali tespit edilen tasarımlar derhal kaldırılır ve hesap askıya alınabilir.</li>
+        <li>Platform, her satış üzerinden <strong>%20</strong> komisyon alır.</li>
+      </ul>
+
+      <h2>4. Alıcı Yükümlülükleri</h2>
+      <ul>
+        <li>Satın alınan tasarımlar yalnızca lisans kapsamında kullanılabilir.</li>
+        <li>Tasarımların üçüncü taraflara satışı, kiralanması veya devredilmesi yasaktır.</li>
+        <li>Standart lisansta tasarım fiziksel üretim amacıyla kullanılabilir; dijital yeniden dağıtım yapılamaz.</li>
+      </ul>
+
+      <h2>5. Fikri Mülkiyet</h2>
+      <p>Platform tasarımı, yazılımı, logosu ve içerikleri formaLOLA'ya aittir. Tasarımların mülkiyeti ilgili tasarımcıya aittir; platform yalnızca satış altyapısını sağlar.</p>
+
+      <h2>6. Sorumluluk Sınırlaması</h2>
+      <p>formaLOLA, yüklenen tasarımların kalitesi, üretim sonuçları veya tasarımcının sözleşme yükümlülüklerinden doğan sorumluluklar için garanti vermez. Platform, aracı konumundadır.</p>
+
+      <h2>7. Hesap Güvenliği</h2>
+      <p>Hesap güvenliğinizden siz sorumlusunuz. Hesabınızın yetkisiz kullanımını fark etmeniz durumunda derhal info@muratlola.com adresini bilgilendiriniz.</p>
+
+      <h2>8. Değişiklikler</h2>
+      <p>formaLOLA, bu koşulları önceden haber vermeksizin değiştirme hakkını saklı tutar. Değişiklikler yayınlandığı tarihten itibaren geçerli olur.</p>
+
+      <h2>9. İletişim</h2>
+      <p><strong>info@muratlola.com</strong></p>
+    </div>
+  </div>
+</div>
 
 <!-- DİL SEÇİCİ MODAL -->
 <div class="overlay" id="langModal" onclick="outsideClose(event,'langModal')">
