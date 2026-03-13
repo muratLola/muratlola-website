@@ -10,6 +10,8 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   GoogleAuthProvider, 
+  GithubAuthProvider, // BUNA EKLENDİ
+  OAuthProvider,      // BUNA EKLENDİ (Apple vb. için)
   signInWithPopup, 
   onAuthStateChanged, 
   signOut 
@@ -309,7 +311,31 @@ function authTab(tab, btn) {
   document.getElementById('authLogin').classList.toggle('hidden', tab !== 'login');
   document.getElementById('authRegister').classList.toggle('hidden', tab !== 'register');
 }
+// GitHub Girişi
+window.doGithubLogin = async function() {
+  const provider = new GithubAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+    closeModal('loginModal');
+    showToast('GitHub ile giriş yapıldı!', 'success');
+  } catch (error) {
+    showToast('GitHub ile giriş iptal edildi.', 'error');
+    console.error(error);
+  }
+}
 
+// Apple Girişi
+window.doAppleLogin = async function() {
+  const provider = new OAuthProvider('apple.com');
+  try {
+    await signInWithPopup(auth, provider);
+    closeModal('loginModal');
+    showToast('Apple ile giriş yapıldı!', 'success');
+  } catch (error) {
+    showToast('Apple ile giriş iptal edildi.', 'error');
+    console.error(error);
+  }
+}
 
 /* ══════════ EXPORT TO WINDOW (MODÜL ÇÖZÜMÜ) ══════════ */
 // HTML'deki onclick komutlarının çalışması için hepsini window'a atıyoruz.
@@ -344,3 +370,4 @@ window.doRegister = doRegister;
 window.doGoogleLogin = doGoogleLogin;
 window.doLogout = doLogout;
 window.authTab = authTab;
+
