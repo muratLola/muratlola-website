@@ -80,43 +80,50 @@ function initScrollNav() {
 /* ══════════ FİRESTORE'DAN VERİ ÇEKME FONKSİYONU ══════════ */
 async function fetchApprovedDesigns() {
   try {
-    // Sadece durumu "approved" (onaylı) olanları çek
-    const snapshot = await db.collection('designs').where('status', '==', 'approved').get();
+    const snapshot = await db.collection('designs').where('status', '==', 'approved').orderBy('createdAt', 'desc').get();
     const realDesigns = [];
     
     snapshot.forEach(doc => {
       const d = doc.data();
+      // Renk paletten gradient oluştur
+      const col1 = (d.colors && d.colors[0]) || '#1f1f26';
+      const col2 = (d.colors && d.colors[1]) || '#0c0c0e';
       realDesigns.push({
-        id: doc.id, // Firebase'in verdiği benzersiz ID
+        id: doc.id,
         title: d.title,
-        designer: d.designerName,
-        designerInitials: d.designerInitials,
+        designer: d.designerName || 'Anonim',
+        designerInitials: d.designerInitials || '?',
         sport: d.sport,
         style: d.style,
         pattern: d.pattern,
         colors: d.colors || [],
-        price: d.price,
-        exclusivePrice: d.exclusivePrice,
+        price: d.price || 0,
+        exclusivePrice: d.exclusivePrice || 0,
         sales: d.sales || 0,
         likes: d.likes || 0,
-        license: 'standard', 
-        // Şimdilik Storage (Resim) işlemini yapmadığımız için geçici arka plan ve numara atıyoruz
-        bg: 'linear-gradient(140deg, #1f1f26, #0c0c0e)',
-        num: Math.floor(Math.random() * 99) + 1, 
-        kit: d.kit,
-        designerId: d.designerId
+        license: d.exclusivePrice > 0 ? 'standard' : 'standard',
+        // Gerçek ImgBB fotoğrafları
+        coverUrl: d.coverUrl || '',
+        coverThumb: d.coverThumb || '',
+        imageUrls: d.imageUrls || {},
+        // Fotoğraf yoksa renk paletten gradient göster
+        bg: `linear-gradient(140deg, ${col1}, ${col2})`,
+        num: String(Math.floor(Math.random() * 99) + 1),
+        kit: d.kit || 'Ev',
+        designerId: d.designerId,
+        desc: d.desc || ''
       });
     });
     
-    // Kullanıcıların yüklediği gerçek tasarımları en başa, örnekleri arkasına ekliyoruz.
     ALL_DESIGNS = [...realDesigns, ...MOCK_DESIGNS];
-    
-    // Veriler gelince sayfadaki listeleri güncelle
     renderHomeDesigns();
     if (currentPage === 'explore') applyFilters();
     
   } catch (error) {
-    console.error("Tasarımlar çekilemedi:", error);
+    console.error('Tasarımlar çekilemedi:', error);
+    // Hata olursa sadece mock data göster
+    ALL_DESIGNS = [...MOCK_DESIGNS];
+    renderHomeDesigns();
   }
 }
 
@@ -188,11 +195,18 @@ function designCard(d) {
   const hotTag = d.sales > 80 ? `<span class="tag tag-hot" style="font-size:10px;padding:3px 7px">Çok Satan</span>` : d.id === 'm1' || d.id === 'm2' ? `<span class="tag tag-new" style="font-size:10px;padding:3px 7px">Yeni</span>` : '';
   const badge = licTag || hotTag;
 
+  // Gerçek fotoğraf varsa göster, yoksa gradient placeholder
+  const imgContent = d.coverUrl
+    ? `<img src="${d.coverThumb || d.coverUrl}" alt="${d.title}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+  const placeholderStyle = d.coverUrl ? 'display:none' : 'display:flex';
+
   return `
     <div class="design-card" onclick="showDesignDetail('${d.id}')">
       <div class="dc-img">
-        <div class="dc-img-placeholder" style="background:${d.bg}; width:100%; height:100%; position:relative">
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+        <div style="width:100%;height:100%;position:relative;overflow:hidden">
+          ${imgContent}
+          <div class="dc-img-placeholder" style="background:${d.bg};width:100%;height:100%;position:${d.coverUrl?'absolute':'relative'};inset:0;${placeholderStyle};align-items:center;justify-content:center">
             <div style="width:70px;height:84px;background:rgba(255,255,255,0.12);border-radius:8px 8px 14px 14px;display:flex;align-items:center;justify-content:center;position:relative;border:1px solid rgba(255,255,255,0.08)">
               <div style="position:absolute;left:0;right:0;height:3px;top:50%;transform:translateY(-50%);background:${d.colors && d.colors[1] ? d.colors[1] : 'rgba(255,255,255,0.4)'}"></div>
               <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:rgba(255,255,255,0.7);position:relative;z-index:1">${d.num}</span>
@@ -339,25 +353,43 @@ function showDesignDetail(id) {
   currentDesignId = id;
   showPage('detail');
 
+  // Gerçek görselleri veya placeholder hazırla
+  const imgs = d.imageUrls || {};
+  const slots = [
+    { key: 'front',   label: 'Ön',     url: d.coverUrl || '' },
+    { key: 'back',    label: 'Arka',   url: imgs.back?.url || '' },
+    { key: 'detail',  label: 'Detay',  url: imgs.detail?.url || '' },
+    { key: 'flat',    label: 'Flat',   url: imgs.flat?.url || '' },
+    { key: 'model',   label: 'Model',  url: imgs.model?.url || '' },
+    { key: 'texture', label: 'Kumaş',  url: imgs.texture?.url || '' },
+  ].filter(s => s.url || s.key === 'front' || s.key === 'back' || s.key === 'detail' || s.key === 'flat');
+
+  const mainImgHtml = d.coverUrl
+    ? `<img src="${d.coverUrl}" alt="${d.title}" style="width:100%;height:100%;object-fit:contain">`
+    : `<div style="width:100%;height:100%;background:${d.bg};display:flex;align-items:center;justify-content:center">
+        <div style="width:140px;height:168px;background:rgba(255,255,255,0.12);border-radius:12px 12px 24px 24px;display:flex;align-items:center;justify-content:center;position:relative;border:1px solid rgba(255,255,255,0.08)">
+          <div style="position:absolute;left:0;right:0;height:4px;top:50%;transform:translateY(-50%);background:${d.colors && d.colors[1] ? d.colors[1] : 'rgba(255,255,255,0.4)'}"></div>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:56px;color:rgba(255,255,255,0.7);position:relative;z-index:1">${d.num}</span>
+        </div>
+      </div>`;
+
+  const thumbsHtml = slots.map((s, i) => {
+    const thumbStyle = s.url
+      ? `overflow:hidden`
+      : `background:${d.bg};display:flex;align-items:center;justify-content:center`;
+    const thumbContent = s.url
+      ? `<img src="${s.url}" alt="${s.label}" style="width:100%;height:100%;object-fit:cover">`
+      : `<span style="font-size:10px;color:rgba(255,255,255,0.5)">${s.label}</span>`;
+    return `<div class="detail-thumb ${i===0?'active':''}" style="${thumbStyle}" onclick="switchDetailImg(this,'${s.url || ''}','${d.bg}','${d.num}','${s.label}')">${thumbContent}</div>`;
+  }).join('');
+
   const content = document.getElementById('detailContent');
   const isFav = favorites.has(String(id));
   content.innerHTML = `
     <div class="detail-grid">
       <div class="detail-imgs">
-        <div class="detail-main-img">
-          <div style="width:100%;height:100%;background:${d.bg};display:flex;align-items:center;justify-content:center">
-            <div style="width:140px;height:168px;background:rgba(255,255,255,0.12);border-radius:12px 12px 24px 24px;display:flex;align-items:center;justify-content:center;position:relative;border:1px solid rgba(255,255,255,0.08)">
-              <div style="position:absolute;left:0;right:0;height:4px;top:50%;transform:translateY(-50%);background:${d.colors && d.colors[1] ? d.colors[1] : 'rgba(255,255,255,0.4)'}"></div>
-              <span style="font-family:'Bebas Neue',sans-serif;font-size:56px;color:rgba(255,255,255,0.7);position:relative;z-index:1">${d.num}</span>
-            </div>
-          </div>
-        </div>
-        <div class="detail-thumbs">
-          <div class="detail-thumb active" style="background:${d.bg};display:flex;align-items:center;justify-content:center"><span style="font-size:10px;color:rgba(255,255,255,0.5)">Ön</span></div>
-          <div class="detail-thumb" style="background:${d.bg};display:flex;align-items:center;justify-content:center"><span style="font-size:10px;color:rgba(255,255,255,0.5)">Arka</span></div>
-          <div class="detail-thumb" style="background:${d.bg};display:flex;align-items:center;justify-content:center"><span style="font-size:10px;color:rgba(255,255,255,0.5)">Detay</span></div>
-          <div class="detail-thumb" style="background:${d.bg};display:flex;align-items:center;justify-content:center"><span style="font-size:10px;color:rgba(255,255,255,0.5)">Flat</span></div>
-        </div>
+        <div class="detail-main-img" id="detailMainImg">${mainImgHtml}</div>
+        <div class="detail-thumbs">${thumbsHtml}</div>
       </div>
 
       <div class="detail-info">
@@ -369,6 +401,8 @@ function showDesignDetail(id) {
           <span style="margin-left:auto;font-size:12px">♥ ${d.likes} beğeni</span>
         </div>
 
+        ${d.desc ? `<p style="font-size:14px;color:var(--text2);margin-bottom:16px;line-height:1.6">${d.desc}</p>` : ''}
+
         <div class="detail-colors">
           ${(d.colors||[]).map(c => `<div class="det-color" style="background:${c}" title="${c}"></div>`).join('')}
           <span style="font-size:12px;color:var(--text3);margin-left:6px">${(d.colors||[]).join(' · ')}</span>
@@ -378,7 +412,7 @@ function showDesignDetail(id) {
           <div class="dm-item"><div class="dm-label">Stil</div><div class="dm-val" style="text-transform:capitalize">${d.style}</div></div>
           <div class="dm-item"><div class="dm-label">Desen</div><div class="dm-val" style="text-transform:capitalize">${d.pattern}</div></div>
           <div class="dm-item"><div class="dm-label">Toplam Satış</div><div class="dm-val">${d.sales}</div></div>
-          <div class="dm-item"><div class="dm-label">Lisans</div><div class="dm-val" style="text-transform:capitalize">${d.license === 'exclusive' ? 'Exclusive' : 'Standart'}</div></div>
+          <div class="dm-item"><div class="dm-label">Lisans</div><div class="dm-val">${d.license === 'exclusive' ? 'Exclusive' : 'Standart'}</div></div>
         </div>
 
         <div class="detail-license-sel" id="licSel">
@@ -412,6 +446,19 @@ function showDesignDetail(id) {
       </div>
     </div>
   `;
+}
+
+// Detay sayfasında thumbnail'a tıklayınca ana görseli değiştir
+function switchDetailImg(thumbEl, url, bg, num, label) {
+  document.querySelectorAll('.detail-thumb').forEach(t => t.classList.remove('active'));
+  thumbEl.classList.add('active');
+  const main = document.getElementById('detailMainImg');
+  if (!main) return;
+  if (url) {
+    main.innerHTML = `<img src="${url}" alt="${label}" style="width:100%;height:100%;object-fit:contain">`;
+  } else {
+    main.innerHTML = `<div style="width:100%;height:100%;background:${bg};display:flex;align-items:center;justify-content:center"><span style="font-family:'Bebas Neue',sans-serif;font-size:48px;color:rgba(255,255,255,0.4)">${label}</span></div>`;
+  }
 }
 
 function selectLicense(el, type, price) {
@@ -494,6 +541,74 @@ function renderCompetitionsPage() {
   `).join('');
 }
 
+/* ══════════ DASHBOARD GERÇEK VERİ ══════════ */
+async function loadDashboardOverview() {
+  if (!currentUser) return;
+  try {
+    const snapshot = await db.collection('designs')
+      .where('designerId', '==', currentUser.uid)
+      .orderBy('createdAt', 'desc')
+      .get();
+
+    let totalDesigns = 0, totalSales = 0, totalLikes = 0, pendingCount = 0;
+    const recentDesigns = [];
+
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      totalDesigns++;
+      totalSales += d.sales || 0;
+      totalLikes += d.likes || 0;
+      if (d.status === 'pending') pendingCount++;
+      if (recentDesigns.length < 3) recentDesigns.push({ id: doc.id, ...d });
+    });
+
+    const totalEarnings = totalSales * 0; // Gerçek satış verisi gelince hesaplanır
+
+    const statsEl = document.getElementById('dashStatsGrid');
+    if (statsEl) {
+      statsEl.innerHTML = `
+        <div class="ds-card"><div class="ds-label">Tasarım Sayısı</div><div class="ds-val">${totalDesigns}</div></div>
+        <div class="ds-card"><div class="ds-label">Toplam Satış</div><div class="ds-val accent">${totalSales}</div></div>
+        <div class="ds-card"><div class="ds-label">Toplam Beğeni</div><div class="ds-val">${totalLikes}</div></div>
+        <div class="ds-card"><div class="ds-label">Onay Bekleyen</div><div class="ds-val gold">${pendingCount}</div></div>
+      `;
+    }
+
+    const recentEl = document.getElementById('dashRecentDesigns');
+    if (recentEl) {
+      if (recentDesigns.length === 0) {
+        recentEl.innerHTML = `<div style="text-align:center;padding:40px 20px">
+          <p style="color:var(--text2);margin-bottom:16px">Henüz tasarım yüklemedin.</p>
+          <button class="btn-cta" onclick="showModal('uploadModal')">+ İlk Tasarımını Yükle</button>
+        </div>`;
+      } else {
+        recentEl.innerHTML = `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
+          ${recentDesigns.map(d => `
+            <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center" onclick="showDesignDetail('${d.id}')" style="cursor:pointer">
+              <div>
+                <div style="font-size:14px;font-weight:500">${d.title}</div>
+                <div style="font-size:11px;color:var(--text3);margin-top:2px">${d.sport} · ₺${d.price}</div>
+              </div>
+              <span style="font-size:11px;padding:3px 10px;border-radius:4px;${
+                d.status === 'approved' ? 'background:rgba(42,157,143,0.15);color:#4ecdc4' :
+                d.status === 'pending'  ? 'background:rgba(201,168,76,0.15);color:var(--gold)' :
+                                          'background:rgba(230,57,70,0.15);color:var(--accent)'
+              }">${
+                d.status === 'approved' ? '✓ Yayında' :
+                d.status === 'pending'  ? '⏳ Bekliyor' : '✕ Reddedildi'
+              }</span>
+            </div>
+          `).join('')}
+        </div>`;
+      }
+    }
+  } catch(e) {
+    console.error('Dashboard verisi çekilemedi:', e);
+    const statsEl = document.getElementById('dashStatsGrid');
+    if (statsEl) statsEl.innerHTML = `<div class="ds-card"><div class="ds-label">Veri yüklenemedi</div><div class="ds-val">—</div></div>`;
+  }
+}
+
 /* ══════════ DASHBOARD & GİZLİ ADMİN PANELİ ══════════ */
 function renderDashboard() {
   if (!currentUser) {
@@ -517,26 +632,14 @@ function dashTab(tab, btn) {
   if (tab === 'overview') {
     el.innerHTML = `
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Hoş geldin, ${currentUser?.name || 'Tasarımcı'} 👋</h2>
-      <div class="dash-stats">
-        <div class="ds-card"><div class="ds-label">Toplam Satış</div><div class="ds-val accent">24</div></div>
-        <div class="ds-card"><div class="ds-label">Toplam Kazanç</div><div class="ds-val gold">₺8.640</div></div>
-        <div class="ds-card"><div class="ds-label">Tasarım Sayısı</div><div class="ds-val">6</div></div>
-        <div class="ds-card"><div class="ds-label">Toplam Beğeni</div><div class="ds-val">342</div></div>
+      <div class="dash-stats" id="dashStatsGrid">
+        <div class="ds-card"><div class="ds-label">Yükleniyor...</div><div class="ds-val">—</div></div>
       </div>
-      <div class="dash-section-title">Son Aktiviteler</div>
-      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
-        ${[
-          { txt: 'Gece Yarısı Pro satıldı — ₺449', time: '2 saat önce' },
-          { txt: 'Yeni yorum: "Harika tasarım!"', time: '1 gün önce' },
-          { txt: 'Tasarımın favorilere eklendi', time: '2 gün önce' },
-        ].map(a => `
-          <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-            <span style="font-size:14px">${a.txt}</span>
-            <span style="font-size:11px;color:var(--text3)">${a.time}</span>
-          </div>
-        `).join('')}
-      </div>
+      <div class="dash-section-title" style="margin-top:24px">Son Tasarımlarım</div>
+      <div id="dashRecentDesigns" style="color:var(--text2);font-size:13px">Yükleniyor...</div>
     `;
+    // Gerçek verileri Firestore'dan çek
+    loadDashboardOverview();
   } else if (tab === 'mydesigns') {
     // Sadece giriş yapan kullanıcının tasarımlarını göster
     const myDesigns = ALL_DESIGNS.filter(d => d.designerId === currentUser?.uid || d.designer === currentUser?.name);
@@ -713,20 +816,44 @@ async function doLogin() {
     closeModal('loginModal');
     showToast('Hoş geldin! ✓', 'success');
   } catch (error) {
-    showToast('Giriş başarısız.', 'error');
+    const msgs = {
+      'auth/user-not-found': 'Bu e-posta kayıtlı değil.',
+      'auth/wrong-password': 'Şifre yanlış.',
+      'auth/invalid-email': 'Geçersiz e-posta.',
+      'auth/too-many-requests': 'Çok fazla deneme. Lütfen bekleyin.'
+    };
+    showToast(msgs[error.code] || 'Giriş başarısız.', 'error');
   }
 }
 
 async function doRegister() {
+  const name = document.getElementById('regName')?.value?.trim();
   const email = document.getElementById('regEmail').value;
   const pass = document.getElementById('regPass').value;
-  if (!email || !pass) { showToast('Tüm alanları doldurun', 'error'); return; }
+  const role = document.getElementById('regRole')?.value || 'designer';
+  if (!name || !email || !pass) { showToast('Tüm alanları doldurun', 'error'); return; }
+  if (pass.length < 6) { showToast('Şifre en az 6 karakter olmalı', 'error'); return; }
   try {
-    await auth.createUserWithEmailAndPassword(email, pass);
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    // Firebase Auth profiline isim kaydet
+    await cred.user.updateProfile({ displayName: name });
+    // Firestore'a kullanıcı profili kaydet
+    await db.collection('users').doc(cred.user.uid).set({
+      name: name,
+      email: email,
+      role: role,
+      level: 'rookie',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
     closeModal('loginModal');
-    showToast('Kayıt başarılı!', 'success');
+    showToast(`Hoş geldin, ${name}! ✓`, 'success');
   } catch (error) {
-    showToast('Kayıt olunamadı.', 'error');
+    const msgs = {
+      'auth/email-already-in-use': 'Bu e-posta zaten kayıtlı.',
+      'auth/weak-password': 'Şifre çok zayıf.',
+      'auth/invalid-email': 'Geçersiz e-posta.'
+    };
+    showToast(msgs[error.code] || 'Kayıt olunamadı: ' + error.message, 'error');
   }
 }
 
@@ -817,6 +944,61 @@ function processBuy(id) {
   showToast('🎉 Satın alma tamamlandı! Dosyalar hesabınıza eklendi.', 'success');
 }
 
+/* ══════════ IMGBB ENTEGRASYONU ══════════ */
+const IMGBB_API_KEY = '8450d2c8a81b83cde9453909f3d7cb28';
+
+// Tek bir dosyayı ImgBB'ye yükle, URL döndür
+async function uploadToImgBB(file) {
+  const formData = new FormData();
+  formData.append('image', file);
+  const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+    method: 'POST',
+    body: formData
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error('ImgBB yükleme hatası: ' + (data.error?.message || 'Bilinmeyen hata'));
+  return {
+    url: data.data.url,          // Doğrudan URL
+    thumb: data.data.thumb.url,  // Küçük önizleme URL
+    display: data.data.display_url
+  };
+}
+
+// Birden fazla slot'taki dosyaları ImgBB'ye yükle
+async function uploadAllSlotImages() {
+  const slots = ['s-front','s-back','s-detail','s-flat','s-model','s-tex','s-pat','s-var','s-field','s-pkg'];
+  const slotNames = {
+    's-front': 'front', 's-back': 'back', 's-detail': 'detail', 's-flat': 'flat',
+    's-model': 'model', 's-tex': 'texture', 's-pat': 'pattern',
+    's-var': 'colorVar', 's-field': 'field', 's-pkg': 'packaging'
+  };
+  const results = {};
+  
+  for (const slotId of slots) {
+    const slot = document.getElementById(slotId);
+    if (!slot) continue;
+    const imgEl = slot.querySelector('img.is-preview');
+    if (!imgEl) continue; // Bu slot boş, atla
+    
+    // Slot'un parent'ındaki file input'u bul
+    const fileInput = slot.closest('.img-slot')?.querySelector('input[type="file"]');
+    if (!fileInput?.files?.[0]) continue;
+    
+    try {
+      showToast(`Görsel yükleniyor (${slotNames[slotId]})...`, '');
+      const imgData = await uploadToImgBB(fileInput.files[0]);
+      results[slotNames[slotId]] = imgData;
+    } catch(e) {
+      console.error(`${slotId} yüklenemedi:`, e);
+      // Zorunlu slotlarda hata at
+      if (['s-front','s-back','s-detail','s-flat'].includes(slotId)) {
+        throw new Error(`Zorunlu görsel yüklenemedi (${slotNames[slotId]}): ${e.message}`);
+      }
+    }
+  }
+  return results;
+}
+
 /* ══════════ UPLOAD VE FIRESTORE ══════════ */
 function wizGo(step) {
   if (step === 2) {
@@ -827,7 +1009,7 @@ function wizGo(step) {
       return;
     }
   }
-  if (step === 5) {
+  if (step === 3) {
     if (!document.getElementById('upTitle')?.value.trim()) {
       showToast('Tasarım adı zorunludur', 'error');
       return;
@@ -873,49 +1055,75 @@ async function submitDesign() {
   }
 
   const title = document.getElementById('upTitle').value.trim();
-  const sport = document.getElementById('upSport').value;
-  const kit = document.getElementById('upKit').value;
-  const style = document.getElementById('upStyle').value;
-  const pattern = document.getElementById('upPattern').value;
-  const desc = document.getElementById('upDesc').value.trim();
-  const tags = document.getElementById('upTags').value.split(',').map(t => t.trim());
+  if (!title) { showToast('Tasarım adı zorunludur', 'error'); return; }
 
-  const c1 = document.getElementById('c1h').value;
-  const c2 = document.getElementById('c2h').value;
-  const c3 = document.getElementById('c3h').value;
-
+  const sport    = document.getElementById('upSport').value;
+  const kit      = document.getElementById('upKit').value;
+  const style    = document.getElementById('upStyle').value;
+  const pattern  = document.getElementById('upPattern').value;
+  const fabric   = document.getElementById('upFabric').value;
+  const desc     = document.getElementById('upDesc').value.trim();
+  const tags     = document.getElementById('upTags').value.split(',').map(t => t.trim()).filter(Boolean);
+  const c1       = document.getElementById('c1h').value;
+  const c2       = document.getElementById('c2h').value;
+  const c3       = document.getElementById('c3h').value;
   const stdPrice = Number(document.getElementById('stdPrice').value) || 0;
-  const exclPrice = Number(document.getElementById('exclPrice').value) || 0;
+  const exclPrice= Number(document.getElementById('exclPrice').value) || 0;
 
-  const newDesign = {
-    title: title,
-    sport: sport,
-    kit: kit,
-    style: style,
-    pattern: pattern,
-    desc: desc,
-    tags: tags,
-    colors: [c1, c2, c3],
-    price: stdPrice,
-    exclusivePrice: exclPrice,
-    designerId: currentUser.uid,
-    designerName: currentUser.name,
-    designerInitials: currentUser.name[0].toUpperCase(),
-    likes: 0,
-    sales: 0,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    status: 'pending' // Admin onayı bekliyor
-  };
+  // Yayınla butonunu devre dışı bırak, loading göster
+  const publishBtn = document.querySelector('.btn-publish');
+  if (publishBtn) { publishBtn.disabled = true; publishBtn.textContent = '⏳ Görseller yükleniyor...'; }
 
   try {
+    // 1. Tüm görselleri ImgBB'ye yükle
+    showToast('Görseller ImgBB\'ye yükleniyor...', '');
+    let imageUrls = {};
+    try {
+      imageUrls = await uploadAllSlotImages();
+    } catch(imgError) {
+      showToast('Görsel yükleme hatası: ' + imgError.message, 'error');
+      if (publishBtn) { publishBtn.disabled = false; publishBtn.textContent = 'Tasarımı Yayınla 🚀'; }
+      return;
+    }
+
+    // 2. Firestore'a kaydet
     showToast('Veriler kaydediliyor...', '');
-    await db.collection("designs").add(newDesign);
+    const newDesign = {
+      title,
+      sport,
+      kit,
+      style,
+      pattern,
+      fabric,
+      desc,
+      tags,
+      colors: [c1, c2, c3].filter(c => c && c !== '#ffffff' || c === c1),
+      price: stdPrice,
+      exclusivePrice: exclPrice,
+      designerId: currentUser.uid,
+      designerName: currentUser.name,
+      designerInitials: (currentUser.name[0] || 'U').toUpperCase(),
+      // ImgBB'den gelen URL'ler
+      imageUrls,          // { front: {url,thumb}, back: {...}, ... }
+      coverUrl: imageUrls.front?.url || '',      // Ana kart görseli
+      coverThumb: imageUrls.front?.thumb || '',  // Küçük önizleme
+      likes: 0,
+      sales: 0,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      status: 'pending'
+    };
+
+    await db.collection('designs').add(newDesign);
+    
+    if (publishBtn) { publishBtn.disabled = false; publishBtn.textContent = 'Tasarımı Yayınla 🚀'; }
     closeModal('uploadModal');
-    showToast('🚀 Tasarım veritabanına kaydedildi! İnceleme süreci başladı.', 'success');
+    showToast('🚀 Tasarım yüklendi! Admin onayı bekleniyor (max 24 saat).', 'success');
     resetUploadForm();
+
   } catch (error) {
-    console.error("Yükleme Hatası:", error);
+    console.error('Yükleme Hatası:', error);
     showToast('Yükleme başarısız: ' + error.message, 'error');
+    if (publishBtn) { publishBtn.disabled = false; publishBtn.textContent = 'Tasarımı Yayınla 🚀'; }
   }
 }
 
