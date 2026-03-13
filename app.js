@@ -3,6 +3,34 @@
    Firebase-ready frontend logic
    Replace MOCK_* data with real Firebase calls
 ═══════════════════════════════════════════ */
+/* ══════════ FIREBASE KURULUMU ══════════ */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCI7Ku7aF2gAf-lDpMwzYfBY0iC_ulg3gE",
+  authDomain: "formalola-c4ba7.firebaseapp.com",
+  projectId: "formalola-c4ba7",
+  storageBucket: "formalola-c4ba7.firebasestorage.app",
+  messagingSenderId: "67406520517",
+  appId: "1:67406520517:web:a9d240d47a99d3c79690ac"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+/* ═══════════════════════════════════════ */
+
+
+
+
 
 /* ══════════ MOCK DATA ══════════ */
 const MOCK_DESIGNS = [
@@ -847,3 +875,4 @@ function toggleMobileNav() {
    // Use backend Cloud Function to create iyzico payment token
    // Never expose iyzico secret key on frontend
 ══════════ */
+
