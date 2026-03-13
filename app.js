@@ -20,41 +20,33 @@ const auth = firebase.auth();
 const db = firebase.firestore(); 
 /* ═══════════════════════════════════════ */
 
-/* ══════════ MOCK DATA ══════════ */
+/* ══════════ MOCK DATA (Örnek Vitrin) ══════════ */
 const MOCK_DESIGNS = [
-  { id: 1, title: 'Gece Yarısı Pro', designer: 'MertStudio', designerInitials: 'MS', sport: 'Futbol', style: 'modern', pattern: 'gradient', colors: ['#0a0a0a','#e63946','#ffffff'], price: 449, exclusivePrice: 3999, sales: 128, likes: 342, license: 'standard', bg: 'linear-gradient(140deg,#0a0a0a,#1a1a2e)', num: '10', kit: 'Deplasman' },
-  { id: 2, title: 'Anadolu Kırmızısı', designer: 'FormArt', designerInitials: 'FA', sport: 'Futbol', style: 'retro', pattern: 'stripes', colors: ['#e63946','#1d1d1d','#f4f1de'], price: 299, exclusivePrice: 2499, sales: 89, likes: 211, license: 'standard', bg: 'linear-gradient(140deg,#e63946,#8b0000)', num: '7', kit: 'Ev' },
-  { id: 3, title: 'Cyber Esports Kit', designer: 'NeonLab', designerInitials: 'NL', sport: 'E-Spor', style: 'futuristic', pattern: 'geometric', colors: ['#0d1b2a','#415a77','#e9c46a'], price: 599, exclusivePrice: 5499, sales: 67, likes: 198, license: 'exclusive', bg: 'linear-gradient(140deg,#0d1b2a,#415a77)', num: '9', kit: 'Ev' },
-  { id: 4, title: 'Bosphorus Wave', designer: 'IstanbulKit', designerInitials: 'IK', sport: 'Basketbol', style: 'modern', pattern: 'abstract', colors: ['#1d3557','#457b9d','#a8dadc'], price: 389, exclusivePrice: 3500, sales: 54, likes: 167, license: 'standard', bg: 'linear-gradient(140deg,#1d3557,#457b9d)', num: '23', kit: 'Deplasman' },
-  { id: 5, title: 'Sarı Kaplan', designer: 'TigerDesign', designerInitials: 'TD', sport: 'Futbol', style: 'classic', pattern: 'stripes', colors: ['#e9c46a','#1d1d1d','#ffffff'], price: 329, exclusivePrice: 2999, sales: 103, likes: 289, license: 'standard', bg: 'linear-gradient(140deg,#e9c46a,#f4a261)', num: '11', kit: 'Ev' },
-  { id: 6, title: 'Mor Şimşek', designer: 'EliteKit', designerInitials: 'EK', sport: 'Voleybol', style: 'futuristic', pattern: 'geometric', colors: ['#8338ec','#3a0ca3','#f72585'], price: 449, exclusivePrice: 4000, sales: 41, likes: 134, license: 'standard', bg: 'linear-gradient(140deg,#8338ec,#3a0ca3)', num: '6', kit: 'Ev' },
-  { id: 7, title: 'Arctic Pro', designer: 'NordKit', designerInitials: 'NK', sport: 'Basketbol', style: 'minimal', pattern: 'minimal', colors: ['#f4f1de','#e9c46a','#1d1d1d'], price: 269, exclusivePrice: 2200, sales: 77, likes: 156, license: 'standard', bg: 'linear-gradient(140deg,#e9ecef,#dee2e6)', num: '3', kit: 'Deplasman' },
-  { id: 8, title: 'Karadeniz Fırtınası', designer: 'BlackSeaDesign', designerInitials: 'BD', sport: 'Rugby', style: 'modern', pattern: 'abstract', colors: ['#023e8a','#0077b6','#90e0ef'], price: 519, exclusivePrice: 4800, sales: 32, likes: 98, license: 'exclusive', bg: 'linear-gradient(140deg,#023e8a,#0077b6)', num: '8', kit: 'Ev' },
-  { id: 9, title: 'Retro 76 Kit', designer: 'VintageFC', designerInitials: 'VF', sport: 'Futbol', style: 'retro', pattern: 'retro', colors: ['#606c38','#dda15e','#fefae0'], price: 349, exclusivePrice: 3000, sales: 91, likes: 243, license: 'standard', bg: 'linear-gradient(140deg,#606c38,#283618)', num: '10', kit: 'Üçüncü' },
-  { id: 10, title: 'Flame Street', designer: 'StreetKit', designerInitials: 'SK', sport: 'E-Spor', style: 'street', pattern: 'abstract', colors: ['#e85d04','#dc2f02','#1d1d1d'], price: 479, exclusivePrice: 4200, sales: 58, likes: 177, license: 'standard', bg: 'linear-gradient(140deg,#e85d04,#9d0208)', num: '1', kit: 'Ev' },
-  { id: 11, title: 'Olympus Gold', designer: 'GoldDesign', designerInitials: 'GD', sport: 'Amerikan Futbolu', style: 'classic', pattern: 'stripes', colors: ['#c9a84c','#1d1d1d','#ffffff'], price: 589, exclusivePrice: 5200, sales: 29, likes: 112, license: 'exclusive', bg: 'linear-gradient(140deg,#c9a84c,#8d6e14)', num: '12', kit: 'Ev' },
-  { id: 12, title: 'Geo Minimal', designer: 'CleanKit', designerInitials: 'CK', sport: 'Voleybol', style: 'minimal', pattern: 'geometric', colors: ['#2d2d2d','#e63946','#f4f1de'], price: 299, exclusivePrice: 2600, sales: 63, likes: 145, license: 'standard', bg: 'linear-gradient(140deg,#2d2d2d,#4a4a4a)', num: '5', kit: 'Deplasman' },
+  { id: 'm1', title: 'Gece Yarısı Pro', designer: 'MertStudio', designerInitials: 'MS', sport: 'Futbol', style: 'modern', pattern: 'gradient', colors: ['#0a0a0a','#e63946','#ffffff'], price: 449, exclusivePrice: 3999, sales: 128, likes: 342, license: 'standard', bg: 'linear-gradient(140deg,#0a0a0a,#1a1a2e)', num: '10', kit: 'Deplasman' },
+  { id: 'm2', title: 'Anadolu Kırmızısı', designer: 'FormArt', designerInitials: 'FA', sport: 'Futbol', style: 'retro', pattern: 'stripes', colors: ['#e63946','#1d1d1d','#f4f1de'], price: 299, exclusivePrice: 2499, sales: 89, likes: 211, license: 'standard', bg: 'linear-gradient(140deg,#e63946,#8b0000)', num: '7', kit: 'Ev' },
+  { id: 'm3', title: 'Cyber Esports Kit', designer: 'NeonLab', designerInitials: 'NL', sport: 'E-Spor', style: 'futuristic', pattern: 'geometric', colors: ['#0d1b2a','#415a77','#e9c46a'], price: 599, exclusivePrice: 5499, sales: 67, likes: 198, license: 'exclusive', bg: 'linear-gradient(140deg,#0d1b2a,#415a77)', num: '9', kit: 'Ev' },
+  { id: 'm4', title: 'Bosphorus Wave', designer: 'IstanbulKit', designerInitials: 'IK', sport: 'Basketbol', style: 'modern', pattern: 'abstract', colors: ['#1d3557','#457b9d','#a8dadc'], price: 389, exclusivePrice: 3500, sales: 54, likes: 167, license: 'standard', bg: 'linear-gradient(140deg,#1d3557,#457b9d)', num: '23', kit: 'Deplasman' },
+  { id: 'm5', title: 'Sarı Kaplan', designer: 'TigerDesign', designerInitials: 'TD', sport: 'Futbol', style: 'classic', pattern: 'stripes', colors: ['#e9c46a','#1d1d1d','#ffffff'], price: 329, exclusivePrice: 2999, sales: 103, likes: 289, license: 'standard', bg: 'linear-gradient(140deg,#e9c46a,#f4a261)', num: '11', kit: 'Ev' },
+  { id: 'm6', title: 'Mor Şimşek', designer: 'EliteKit', designerInitials: 'EK', sport: 'Voleybol', style: 'futuristic', pattern: 'geometric', colors: ['#8338ec','#3a0ca3','#f72585'], price: 449, exclusivePrice: 4000, sales: 41, likes: 134, license: 'standard', bg: 'linear-gradient(140deg,#8338ec,#3a0ca3)', num: '6', kit: 'Ev' },
+  { id: 'm7', title: 'Arctic Pro', designer: 'NordKit', designerInitials: 'NK', sport: 'Basketbol', style: 'minimal', pattern: 'minimal', colors: ['#f4f1de','#e9c46a','#1d1d1d'], price: 269, exclusivePrice: 2200, sales: 77, likes: 156, license: 'standard', bg: 'linear-gradient(140deg,#e9ecef,#dee2e6)', num: '3', kit: 'Deplasman' },
+  { id: 'm8', title: 'Karadeniz Fırtınası', designer: 'BlackSeaDesign', designerInitials: 'BD', sport: 'Rugby', style: 'modern', pattern: 'abstract', colors: ['#023e8a','#0077b6','#90e0ef'], price: 519, exclusivePrice: 4800, sales: 32, likes: 98, license: 'exclusive', bg: 'linear-gradient(140deg,#023e8a,#0077b6)', num: '8', kit: 'Ev' },
 ];
 
 const MOCK_DESIGNERS = [
   { id: 1, name: 'MertStudio', initials: 'MS', bio: 'Futbol forma uzmanı', sales: 128, designs: 24, rating: 4.9, level: 'master' },
   { id: 2, name: 'NeonLab', initials: 'NL', bio: 'E-spor & fütüristik tasarım', sales: 67, designs: 18, rating: 4.8, level: 'elite' },
-  { id: 3, name: 'IstanbulKit', initials: 'IK', bio: 'Türk motifli formalar', sales: 54, designs: 15, rating: 4.7, level: 'pro' },
-  { id: 4, name: 'FormArt', initials: 'FA', bio: 'Retro koleksiyon ustası', sales: 89, designs: 31, rating: 4.8, level: 'elite' },
-  { id: 5, name: 'EliteKit', initials: 'EK', bio: 'Profesyonel takım kimlikleri', sales: 41, designs: 12, rating: 4.6, level: 'pro' },
-  { id: 6, name: 'BlackSeaDesign', initials: 'BD', bio: 'Deniz ilhamlı koleksiyonlar', sales: 32, designs: 8, rating: 4.5, level: 'pro' },
-  { id: 7, name: 'TigerDesign', initials: 'TD', bio: 'Agresif, dinamik formalar', sales: 103, designs: 27, rating: 4.9, level: 'master' },
-  { id: 8, name: 'VintageFC', initials: 'VF', bio: '70-80ler nostalji uzmanı', sales: 91, designs: 22, rating: 4.7, level: 'elite' },
 ];
 
 const MOCK_COMPETITIONS = [
   { id: 1, club: 'Bosphorus FC', desc: '2026-27 sezonu Ev forması tasarım yarışması', prize: '₺5.000', deadline: '15 gün kaldı', entries: 34 },
   { id: 2, club: 'Ankara Thunder', desc: 'E-Spor takımımız için yeni kimlik arıyoruz', prize: '$800', deadline: '8 gün kaldı', entries: 19 },
   { id: 3, club: 'Ege Volley', desc: 'Kadın voleybol takımı Deplasman forması', prize: '₺3.500', deadline: '22 gün kaldı', entries: 11 },
-  { id: 4, club: 'İstanbul Lions', desc: 'Amerikan futbolu takımımız için tam kit tasarımı', prize: '$1.200', deadline: '30 gün kaldı', entries: 7 },
 ];
 
 /* ══════════ STATE ══════════ */
+// SİTEDEKİ TÜM TASARIMLAR BURADA TOPLANACAK (Gerçekler + Örnekler)
+let ALL_DESIGNS = [...MOCK_DESIGNS]; 
+
 let currentPage = 'home';
 let previousPage = 'home';
 let currentUser = null;
@@ -72,17 +64,60 @@ document.addEventListener('DOMContentLoaded', () => {
   renderHomeComps();
   calcEarnings();
   initScrollNav();
+  
+  // Site açılır açılmaz veritabanındaki onaylı tasarımları getir
+  fetchApprovedDesigns();
 });
 
 function initScrollNav() {
   window.addEventListener('scroll', () => {
     const nav = document.getElementById('mainNav');
-    if (window.scrollY > 20) {
-      nav.style.boxShadow = '0 1px 20px rgba(0,0,0,0.4)';
-    } else {
-      nav.style.boxShadow = 'none';
-    }
+    if (window.scrollY > 20) nav.style.boxShadow = '0 1px 20px rgba(0,0,0,0.4)';
+    else nav.style.boxShadow = 'none';
   });
+}
+
+/* ══════════ FİRESTORE'DAN VERİ ÇEKME FONKSİYONU ══════════ */
+async function fetchApprovedDesigns() {
+  try {
+    // Sadece durumu "approved" (onaylı) olanları çek
+    const snapshot = await db.collection('designs').where('status', '==', 'approved').get();
+    const realDesigns = [];
+    
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      realDesigns.push({
+        id: doc.id, // Firebase'in verdiği benzersiz ID
+        title: d.title,
+        designer: d.designerName,
+        designerInitials: d.designerInitials,
+        sport: d.sport,
+        style: d.style,
+        pattern: d.pattern,
+        colors: d.colors || [],
+        price: d.price,
+        exclusivePrice: d.exclusivePrice,
+        sales: d.sales || 0,
+        likes: d.likes || 0,
+        license: 'standard', 
+        // Şimdilik Storage (Resim) işlemini yapmadığımız için geçici arka plan ve numara atıyoruz
+        bg: 'linear-gradient(140deg, #1f1f26, #0c0c0e)',
+        num: Math.floor(Math.random() * 99) + 1, 
+        kit: d.kit,
+        designerId: d.designerId
+      });
+    });
+    
+    // Kullanıcıların yüklediği gerçek tasarımları en başa, örnekleri arkasına ekliyoruz.
+    ALL_DESIGNS = [...realDesigns, ...MOCK_DESIGNS];
+    
+    // Veriler gelince sayfadaki listeleri güncelle
+    renderHomeDesigns();
+    if (currentPage === 'explore') applyFilters();
+    
+  } catch (error) {
+    console.error("Tasarımlar çekilemedi:", error);
+  }
 }
 
 /* ══════════ PAGE ROUTING ══════════ */
@@ -102,9 +137,7 @@ function showPage(pageId) {
   }
 }
 
-function goBack() {
-  showPage(previousPage || 'home');
-}
+function goBack() { showPage(previousPage || 'home'); }
 
 function filterByCategory(cat) {
   showPage('explore');
@@ -121,14 +154,14 @@ function filterByCategory(cat) {
 function renderHomeDesigns() {
   const grid = document.getElementById('homeGrid');
   if (!grid) return;
-  grid.innerHTML = MOCK_DESIGNS.slice(0, 8).map(d => designCard(d)).join('');
+  grid.innerHTML = ALL_DESIGNS.slice(0, 8).map(d => designCard(d)).join('');
 }
 
 function renderSpotlight() {
   const el = document.getElementById('spotlightGrid');
   if (!el) return;
-  el.innerHTML = MOCK_DESIGNERS.slice(0, 4).map(d => `
-    <div class="spotlight-card" onclick="showDesignerProfile(${d.id})">
+  el.innerHTML = MOCK_DESIGNERS.map(d => `
+    <div class="spotlight-card" onclick="showDesignerProfile('${d.id}')">
       <div class="sp-avatar">${d.initials}</div>
       <div class="sp-name">${d.name}</div>
       <div class="sp-level">${levelLabel(d.level)}</div>
@@ -144,44 +177,40 @@ function renderSpotlight() {
 function renderHomeComps() {
   const el = document.getElementById('homeComps');
   if (!el) return;
-  el.innerHTML = MOCK_COMPETITIONS.slice(0, 3).map(c => compCard(c)).join('');
+  el.innerHTML = MOCK_COMPETITIONS.map(c => compCard(c)).join('');
 }
 
 /* ══════════ DESIGN CARD ══════════ */
 function designCard(d) {
-  const isFav = favorites.has(d.id);
-  const colDots = d.colors.map(c => `<div class="dc-color-dot" style="background:${c}"></div>`).join('');
-  const licTag = d.license === 'exclusive'
-    ? `<span class="tag tag-excl" style="font-size:10px;padding:3px 7px">Exclusive</span>`
-    : '';
-  const hotTag = d.sales > 80
-    ? `<span class="tag tag-hot" style="font-size:10px;padding:3px 7px">Çok Satan</span>`
-    : d.id <= 3 ? `<span class="tag tag-new" style="font-size:10px;padding:3px 7px">Yeni</span>` : '';
+  const isFav = favorites.has(String(d.id));
+  const colDots = (d.colors || []).map(c => `<div class="dc-color-dot" style="background:${c}"></div>`).join('');
+  const licTag = d.license === 'exclusive' ? `<span class="tag tag-excl" style="font-size:10px;padding:3px 7px">Exclusive</span>` : '';
+  const hotTag = d.sales > 80 ? `<span class="tag tag-hot" style="font-size:10px;padding:3px 7px">Çok Satan</span>` : d.id === 'm1' || d.id === 'm2' ? `<span class="tag tag-new" style="font-size:10px;padding:3px 7px">Yeni</span>` : '';
   const badge = licTag || hotTag;
 
   return `
-    <div class="design-card" onclick="showDesignDetail(${d.id})">
+    <div class="design-card" onclick="showDesignDetail('${d.id}')">
       <div class="dc-img">
         <div class="dc-img-placeholder" style="background:${d.bg}; width:100%; height:100%; position:relative">
           <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
             <div style="width:70px;height:84px;background:rgba(255,255,255,0.12);border-radius:8px 8px 14px 14px;display:flex;align-items:center;justify-content:center;position:relative;border:1px solid rgba(255,255,255,0.08)">
-              <div style="position:absolute;left:0;right:0;height:3px;top:50%;transform:translateY(-50%);background:${d.colors[1]||'rgba(255,255,255,0.4)'}"></div>
+              <div style="position:absolute;left:0;right:0;height:3px;top:50%;transform:translateY(-50%);background:${d.colors && d.colors[1] ? d.colors[1] : 'rgba(255,255,255,0.4)'}"></div>
               <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:rgba(255,255,255,0.7);position:relative;z-index:1">${d.num}</span>
             </div>
           </div>
         </div>
         ${badge ? `<div class="dc-badge-top">${badge}</div>` : ''}
         <div class="dc-overlay">
-          <button class="dc-action" onclick="event.stopPropagation();openBuyModal(${d.id})">Satın Al</button>
-          <button class="dc-fav ${isFav ? 'fav-active' : ''}" onclick="event.stopPropagation();toggleFav(${d.id},this)">${isFav ? '♥' : '♡'}</button>
+          <button class="dc-action" onclick="event.stopPropagation();openBuyModal('${d.id}')">Satın Al</button>
+          <button class="dc-fav ${isFav ? 'fav-active' : ''}" onclick="event.stopPropagation();toggleFav('${d.id}',this)">${isFav ? '♥' : '♡'}</button>
         </div>
       </div>
       <div class="dc-body">
         <div class="dc-sport">${d.sport}</div>
         <div class="dc-title">${d.title}</div>
-        <div class="dc-designer">by <span onclick="event.stopPropagation();showDesignerProfile(${d.id})">${d.designer}</span></div>
+        <div class="dc-designer">by <span onclick="event.stopPropagation();showDesignerProfile('${d.id}')">${d.designer}</span></div>
         <div class="dc-footer">
-          <span class="dc-price">₺${d.price.toLocaleString('tr-TR')}</span>
+          <span class="dc-price">₺${(d.price||0).toLocaleString('tr-TR')}</span>
           <div class="dc-meta">
             <span>♥ ${d.likes}</span>
             <div class="dc-colors">${colDots}</div>
@@ -208,10 +237,7 @@ function compCard(c) {
 }
 
 /* ══════════ EXPLORE ══════════ */
-function renderExplore() {
-  exploreOffset = 0;
-  applyFilters();
-}
+function renderExplore() { exploreOffset = 0; applyFilters(); }
 
 function getFilteredDesigns() {
   const search = (document.getElementById('searchInput')?.value || '').toLowerCase();
@@ -231,16 +257,16 @@ function getFilteredDesigns() {
   const priceMin = parseFloat(document.getElementById('priceMin')?.value) || 0;
   const priceMax = parseFloat(document.getElementById('priceMax')?.value) || Infinity;
 
-  let filtered = MOCK_DESIGNS.filter(d => {
-    if (search && !d.title.toLowerCase().includes(search) && !d.designer.toLowerCase().includes(search) && !d.sport.toLowerCase().includes(search)) return false;
+  let filtered = ALL_DESIGNS.filter(d => {
+    if (search && !d.title.toLowerCase().includes(search) && !(d.designer||'').toLowerCase().includes(search) && !(d.sport||'').toLowerCase().includes(search)) return false;
     if (checkedSports.length && !checkedSports.includes(d.sport)) return false;
     if (checkedStyles.length && !checkedStyles.includes(d.style)) return false;
     if (checkedPatterns.length && !checkedPatterns.includes(d.pattern)) return false;
     if (checkedLicenses.length && !checkedLicenses.includes(d.license)) return false;
-    if (d.price < priceMin || d.price > priceMax) return false;
+    if ((d.price||0) < priceMin || (d.price||0) > priceMax) return false;
     if (selectedColors.size > 0) {
       const matchColor = [...selectedColors].some(sc =>
-        d.colors.some(dc => colorSimilar(dc, sc))
+        (d.colors||[]).some(dc => colorSimilar(dc, sc))
       );
       if (!matchColor) return false;
     }
@@ -248,10 +274,10 @@ function getFilteredDesigns() {
   });
 
   if (sort === 'newest') filtered = [...filtered].reverse();
-  else if (sort === 'price-asc') filtered = [...filtered].sort((a, b) => a.price - b.price);
-  else if (sort === 'price-desc') filtered = [...filtered].sort((a, b) => b.price - a.price);
-  else if (sort === 'bestseller') filtered = [...filtered].sort((a, b) => b.sales - a.sales);
-  else filtered = [...filtered].sort((a, b) => b.likes - a.likes);
+  else if (sort === 'price-asc') filtered = [...filtered].sort((a, b) => (a.price||0) - (b.price||0));
+  else if (sort === 'price-desc') filtered = [...filtered].sort((a, b) => (b.price||0) - (a.price||0));
+  else if (sort === 'bestseller') filtered = [...filtered].sort((a, b) => (b.sales||0) - (a.sales||0));
+  else filtered = [...filtered].sort((a, b) => (b.likes||0) - (a.likes||0));
 
   return filtered;
 }
@@ -288,10 +314,7 @@ function clearFilters() {
   applyFilters();
 }
 
-function toggleFilterPanel() {
-  const fp = document.getElementById('filterPanel');
-  fp.classList.toggle('open');
-}
+function toggleFilterPanel() { document.getElementById('filterPanel').classList.toggle('open'); }
 
 function toggleSwatch(el) {
   const hex = el.dataset.hex;
@@ -311,37 +334,29 @@ function colorSimilar(c1, c2) {
 
 /* ══════════ DESIGN DETAIL ══════════ */
 function showDesignDetail(id) {
-  const d = MOCK_DESIGNS.find(x => x.id === id);
+  const d = ALL_DESIGNS.find(x => String(x.id) === String(id));
   if (!d) return;
   currentDesignId = id;
   showPage('detail');
 
   const content = document.getElementById('detailContent');
-  const isFav = favorites.has(id);
+  const isFav = favorites.has(String(id));
   content.innerHTML = `
     <div class="detail-grid">
       <div class="detail-imgs">
         <div class="detail-main-img">
           <div style="width:100%;height:100%;background:${d.bg};display:flex;align-items:center;justify-content:center">
             <div style="width:140px;height:168px;background:rgba(255,255,255,0.12);border-radius:12px 12px 24px 24px;display:flex;align-items:center;justify-content:center;position:relative;border:1px solid rgba(255,255,255,0.08)">
-              <div style="position:absolute;left:0;right:0;height:4px;top:50%;transform:translateY(-50%);background:${d.colors[1]||'rgba(255,255,255,0.4)'}"></div>
+              <div style="position:absolute;left:0;right:0;height:4px;top:50%;transform:translateY(-50%);background:${d.colors && d.colors[1] ? d.colors[1] : 'rgba(255,255,255,0.4)'}"></div>
               <span style="font-family:'Bebas Neue',sans-serif;font-size:56px;color:rgba(255,255,255,0.7);position:relative;z-index:1">${d.num}</span>
             </div>
           </div>
         </div>
         <div class="detail-thumbs">
-          <div class="detail-thumb active" style="background:${d.bg};display:flex;align-items:center;justify-content:center">
-            <span style="font-size:10px;color:rgba(255,255,255,0.5)">Ön</span>
-          </div>
-          <div class="detail-thumb" style="background:${d.bg};display:flex;align-items:center;justify-content:center">
-            <span style="font-size:10px;color:rgba(255,255,255,0.5)">Arka</span>
-          </div>
-          <div class="detail-thumb" style="background:${d.bg};display:flex;align-items:center;justify-content:center">
-            <span style="font-size:10px;color:rgba(255,255,255,0.5)">Detay</span>
-          </div>
-          <div class="detail-thumb" style="background:${d.bg};display:flex;align-items:center;justify-content:center">
-            <span style="font-size:10px;color:rgba(255,255,255,0.5)">Flat</span>
-          </div>
+          <div class="detail-thumb active" style="background:${d.bg};display:flex;align-items:center;justify-content:center"><span style="font-size:10px;color:rgba(255,255,255,0.5)">Ön</span></div>
+          <div class="detail-thumb" style="background:${d.bg};display:flex;align-items:center;justify-content:center"><span style="font-size:10px;color:rgba(255,255,255,0.5)">Arka</span></div>
+          <div class="detail-thumb" style="background:${d.bg};display:flex;align-items:center;justify-content:center"><span style="font-size:10px;color:rgba(255,255,255,0.5)">Detay</span></div>
+          <div class="detail-thumb" style="background:${d.bg};display:flex;align-items:center;justify-content:center"><span style="font-size:10px;color:rgba(255,255,255,0.5)">Flat</span></div>
         </div>
       </div>
 
@@ -350,13 +365,13 @@ function showDesignDetail(id) {
         <h1 class="detail-title">${d.title}</h1>
         <div class="detail-designer-row">
           <div class="detail-designer-av">${d.designerInitials}</div>
-          <span>by <a class="detail-designer-name" onclick="showDesignerProfile(${d.id})">${d.designer}</a></span>
+          <span>by <a class="detail-designer-name" onclick="showDesignerProfile('${d.id}')">${d.designer}</a></span>
           <span style="margin-left:auto;font-size:12px">♥ ${d.likes} beğeni</span>
         </div>
 
         <div class="detail-colors">
-          ${d.colors.map(c => `<div class="det-color" style="background:${c}" title="${c}"></div>`).join('')}
-          <span style="font-size:12px;color:var(--text3);margin-left:6px">${d.colors.join(' · ')}</span>
+          ${(d.colors||[]).map(c => `<div class="det-color" style="background:${c}" title="${c}"></div>`).join('')}
+          <span style="font-size:12px;color:var(--text3);margin-left:6px">${(d.colors||[]).join(' · ')}</span>
         </div>
 
         <div class="detail-meta-grid">
@@ -373,7 +388,7 @@ function showDesignDetail(id) {
               <div class="lic-opt-name">Standart Lisans</div>
               <div class="lic-opt-desc">Birden fazla takım satın alabilir</div>
             </div>
-            <div class="lic-opt-price">₺${d.price.toLocaleString('tr-TR')}</div>
+            <div class="lic-opt-price">₺${(d.price||0).toLocaleString('tr-TR')}</div>
           </div>
           <div class="lic-option" onclick="selectLicense(this,'exclusive',${d.exclusivePrice})">
             <input type="radio" name="licRadio">
@@ -381,12 +396,12 @@ function showDesignDetail(id) {
               <div class="lic-opt-name">Exclusive Lisans</div>
               <div class="lic-opt-desc">Tek kulüp alır — tasarım yayından kalkar</div>
             </div>
-            <div class="lic-opt-price">₺${d.exclusivePrice.toLocaleString('tr-TR')}</div>
+            <div class="lic-opt-price">₺${(d.exclusivePrice||0).toLocaleString('tr-TR')}</div>
           </div>
         </div>
 
-        <button class="btn-buy-now" onclick="openBuyModal(${d.id})">Satın Al</button>
-        <button class="btn-fav-full" onclick="toggleFav(${d.id}, this)">${isFav ? '♥ Favorilerden Çıkar' : '♡ Favorilere Ekle'}</button>
+        <button class="btn-buy-now" onclick="openBuyModal('${d.id}')">Satın Al</button>
+        <button class="btn-fav-full" onclick="toggleFav('${d.id}', this)">${isFav ? '♥ Favorilerden Çıkar' : '♡ Favorilere Ekle'}</button>
 
         <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
           <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em">Üretim Dosyaları</div>
@@ -410,7 +425,7 @@ function renderDesignersPage() {
   const grid = document.getElementById('designersGrid');
   if (!grid) return;
   grid.innerHTML = MOCK_DESIGNERS.map(d => `
-    <div class="designer-card" onclick="showDesignerProfile(${d.id})">
+    <div class="designer-card" onclick="showDesignerProfile('${d.id}')">
       <div class="designer-card-top">
         <div class="dcard-av">${d.initials}</div>
         <div>
@@ -428,8 +443,8 @@ function renderDesignersPage() {
 }
 
 function showDesignerProfile(id) {
-  const d = MOCK_DESIGNERS.find(x => x.id === id) || MOCK_DESIGNERS[0];
-  const designs = MOCK_DESIGNS.filter(x => x.designer === d.name || Math.random() > 0.5).slice(0, 4);
+  const d = MOCK_DESIGNERS.find(x => String(x.id) === String(id)) || MOCK_DESIGNERS[0];
+  const designs = ALL_DESIGNS.filter(x => x.designer === d.name || Math.random() > 0.5).slice(0, 4);
   showPage('designer-profile');
   const el = document.getElementById('designerProfileContent');
   el.innerHTML = `
@@ -451,7 +466,7 @@ function showDesignerProfile(id) {
     </div>
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:20px">Tasarımları</h2>
     <div class="designs-grid" style="padding-bottom:60px">
-      ${MOCK_DESIGNS.slice(0,4).map(x => designCard(x)).join('')}
+      ${designs.map(x => designCard(x)).join('')}
     </div>
   `;
 }
@@ -511,9 +526,9 @@ function dashTab(tab, btn) {
       <div class="dash-section-title">Son Aktiviteler</div>
       <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
         ${[
-          { txt: 'Gece Yarısı Pro satıldı — ₺449', time: '2 saat önce', type: 'sale' },
-          { txt: 'Yeni yorum: "Harika tasarım!"', time: '1 gün önce', type: 'comment' },
-          { txt: 'Tasarımın favorilere eklendi', time: '2 gün önce', type: 'fav' },
+          { txt: 'Gece Yarısı Pro satıldı — ₺449', time: '2 saat önce' },
+          { txt: 'Yeni yorum: "Harika tasarım!"', time: '1 gün önce' },
+          { txt: 'Tasarımın favorilere eklendi', time: '2 gün önce' },
         ].map(a => `
           <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
             <span style="font-size:14px">${a.txt}</span>
@@ -523,12 +538,19 @@ function dashTab(tab, btn) {
       </div>
     `;
   } else if (tab === 'mydesigns') {
+    // Sadece giriş yapan kullanıcının tasarımlarını göster
+    const myDesigns = ALL_DESIGNS.filter(d => d.designerId === currentUser?.uid || d.designer === currentUser?.name);
+    
     el.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
         <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px">Tasarımlarım</h2>
         <button class="btn-primary" onclick="showModal('uploadModal')">+ Yeni Yükle</button>
       </div>
-      <div class="designs-grid">${MOCK_DESIGNS.slice(0, 6).map(d => designCard(d)).join('')}</div>
+      <div class="designs-grid">
+        ${myDesigns.length > 0 
+            ? myDesigns.map(d => designCard(d)).join('') 
+            : '<p style="color:var(--text2)">Henüz bir tasarım yüklemedin.</p>'}
+      </div>
     `;
   } else if (tab === 'sales') {
     el.innerHTML = `
@@ -564,7 +586,7 @@ function dashTab(tab, btn) {
       </div>
     `;
   } else if (tab === 'favorites') {
-    const favDesigns = MOCK_DESIGNS.filter(d => favorites.has(d.id));
+    const favDesigns = ALL_DESIGNS.filter(d => favorites.has(String(d.id)));
     el.innerHTML = `
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Favorilerim</h2>
       ${favDesigns.length === 0
@@ -585,7 +607,7 @@ function dashTab(tab, btn) {
         </div>
       </div>
     `;
-  } else if (tab === 'adminPanel') { // YENİ EKLENEN ADMİN SEKMESİ
+  } else if (tab === 'adminPanel') { 
     el.innerHTML = `
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px; color:var(--accent)">Admin Paneli - Onay Bekleyenler</h2>
       <div id="adminPendingGrid" class="designs-grid" style="grid-template-columns: 1fr;">Yükleniyor...</div>
@@ -634,7 +656,8 @@ async function approveDesign(id) {
   try {
     await db.collection('designs').doc(id).update({ status: 'approved' });
     showToast('Tasarım onaylandı ve yayına alındı! ✓', 'success');
-    loadPendingDesigns(); // Listeyi yenile
+    loadPendingDesigns(); // Bekleyenler listesini yenile
+    fetchApprovedDesigns(); // Ana sayfayı hemen yenile ki görünsün!
   } catch(e) {
     showToast('Onaylama hatası: ' + e.message, 'error');
   }
@@ -650,7 +673,6 @@ async function rejectDesign(id) {
     showToast('Hata: ' + e.message, 'error');
   }
 }
-
 
 /* ══════════ AUTH (GERÇEK FIREBASE) ══════════ */
 auth.onAuthStateChanged((user) => {
@@ -738,7 +760,7 @@ function authTab(tab, btn) {
 
 /* ══════════ BUY MODAL ══════════ */
 function openBuyModal(id) {
-  const d = MOCK_DESIGNS.find(x => x.id === id);
+  const d = ALL_DESIGNS.find(x => String(x.id) === String(id));
   if (!d) return;
   const el = document.getElementById('buyContent');
   el.innerHTML = `
@@ -755,23 +777,23 @@ function openBuyModal(id) {
       <div class="buy-lic-opt sel" onclick="selectBuyLicense(this,${d.price})">
         <input type="radio" name="buyLic" checked>
         <span class="buy-lic-name">Standart Lisans</span>
-        <span class="buy-lic-price">₺${d.price.toLocaleString('tr-TR')}</span>
+        <span class="buy-lic-price">₺${(d.price||0).toLocaleString('tr-TR')}</span>
       </div>
       <div class="buy-lic-opt" onclick="selectBuyLicense(this,${d.exclusivePrice})">
         <input type="radio" name="buyLic">
         <span class="buy-lic-name">Exclusive Lisans</span>
-        <span class="buy-lic-price">₺${d.exclusivePrice.toLocaleString('tr-TR')}</span>
+        <span class="buy-lic-price">₺${(d.exclusivePrice||0).toLocaleString('tr-TR')}</span>
       </div>
     </div>
     <div class="buy-total">
       <span>Toplam</span>
-      <span class="buy-total-price" id="buyTotal">₺${d.price.toLocaleString('tr-TR')}</span>
+      <span class="buy-total-price" id="buyTotal">₺${(d.price||0).toLocaleString('tr-TR')}</span>
     </div>
     <div class="iyzico-badge">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 5h12v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z" stroke="#4ecdc4" stroke-width="1.2"/><path d="M2 5V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="#4ecdc4" stroke-width="1.2"/></svg>
       iyzico ile güvenli ödeme
     </div>
-    <button class="btn-form" onclick="processBuy(${d.id})">Ödemeye Geç</button>
+    <button class="btn-form" onclick="processBuy('${d.id}')">Ödemeye Geç</button>
     <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px">Satın alma onaylanınca üretim dosyaları anında hesabına teslim edilir</p>
   `;
   showModal('buyModal');
@@ -936,12 +958,13 @@ function syncHex(hexId, colorId) {
 
 /* ══════════ FAVORITES ══════════ */
 function toggleFav(id, btn) {
-  if (favorites.has(id)) {
-    favorites.delete(id);
+  const stringId = String(id);
+  if (favorites.has(stringId)) {
+    favorites.delete(stringId);
     showToast('Favorilerden çıkarıldı', '');
     if (btn) btn.textContent = btn.classList.contains('btn-fav-full') ? '♡ Favorilere Ekle' : '♡';
   } else {
-    favorites.add(id);
+    favorites.add(stringId);
     showToast('Favorilere eklendi ♥', 'success');
     if (btn) btn.textContent = btn.classList.contains('btn-fav-full') ? '♥ Favorilerden Çıkar' : '♥';
   }
