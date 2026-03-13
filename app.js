@@ -10,8 +10,8 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   GoogleAuthProvider, 
-  GithubAuthProvider, // BUNA EKLENDİ
-  OAuthProvider,      // BUNA EKLENDİ (Apple vb. için)
+  GithubAuthProvider,
+  OAuthProvider,
   signInWithPopup, 
   onAuthStateChanged, 
   signOut 
@@ -53,7 +53,6 @@ const MOCK_COMPETITIONS = [
   { id: 2, club: 'Ankara Thunder', desc: 'E-Spor takımımız için yeni kimlik arıyoruz', prize: '$800', deadline: '8 gün kaldı', entries: 19 },
 ];
 
-
 /* ══════════ STATE ══════════ */
 let currentPage = 'home';
 let previousPage = 'home';
@@ -63,7 +62,6 @@ let currentDesignId = null;
 let exploreOffset = 0;
 let selectedColors = new Set();
 let currentUploadStep = 1;
-
 
 /* ══════════ INIT ══════════ */
 document.addEventListener('DOMContentLoaded', () => {
@@ -85,7 +83,6 @@ function initScrollNav() {
   });
 }
 
-
 /* ══════════ PAGE ROUTING ══════════ */
 function showPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -104,7 +101,6 @@ function showPage(pageId) {
 }
 
 function goBack() { showPage(previousPage || 'home'); }
-
 
 /* ══════════ RENDER HOME ══════════ */
 function renderHomeDesigns() {
@@ -130,7 +126,6 @@ function renderHomeComps() {
   if (!el) return;
   el.innerHTML = MOCK_COMPETITIONS.map(c => compCard(c)).join('');
 }
-
 
 /* ══════════ COMPONENTS ══════════ */
 function designCard(d) {
@@ -164,7 +159,6 @@ function compCard(c) {
   return `<div class="comp-card"><div class="comp-club">${c.club}</div><div class="comp-prize">${c.prize}</div></div>`;
 }
 
-
 /* ══════════ EXPLORE & FILTERS ══════════ */
 function renderExplore() { applyFilters(); }
 function applyFilters() {
@@ -178,7 +172,6 @@ function filterByCategory(cat) { showPage('explore'); }
 function loadMore() {}
 function toggleSwatch(el) { el.classList.toggle('active'); }
 
-
 /* ══════════ DESIGN DETAIL ══════════ */
 function showDesignDetail(id) {
   const d = MOCK_DESIGNS.find(x => x.id === id);
@@ -187,7 +180,6 @@ function showDesignDetail(id) {
   showPage('detail');
   document.getElementById('detailContent').innerHTML = `<h1 class="detail-title">${d.title}</h1><button class="btn-buy-now" onclick="openBuyModal(${d.id})">Satın Al - ₺${d.price}</button>`;
 }
-
 
 /* ══════════ OTHER PAGES ══════════ */
 function renderDesignersPage() {
@@ -207,7 +199,6 @@ function renderDashboard() {
   document.getElementById('dashContent').innerHTML = `<h2>Hoş geldin, ${currentUser.name} 👋</h2>`;
 }
 function dashTab(tab, btn) { renderDashboard(); }
-
 
 /* ══════════ MODALS & UI ══════════ */
 function showModal(id) { document.getElementById(id)?.classList.add('open'); }
@@ -229,7 +220,6 @@ function setTrendTab(btn) {
 }
 function toggleMobileNav() { document.getElementById('navMobileMenu').classList.toggle('hidden'); }
 
-
 /* ══════════ UPLOAD / BUY ══════════ */
 function openBuyModal(id) { showModal('buyModal'); }
 function selectBuyLicense(el, price) {}
@@ -244,15 +234,20 @@ function calcEarnings() {}
 function syncColor(colorId, hexId) {}
 function syncHex(hexId, colorId) {}
 
-
 /* ══════════ FIREBASE AUTH LOGIC ══════════ */
-
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = { name: user.displayName || user.email.split('@')[0], email: user.email, uid: user.uid };
     document.getElementById('navLoginBtn').classList.add('hidden');
     document.getElementById('navAvatar').classList.remove('hidden');
     document.getElementById('navAvatar').textContent = currentUser.name[0].toUpperCase();
+    
+    // Profildeyken yenileme olursa
+    const dashAv = document.getElementById('dashAv');
+    if(dashAv) dashAv.textContent = currentUser.name[0].toUpperCase();
+    const dashUname = document.getElementById('dashUname');
+    if(dashUname) dashUname.textContent = currentUser.name;
+    
   } else {
     currentUser = null;
     document.getElementById('navLoginBtn').classList.remove('hidden');
@@ -297,6 +292,30 @@ async function doGoogleLogin() {
   }
 }
 
+async function doGithubLogin() {
+  const provider = new GithubAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+    closeModal('loginModal');
+    showToast('GitHub ile giriş yapıldı!', 'success');
+  } catch (error) {
+    showToast('GitHub ile giriş iptal edildi.', 'error');
+    console.error(error);
+  }
+}
+
+async function doAppleLogin() {
+  const provider = new OAuthProvider('apple.com');
+  try {
+    await signInWithPopup(auth, provider);
+    closeModal('loginModal');
+    showToast('Apple ile giriş yapıldı!', 'success');
+  } catch (error) {
+    showToast('Apple ile giriş iptal edildi.', 'error');
+    console.error(error);
+  }
+}
+
 async function doLogout() {
   try {
     await signOut(auth);
@@ -310,31 +329,6 @@ function authTab(tab, btn) {
   btn.classList.add('active');
   document.getElementById('authLogin').classList.toggle('hidden', tab !== 'login');
   document.getElementById('authRegister').classList.toggle('hidden', tab !== 'register');
-}
-// GitHub Girişi
-window.doGithubLogin = async function() {
-  const provider = new GithubAuthProvider();
-  try {
-    await signInWithPopup(auth, provider);
-    closeModal('loginModal');
-    showToast('GitHub ile giriş yapıldı!', 'success');
-  } catch (error) {
-    showToast('GitHub ile giriş iptal edildi.', 'error');
-    console.error(error);
-  }
-}
-
-// Apple Girişi
-window.doAppleLogin = async function() {
-  const provider = new OAuthProvider('apple.com');
-  try {
-    await signInWithPopup(auth, provider);
-    closeModal('loginModal');
-    showToast('Apple ile giriş yapıldı!', 'success');
-  } catch (error) {
-    showToast('Apple ile giriş iptal edildi.', 'error');
-    console.error(error);
-  }
 }
 
 /* ══════════ EXPORT TO WINDOW (MODÜL ÇÖZÜMÜ) ══════════ */
@@ -364,10 +358,12 @@ window.submitDesign = submitDesign;
 window.calcEarnings = calcEarnings;
 window.syncColor = syncColor;
 window.syncHex = syncHex;
+
 // Auth
 window.doLogin = doLogin;
 window.doRegister = doRegister;
 window.doGoogleLogin = doGoogleLogin;
+window.doGithubLogin = doGithubLogin;
+window.doAppleLogin = doAppleLogin;
 window.doLogout = doLogout;
 window.authTab = authTab;
-
