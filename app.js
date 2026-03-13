@@ -636,7 +636,8 @@ async function doGoogleLogin() {
     closeModal('loginModal');
     showToast('Google ile giriş yapıldı!', 'success');
   } catch (error) {
-    showToast('Giriş iptal edildi.', 'error');
+    console.error("Google Giriş Hatası:", error);
+    showToast('Hata: ' + error.message, 'error');
   }
 }
 
@@ -647,7 +648,8 @@ async function doGithubLogin() {
     closeModal('loginModal');
     showToast('GitHub ile giriş yapıldı!', 'success');
   } catch (error) {
-    showToast('GitHub ile giriş iptal edildi.', 'error');
+    console.error("GitHub Giriş Hatası:", error);
+    showToast('Hata: ' + error.message, 'error');
   }
 }
 
@@ -658,7 +660,8 @@ async function doAppleLogin() {
     closeModal('loginModal');
     showToast('Apple ile giriş yapıldı!', 'success');
   } catch (error) {
-    showToast('Apple ile giriş iptal edildi.', 'error');
+    console.error("Apple Giriş Hatası:", error);
+    showToast('Hata: ' + error.message, 'error');
   }
 }
 
@@ -880,3 +883,4 @@ function toggleMobileNav() {
   const menu = document.getElementById('navMobileMenu');
   menu.classList.toggle('hidden');
 }
+
