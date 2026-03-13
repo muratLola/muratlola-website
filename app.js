@@ -10,8 +10,8 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   GoogleAuthProvider, 
-  GithubAuthProvider, // GitHub eklendi
-  OAuthProvider,      // Apple eklendi
+  GithubAuthProvider,
+  OAuthProvider,
   signInWithPopup, 
   onAuthStateChanged, 
   signOut 
@@ -861,7 +861,10 @@ async function doLogout() {
     await signOut(auth);
     showPage('home');
     showToast('Çıkış yapıldı', '');
-  } catch (error) {}
+  } catch (error) {
+    console.error("Çıkış yaparken hata oluştu:", error);
+    showToast('Çıkış yapılamadı: ' + error.message, 'error');
+  }
 }
 
 function authTab(tab, btn) {
@@ -898,6 +901,8 @@ window.calcEarnings = calcEarnings;
 window.syncColor = syncColor;
 window.syncHex = syncHex;
 window.toggleFav = toggleFav;
+window.showToast = showToast;
+window.selectLicense = selectLicense;
 
 window.doLogin = doLogin;
 window.doRegister = doRegister;
