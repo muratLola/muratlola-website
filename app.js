@@ -1123,6 +1123,41 @@ function renderCompetitionsPage() {
   `).join('');
 }
 
+async function loadPurchases() {
+  const el = document.getElementById('purchasesContent');
+  if (!el || !currentUser) return;
+  try {
+    const snap = await db.collection('purchases').where('buyerId','==',currentUser.uid).get();
+    if (snap.empty) {
+      el.innerHTML = `<div style="text-align:center;padding:60px 20px">
+        <div style="font-size:40px;margin-bottom:12px">🛒</div>
+        <p style="color:var(--text2);margin-bottom:16px">Henüz bir tasarım satın almadın.</p>
+        <button class="btn-cta" onclick="showPage('explore')">Tasarımları Keşfet</button>
+      </div>`;
+      return;
+    }
+    const rows = [];
+    snap.forEach(doc => {
+      const p = doc.data();
+      const ts = p.purchasedAt?.toDate?.() ? p.purchasedAt.toDate().toLocaleDateString('tr-TR') : '—';
+      rows.push(`
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center">
+          <div>
+            <div style="font-size:14px;font-weight:500">${p.designId}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">${p.license === 'exclusive' ? 'Exclusive' : 'Standart'} · ${ts}</div>
+          </div>
+          <span style="font-family:var(--font-mono);color:var(--accent)">₺${(p.price||0).toLocaleString('tr-TR')}</span>
+          <span style="background:rgba(42,157,143,0.15);color:#4ecdc4;font-size:11px;padding:3px 10px;border-radius:4px">✓ Teslim edildi</span>
+        </div>
+      `);
+    });
+    el.innerHTML = `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">${rows.join('')}</div>`;
+  } catch(e) {
+    el.innerHTML = `<p style="color:var(--text2)">Veriler yüklenemedi.</p>`;
+    console.error(e);
+  }
+}
+
 /* ══════════ DASHBOARD GERÇEK VERİ ══════════ */
 async function loadDashboardOverview() {
   if (!currentUser) return;
@@ -1221,6 +1256,12 @@ function dashTab(tab, btn) {
     `;
     // Gerçek verileri Firestore'dan çek
     loadDashboardOverview();
+  } else if (tab === 'purchases') {
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Satın Aldıklarım</h2>
+      <div id="purchasesContent" style="color:var(--text2)">Yükleniyor...</div>
+    `;
+    loadPurchases();
   } else if (tab === 'mydesigns') {
     // Sadece giriş yapan kullanıcının tasarımlarını göster
     const myDesigns = ALL_DESIGNS.filter(d => d.designerId === currentUser?.uid || d.designer === currentUser?.name);
@@ -1466,63 +1507,249 @@ function authTab(tab, btn) {
   document.getElementById('authRegister').classList.toggle('hidden', tab !== 'register');
 }
 
-/* ══════════ BUY MODAL ══════════ */
+/* ══════════ BUY MODAL — CHECKOUT AKIŞI ══════════ */
+let currentBuyDesignId = null;
+let currentBuyPrice = 0;
+let currentBuyLicense = 'standard';
+
 function openBuyModal(id) {
   const d = ALL_DESIGNS.find(x => String(x.id) === String(id));
   if (!d) return;
+  currentBuyDesignId = id;
+  currentBuyPrice = d.price || 0;
+  currentBuyLicense = 'standard';
+
   const el = document.getElementById('buyContent');
+  const thumb = d.coverThumb || d.coverUrl || '';
+
   el.innerHTML = `
-    <div class="buy-design-row">
-      <div class="buy-thumb" style="background:${d.bg}">
-        <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(255,255,255,0.6)">${d.num}</span>
+    <!-- ADIM 1: Ürün + Lisans Seçimi -->
+    <div id="buyStep1">
+      <div class="buy-design-row">
+        <div class="buy-thumb" style="background:${d.bg};overflow:hidden">
+          ${thumb
+            ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover">`
+            : `<span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(255,255,255,0.6)">${d.num}</span>`}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="buy-title">${d.title}</div>
+          <div class="buy-designer">${t.by} ${d.designer}</div>
+          <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+            <span style="font-size:11px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:2px 8px;color:var(--text3)">${d.sport}</span>
+            <span style="font-size:11px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:2px 8px;color:var(--text3)">${d.kit || 'Ev'}</span>
+          </div>
+        </div>
       </div>
-      <div>
-        <div class="buy-title">${d.title}</div>
-        <div class="buy-designer">by ${d.designer}</div>
+
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:10px;font-family:var(--font-mono)">Lisans Seç</div>
+      <div class="buy-license">
+        <div class="buy-lic-opt sel" id="buyOptStd" onclick="selectBuyLicense(this,'standard',${d.price})">
+          <input type="radio" name="buyLic" checked>
+          <div style="flex:1;padding:0 10px">
+            <div class="buy-lic-name">${t.license_std}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">${t.license_std_desc}</div>
+          </div>
+          <span class="buy-lic-price">₺${(d.price||0).toLocaleString('tr-TR')}</span>
+        </div>
+        <div class="buy-lic-opt" id="buyOptExcl" onclick="selectBuyLicense(this,'exclusive',${d.exclusivePrice})">
+          <input type="radio" name="buyLic">
+          <div style="flex:1;padding:0 10px">
+            <div class="buy-lic-name">${t.license_excl}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">${t.license_excl_desc}</div>
+          </div>
+          <span class="buy-lic-price">₺${(d.exclusivePrice||0).toLocaleString('tr-TR')}</span>
+        </div>
+      </div>
+
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;margin-bottom:16px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;font-family:var(--font-mono)">Teslim Edilecek Dosyalar</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${['PNG','AI','SVG','PDF'].map(f=>`<span style="background:var(--bg4);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-size:11px;font-family:var(--font-mono);color:var(--text2)">${f}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="buy-total">
+        <span style="color:var(--text2);font-size:14px">Toplam (KDV dahil)</span>
+        <span class="buy-total-price" id="buyTotal">₺${(d.price||0).toLocaleString('tr-TR')}</span>
+      </div>
+
+      <div style="background:rgba(42,157,143,0.06);border:1px solid rgba(42,157,143,0.2);border-radius:var(--r);padding:10px 14px;margin-bottom:16px;font-size:12px;color:#4ecdc4">
+        ✓ Ödeme onaylandıktan sonra tüm dosyalar <strong>anında</strong> hesabınıza eklenir
+      </div>
+
+      <button class="btn-form" onclick="proceedToPayment('${d.id}')">
+        Ödemeye Geç →
+      </button>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1L8 9M5 6l3 3 3-3" stroke="#4ecdc4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="#4ecdc4" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span style="font-size:11px;color:var(--text3)">iyzico · SSL · 256-bit şifreleme · Visa · Mastercard · Troy</span>
       </div>
     </div>
-    <div class="buy-license">
-      <div class="buy-lic-opt sel" onclick="selectBuyLicense(this,${d.price})">
-        <input type="radio" name="buyLic" checked>
-        <span class="buy-lic-name">Standart Lisans</span>
-        <span class="buy-lic-price">₺${(d.price||0).toLocaleString('tr-TR')}</span>
+
+    <!-- ADIM 2: Ödeme Formu -->
+    <div id="buyStep2" class="hidden">
+      <button onclick="document.getElementById('buyStep2').classList.add('hidden');document.getElementById('buyStep1').classList.remove('hidden')" style="background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;margin-bottom:16px;padding:0">← Geri dön</button>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:var(--text2)" id="buyStep2Summary">—</span>
+        <span style="font-family:var(--font-mono);font-size:16px;color:var(--accent)" id="buyStep2Price">₺0</span>
       </div>
-      <div class="buy-lic-opt" onclick="selectBuyLicense(this,${d.exclusivePrice})">
-        <input type="radio" name="buyLic">
-        <span class="buy-lic-name">Exclusive Lisans</span>
-        <span class="buy-lic-price">₺${(d.exclusivePrice||0).toLocaleString('tr-TR')}</span>
+
+      <div class="fg"><label>Kart Üzerindeki İsim</label><input type="text" id="cardName" placeholder="AD SOYAD" style="text-transform:uppercase"></div>
+      <div class="fg"><label>Kart Numarası</label>
+        <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCardNumber(this)">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="fg"><label>Son Kullanma</label><input type="text" id="cardExpiry" placeholder="AA/YY" maxlength="5" oninput="formatExpiry(this)"></div>
+        <div class="fg"><label>CVV</label><input type="text" id="cardCvv" placeholder="000" maxlength="3"></div>
+      </div>
+
+      <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:var(--r);padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--gold)">
+        ⚠ Kart bilgileriniz iyzico'nun güvenli altyapısında işlenir. Tarafımızca saklanmaz.
+      </div>
+
+      <div class="fg" style="margin-bottom:16px">
+        <label class="chk-label" id="caymaOnayLabel">
+          <input type="checkbox" id="caymaOnay">
+          Dijital içerik satışında cayma hakkımın bulunmadığını ve satın alma tamamlandığında dosyaların anında teslim edileceğini onaylıyorum.
+          <a href="#" onclick="event.preventDefault();closeModal('buyModal');showPage('legal-refund')" style="color:var(--accent);text-decoration:underline">İptal Koşulları</a>
+        </label>
+      </div>
+
+      <button class="btn-form btn-pay" id="payNowBtn" onclick="finalizePayment('${d.id}')">
+        <span id="payBtnText">💳 Ödemeyi Tamamla</span>
+      </button>
+
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <div style="height:20px;background:#1A1A2E;border-radius:3px;padding:0 8px;display:flex;align-items:center">
+          <span style="font-family:Arial;font-weight:bold;font-size:10px;color:#00D4AA">iyzico</span>
+        </div>
+        <div style="height:20px;background:#1A1F71;border-radius:3px;padding:0 8px;display:flex;align-items:center">
+          <span style="font-family:Arial;font-weight:900;font-size:10px;color:white;letter-spacing:1px">VISA</span>
+        </div>
+        <div style="height:20px;width:32px;background:#252525;border-radius:3px;display:flex;align-items:center;justify-content:center;gap:0">
+          <div style="width:10px;height:10px;border-radius:50%;background:#EB001B;margin-right:-4px;position:relative;z-index:1"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#F79E1B"></div>
+        </div>
+        <div style="height:20px;background:#0066CC;border-radius:3px;padding:0 8px;display:flex;align-items:center">
+          <span style="font-family:Arial;font-weight:bold;font-size:10px;color:white">troy</span>
+        </div>
+        <div style="height:20px;background:#2D7D46;border-radius:3px;padding:0 8px;display:flex;align-items:center;gap:4px">
+          <span style="font-size:9px">🔒</span>
+          <span style="font-family:Arial;font-weight:bold;font-size:10px;color:white">SSL</span>
+        </div>
       </div>
     </div>
-    <div class="buy-total">
-      <span>Toplam</span>
-      <span class="buy-total-price" id="buyTotal">₺${(d.price||0).toLocaleString('tr-TR')}</span>
+
+    <!-- ADIM 3: Başarı -->
+    <div id="buyStep3" class="hidden" style="text-align:center;padding:20px 0">
+      <div style="font-size:48px;margin-bottom:16px">🎉</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:10px;letter-spacing:0.5px">Satın Alma Tamamlandı!</h3>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.6">Üretim dosyaları hesabınıza eklendi.<br>Dashboard > Satın Aldıklarım bölümünden indirebilirsiniz.</p>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px;text-align:left">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Sipariş Özeti</div>
+        <div style="display:flex;justify-content:space-between;font-size:14px" id="orderSummary"></div>
+      </div>
+      <button class="btn-form" onclick="closeModal('buyModal');showPage('dashboard')">Dashboard'a Git</button>
     </div>
-    <div class="iyzico-badge">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 5h12v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z" stroke="#4ecdc4" stroke-width="1.2"/><path d="M2 5V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="#4ecdc4" stroke-width="1.2"/></svg>
-      iyzico ile güvenli ödeme
-    </div>
-    <button class="btn-form" onclick="processBuy('${d.id}')">Ödemeye Geç</button>
-    <p style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px">Satın alma onaylanınca üretim dosyaları anında hesabına teslim edilir</p>
   `;
   showModal('buyModal');
 }
 
-function selectBuyLicense(el, price) {
+function selectBuyLicense(el, type, price) {
   document.querySelectorAll('.buy-lic-opt').forEach(o => o.classList.remove('sel'));
   el.classList.add('sel');
   el.querySelector('input').checked = true;
+  currentBuyPrice = price;
+  currentBuyLicense = type;
   document.getElementById('buyTotal').textContent = `₺${price.toLocaleString('tr-TR')}`;
 }
 
-function processBuy(id) {
+function proceedToPayment(id) {
   if (!currentUser) {
     closeModal('buyModal');
     showModal('loginModal');
-    showToast('Satın almak için giriş yapın', '');
+    showToast(t.toast_login_required || 'Giriş yapmalısınız', '');
     return;
   }
-  closeModal('buyModal');
-  showToast('🎉 Satın alma tamamlandı! Dosyalar hesabınıza eklendi.', 'success');
+  const d = ALL_DESIGNS.find(x => String(x.id) === String(id));
+  const s2 = document.getElementById('buyStep2');
+  const s1 = document.getElementById('buyStep1');
+  if (!s2 || !s1) return;
+  s1.classList.add('hidden');
+  s2.classList.remove('hidden');
+  const sumEl = document.getElementById('buyStep2Summary');
+  const priceEl = document.getElementById('buyStep2Price');
+  if (sumEl) sumEl.textContent = `${d?.title || ''} · ${currentBuyLicense === 'exclusive' ? 'Exclusive' : 'Standart'} Lisans`;
+  if (priceEl) priceEl.textContent = `₺${currentBuyPrice.toLocaleString('tr-TR')}`;
+}
+
+async function finalizePayment(id) {
+  if (!document.getElementById('caymaOnay')?.checked) {
+    showToast('Lütfen cayma hakkı onayını işaretleyin', 'error');
+    return;
+  }
+  const cardName = document.getElementById('cardName')?.value?.trim();
+  const cardNum  = document.getElementById('cardNumber')?.value?.replace(/\s/g,'');
+  const expiry   = document.getElementById('cardExpiry')?.value;
+  const cvv      = document.getElementById('cardCvv')?.value;
+
+  if (!cardName || cardNum?.length < 16 || !expiry || cvv?.length < 3) {
+    showToast('Kart bilgilerini eksiksiz doldurun', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('payNowBtn');
+  const btnTxt = document.getElementById('payBtnText');
+  if (btn) btn.disabled = true;
+  if (btnTxt) btnTxt.textContent = '⏳ İşleniyor...';
+
+  // iyzico entegrasyonu burada yapılacak (backend Cloud Function)
+  // Şimdilik simülasyon (2 sn bekleme)
+  await new Promise(r => setTimeout(r, 1800));
+
+  // Firestore'a satış kaydı (gerçek entegrasyonda iyzico callback sonrası yapılır)
+  try {
+    if (currentUser && db) {
+      await db.collection('purchases').add({
+        designId: id,
+        buyerId: currentUser.uid,
+        buyerEmail: currentUser.email,
+        price: currentBuyPrice,
+        license: currentBuyLicense,
+        purchasedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 'completed'
+      });
+      // Tasarımın satış sayısını artır
+      const designRef = db.collection('designs').doc(String(id).startsWith('m') ? null : id);
+      if (!String(id).startsWith('m')) {
+        await designRef.update({ sales: firebase.firestore.FieldValue.increment(1) });
+      }
+    }
+  } catch(e) { console.error('Satış kaydı hatası:', e); }
+
+  // Başarı ekranı
+  const s2 = document.getElementById('buyStep2');
+  const s3 = document.getElementById('buyStep3');
+  if (s2) s2.classList.add('hidden');
+  if (s3) {
+    s3.classList.remove('hidden');
+    const d = ALL_DESIGNS.find(x => String(x.id) === String(id));
+    const sumEl = document.getElementById('orderSummary');
+    if (sumEl) sumEl.innerHTML = `
+      <span>${d?.title || 'Tasarım'}</span>
+      <span style="color:var(--accent);font-family:var(--font-mono)">₺${currentBuyPrice.toLocaleString('tr-TR')}</span>
+    `;
+  }
+}
+
+function formatCardNumber(input) {
+  let v = input.value.replace(/\D/g,'').substring(0,16);
+  input.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function formatExpiry(input) {
+  let v = input.value.replace(/\D/g,'');
+  if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2,4);
+  input.value = v;
 }
 
 /* ══════════ IMGBB ENTEGRASYONU ══════════ */
