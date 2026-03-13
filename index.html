@@ -7,764 +7,486 @@
 <meta name="description" content="Forma tasarımını sat, hayalindeki formayı bul. Tasarımcılar yükler, takımlar satın alır.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- ═══ NAV ═══ -->
 <nav class="nav" id="mainNav">
   <div class="nav-inner">
-    <a href="#" class="logo" onclick="showPage('home');return false;">
-      <span class="logo-forma">forma</span><span class="logo-lola">LOLA</span>
-    </a>
+    <a href="#" class="logo" onclick="showPage('home');return false;"><span class="lf">forma</span><span class="ll">LOLA</span></a>
     <div class="nav-links">
-      <a href="#" class="nav-link" id="nav-explore-txt" onclick="showPage('explore');return false;">Keşfet</a>
-      <a href="#" class="nav-link" id="nav-competitions-txt" onclick="showPage('competitions');return false;">Yarışmalar</a>
-      <a href="#" class="nav-link" id="nav-designers-txt" onclick="showPage('designers');return false;">Tasarımcılar</a>
-      <a href="#" class="nav-link" id="nav-how-txt" onclick="showPage('how');return false;">Nasıl Çalışır</a>
+      <a href="#" class="nav-link" onclick="showPage('explore');return false;">Keşfet</a>
+      <a href="#" class="nav-link" onclick="showPage('competitions');return false;">Yarışmalar</a>
+      <a href="#" class="nav-link" onclick="showPage('designers');return false;">Tasarımcılar</a>
+      <a href="#" class="nav-link" onclick="showPage('how');return false;">Nasıl Çalışır</a>
     </div>
     <div class="nav-actions">
-      <button class="btn-ghost lang-btn" onclick="openLangModal()" title="Dil seç / Language">🌐 <span id="langBtnTxt">TR</span></button>
+      <button class="btn-ghost lang-btn" onclick="showModal('langModal')">🌐 <span id="langCode">TR</span></button>
       <button class="btn-ghost" id="navLoginBtn" onclick="showModal('loginModal')">Giriş Yap</button>
-      <button class="btn-primary" id="nav-upload-btn" onclick="showModal('uploadModal')">+ Tasarım Yükle</button>
-      <div class="nav-avatar hidden" id="navAvatar" onclick="showPage('dashboard')">M</div>
+      <button class="btn-primary" onclick="checkAuthThenUpload()">+ Tasarım Yükle</button>
+      <div class="nav-avatar hidden" id="navAvatar" onclick="showPage('dashboard')">?</div>
     </div>
-    <button class="nav-hamburger" onclick="toggleMobileNav()" id="hamburger">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="nav-burger" onclick="toggleNav()" id="burger"><span></span><span></span><span></span></button>
   </div>
-  <div class="nav-mobile-menu hidden" id="navMobileMenu">
-    <a href="#" onclick="showPage('explore');toggleMobileNav();return false;">Keşfet</a>
-    <a href="#" onclick="showPage('competitions');toggleMobileNav();return false;">Yarışmalar</a>
-    <a href="#" onclick="showPage('designers');toggleMobileNav();return false;">Tasarımcılar</a>
-    <a href="#" onclick="showPage('how');toggleMobileNav();return false;">Nasıl Çalışır</a>
-    <a href="#" onclick="showModal('loginModal');toggleMobileNav();return false;">Giriş Yap</a>
-    <a href="#" class="upload-link" onclick="showModal('uploadModal');toggleMobileNav();return false;">+ Tasarım Yükle</a>
+  <div class="nav-mob hidden" id="navMob">
+    <a href="#" onclick="showPage('explore');toggleNav();return false;">Keşfet</a>
+    <a href="#" onclick="showPage('competitions');toggleNav();return false;">Yarışmalar</a>
+    <a href="#" onclick="showPage('designers');toggleNav();return false;">Tasarımcılar</a>
+    <a href="#" onclick="showPage('how');toggleNav();return false;">Nasıl Çalışır</a>
+    <a href="#" onclick="showModal('loginModal');toggleNav();return false;">Giriş Yap</a>
+    <a href="#" class="mob-upload" onclick="checkAuthThenUpload();toggleNav();return false;">+ Tasarım Yükle</a>
   </div>
 </nav>
 
+<!-- ═══ HOME ═══ -->
 <div id="page-home" class="page active">
 
   <section class="hero">
     <div class="hero-noise"></div>
-    <div class="hero-lines"></div>
     <div class="hero-content">
-      <div class="hero-eyebrow">
-        <span class="eyebrow-dot"></span>
-        1.200+ Tasarım &nbsp;·&nbsp; 340+ Tasarımcı &nbsp;·&nbsp; 5.800+ Satış
-      </div>
-      <h1 class="hero-h1">
-        <span id="hero-t1">Forma tasarımını</span><br>
-        <span class="hero-accent" id="hero-a1">sat.</span> <span id="hero-t2">Hayalini</span><br>
-        <span class="hero-accent" id="hero-a2">bul.</span>
-      </h1>
-      <p class="hero-p" id="hero-sub-txt">Tasarımcılar yükler &nbsp;&mdash;&nbsp; Takımlar satın alır &nbsp;&mdash;&nbsp; Anında teslim</p>
-      <div class="hero-actions">
-        <button class="btn-cta" id="hero-btn1" onclick="showPage('explore')">
-          Tasarımları Keşfet
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="btn-cta-ghost" id="hero-btn2" onclick="showModal('uploadModal')">Tasarım Yükle</button>
+      <div class="hero-eyebrow"><span class="edot"></span>1.200+ Tasarım &nbsp;·&nbsp; 340+ Tasarımcı &nbsp;·&nbsp; 5.800+ Satış</div>
+      <h1 class="hero-h1">Forma tasarımını<br><span class="acc">sat.</span> Hayalini<br><span class="acc">bul.</span></h1>
+      <p class="hero-p">Tasarımcılar yükler — Takımlar satın alır — Anında teslim</p>
+      <div class="hero-btns">
+        <button class="btn-cta" onclick="showPage('explore')">Tasarımları Keşfet <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="btn-ghost2" onclick="checkAuthThenUpload()">Tasarım Yükle</button>
       </div>
     </div>
-    <div class="hero-cards">
-      <div class="hero-card" style="--hc-delay:0s" onclick="showPage('explore')">
-        <div class="hc-preview" style="background:linear-gradient(140deg,#0a0a0a,#1a1a2e)">
-          <div class="shirt-svg dark"><div class="shirt-stripe" style="background:#e63946"></div><div class="shirt-num">10</div></div>
-        </div>
-        <div class="hc-body">
-          <span class="hc-title">Gece Yarısı Pro</span>
-          <div class="hc-row"><span class="hc-price">₺449</span><span class="tag tag-hot">Çok Satan</span></div>
-        </div>
-      </div>
-      <div class="hero-card" style="--hc-delay:0.1s" onclick="showPage('explore')">
-        <div class="hc-preview" style="background:linear-gradient(140deg,#fff5f5,#ffe0e0)">
-          <div class="shirt-svg light"><div class="shirt-stripe dark-stripe"></div><div class="shirt-num dark-num">7</div></div>
-        </div>
-        <div class="hc-body">
-          <span class="hc-title">Anadolu Kırmızısı</span>
-          <div class="hc-row"><span class="hc-price">₺299</span><span class="tag tag-new">Yeni</span></div>
-        </div>
-      </div>
-      <div class="hero-card" style="--hc-delay:0.2s" onclick="showPage('explore')">
-        <div class="hc-preview" style="background:linear-gradient(140deg,#0d1b2a,#415a77)">
-          <div class="shirt-svg dark"><div class="shirt-stripe" style="background:#e9c46a"></div><div class="shirt-num" style="color:#e9c46a">9</div></div>
-        </div>
-        <div class="hc-body">
-          <span class="hc-title">Cyber Esports Kit</span>
-          <div class="hc-row"><span class="hc-price">₺599</span><span class="tag tag-excl">Exclusive</span></div>
-        </div>
-      </div>
-    </div>
+    <div class="hero-cards" id="heroCards"></div>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <div class="sec-header">
-        <h2 class="sec-title" id="sec-cats-title">Kategoriler</h2>
-        <a href="#" class="sec-more" onclick="showPage('explore');return false;">Tümünü Gör →</a>
-      </div>
-      <div class="cats-grid">
-        <div class="cat-item" onclick="filterByCategory('Futbol')"><div class="cat-ico">⚽</div><span class="cat-nm">Futbol</span><span class="cat-ct">480</span></div>
-        <div class="cat-item" onclick="filterByCategory('Basketbol')"><div class="cat-ico">🏀</div><span class="cat-nm">Basketbol</span><span class="cat-ct">210</span></div>
-        <div class="cat-item" onclick="filterByCategory('Voleybol')"><div class="cat-ico">🏐</div><span class="cat-nm">Voleybol</span><span class="cat-ct">156</span></div>
-        <div class="cat-item cat-esports" onclick="filterByCategory('E-Spor')"><div class="cat-ico">🎮</div><span class="cat-nm">E-Spor</span><span class="cat-ct">312</span></div>
-        <div class="cat-item" onclick="filterByCategory('Rugby')"><div class="cat-ico">🏉</div><span class="cat-nm">Rugby</span><span class="cat-ct">88</span></div>
-        <div class="cat-item" onclick="filterByCategory('Amerikan Futbolu')"><div class="cat-ico">🏈</div><span class="cat-nm">Amerikan</span><span class="cat-ct">64</span></div>
-      </div>
+  <section class="sec"><div class="container">
+    <div class="sec-hd"><h2 class="sec-t">Kategoriler</h2><a href="#" class="sec-more" onclick="showPage('explore');return false;">Tümünü Gör →</a></div>
+    <div class="cats-grid">
+      <div class="cat" onclick="filterCat('Futbol')"><div class="cat-ico">⚽</div><span>Futbol</span><em>480</em></div>
+      <div class="cat" onclick="filterCat('Basketbol')"><div class="cat-ico">🏀</div><span>Basketbol</span><em>210</em></div>
+      <div class="cat" onclick="filterCat('Voleybol')"><div class="cat-ico">🏐</div><span>Voleybol</span><em>156</em></div>
+      <div class="cat cat-e" onclick="filterCat('E-Spor')"><div class="cat-ico">🎮</div><span>E-Spor</span><em>312</em></div>
+      <div class="cat" onclick="filterCat('Rugby')"><div class="cat-ico">🏉</div><span>Rugby</span><em>88</em></div>
+      <div class="cat" onclick="filterCat('Amerikan Futbolu')"><div class="cat-ico">🏈</div><span>Amerikan</span><em>64</em></div>
     </div>
-  </section>
+  </div></section>
 
-  <section class="section">
-    <div class="container">
-      <div class="sec-header">
-        <h2 class="sec-title" id="sec-trend-title">Trend Tasarımlar</h2>
-        <div class="trend-tabs">
-          <button class="ttab active" onclick="setTrendTab(this)">Bugün</button>
-          <button class="ttab" onclick="setTrendTab(this)">Bu Hafta</button>
-          <button class="ttab" onclick="setTrendTab(this)">Tüm Zamanlar</button>
-        </div>
-      </div>
-      <div class="designs-grid" id="homeGrid"></div>
-      <div class="center-btn"><button class="btn-outline-full" onclick="showPage('explore')">Tüm Tasarımları Gör</button></div>
+  <section class="sec"><div class="container">
+    <div class="sec-hd">
+      <h2 class="sec-t">Trend Tasarımlar</h2>
+      <div class="trend-tabs"><button class="ttab active" onclick="setTTab(this)">Bugün</button><button class="ttab" onclick="setTTab(this)">Bu Hafta</button><button class="ttab" onclick="setTTab(this)">Tüm Zamanlar</button></div>
     </div>
-  </section>
+    <div class="dgrid" id="homeGrid"></div>
+    <div style="text-align:center;margin-top:8px"><button class="btn-out" onclick="showPage('explore')">Tüm Tasarımları Gör</button></div>
+  </div></section>
 
-  <section class="section section-alt">
-    <div class="container">
-      <div class="sec-header">
-        <h2 class="sec-title">Öne Çıkan Tasarımcılar</h2>
-        <a href="#" class="sec-more" onclick="showPage('designers');return false;">Tümünü Gör →</a>
-      </div>
-      <div class="spotlight-grid" id="spotlightGrid"></div>
+  <section class="sec sec-alt"><div class="container">
+    <div class="sec-hd"><h2 class="sec-t">Öne Çıkan Tasarımcılar</h2><a href="#" class="sec-more" onclick="showPage('designers');return false;">Tümünü Gör →</a></div>
+    <div class="spot-grid" id="spotGrid"></div>
+  </div></section>
+
+  <section class="sec"><div class="container">
+    <div class="sec-hd"><h2 class="sec-t">Aktif Yarışmalar</h2><a href="#" class="sec-more" onclick="showPage('competitions');return false;">Tümünü Gör →</a></div>
+    <div class="comps-row" id="homeComps"></div>
+  </div></section>
+
+  <section class="sec sec-how"><div class="container">
+    <h2 class="sec-t" style="text-align:center;margin-bottom:40px">Nasıl Çalışır</h2>
+    <div class="how-row">
+      <div class="how-s"><div class="how-n">01</div><h3>Tasarımını Yükle</h3><p>4 zorunlu görsel, 5 adımlı kolay süreç.</p></div>
+      <div class="how-arr">→</div>
+      <div class="how-s"><div class="how-n">02</div><h3>Takımlar Keşfeder</h3><p>Renk, stil ve spor filtresiyle binlerce takım seni bulur.</p></div>
+      <div class="how-arr">→</div>
+      <div class="how-s"><div class="how-n">03</div><h3>Kazan</h3><p>Ödeme onaylanır, dosya teslim edilir. %80 senin.</p></div>
     </div>
-  </section>
+  </div></section>
 
-  <section class="section">
-    <div class="container">
-      <div class="sec-header">
-        <h2 class="sec-title">Aktif Yarışmalar</h2>
-        <a href="#" class="sec-more" onclick="showPage('competitions');return false;">Tümünü Gör →</a>
-      </div>
-      <div class="comps-row" id="homeComps"></div>
-    </div>
-  </section>
+  <section class="cta-sec"><div class="cta-in">
+    <h2>Tasarımlarını para kazandıran<br>bir platforma taşı.</h2>
+    <p>Ücretsiz kaydol, ilk tasarımını bugün yayınla.</p>
+    <button class="btn-cta" onclick="showModal('loginModal')">Hemen Başla</button>
+  </div></section>
 
-  <section class="section section-how">
-    <div class="container">
-      <h2 class="sec-title centered" id="how-main-title">Nasıl Çalışır</h2>
-      <div class="how-steps">
-        <div class="how-s"><div class="how-n">01</div><h3 id="how1-title">Tasarımını Yükle</h3><p id="how1-p">4 zorunlu görsel, 5 adımlı kolay süreç. Renk, spor dalı ve lisansını seç.</p></div>
-        <div class="how-arrow">→</div>
-        <div class="how-s"><div class="how-n">02</div><h3 id="how2-title">Takımlar Keşfeder</h3><p id="how2-p">Renk, stil ve spor filtresiyle binlerce takım seni bulur.</p></div>
-        <div class="how-arrow">→</div>
-        <div class="how-s"><div class="how-n">03</div><h3 id="how3-title">Kazan</h3><p id="how3-p">Ödeme onaylanır, üretim dosyası teslim edilir. Her satıştan %80 senin.</p></div>
-      </div>
-    </div>
-  </section>
+</div><!-- /home -->
 
-  <section class="cta-section">
-    <div class="cta-inner">
-      <h2 id="cta-title-txt">Tasarımlarını para kazandıran<br>bir platforma taşı.</h2>
-      <p id="cta-sub-txt">Ücretsiz kaydol, ilk tasarımını bugün yayınla.</p>
-      <button class="btn-cta" id="cta-btn-txt" onclick="showModal('loginModal')">Hemen Başla</button>
-    </div>
-  </section>
-
-</div>
-
+<!-- ═══ EXPLORE ═══ -->
 <div id="page-explore" class="page">
-  <div class="explore-wrap">
-    <aside class="filter-panel" id="filterPanel">
-      <div class="fp-head"><h3 id="fp-label-sport-head">Filtrele</h3><button class="fp-clear" id="fp-clear-btn" onclick="clearFilters()">Temizle</button></div>
-
-      <div class="fp-group">
-        <div class="fp-label" id="fp-label-sport">Spor Dalı</div>
-        <label class="fp-check"><input type="checkbox" value="Futbol" onchange="applyFilters()"><span>Futbol</span><em>480</em></label>
-        <label class="fp-check"><input type="checkbox" value="Basketbol" onchange="applyFilters()"><span>Basketbol</span><em>210</em></label>
-        <label class="fp-check"><input type="checkbox" value="Voleybol" onchange="applyFilters()"><span>Voleybol</span><em>156</em></label>
-        <label class="fp-check"><input type="checkbox" value="E-Spor" onchange="applyFilters()"><span>E-Spor</span><em>312</em></label>
-        <label class="fp-check"><input type="checkbox" value="Rugby" onchange="applyFilters()"><span>Rugby</span><em>88</em></label>
-        <label class="fp-check"><input type="checkbox" value="Amerikan Futbolu" onchange="applyFilters()"><span>Amerikan Fut.</span><em>64</em></label>
-        <label class="fp-check"><input type="checkbox" value="Hentbol" onchange="applyFilters()"><span>Hentbol</span><em>42</em></label>
+  <div class="exp-wrap">
+    <aside class="fp" id="fpanel">
+      <div class="fp-hd"><h3>Filtrele</h3><button onclick="clearFilters()">Temizle</button></div>
+      <div class="fp-g"><div class="fp-l">Spor Dalı</div>
+        <label class="fpc"><input type="checkbox" value="Futbol" onchange="applyFilters()"><span>Futbol</span><em>480</em></label>
+        <label class="fpc"><input type="checkbox" value="Basketbol" onchange="applyFilters()"><span>Basketbol</span><em>210</em></label>
+        <label class="fpc"><input type="checkbox" value="Voleybol" onchange="applyFilters()"><span>Voleybol</span><em>156</em></label>
+        <label class="fpc"><input type="checkbox" value="E-Spor" onchange="applyFilters()"><span>E-Spor</span><em>312</em></label>
+        <label class="fpc"><input type="checkbox" value="Rugby" onchange="applyFilters()"><span>Rugby</span><em>88</em></label>
+        <label class="fpc"><input type="checkbox" value="Amerikan Futbolu" onchange="applyFilters()"><span>Amerikan Fut.</span><em>64</em></label>
+        <label class="fpc"><input type="checkbox" value="Hentbol" onchange="applyFilters()"><span>Hentbol</span><em>42</em></label>
       </div>
-
-      <div class="fp-group">
-        <div class="fp-label" id="fp-label-color">Renk</div>
-        <div class="fp-swatches" id="fpSwatches">
-          <button class="swatch" style="background:#e63946" data-hex="#e63946" onclick="toggleSwatch(this)" title="Kırmızı"></button>
-          <button class="swatch" style="background:#1d3557" data-hex="#1d3557" onclick="toggleSwatch(this)" title="Lacivert"></button>
-          <button class="swatch" style="background:#2a9d8f" data-hex="#2a9d8f" onclick="toggleSwatch(this)" title="Turkuaz"></button>
-          <button class="swatch" style="background:#e9c46a" data-hex="#e9c46a" onclick="toggleSwatch(this)" title="Sarı"></button>
-          <button class="swatch" style="background:#f4f1de" data-hex="#f4f1de" onclick="toggleSwatch(this)" title="Beyaz" style="border:1px solid #ccc"></button>
-          <button class="swatch" style="background:#1a1a1a" data-hex="#1a1a1a" onclick="toggleSwatch(this)" title="Siyah"></button>
-          <button class="swatch" style="background:#8338ec" data-hex="#8338ec" onclick="toggleSwatch(this)" title="Mor"></button>
-          <button class="swatch" style="background:#fb8500" data-hex="#fb8500" onclick="toggleSwatch(this)" title="Turuncu"></button>
-          <button class="swatch" style="background:#06d6a0" data-hex="#06d6a0" onclick="toggleSwatch(this)" title="Yeşil"></button>
-          <button class="swatch" style="background:#ef476f" data-hex="#ef476f" onclick="toggleSwatch(this)" title="Pembe"></button>
+      <div class="fp-g"><div class="fp-l">Renk</div>
+        <div class="swatches">
+          <button class="sw" style="background:#e63946" data-hex="#e63946" onclick="toggleSwatch(this)"></button>
+          <button class="sw" style="background:#1d3557" data-hex="#1d3557" onclick="toggleSwatch(this)"></button>
+          <button class="sw" style="background:#2a9d8f" data-hex="#2a9d8f" onclick="toggleSwatch(this)"></button>
+          <button class="sw" style="background:#e9c46a" data-hex="#e9c46a" onclick="toggleSwatch(this)"></button>
+          <button class="sw" style="background:#f4f1de;border:1px solid #888" data-hex="#f4f1de" onclick="toggleSwatch(this)"></button>
+          <button class="sw" style="background:#1a1a1a" data-hex="#1a1a1a" onclick="toggleSwatch(this)"></button>
+          <button class="sw" style="background:#8338ec" data-hex="#8338ec" onclick="toggleSwatch(this)"></button>
+          <button class="sw" style="background:#fb8500" data-hex="#fb8500" onclick="toggleSwatch(this)"></button>
+          <button class="sw" style="background:#06d6a0" data-hex="#06d6a0" onclick="toggleSwatch(this)"></button>
+          <button class="sw" style="background:#ef476f" data-hex="#ef476f" onclick="toggleSwatch(this)"></button>
         </div>
       </div>
-
-      <div class="fp-group">
-        <div class="fp-label" id="fp-label-style">Stil</div>
-        <label class="fp-check"><input type="checkbox" value="modern" onchange="applyFilters()"><span>Modern</span></label>
-        <label class="fp-check"><input type="checkbox" value="retro" onchange="applyFilters()"><span>Retro</span></label>
-        <label class="fp-check"><input type="checkbox" value="minimal" onchange="applyFilters()"><span>Minimal</span></label>
-        <label class="fp-check"><input type="checkbox" value="futuristic" onchange="applyFilters()"><span>Fütüristik</span></label>
-        <label class="fp-check"><input type="checkbox" value="classic" onchange="applyFilters()"><span>Klasik</span></label>
-        <label class="fp-check"><input type="checkbox" value="street" onchange="applyFilters()"><span>Street</span></label>
+      <div class="fp-g"><div class="fp-l">Stil</div>
+        <label class="fpc"><input type="checkbox" value="modern" onchange="applyFilters()"><span>Modern</span></label>
+        <label class="fpc"><input type="checkbox" value="retro" onchange="applyFilters()"><span>Retro</span></label>
+        <label class="fpc"><input type="checkbox" value="minimal" onchange="applyFilters()"><span>Minimal</span></label>
+        <label class="fpc"><input type="checkbox" value="futuristic" onchange="applyFilters()"><span>Fütüristik</span></label>
+        <label class="fpc"><input type="checkbox" value="classic" onchange="applyFilters()"><span>Klasik</span></label>
+        <label class="fpc"><input type="checkbox" value="street" onchange="applyFilters()"><span>Street</span></label>
       </div>
-
-      <div class="fp-group">
-        <div class="fp-label" id="fp-label-pattern">Desen</div>
-        <label class="fp-check"><input type="checkbox" value="stripes" onchange="applyFilters()"><span>Çizgili</span></label>
-        <label class="fp-check"><input type="checkbox" value="gradient" onchange="applyFilters()"><span>Gradient</span></label>
-        <label class="fp-check"><input type="checkbox" value="geometric" onchange="applyFilters()"><span>Geometrik</span></label>
-        <label class="fp-check"><input type="checkbox" value="camo" onchange="applyFilters()"><span>Kamuflaj</span></label>
-        <label class="fp-check"><input type="checkbox" value="abstract" onchange="applyFilters()"><span>Soyut</span></label>
-        <label class="fp-check"><input type="checkbox" value="retro" onchange="applyFilters()"><span>Retro</span></label>
+      <div class="fp-g"><div class="fp-l">Desen</div>
+        <label class="fpc"><input type="checkbox" value="stripes" onchange="applyFilters()"><span>Çizgili</span></label>
+        <label class="fpc"><input type="checkbox" value="gradient" onchange="applyFilters()"><span>Gradient</span></label>
+        <label class="fpc"><input type="checkbox" value="geometric" onchange="applyFilters()"><span>Geometrik</span></label>
+        <label class="fpc"><input type="checkbox" value="camo" onchange="applyFilters()"><span>Kamuflaj</span></label>
+        <label class="fpc"><input type="checkbox" value="abstract" onchange="applyFilters()"><span>Soyut</span></label>
       </div>
-
-      <div class="fp-group">
-        <div class="fp-label" id="fp-label-license">Lisans</div>
-        <label class="fp-check"><input type="checkbox" value="standard" onchange="applyFilters()"><span>Standart</span></label>
-        <label class="fp-check"><input type="checkbox" value="exclusive" onchange="applyFilters()"><span>Exclusive</span></label>
+      <div class="fp-g"><div class="fp-l">Lisans</div>
+        <label class="fpc"><input type="checkbox" value="standard" onchange="applyFilters()"><span>Standart</span></label>
+        <label class="fpc"><input type="checkbox" value="exclusive" onchange="applyFilters()"><span>Exclusive</span></label>
       </div>
-
-      <div class="fp-group">
-        <div class="fp-label" id="fp-label-price">Fiyat (₺)</div>
-        <div class="fp-price-row">
-          <input type="number" id="priceMin" placeholder="Min" oninput="applyFilters()">
-          <span>—</span>
-          <input type="number" id="priceMax" placeholder="Max" oninput="applyFilters()">
-        </div>
+      <div class="fp-g"><div class="fp-l">Fiyat (₺)</div>
+        <div class="price-row"><input type="number" id="priceMin" placeholder="Min" oninput="applyFilters()"><span>—</span><input type="number" id="priceMax" placeholder="Max" oninput="applyFilters()"></div>
       </div>
     </aside>
-
-    <main class="explore-main">
-      <div class="explore-bar">
-        <div class="search-wrap">
-          <svg class="si" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          <input id="searchInput" type="text" placeholder="Tasarım, renk, spor dalı ara..." oninput="applyFilters()">
-        </div>
-        <select class="sort-sel" id="sortSel" onchange="applyFilters()">
-          <option value="popular">En Popüler</option>
-          <option value="newest">En Yeni</option>
-          <option value="price-asc">Fiyat ↑</option>
-          <option value="price-desc">Fiyat ↓</option>
-          <option value="bestseller">Çok Satan</option>
-        </select>
-        <button class="filter-toggle" onclick="toggleFilterPanel()">
-          <svg viewBox="0 0 20 20" fill="none" width="15" height="15"><path d="M3 5h14M6 10h8M9 15h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          Filtre
-        </button>
+    <main class="exp-main">
+      <div class="exp-bar">
+        <div class="srch-wrap"><svg viewBox="0 0 20 20" fill="none" class="si"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input type="text" id="searchInput" placeholder="Tasarım, renk, spor dalı ara..." oninput="applyFilters()"></div>
+        <select id="sortSel" onchange="applyFilters()"><option value="popular">En Popüler</option><option value="newest">En Yeni</option><option value="price-asc">Fiyat ↑</option><option value="price-desc">Fiyat ↓</option><option value="bestseller">Çok Satan</option></select>
+        <button class="fp-toggle" onclick="toggleFP()">⚙ Filtre</button>
       </div>
-      <div class="results-count" id="resultsCount">1.200 tasarım</div>
-      <div class="designs-grid" id="exploreGrid"></div>
-      <div class="load-more-wrap"><button class="btn-load" id="load-more-btn" onclick="loadMore()">Daha Fazla Yükle</button></div>
+      <div class="res-count" id="resCount">Yükleniyor...</div>
+      <div class="dgrid" id="expGrid"></div>
+      <div style="text-align:center;margin-top:16px"><button class="btn-out" id="loadMoreBtn" onclick="loadMore()">Daha Fazla Yükle</button></div>
     </main>
   </div>
 </div>
 
+<!-- ═══ DETAIL ═══ -->
 <div id="page-detail" class="page">
-  <div class="container">
-    <button class="back-btn" onclick="goBack()">← Geri</button>
-    <div id="detailContent"></div>
-  </div>
+  <div class="container"><button class="back-btn" onclick="goBack()">← Geri</button><div id="detailContent"></div></div>
 </div>
 
+<!-- ═══ DESIGNERS ═══ -->
 <div id="page-designers" class="page">
   <div class="container">
-    <div class="pg-header"><h1>Tasarımcılar</h1><p>Platform üzerindeki en iyi forma tasarımcıları</p></div>
+    <div class="pg-hd"><h1>Tasarımcılar</h1><p>Platform üzerindeki en iyi forma tasarımcıları</p></div>
     <div class="designers-grid" id="designersGrid"></div>
   </div>
 </div>
 
+<!-- ═══ DESIGNER PROFILE ═══ -->
 <div id="page-designer-profile" class="page">
   <div class="container" id="designerProfileContent"></div>
 </div>
 
+<!-- ═══ COMPETITIONS ═══ -->
 <div id="page-competitions" class="page">
   <div class="container">
-    <div class="pg-header"><h1>Tasarım Yarışmaları</h1><p>Kulüplerin açtığı yarışmalara katıl, ödül kazan</p></div>
+    <div class="pg-hd"><h1>Tasarım Yarışmaları</h1><p>Kulüplerin açtığı yarışmalara katıl, ödül kazan</p></div>
     <div class="comps-grid" id="compsGrid"></div>
   </div>
 </div>
 
+<!-- ═══ HOW IT WORKS ═══ -->
 <div id="page-how" class="page">
   <div class="container">
-    <div class="pg-header"><h1>Nasıl Çalışır</h1></div>
+    <div class="pg-hd"><h1>Nasıl Çalışır</h1></div>
     <div class="how-full">
-      <div class="how-block"><h2>Tasarımcılar için</h2>
-        <ol><li>Ücretsiz hesap aç, tasarımcı profilini oluştur</li><li>En az 4 görsel yükle (ön, arka, detay, flat vector)</li><li>Renk, spor dalı, stil ve fiyat bilgilerini gir</li><li>Standart veya Exclusive lisans seç</li><li>Onaylanınca yayına gir ve satışa başla</li><li>Her satıştan %80 kazan</li></ol>
-      </div>
-      <div class="how-block"><h2>Takımlar için</h2>
-        <ol><li>Filtrelerle istediğin formayı bul</li><li>Tasarım detay sayfasında önizleme gör</li><li>Lisans tipini seç</li><li>iyzico ile güvenli ödeme yap</li><li>Üretim dosyaları anında teslim edilir</li></ol>
-      </div>
-      <div class="how-block"><h2>Lisans Tipleri</h2>
+      <div class="how-blk"><h2>Tasarımcılar için</h2><ol><li>Ücretsiz hesap aç, profil oluştur</li><li>En az 4 görsel yükle (ön, arka, detay, flat)</li><li>Renk, spor dalı, stil ve fiyat gir</li><li>Standart veya Exclusive lisans seç</li><li>Onaylanınca yayına gir</li><li>Her satıştan %80 kazan</li></ol></div>
+      <div class="how-blk"><h2>Takımlar için</h2><ol><li>Filtrelerle istediğin formayı bul</li><li>Tasarım sayfasında önizleme gör</li><li>Lisans tipini seç</li><li>iyzico ile güvenli ödeme yap</li><li>Üretim dosyaları anında teslim edilir</li></ol></div>
+      <div class="how-blk"><h2>Lisans Tipleri</h2>
         <div class="lic-cards">
-          <div class="lic-c"><strong>Standart</strong><p>Birden fazla takım alabilir</p><span>₺200 – ₺1.500</span></div>
-          <div class="lic-c lic-featured"><strong>Premium</strong><p>Sınırlı satış hakkı</p><span>₺1.500 – ₺5.000</span></div>
-          <div class="lic-c"><strong>Exclusive</strong><p>Tek kulüp, telif geçer</p><span>₺5.000 – ₺50.000</span></div>
+          <div class="lic-c"><strong>Standart</strong><p>Birden fazla takım satın alabilir</p><span>₺200 – ₺1.500</span></div>
+          <div class="lic-c lic-feat"><strong>Premium</strong><p>Sınırlı satış hakkı</p><span>₺1.500 – ₺5.000</span></div>
+          <div class="lic-c"><strong>Exclusive</strong><p>Tek kulüp, telif devredilir</p><span>₺5.000 – ₺50.000</span></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- ═══ DASHBOARD ═══ -->
 <div id="page-dashboard" class="page">
   <div class="container">
-    <div class="dash-layout">
+    <div class="dash-wrap">
       <aside class="dash-side">
-        <div class="dash-prof">
-          <div class="dash-av" id="dashAv">M</div>
-          <div class="dash-uname" id="dashUname">Kullanıcı</div>
-          <div class="level-badge rookie" id="dashLevel">Rookie</div>
-        </div>
+        <div class="dash-prof"><div class="dash-av" id="dashAv">?</div><div id="dashName">Kullanıcı</div><div class="lvl-badge" id="dashLevel">Rookie</div></div>
         <nav class="dash-nav">
-          <button class="dn-item active" onclick="dashTab('overview',this)">Dashboard</button>
-          <button class="dn-item" onclick="dashTab('mydesigns',this)">Tasarımlarım</button>
-          <button class="dn-item" onclick="dashTab('purchases',this)">Satın Aldıklarım</button>
-          <button class="dn-item" onclick="dashTab('sales',this)">Satışlar</button>
-          <button class="dn-item" onclick="dashTab('earnings',this)">Kazançlar</button>
-          <button class="dn-item" onclick="dashTab('favorites',this)">Favoriler</button>
-          <button class="dn-item" onclick="dashTab('settings',this)">Ayarlar</button>
-          
-          <button class="dn-item hidden" id="dashAdminBtn" onclick="dashTab('adminPanel',this)" style="color: var(--accent); border-top: 1px solid var(--border);">
-            Admin Paneli
-          </button>
+          <button class="dni active" onclick="dTab('overview',this)">Dashboard</button>
+          <button class="dni" onclick="dTab('mydesigns',this)">Tasarımlarım</button>
+          <button class="dni" onclick="dTab('purchases',this)">Satın Aldıklarım</button>
+          <button class="dni" onclick="dTab('sales',this)">Satışlar</button>
+          <button class="dni" onclick="dTab('earnings',this)">Kazançlar</button>
+          <button class="dni" onclick="dTab('favorites',this)">Favoriler</button>
+          <button class="dni" id="adminNavBtn" onclick="dTab('admin',this)" style="display:none;color:var(--accent)">⚙ Admin Panel</button>
+          <button class="dni" onclick="dTab('settings',this)">Ayarlar</button>
         </nav>
       </aside>
-      <main class="dash-content" id="dashContent"></main>
+      <main class="dash-main" id="dashMain"></main>
     </div>
   </div>
 </div>
 
-<div class="overlay" id="loginModal" onclick="outsideClose(event,'loginModal')">
-  <div class="modal">
-    <button class="m-close" onclick="closeModal('loginModal')">×</button>
-    <div class="m-tabs">
-      <button class="m-tab active" id="login-modal-tab" onclick="authTab('login',this)">Giriş Yap</button>
-      <button class="m-tab" id="register-modal-tab" onclick="authTab('register',this)">Kayıt Ol</button>
+<!-- ═══ LEGAL PAGES ═══ -->
+<div id="page-legal-privacy" class="page">
+  <div class="container"><button class="back-btn" onclick="goBack()">← Geri</button>
+    <div class="legal-doc">
+      <h1>Gizlilik Politikası</h1><p class="legal-date">Son güncelleme: 13 Mart 2026</p>
+      <h2>1. Veri Sorumlusu</h2><p>Bu Gizlilik Politikası, <strong>formaLOLA</strong> tarafından yönetilen <strong>muratlola.com</strong> için geçerlidir. Sorularınız için: <strong>info@muratlola.com</strong></p>
+      <h2>2. Toplanan Kişisel Veriler</h2><ul><li><strong>Kimlik:</strong> Ad, soyad, kullanıcı adı</li><li><strong>İletişim:</strong> E-posta adresi</li><li><strong>Ödeme:</strong> Kart bilgileri (yalnızca iyzico tarafından işlenir, tarafımızca depolanmaz)</li><li><strong>Teknik:</strong> IP, tarayıcı, cihaz, çerez verileri</li><li><strong>İşlem:</strong> Satın alma geçmişi, yüklenen tasarım bilgileri</li></ul>
+      <h2>3. İşlenme Amaçları</h2><ul><li>Hesap oluşturma ve kimlik doğrulama</li><li>Satın alma işlemleri ve faturalandırma</li><li>Platform hizmetlerinin sunulması</li><li>Müşteri desteği</li><li>Yasal yükümlülüklerin yerine getirilmesi</li></ul>
+      <h2>4. Üçüncü Taraflar</h2><p>Verileriniz; ödeme için <strong>iyzico</strong>, görseller için <strong>ImgBB</strong> ve altyapı için <strong>Google Firebase</strong> ile paylaşılabilir.</p>
+      <h2>5. KVKK Haklarınız</h2><p>Verilerinizi görme, düzeltme, silme veya işlemeye itiraz etme hakkınız vardır. Talep için: <strong>info@muratlola.com</strong></p>
+      <h2>6. Çerezler</h2><p>Oturum yönetimi ve tercih hatırlama amacıyla çerez kullanılmaktadır. Tarayıcı ayarlarından devre dışı bırakabilirsiniz.</p>
     </div>
-    
-    <div id="authLogin">
+  </div>
+</div>
+
+<div id="page-legal-sales" class="page">
+  <div class="container"><button class="back-btn" onclick="goBack()">← Geri</button>
+    <div class="legal-doc">
+      <h1>Mesafeli Satış Sözleşmesi</h1><p class="legal-date">Son güncelleme: 13 Mart 2026</p>
+      <h2>Madde 1 — Taraflar</h2><p><strong>SATICI:</strong> formaLOLA (muratlola.com) · info@muratlola.com<br><strong>ALICI:</strong> Platforma kayıtlı kullanıcı</p>
+      <h2>Madde 2 — Konu</h2><p>Bu sözleşme, ALICI'nın formaLOLA üzerinden satın aldığı dijital forma tasarım dosyalarının (PNG, AI, SVG, PDF) teslimine ilişkin koşulları düzenler.</p>
+      <h2>Madde 3 — Ürün ve Fiyat</h2><p>Her tasarımın adı, fiyatı ve lisans türü ürün sayfasında açıkça belirtilmiştir. Fiyatlar TL cinsindendir ve KDV dahildir. Platform her satıştan %20 komisyon alır, %80 tasarımcıya ödenir.</p>
+      <h2>Madde 4 — Ödeme</h2><p>Ödemeler <strong>iyzico Ödeme Sistemleri A.Ş.</strong> güvencesiyle yapılır. Kart bilgileri platformumuzda saklanmaz. Desteklenen kartlar: Visa, Mastercard, Troy.</p>
+      <h2>Madde 5 — Teslimat</h2><p>Ödeme onayının ardından tüm dosyalar hesabınıza <strong>anında ve otomatik</strong> olarak iletilir.</p>
+      <h2>Madde 6 — Lisans</h2><p><strong>Standart:</strong> Birden fazla takım satın alabilir. <strong>Exclusive:</strong> Satın alındığında tasarım kaldırılır, telif ALICI'ya devredilir. Her iki lisansta da tasarım üçüncü kişilere satılamaz.</p>
+      <h2>Madde 7 — Cayma Hakkı</h2><div class="legal-hl">Dijital içerik niteliğindeki ürünlerde, teslimata onay verilmesi ve indirme işleminin başlamasıyla cayma hakkı sona erer (TKHK Madde 49).</div>
+      <h2>Madde 8 — Uyuşmazlık</h2><p>Türkiye Cumhuriyeti mahkemeleri ve Tüketici Hakem Heyetleri yetkilidir.</p>
+    </div>
+  </div>
+</div>
+
+<div id="page-legal-refund" class="page">
+  <div class="container"><button class="back-btn" onclick="goBack()">← Geri</button>
+    <div class="legal-doc">
+      <h1>İptal ve İade Koşulları</h1><p class="legal-date">Son güncelleme: 13 Mart 2026</p>
+      <div class="legal-hl"><strong>Önemli:</strong> Satın alma tamamlanıp dosyalar teslim edildiğinde cayma hakkınız sona erer. Satın alma ekranında bu koşulu açıkça onaylamaktasınız.</div>
+      <h2>İade Kabul Edilen Durumlar</h2><ul><li>Dosyalar teknik nedenlerle hesabınıza iletilmediyse</li><li>Teslim edilen dosyalar ürün sayfasındaki formatları içermiyorsa</li><li>Mükerrer (çift) ödeme gerçekleştiyse</li><li>Satın alma sonrası 24 saat içinde dosyalara hiç erişilemediyse</li></ul>
+      <h2>İade Kabul Edilmeyen Durumlar</h2><ul><li>Dosyalar başarıyla teslim edilmiş ve indirilmişse</li><li>"Beğenmedim", "renk değiştirmek istiyorum" gibi öznel nedenler</li><li>Üretim sürecinde ortaya çıkan sorunlar</li><li>Satın alma tarihinden 7 günden fazla süre geçmişse</li></ul>
+      <h2>İade Süreci</h2><p>Talebinizi <strong>info@muratlola.com</strong> adresine sipariş numaranızla iletin. 3 iş günü içinde yanıt verilir. Onaylanan iadeler 5-10 iş günü içinde kartınıza yansır.</p>
+    </div>
+  </div>
+</div>
+
+<div id="page-legal-terms" class="page">
+  <div class="container"><button class="back-btn" onclick="goBack()">← Geri</button>
+    <div class="legal-doc">
+      <h1>Kullanım Koşulları</h1><p class="legal-date">Son güncelleme: 13 Mart 2026</p>
+      <h2>1. Kabul</h2><p>Platformu kullanarak bu koşulları kabul etmiş sayılırsınız.</p>
+      <h2>2. Platform Hizmetleri</h2><p>formaLOLA, forma tasarımcıları ile takımlar arasında aracılık yapan dijital bir pazaryeridir.</p>
+      <h2>3. Tasarımcı Yükümlülükleri</h2><ul><li>Yüklenen tüm tasarımlar orijinal ve tasarımcıya ait olmalıdır</li><li>Başkasına ait tasarım, logo veya markaların izinsiz kullanımı yasaktır</li><li>Telif ihlali tespit edilirse tasarım kaldırılır, hesap askıya alınabilir</li><li>Platform her satıştan %20 komisyon alır</li></ul>
+      <h2>4. Alıcı Yükümlülükleri</h2><ul><li>Tasarımlar yalnızca lisans kapsamında kullanılabilir</li><li>Tasarımların üçüncü kişilere satışı veya devri yasaktır</li></ul>
+      <h2>5. Hesap Güvenliği</h2><p>Hesap güvenliğinizden siz sorumlusunuz. Yetkisiz erişim durumunda info@muratlola.com adresini bilgilendirin.</p>
+      <h2>6. İletişim</h2><p><strong>info@muratlola.com</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- LOGIN -->
+<div class="overlay" id="loginModal" onclick="oClose(event,'loginModal')">
+  <div class="modal">
+    <button class="mcls" onclick="closeModal('loginModal')">×</button>
+    <div class="mtabs">
+      <button class="mtab active" id="tabLogin" onclick="aTab('login',this)">Giriş Yap</button>
+      <button class="mtab" id="tabReg" onclick="aTab('register',this)">Kayıt Ol</button>
+    </div>
+    <div id="formLogin">
       <div class="fg"><label>E-posta</label><input type="email" id="loginEmail" placeholder="ornek@email.com"></div>
       <div class="fg"><label>Şifre</label><input type="password" id="loginPass" placeholder="••••••••"></div>
       <button class="btn-form" onclick="doLogin()">Giriş Yap</button>
-      
       <div class="divider"><span>veya</span></div>
-      
-      <button class="btn-google" onclick="doGoogleLogin()">
+      <button class="btn-google" onclick="doGoogle()">
         <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
         Google ile Devam Et
       </button>
     </div>
-    
-    <div id="authRegister" class="hidden">
-      <div class="fg"><label>İsim</label><input type="text" id="regName" placeholder="Adın Soyadın"></div>
+    <div id="formReg" class="hidden">
+      <div class="fg"><label>İsim Soyisim</label><input type="text" id="regName" placeholder="Adın Soyadın"></div>
       <div class="fg"><label>E-posta</label><input type="email" id="regEmail" placeholder="ornek@email.com"></div>
-      <div class="fg"><label>Şifre</label><input type="password" id="regPass" placeholder="Min 8 karakter"></div>
-      <div class="fg"><label>Hesap Tipi</label>
-        <select id="regRole"><option value="designer">Tasarımcı</option><option value="team">Takım / Kulüp</option></select>
-      </div>
+      <div class="fg"><label>Şifre</label><input type="password" id="regPass" placeholder="Min 6 karakter"></div>
+      <div class="fg"><label>Hesap Tipi</label><select id="regRole"><option value="designer">Tasarımcı</option><option value="team">Takım / Kulüp</option></select></div>
       <button class="btn-form" onclick="doRegister()">Kayıt Ol</button>
     </div>
   </div>
 </div>
 
-<div class="overlay overlay-wide" id="uploadModal" onclick="outsideClose(event,'uploadModal')">
-  <div class="modal modal-wide">
-    <button class="m-close" onclick="closeModal('uploadModal')">×</button>
-    <h2 class="m-title" id="upload-modal-title">Tasarım Yükle</h2>
-    <div class="upload-wizard-steps">
-      <div class="wiz-step active" id="ws1">1 · Görseller</div>
-      <div class="wiz-line"></div>
-      <div class="wiz-step" id="ws2">2 · Bilgiler</div>
-      <div class="wiz-line"></div>
-      <div class="wiz-step" id="ws3">3 · Renkler</div>
-      <div class="wiz-line"></div>
-      <div class="wiz-step" id="ws4">4 · Dosyalar</div>
-      <div class="wiz-line"></div>
-      <div class="wiz-step" id="ws5">5 · Fiyat</div>
+<!-- UPLOAD -->
+<div class="overlay overlay-w" id="uploadModal" onclick="oClose(event,'uploadModal')">
+  <div class="modal modal-w">
+    <button class="mcls" onclick="closeModal('uploadModal')">×</button>
+    <h2 class="m-ttl">Tasarım Yükle</h2>
+    <div class="wiz-steps">
+      <div class="ws active" id="ws1">1 · Görseller</div><div class="wl"></div>
+      <div class="ws" id="ws2">2 · Bilgiler</div><div class="wl"></div>
+      <div class="ws" id="ws3">3 · Renkler</div><div class="wl"></div>
+      <div class="ws" id="ws4">4 · Dosyalar</div><div class="wl"></div>
+      <div class="ws" id="ws5">5 · Fiyat</div>
     </div>
-
-    <div class="wiz-panel" id="panel1">
-      <h3 class="step-h">Görseller <span class="req-note">* 4 görsel zorunlu, max 10</span></h3>
+    <!-- Step 1 -->
+    <div class="wiz-p" id="panel1">
+      <h3 class="sth">Görseller <span class="req-n">* 4 zorunlu, max 10</span></h3>
       <div class="img-grid">
-        <div class="img-slot req" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="previewSlot(this,'s-front')"><div class="is-inner" id="s-front"><div class="is-plus">+</div><div class="is-lbl">Ön Görünüm *</div></div></div>
-        <div class="img-slot req" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="previewSlot(this,'s-back')"><div class="is-inner" id="s-back"><div class="is-plus">+</div><div class="is-lbl">Arka Görünüm *</div></div></div>
-        <div class="img-slot req" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="previewSlot(this,'s-detail')"><div class="is-inner" id="s-detail"><div class="is-plus">+</div><div class="is-lbl">Yakın Detay *</div></div></div>
-        <div class="img-slot req" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="previewSlot(this,'s-flat')"><div class="is-inner" id="s-flat"><div class="is-plus">+</div><div class="is-lbl">Flat Design *</div></div></div>
-        <div class="img-slot opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="previewSlot(this,'s-model')"><div class="is-inner" id="s-model"><div class="is-plus">+</div><div class="is-lbl">Model Mockup</div></div></div>
-        <div class="img-slot opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="previewSlot(this,'s-tex')"><div class="is-inner" id="s-tex"><div class="is-plus">+</div><div class="is-lbl">Kumaş Texture</div></div></div>
-        <div class="img-slot opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="previewSlot(this,'s-pat')"><div class="is-inner" id="s-pat"><div class="is-plus">+</div><div class="is-lbl">Pattern Zoom</div></div></div>
-        <div class="img-slot opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="previewSlot(this,'s-var')"><div class="is-inner" id="s-var"><div class="is-plus">+</div><div class="is-lbl">Renk Varyasyonu</div></div></div>
-        <div class="img-slot opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="previewSlot(this,'s-field')"><div class="is-inner" id="s-field"><div class="is-plus">+</div><div class="is-lbl">Saha Mockup</div></div></div>
-        <div class="img-slot opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="previewSlot(this,'s-pkg')"><div class="is-inner" id="s-pkg"><div class="is-plus">+</div><div class="is-lbl">Packaging</div></div></div>
+        <div class="is req" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="prevSlot(this,'ss-front')"><div class="isi" id="ss-front"><div class="isp">+</div><div class="isl">Ön *</div></div></div>
+        <div class="is req" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="prevSlot(this,'ss-back')"><div class="isi" id="ss-back"><div class="isp">+</div><div class="isl">Arka *</div></div></div>
+        <div class="is req" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="prevSlot(this,'ss-detail')"><div class="isi" id="ss-detail"><div class="isp">+</div><div class="isl">Detay *</div></div></div>
+        <div class="is req" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="prevSlot(this,'ss-flat')"><div class="isi" id="ss-flat"><div class="isp">+</div><div class="isl">Flat *</div></div></div>
+        <div class="is opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="prevSlot(this,'ss-m1')"><div class="isi" id="ss-m1"><div class="isp">+</div><div class="isl">Model</div></div></div>
+        <div class="is opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="prevSlot(this,'ss-m2')"><div class="isi" id="ss-m2"><div class="isp">+</div><div class="isl">Kumaş</div></div></div>
+        <div class="is opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="prevSlot(this,'ss-m3')"><div class="isi" id="ss-m3"><div class="isp">+</div><div class="isl">Pattern</div></div></div>
+        <div class="is opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="prevSlot(this,'ss-m4')"><div class="isi" id="ss-m4"><div class="isp">+</div><div class="isl">Renk Var.</div></div></div>
+        <div class="is opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="prevSlot(this,'ss-m5')"><div class="isi" id="ss-m5"><div class="isp">+</div><div class="isl">Saha</div></div></div>
+        <div class="is opt" onclick="this.querySelector('input').click()"><input type="file" accept="image/*" onchange="prevSlot(this,'ss-m6')"><div class="isi" id="ss-m6"><div class="isp">+</div><div class="isl">Paket</div></div></div>
       </div>
-      <div class="step-nav"><button class="btn-next" onclick="wizGo(2)">Devam Et →</button></div>
+      <div class="wnav"><button class="btn-nxt" onclick="wizStep(2)">Devam Et →</button></div>
     </div>
-
-    <div class="wiz-panel hidden" id="panel2">
-      <h3 class="step-h">Tasarım Bilgileri</h3>
+    <!-- Step 2 -->
+    <div class="wiz-p hidden" id="panel2">
+      <h3 class="sth">Tasarım Bilgileri</h3>
       <div class="fg"><label>Tasarım Adı *</label><input type="text" id="upTitle" placeholder="Örn: Gece Yarısı Pro Kit 2026"></div>
       <div class="fg-row">
-        <div class="fg"><label>Spor Dalı *</label>
-          <select id="upSport"><option>Futbol</option><option>Basketbol</option><option>Voleybol</option><option>E-Spor</option><option>Rugby</option><option>Amerikan Futbolu</option><option>Hentbol</option><option>Futbol Akademi</option><option>Diğer</option></select>
-        </div>
-        <div class="fg"><label>Kit Tipi</label>
-          <select id="upKit"><option>Ev</option><option>Deplasman</option><option>Üçüncü</option><option>Antrenman</option><option>Eşofman</option><option>Çocuk</option></select>
-        </div>
+        <div class="fg"><label>Spor Dalı *</label><select id="upSport"><option>Futbol</option><option>Basketbol</option><option>Voleybol</option><option>E-Spor</option><option>Rugby</option><option>Amerikan Futbolu</option><option>Hentbol</option><option>Futbol Akademi</option></select></div>
+        <div class="fg"><label>Kit Tipi</label><select id="upKit"><option>Ev</option><option>Deplasman</option><option>Üçüncü</option><option>Antrenman</option><option>Eşofman</option></select></div>
       </div>
       <div class="fg-row">
-        <div class="fg"><label>Stil</label>
-          <select id="upStyle"><option>modern</option><option>retro</option><option>minimal</option><option>futuristic</option><option>classic</option><option>street</option><option>pro team</option></select>
-        </div>
-        <div class="fg"><label>Desen</label>
-          <select id="upPattern"><option>stripes</option><option>gradient</option><option>geometric</option><option>camo</option><option>abstract</option><option>minimal</option><option>retro</option></select>
-        </div>
+        <div class="fg"><label>Stil</label><select id="upStyle"><option>modern</option><option>retro</option><option>minimal</option><option>futuristic</option><option>classic</option><option>street</option></select></div>
+        <div class="fg"><label>Desen</label><select id="upPattern"><option>stripes</option><option>gradient</option><option>geometric</option><option>camo</option><option>abstract</option><option>minimal</option></select></div>
       </div>
-      <div class="fg"><label>Kumaş Önerisi</label>
-        <select id="upFabric"><option>Nefes Alabilir Polyester</option><option>Thermo-Cool</option><option>Mikro Interlok</option><option>Pamuklu %100</option><option>Premium Recycled</option><option>Performance Mesh</option></select>
-      </div>
+      <div class="fg"><label>Kumaş Önerisi</label><select id="upFabric"><option>Nefes Alabilir Polyester</option><option>Thermo-Cool</option><option>Mikro Interlok</option><option>Pamuklu %100</option><option>Performance Mesh</option></select></div>
       <div class="fg"><label>Açıklama (max 500 karakter)</label><textarea id="upDesc" maxlength="500" rows="3" placeholder="Tasarımının hikayesini anlat..."></textarea></div>
       <div class="fg"><label>Etiketler (virgülle ayır)</label><input type="text" id="upTags" placeholder="modern, siyah-beyaz, geometrik"></div>
-      <div class="step-nav"><button class="btn-back" onclick="wizGo(1)">← Geri</button><button class="btn-next" onclick="wizGo(3)">Devam Et →</button></div>
+      <div class="wnav"><button class="btn-bk" onclick="wizStep(1)">← Geri</button><button class="btn-nxt" onclick="wizStep(3)">Devam Et →</button></div>
     </div>
-
-    <div class="wiz-panel hidden" id="panel3">
-      <h3 class="step-h">Renk Paleti</h3>
-      <p class="step-note">En az 1 ana renk zorunludur. HEX veya Pantone kodu girin.</p>
+    <!-- Step 3 -->
+    <div class="wiz-p hidden" id="panel3">
+      <h3 class="sth">Renk Paleti</h3>
       <div class="color-row">
-        <div class="cg"><label>Ana Renk *</label><div class="cin"><input type="color" id="c1" value="#e63946" oninput="syncColor('c1','c1h')"><input type="text" id="c1h" value="#e63946" placeholder="#HEX" oninput="syncHex('c1h','c1')"></div></div>
-        <div class="cg"><label>İkinci Renk</label><div class="cin"><input type="color" id="c2" value="#1d1d1d" oninput="syncColor('c2','c2h')"><input type="text" id="c2h" value="#1d1d1d" placeholder="#HEX" oninput="syncHex('c2h','c2')"></div></div>
-        <div class="cg"><label>Üçüncü Renk</label><div class="cin"><input type="color" id="c3" value="#ffffff" oninput="syncColor('c3','c3h')"><input type="text" id="c3h" value="#ffffff" placeholder="#HEX" oninput="syncHex('c3h','c3')"></div></div>
+        <div class="cg"><label>Ana Renk *</label><div class="cin"><input type="color" id="c1" value="#e63946" oninput="syncC('c1','c1h')"><input type="text" id="c1h" value="#e63946" placeholder="#HEX" oninput="syncH('c1h','c1')"></div></div>
+        <div class="cg"><label>2. Renk</label><div class="cin"><input type="color" id="c2" value="#1d1d1d" oninput="syncC('c2','c2h')"><input type="text" id="c2h" value="#1d1d1d" placeholder="#HEX" oninput="syncH('c2h','c2')"></div></div>
+        <div class="cg"><label>3. Renk</label><div class="cin"><input type="color" id="c3" value="#ffffff" oninput="syncC('c3','c3h')"><input type="text" id="c3h" value="#ffffff" placeholder="#HEX" oninput="syncH('c3h','c3')"></div></div>
       </div>
-      <div class="fg" style="margin-top:1.5rem"><label>Pantone Kodu (opsiyonel)</label><input type="text" id="upPantone" placeholder="Pantone 186 C, Pantone Black C"></div>
-      <div class="step-nav"><button class="btn-back" onclick="wizGo(2)">← Geri</button><button class="btn-next" onclick="wizGo(4)">Devam Et →</button></div>
+      <div class="fg" style="margin-top:1.5rem"><label>Pantone Kodu (opsiyonel)</label><input type="text" id="upPantone" placeholder="Pantone 186 C"></div>
+      <div class="wnav"><button class="btn-bk" onclick="wizStep(2)">← Geri</button><button class="btn-nxt" onclick="wizStep(4)">Devam Et →</button></div>
     </div>
-
-    <div class="wiz-panel hidden" id="panel4">
-      <h3 class="step-h">Üretim Dosyaları</h3>
-      <p class="step-note">Satın alan takımlar bu dosyaları indirir. En az bir format zorunludur.</p>
+    <!-- Step 4 -->
+    <div class="wiz-p hidden" id="panel4">
+      <h3 class="sth">Üretim Dosyaları</h3>
       <div class="file-list">
-        <div class="file-row"><div class="f-badge png">PNG</div><div class="f-info"><b>PNG Preview</b><small>Min 3000×3000px, şeffaf arka plan</small></div><label class="f-btn">Seç<input type="file" accept=".png"></label></div>
-        <div class="file-row"><div class="f-badge ai">AI</div><div class="f-info"><b>Adobe Illustrator (.ai)</b><small>Vektör — fabrika baskısı için ideal</small></div><label class="f-btn">Seç<input type="file" accept=".ai,.eps"></label></div>
-        <div class="file-row"><div class="f-badge svg">SVG</div><div class="f-info"><b>SVG Vektör</b><small>Ölçeklenebilir format</small></div><label class="f-btn">Seç<input type="file" accept=".svg"></label></div>
-        <div class="file-row"><div class="f-badge pdf">PDF</div><div class="f-info"><b>PDF Print Ready</b><small>CMYK, kesim çizgileriyle</small></div><label class="f-btn">Seç<input type="file" accept=".pdf"></label></div>
-        <div class="file-row"><div class="f-badge clo">CLO</div><div class="f-info"><b>CLO3D / Marvelous Designer</b><small>Opsiyonel — .zPrj veya benzeri</small></div><label class="f-btn">Seç<input type="file"></label></div>
+        <div class="frow"><div class="fbadge png">PNG</div><div class="fi"><b>PNG Preview</b><small>Min 3000×3000px</small></div><label class="fbtn">Seç<input type="file" accept=".png"></label></div>
+        <div class="frow"><div class="fbadge ai">AI</div><div class="fi"><b>Adobe Illustrator (.ai)</b><small>Vektör — fabrika için ideal</small></div><label class="fbtn">Seç<input type="file" accept=".ai,.eps"></label></div>
+        <div class="frow"><div class="fbadge svg">SVG</div><div class="fi"><b>SVG Vektör</b><small>Ölçeklenebilir format</small></div><label class="fbtn">Seç<input type="file" accept=".svg"></label></div>
+        <div class="frow"><div class="fbadge pdf">PDF</div><div class="fi"><b>PDF Print Ready</b><small>CMYK, kesim çizgileriyle</small></div><label class="fbtn">Seç<input type="file" accept=".pdf"></label></div>
+        <div class="frow"><div class="fbadge clo">CLO</div><div class="fi"><b>CLO3D (opsiyonel)</b><small>.zPrj veya benzeri</small></div><label class="fbtn">Seç<input type="file"></label></div>
       </div>
-      <div class="step-nav"><button class="btn-back" onclick="wizGo(3)">← Geri</button><button class="btn-next" onclick="wizGo(5)">Devam Et →</button></div>
+      <div class="wnav"><button class="btn-bk" onclick="wizStep(3)">← Geri</button><button class="btn-nxt" onclick="wizStep(5)">Devam Et →</button></div>
     </div>
-
-    <div class="wiz-panel hidden" id="panel5">
-      <h3 class="step-h">Fiyatlandırma & Lisans</h3>
+    <!-- Step 5 -->
+    <div class="wiz-p hidden" id="panel5">
+      <h3 class="sth">Fiyatlandırma & Lisans</h3>
       <div class="pricing-cards">
-        <div class="pc">
-          <div class="pc-head"><input type="checkbox" id="pcStd" checked onchange="calcEarnings()"><label for="pcStd">Standart Lisans</label></div>
-          <p>Birden fazla takım satın alabilir</p>
-          <div class="fg"><label>Fiyat (₺)</label><input type="number" id="stdPrice" value="499" min="1" oninput="calcEarnings()"></div>
-          <div class="pc-earn">%20 komisyon · Kazancın: <strong id="stdEarn">₺399</strong></div>
-        </div>
-        <div class="pc">
-          <div class="pc-head"><input type="checkbox" id="pcExcl" onchange="calcEarnings()"><label for="pcExcl">Exclusive Lisans</label></div>
-          <p>Tek kulüp alır, tasarım yayından kalkar</p>
-          <div class="fg"><label>Fiyat (₺)</label><input type="number" id="exclPrice" value="4999" min="1" oninput="calcEarnings()"></div>
-          <div class="pc-earn">%20 komisyon · Kazancın: <strong id="exclEarn">₺3.999</strong></div>
-        </div>
+        <div class="pc"><div class="pc-hd"><input type="checkbox" id="pcStd" checked onchange="calcE()"><label for="pcStd">Standart Lisans</label></div><p>Birden fazla takım alabilir</p><div class="fg"><label>Fiyat (₺)</label><input type="number" id="stdPrice" value="499" min="1" oninput="calcE()"></div><div class="pc-earn">%20 komisyon · Kazancın: <strong id="stdEarn">₺399</strong></div></div>
+        <div class="pc"><div class="pc-hd"><input type="checkbox" id="pcExcl" onchange="calcE()"><label for="pcExcl">Exclusive Lisans</label></div><p>Tek kulüp alır, yayından kalkar</p><div class="fg"><label>Fiyat (₺)</label><input type="number" id="exclPrice" value="4999" min="1" oninput="calcE()"></div><div class="pc-earn">%20 komisyon · Kazancın: <strong id="exclEarn">₺3.999</strong></div></div>
       </div>
-      <div class="fg" style="margin-top:1.5rem">
-        <label class="chk-label"><input type="checkbox" id="upCopyright"> Bu tasarım tamamen bana aittir ve telif hakkı bende olduğunu beyan ederim.</label>
-      </div>
-      <div class="step-nav"><button class="btn-back" onclick="wizGo(4)">← Geri</button><button class="btn-form btn-publish" onclick="submitDesign()">Tasarımı Yayınla 🚀</button></div>
+      <div class="fg" style="margin-top:1rem"><label class="chk-l"><input type="checkbox" id="upCopy"> Bu tasarım tamamen bana aittir, telif hakkı bendedir.</label></div>
+      <div class="wnav"><button class="btn-bk" onclick="wizStep(4)">← Geri</button><button class="btn-form btn-pub" id="pubBtn" onclick="submitDesign()">Tasarımı Yayınla 🚀</button></div>
     </div>
   </div>
 </div>
 
-<div class="overlay" id="buyModal" onclick="outsideClose(event,'buyModal')">
-  <div class="modal">
-    <button class="m-close" onclick="closeModal('buyModal')">×</button>
-    <h2 class="m-title">Satın Al</h2>
+<!-- BUY MODAL -->
+<div class="overlay" id="buyModal" onclick="oClose(event,'buyModal')">
+  <div class="modal modal-buy">
+    <button class="mcls" onclick="closeModal('buyModal')">×</button>
+    <h2 class="m-ttl">Satın Al</h2>
     <div id="buyContent"></div>
   </div>
 </div>
 
+<!-- LANG MODAL -->
+<div class="overlay" id="langModal" onclick="oClose(event,'langModal')">
+  <div class="modal">
+    <button class="mcls" onclick="closeModal('langModal')">×</button>
+    <h2 class="m-ttl">🌐 Dil Seç</h2>
+    <div class="lang-grid" id="langGrid"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<nav class="bottom-nav">
+<!-- BOTTOM NAV -->
+<nav class="bot-nav">
   <button onclick="showPage('home')"><svg viewBox="0 0 20 20" fill="none"><path d="M3 9.5L10 3l7 6.5V17a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" stroke="currentColor" stroke-width="1.5"/></svg><span>Ana</span></button>
   <button onclick="showPage('explore')"><svg viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Keşfet</span></button>
-  <button class="bn-upload" onclick="showModal('uploadModal')"><svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10l6-6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Yükle</span></button>
+  <button class="bot-up" onclick="checkAuthThenUpload()"><svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10l6-6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Yükle</span></button>
   <button onclick="showPage('competitions')"><svg viewBox="0 0 20 20" fill="none"><path d="M10 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4L10 14.4l-4.8 2.5.9-5.4L2.2 7.7l5.4-.8L10 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Yarışma</span></button>
   <button onclick="showPage('dashboard')"><svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 17c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Profil</span></button>
 </nav>
 
+<!-- FOOTER -->
 <footer class="footer">
   <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand-col">
-        <div class="logo footer-logo"><span class="logo-forma">forma</span><span class="logo-lola">LOLA</span></div>
+    <div class="ft-top">
+      <div class="ft-brand">
+        <div class="logo" style="font-size:22px"><span class="lf">forma</span><span class="ll">LOLA</span></div>
         <p>Forma tasarım ekosistemi.<br>Tasarımcılar, takımlar ve üreticiler için.</p>
-        <!-- ÖDEME LOGOLARI -->
-        <div class="payment-logos">
-          <div class="payment-logos-label">Güvenli Ödeme</div>
-          <div class="payment-logos-row">
-            <!-- iyzico logo -->
-            <div class="pay-logo pay-iyzico" title="iyzico">
-              <svg viewBox="0 0 80 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="80" height="28" rx="5" fill="#1A1A2E"/>
-                <text x="8" y="20" font-family="Arial" font-weight="bold" font-size="13" fill="#00D4AA">iyzico</text>
-              </svg>
-            </div>
-            <!-- Visa logo -->
-            <div class="pay-logo pay-visa" title="Visa">
-              <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="60" height="28" rx="5" fill="#1A1F71"/>
-                <text x="8" y="20" font-family="Arial" font-weight="900" font-size="14" fill="white" letter-spacing="1">VISA</text>
-              </svg>
-            </div>
-            <!-- Mastercard logo -->
-            <div class="pay-logo pay-mc" title="Mastercard">
-              <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="60" height="28" rx="5" fill="#252525"/>
-                <circle cx="22" cy="14" r="9" fill="#EB001B"/>
-                <circle cx="38" cy="14" r="9" fill="#F79E1B"/>
-                <path d="M30 7.2a9 9 0 0 1 0 13.6A9 9 0 0 1 30 7.2z" fill="#FF5F00"/>
-              </svg>
-            </div>
-            <!-- Troy logo -->
-            <div class="pay-logo pay-troy" title="Troy">
-              <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="60" height="28" rx="5" fill="#0066CC"/>
-                <text x="7" y="20" font-family="Arial" font-weight="bold" font-size="13" fill="white">troy</text>
-              </svg>
-            </div>
-            <!-- SSL badge -->
-            <div class="pay-logo pay-ssl" title="SSL Güvenli">
-              <svg viewBox="0 0 60 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="60" height="28" rx="5" fill="#2D7D46"/>
-                <path d="M10 14 L10 10 Q10 7 13 7 L14 7 Q17 7 17 10 L17 14" stroke="white" stroke-width="1.5" fill="none"/>
-                <rect x="8" y="14" width="11" height="8" rx="1.5" fill="white"/>
-                <text x="22" y="20" font-family="Arial" font-weight="bold" font-size="11" fill="white">SSL</text>
-              </svg>
-            </div>
+        <div class="pay-logos">
+          <div class="pay-label">Güvenli Ödeme</div>
+          <div class="pay-row">
+            <div class="plogo" style="background:#1A1A2E"><span style="font-weight:700;color:#00D4AA;font-size:11px">iyzico</span></div>
+            <div class="plogo" style="background:#1A1F71"><span style="font-weight:900;color:#fff;font-size:11px;letter-spacing:1px">VISA</span></div>
+            <div class="plogo" style="background:#252525;display:flex;align-items:center;justify-content:center;gap:0"><div style="width:12px;height:12px;border-radius:50%;background:#EB001B;margin-right:-5px;z-index:1"></div><div style="width:12px;height:12px;border-radius:50%;background:#F79E1B"></div></div>
+            <div class="plogo" style="background:#0066CC"><span style="font-weight:700;color:#fff;font-size:11px">troy</span></div>
+            <div class="plogo" style="background:#2D7D46;display:flex;align-items:center;gap:4px"><span style="font-size:10px">🔒</span><span style="font-weight:700;color:#fff;font-size:10px">SSL</span></div>
           </div>
         </div>
       </div>
-      <div class="footer-links">
-        <div class="fl-col">
-          <h4>Platform</h4>
+      <div class="ft-links">
+        <div class="ftc"><h4>Platform</h4>
           <a href="#" onclick="showPage('explore');return false;">Keşfet</a>
           <a href="#" onclick="showPage('competitions');return false;">Yarışmalar</a>
           <a href="#" onclick="showPage('designers');return false;">Tasarımcılar</a>
           <a href="#" onclick="showPage('how');return false;">Nasıl Çalışır</a>
         </div>
-        <div class="fl-col">
-          <h4>Hesap</h4>
+        <div class="ftc"><h4>Hesap</h4>
           <a href="#" onclick="showModal('loginModal');return false;">Giriş Yap</a>
           <a href="#" onclick="showModal('loginModal');return false;">Kayıt Ol</a>
           <a href="#" onclick="showPage('dashboard');return false;">Dashboard</a>
+          <a href="#" onclick="checkAuthThenUpload();return false;">Tasarım Yükle</a>
         </div>
-        <div class="fl-col">
-          <h4>Yasal</h4>
+        <div class="ftc"><h4>Yasal</h4>
           <a href="#" onclick="showPage('legal-privacy');return false;">Gizlilik Politikası</a>
           <a href="#" onclick="showPage('legal-sales');return false;">Mesafeli Satış Sözleşmesi</a>
           <a href="#" onclick="showPage('legal-refund');return false;">İptal ve İade Koşulları</a>
           <a href="#" onclick="showPage('legal-terms');return false;">Kullanım Koşulları</a>
-          <a href="#">İletişim</a>
+        </div>
+        <div class="ftc"><h4>Destek</h4>
+          <a href="mailto:info@muratlola.com">info@muratlola.com</a>
+          <a href="#" onclick="showPage('how');return false;">Sıkça Sorulanlar</a>
+          <a href="mailto:info@muratlola.com">İletişim</a>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">
-      <span id="footer-copy-txt">© 2026 formaLOLA · Tüm hakları saklıdır</span>
-      <span id="footer-payment-txt">256-bit SSL ile şifrelenmiş güvenli ödeme</span>
-    </div>
+    <div class="ft-bot"><span>© 2026 formaLOLA · Tüm hakları saklıdır</span><span>256-bit SSL · iyzico güvenceli ödeme</span></div>
   </div>
 </footer>
 
-<!-- ══════════ YASAL SAYFALAR ══════════ -->
-
-<!-- GİZLİLİK POLİTİKASI -->
-<div id="page-legal-privacy" class="page">
-  <div class="container legal-container">
-    <button class="back-btn" onclick="goBack()">← Geri</button>
-    <div class="legal-doc">
-      <h1>Gizlilik Politikası</h1>
-      <p class="legal-date">Son güncelleme: 13 Mart 2026</p>
-
-      <h2>1. Veri Sorumlusu</h2>
-      <p>Bu Gizlilik Politikası, <strong>formaLOLA</strong> ("Platform", "Biz") tarafından yönetilen <strong>muratlola.com</strong> alan adlı web sitesi için geçerlidir. Kişisel verilerinizin işlenmesine ilişkin her türlü soru ve talebiniz için <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="274e494148674a525546534b484b460944484a">[email&#160;protected]</a></strong> adresine ulaşabilirsiniz.</p>
-
-      <h2>2. Toplanan Kişisel Veriler</h2>
-      <p>Platformumuzu kullandığınızda aşağıdaki kişisel veriler toplanabilir:</p>
-      <ul>
-        <li><strong>Kimlik Bilgileri:</strong> Ad, soyad, kullanıcı adı</li>
-        <li><strong>İletişim Bilgileri:</strong> E-posta adresi</li>
-        <li><strong>Ödeme Bilgileri:</strong> Kredi/banka kartı bilgileri (yalnızca iyzico Ödeme Sistemleri A.Ş. tarafından işlenir; tarafımızca depolanmaz)</li>
-        <li><strong>Teknik Veriler:</strong> IP adresi, tarayıcı türü, cihaz bilgisi, çerez verileri</li>
-        <li><strong>İşlem Verileri:</strong> Satın alma geçmişi, yüklenen tasarım bilgileri</li>
-      </ul>
-
-      <h2>3. Verilerin İşlenme Amaçları</h2>
-      <p>Kişisel verileriniz aşağıdaki amaçlarla işlenmektedir:</p>
-      <ul>
-        <li>Hesap oluşturma ve kimlik doğrulama</li>
-        <li>Satın alma işlemlerinin gerçekleştirilmesi ve faturalandırma</li>
-        <li>Tasarım yükleme ve platform hizmetlerinin sunulması</li>
-        <li>Müşteri desteği sağlanması</li>
-        <li>Yasal yükümlülüklerin yerine getirilmesi</li>
-        <li>Platform güvenliğinin sağlanması</li>
-      </ul>
-
-      <h2>4. Verilerin Saklanma Süresi</h2>
-      <p>Kişisel verileriniz, hesabınız aktif olduğu süre boyunca ve yasal yükümlülükler kapsamında zorunlu tutulan süreler boyunca saklanır. Hesabınızı silmeniz durumunda verileriniz, yasal saklama süreleri haricinde 30 gün içinde silinir.</p>
-
-      <h2>5. Üçüncü Taraflarla Paylaşım</h2>
-      <p>Kişisel verileriniz; ödeme altyapısı için <strong>iyzico Ödeme Sistemleri A.Ş.</strong> ile, görsel depolama için <strong>ImgBB</strong> ile ve platform altyapısı için <strong>Google Firebase</strong> ile paylaşılabilir. Bu üçüncü taraflar kendi gizlilik politikaları kapsamında veri işlemektedir.</p>
-
-      <h2>6. KVKK Kapsamındaki Haklarınız</h2>
-      <p>6698 sayılı Kişisel Verilerin Korunması Kanunu uyarınca aşağıdaki haklara sahipsiniz:</p>
-      <ul>
-        <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme</li>
-        <li>İşlenmişse buna ilişkin bilgi talep etme</li>
-        <li>Yanlış veya eksik verilerin düzeltilmesini isteme</li>
-        <li>Verilerin silinmesini veya yok edilmesini talep etme</li>
-        <li>İşleme itiraz etme</li>
-      </ul>
-      <p>Haklarınızı kullanmak için <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0c65626a634c61797e6d786063606d226f6361">[email&#160;protected]</a></strong> adresine yazabilirsiniz.</p>
-
-      <h2>7. Çerezler (Cookie)</h2>
-      <p>Platformumuz; oturum yönetimi, kullanıcı tercihlerinin hatırlanması ve platform performansının ölçülmesi amacıyla çerezler kullanmaktadır. Tarayıcı ayarlarınızdan çerezleri devre dışı bırakabilirsiniz; ancak bu durumda bazı platform özellikleri çalışmayabilir.</p>
-
-      <h2>8. İletişim</h2>
-      <p>Gizlilik politikamıza ilişkin sorularınız için: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f0999e969fb09d858291849c9f9c91de939f9d">[email&#160;protected]</a></strong></p>
-    </div>
-  </div>
-</div>
-
-<!-- MESAFELİ SATIŞ SÖZLEŞMESİ -->
-<div id="page-legal-sales" class="page">
-  <div class="container legal-container">
-    <button class="back-btn" onclick="goBack()">← Geri</button>
-    <div class="legal-doc">
-      <h1>Mesafeli Satış Sözleşmesi</h1>
-      <p class="legal-date">Son güncelleme: 13 Mart 2026</p>
-
-      <h2>Madde 1 — Taraflar</h2>
-      <p><strong>SATICI:</strong> formaLOLA (muratlola.com) — Türkiye<br>
-      <strong>E-posta:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="51383f373e113c242330253d3e3d307f323e3c">[email&#160;protected]</a><br><br>
-      <strong>ALICI:</strong> Platforma kayıtlı kullanıcı (Tasarım satın alan kişi veya kuruluş)</p>
-
-      <h2>Madde 2 — Konu</h2>
-      <p>Bu sözleşme; ALICI'nın formaLOLA platformu üzerinden satın aldığı dijital forma tasarım dosyalarının teslimine ilişkin koşulları düzenler. Satışa konu ürünler, üretim için hazırlanmış dijital dosyalar (PNG, AI, SVG, PDF formatlarında) ve ilgili lisans hakkından ibarettir.</p>
-
-      <h2>Madde 3 — Ürün Bilgileri ve Fiyat</h2>
-      <p>Satışa sunulan her tasarımın adı, fiyatı, lisans türü ve içerdiği dosya formatları ürün sayfasında açıkça belirtilmiştir. Fiyatlar Türk Lirası (₺) cinsinden gösterilmekte olup Katma Değer Vergisi dahildir. Platform, tüm satışlar üzerinden <strong>%20 komisyon</strong> alır; geriye kalan <strong>%80 tasarımcıya</strong> ödenir.</p>
-
-      <h2>Madde 4 — Ödeme</h2>
-      <p>Ödemeler, <strong>iyzico Ödeme Sistemleri A.Ş.</strong> güvencesi altında gerçekleştirilmektedir. Kredi kartı bilgileriniz platformumuzda saklanmaz; tamamen iyzico'nun PCI-DSS uyumlu altyapısı üzerinden işlenir. Desteklenen ödeme yöntemleri: Kredi kartı, banka kartı (Visa, Mastercard, Troy).</p>
-
-      <h2>Madde 5 — Teslimat</h2>
-      <p>Ödemenin onaylanmasının ardından satın alınan tasarım dosyaları, ALICI'nın hesabına <strong>anında ve otomatik olarak</strong> iletilir. Teslimat fiziksel değil, dijital ortamda gerçekleşir; kargo veya posta yoluyla teslimat söz konusu değildir.</p>
-
-      <h2>Madde 6 — Lisans ve Kullanım Hakları</h2>
-      <p><strong>Standart Lisans:</strong> ALICI, satın aldığı tasarımı kendi takımı veya organizasyonu için fiziksel olarak üretebilir. Tasarım, platform üzerinde satışa devam edebilir; başka takımlar da aynı tasarımı satın alabilir.</p>
-      <p><strong>Exclusive Lisans:</strong> Satın alma gerçekleştiğinde tasarım platformdan kaldırılır ve yalnızca ALICI'ya özel telif hakkı devredilir. Tasarım başka hiçbir tarafça kullanılamaz.</p>
-      <p>Her iki lisans türünde de ALICI, tasarımı üçüncü taraflara satamaz, devredemez veya yeniden lisanslayamaz.</p>
-
-      <h2>Madde 7 — Cayma Hakkı</h2>
-      <p>6502 sayılı Tüketicinin Korunması Hakkında Kanun'un 49. maddesi ve Mesafeli Sözleşmeler Yönetmeliği uyarınca; dijital içerik niteliğindeki ürünlerde, teslimata onay verilmesi ve indirme işleminin başlamasıyla birlikte <strong>cayma hakkı ortadan kalkar</strong>. Satın alma ekranında bu konuda açık onay alınmaktadır.</p>
-
-      <h2>Madde 8 — Uyuşmazlık</h2>
-      <p>Bu sözleşmeden doğabilecek uyuşmazlıklarda Türkiye Cumhuriyeti mahkemeleri ve Tüketici Hakem Heyetleri yetkilidir. Yasal sınırlar dahilindeki uyuşmazlıklar için Tüketici Hakem Heyetleri'ne, sınırları aşan uyuşmazlıklar için Tüketici Mahkemeleri'ne başvurulabilir.</p>
-    </div>
-  </div>
-</div>
-
-<!-- İPTAL VE İADE KOŞULLARI -->
-<div id="page-legal-refund" class="page">
-  <div class="container legal-container">
-    <button class="back-btn" onclick="goBack()">← Geri</button>
-    <div class="legal-doc">
-      <h1>İptal ve İade Koşulları</h1>
-      <p class="legal-date">Son güncelleme: 13 Mart 2026</p>
-
-      <h2>1. Genel Kural</h2>
-      <p>formaLOLA platformunda satılan ürünler, <strong>dijital nitelikte</strong> (dosya formatında teslim edilen) ürünlerdir. Tüketicinin Korunması Hakkında Kanun'un ilgili hükümleri ve Mesafeli Sözleşmeler Yönetmeliği gereğince, dijital içerikler için aşağıdaki koşullar geçerlidir:</p>
-
-      <div class="legal-highlight">
-        <strong>Önemli:</strong> Satın alma işleminin tamamlanması ve dosyaların hesabınıza iletilmesiyle birlikte cayma hakkınız sona erer. Satın alma ekranında bu koşulu açıkça onaylamaktasınız.
-      </div>
-
-      <h2>2. İade Kabul Edilen Durumlar</h2>
-      <p>Aşağıdaki durumlarda iade talebiniz değerlendirilir:</p>
-      <ul>
-        <li>Satın aldığınız dosyalar teknik nedenlerle hesabınıza iletilmediyse</li>
-        <li>Teslim edilen dosyalar ürün sayfasında belirtilen formatları içermiyorsa (örn. AI dosyası vaat edilmiş ama teslim edilmemişse)</li>
-        <li>Aynı tasarım için mükerrer (çift) ödeme gerçekleştiyse</li>
-        <li>Satın alma işlemi sonrası 24 saat içinde dosyalara hiç erişilemiyorsa</li>
-      </ul>
-
-      <h2>3. İade Kabul Edilmeyen Durumlar</h2>
-      <p>Aşağıdaki durumlarda iade yapılmaz:</p>
-      <ul>
-        <li>Dosyalar başarıyla teslim edilmişse ve indirilmişse</li>
-        <li>"Tasarımı beğenmedim", "rengi değiştirmek istiyorum" gibi öznel nedenler</li>
-        <li>Üretim sürecinde ortaya çıkan sorunlar (bu sorunlar üretici firmaya aittir)</li>
-        <li>Satın alma tarihinden 7 günden fazla süre geçmişse</li>
-      </ul>
-
-      <h2>4. İade Süreci</h2>
-      <p>İade talebinizi <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="026b6c646d426f777063766e6d6e632c616d6f">[email&#160;protected]</a></strong> adresine, sipariş numaranız ve sorunu açıklayan bir mesajla iletebilirsiniz. Talebiniz <strong>3 iş günü</strong> içinde incelenir. Onaylanan iadeler, ödemenizin yapıldığı kartınıza <strong>5-10 iş günü</strong> içinde yansıtılır.</p>
-
-      <h2>5. Exclusive Lisans İadeleri</h2>
-      <p>Exclusive Lisans satın alımlarında, satın alma gerçekleştiği anda tasarım platformdan kaldırıldığından ve telif hakkı devredildiğinden iade işlemi teknik olarak mümkün değildir. Dosya teslimat hatası durumları bu kapsam dışındadır.</p>
-
-      <h2>6. İletişim</h2>
-      <p>İptal ve iade talepleriniz için: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fd94939b92bd90888f9c899192919cd39e9290">[email&#160;protected]</a></strong><br>
-      Yanıt süresi: En geç 3 iş günü</p>
-    </div>
-  </div>
-</div>
-
-<!-- KULLANIM KOŞULLARI -->
-<div id="page-legal-terms" class="page">
-  <div class="container legal-container">
-    <button class="back-btn" onclick="goBack()">← Geri</button>
-    <div class="legal-doc">
-      <h1>Kullanım Koşulları</h1>
-      <p class="legal-date">Son güncelleme: 13 Mart 2026</p>
-
-      <h2>1. Kabul</h2>
-      <p>formaLOLA platformunu kullanarak bu Kullanım Koşulları'nı kabul etmiş sayılırsınız. Koşulları kabul etmiyorsanız platformu kullanmayı bırakınız.</p>
-
-      <h2>2. Platform Hizmetleri</h2>
-      <p>formaLOLA, forma tasarımcıları ile takımlar/kulüpler arasında aracılık yapan dijital bir pazaryeridir. Platform; tasarım yükleme, satın alma, lisanslama ve dijital teslimat hizmetlerini kapsar.</p>
-
-      <h2>3. Tasarımcı Yükümlülükleri</h2>
-      <ul>
-        <li>Yüklenen tüm tasarımların orijinal olması ve tasarımcıya ait olması zorunludur.</li>
-        <li>Başkasına ait tasarımların, logolar veya markaların izinsiz kullanımı kesinlikle yasaktır.</li>
-        <li>Telif hakkı ihlali tespit edilen tasarımlar derhal kaldırılır ve hesap askıya alınabilir.</li>
-        <li>Platform, her satış üzerinden <strong>%20</strong> komisyon alır.</li>
-      </ul>
-
-      <h2>4. Alıcı Yükümlülükleri</h2>
-      <ul>
-        <li>Satın alınan tasarımlar yalnızca lisans kapsamında kullanılabilir.</li>
-        <li>Tasarımların üçüncü taraflara satışı, kiralanması veya devredilmesi yasaktır.</li>
-        <li>Standart lisansta tasarım fiziksel üretim amacıyla kullanılabilir; dijital yeniden dağıtım yapılamaz.</li>
-      </ul>
-
-      <h2>5. Fikri Mülkiyet</h2>
-      <p>Platform tasarımı, yazılımı, logosu ve içerikleri formaLOLA'ya aittir. Tasarımların mülkiyeti ilgili tasarımcıya aittir; platform yalnızca satış altyapısını sağlar.</p>
-
-      <h2>6. Sorumluluk Sınırlaması</h2>
-      <p>formaLOLA, yüklenen tasarımların kalitesi, üretim sonuçları veya tasarımcının sözleşme yükümlülüklerinden doğan sorumluluklar için garanti vermez. Platform, aracı konumundadır.</p>
-
-      <h2>7. Hesap Güvenliği</h2>
-      <p>Hesap güvenliğinizden siz sorumlusunuz. Hesabınızın yetkisiz kullanımını fark etmeniz durumunda derhal <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0960676f6649647c7b687d65666568276a6664">[email&#160;protected]</a> adresini bilgilendiriniz.</p>
-
-      <h2>8. Değişiklikler</h2>
-      <p>formaLOLA, bu koşulları önceden haber vermeksizin değiştirme hakkını s
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
