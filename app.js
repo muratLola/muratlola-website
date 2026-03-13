@@ -57,15 +57,586 @@ let selectedColors = new Set();
 let currentUploadStep = 1;
 let uploadedImages = {};
 
+/* ══════════════════════════════════════════
+   DİL SİSTEMİ (i18n) — 10 Dil
+   Varsayılan: Türkçe
+══════════════════════════════════════════ */
+const LANGS = {
+  tr: {
+    code: 'tr', name: 'Türkçe', flag: '🇹🇷', dir: 'ltr',
+    nav_explore: 'Keşfet', nav_competitions: 'Yarışmalar', nav_designers: 'Tasarımcılar',
+    nav_how: 'Nasıl Çalışır', nav_login: 'Giriş Yap', nav_upload: '+ Tasarım Yükle',
+    hero_title1: 'Forma tasarımını', hero_accent1: 'sat.', hero_title2: 'Hayalini',
+    hero_accent2: 'bul.', hero_sub: 'Tasarımcılar yükler — Takımlar satın alır — Anında teslim',
+    hero_btn1: 'Tasarımları Keşfet', hero_btn2: 'Tasarım Yükle',
+    sec_categories: 'Kategoriler', sec_trending: 'Trend Tasarımlar',
+    sec_designers: 'Öne Çıkan Tasarımcılar', sec_competitions: 'Aktif Yarışmalar',
+    see_all: 'Tümünü Gör →', tab_today: 'Bugün', tab_week: 'Bu Hafta', tab_all: 'Tüm Zamanlar',
+    how_title: 'Nasıl Çalışır', how1_t: 'Tasarımını Yükle', how1_p: '4 zorunlu görsel, 5 adımlı kolay süreç. Renk, spor dalı ve lisansını seç.',
+    how2_t: 'Takımlar Keşfeder', how2_p: 'Renk, stil ve spor filtresiyle binlerce takım seni bulur.',
+    how3_t: 'Kazan', how3_p: 'Ödeme onaylanır, üretim dosyası teslim edilir. Her satıştan %80 senin.',
+    cta_title: 'Tasarımlarını para kazandıran\nbir platforma taşı.',
+    cta_sub: 'Ücretsiz kaydol, ilk tasarımını bugün yayınla.',
+    cta_btn: 'Hemen Başla',
+    filter_sport: 'Spor Dalı', filter_color: 'Renk', filter_style: 'Stil',
+    filter_pattern: 'Desen', filter_license: 'Lisans', filter_price: 'Fiyat (₺)',
+    filter_clear: 'Temizle', sort_popular: 'En Popüler', sort_newest: 'En Yeni',
+    sort_price_asc: 'Fiyat ↑', sort_price_desc: 'Fiyat ↓', sort_bestseller: 'Çok Satan',
+    buy_btn: 'Satın Al', fav_add: '♡ Favorilere Ekle', fav_remove: '♥ Favorilerden Çıkar',
+    license_std: 'Standart Lisans', license_std_desc: 'Birden fazla takım satın alabilir',
+    license_excl: 'Exclusive Lisans', license_excl_desc: 'Tek kulüp alır — tasarım yayından kalkar',
+    login_title: 'Giriş Yap', register_title: 'Kayıt Ol',
+    field_email: 'E-posta', field_pass: 'Şifre', field_name: 'İsim', field_role: 'Hesap Tipi',
+    role_designer: 'Tasarımcı', role_team: 'Takım / Kulüp',
+    google_btn: 'Google ile Devam Et', logout: 'Çıkış Yap',
+    upload_title: 'Tasarım Yükle', step_images: 'Görseller', step_info: 'Bilgiler',
+    step_colors: 'Renkler', step_files: 'Dosyalar', step_price: 'Fiyat',
+    publish_btn: 'Tasarımı Yayınla 🚀', next_btn: 'Devam Et →', back_btn_txt: '← Geri',
+    copyright_check: 'Bu tasarım tamamen bana aittir ve telif hakkı bende olduğunu beyan ederim.',
+    toast_fav_added: 'Favorilere eklendi ♥', toast_fav_removed: 'Favorilerden çıkarıldı',
+    toast_login_required: 'Giriş yapmalısınız', toast_published: '🚀 Tasarım yüklendi! Admin onayı bekleniyor.',
+    designs_found: 'tasarım bulundu', load_more: 'Daha Fazla Yükle',
+    back: '← Geri', by: 'by', earnings_title: 'Kazançlar',
+    dash_designs: 'Tasarım Sayısı', dash_sales: 'Toplam Satış',
+    dash_likes: 'Toplam Beğeni', dash_pending: 'Onay Bekleyen',
+    footer_tagline: 'Forma tasarım ekosistemi.\nTasarımcılar, takımlar ve üreticiler için.',
+    footer_platform: 'Platform', footer_account: 'Hesap', footer_support: 'Destek',
+    footer_copy: '© 2026 formaLOLA · Tüm hakları saklıdır',
+    footer_payment: 'iyzico ile güvenli ödeme',
+    sport_football: 'Futbol', sport_basketball: 'Basketbol', sport_volleyball: 'Voleybol',
+    sport_esports: 'E-Spor', sport_rugby: 'Rugby', sport_american: 'Amerikan Fut.',
+    welcome: 'Hoş geldin',
+  },
+  en: {
+    code: 'en', name: 'English', flag: '🇬🇧', dir: 'ltr',
+    nav_explore: 'Explore', nav_competitions: 'Competitions', nav_designers: 'Designers',
+    nav_how: 'How It Works', nav_login: 'Sign In', nav_upload: '+ Upload Design',
+    hero_title1: 'Sell your jersey', hero_accent1: 'design.', hero_title2: 'Find your dream',
+    hero_accent2: 'kit.', hero_sub: 'Designers upload — Teams buy — Instant delivery',
+    hero_btn1: 'Explore Designs', hero_btn2: 'Upload Design',
+    sec_categories: 'Categories', sec_trending: 'Trending Designs',
+    sec_designers: 'Featured Designers', sec_competitions: 'Active Competitions',
+    see_all: 'View All →', tab_today: 'Today', tab_week: 'This Week', tab_all: 'All Time',
+    how_title: 'How It Works', how1_t: 'Upload Your Design', how1_p: '4 required images, 5-step easy process. Set color, sport and license.',
+    how2_t: 'Teams Discover', how2_p: 'Thousands of teams find you via color, style, and sport filters.',
+    how3_t: 'Earn', how3_p: 'Payment confirmed, production files delivered. You keep 80% of each sale.',
+    cta_title: 'Move your designs to a\nplatform that earns money.',
+    cta_sub: 'Sign up free, publish your first design today.',
+    cta_btn: 'Get Started',
+    filter_sport: 'Sport', filter_color: 'Color', filter_style: 'Style',
+    filter_pattern: 'Pattern', filter_license: 'License', filter_price: 'Price (₺)',
+    filter_clear: 'Clear', sort_popular: 'Most Popular', sort_newest: 'Newest',
+    sort_price_asc: 'Price ↑', sort_price_desc: 'Price ↓', sort_bestseller: 'Best Selling',
+    buy_btn: 'Buy Now', fav_add: '♡ Add to Favorites', fav_remove: '♥ Remove from Favorites',
+    license_std: 'Standard License', license_std_desc: 'Multiple teams can purchase',
+    license_excl: 'Exclusive License', license_excl_desc: 'One club only — design removed after sale',
+    login_title: 'Sign In', register_title: 'Register',
+    field_email: 'Email', field_pass: 'Password', field_name: 'Name', field_role: 'Account Type',
+    role_designer: 'Designer', role_team: 'Team / Club',
+    google_btn: 'Continue with Google', logout: 'Sign Out',
+    upload_title: 'Upload Design', step_images: 'Images', step_info: 'Info',
+    step_colors: 'Colors', step_files: 'Files', step_price: 'Pricing',
+    publish_btn: 'Publish Design 🚀', next_btn: 'Continue →', back_btn_txt: '← Back',
+    copyright_check: 'This design is entirely mine and I declare that I own the copyright.',
+    toast_fav_added: 'Added to favorites ♥', toast_fav_removed: 'Removed from favorites',
+    toast_login_required: 'Please sign in', toast_published: '🚀 Design uploaded! Awaiting admin review.',
+    designs_found: 'designs found', load_more: 'Load More',
+    back: '← Back', by: 'by', earnings_title: 'Earnings',
+    dash_designs: 'Total Designs', dash_sales: 'Total Sales',
+    dash_likes: 'Total Likes', dash_pending: 'Pending Review',
+    footer_tagline: 'Jersey design ecosystem.\nFor designers, teams and manufacturers.',
+    footer_platform: 'Platform', footer_account: 'Account', footer_support: 'Support',
+    footer_copy: '© 2026 formaLOLA · All rights reserved',
+    footer_payment: 'Secure payment via iyzico',
+    sport_football: 'Football', sport_basketball: 'Basketball', sport_volleyball: 'Volleyball',
+    sport_esports: 'Esports', sport_rugby: 'Rugby', sport_american: 'American Football',
+    welcome: 'Welcome',
+  },
+  de: {
+    code: 'de', name: 'Deutsch', flag: '🇩🇪', dir: 'ltr',
+    nav_explore: 'Entdecken', nav_competitions: 'Wettbewerbe', nav_designers: 'Designer',
+    nav_how: 'Wie es funktioniert', nav_login: 'Anmelden', nav_upload: '+ Design hochladen',
+    hero_title1: 'Verkauf dein Trikot', hero_accent1: 'design.', hero_title2: 'Finde dein Traum',
+    hero_accent2: 'kit.', hero_sub: 'Designer laden hoch — Teams kaufen — Sofortige Lieferung',
+    hero_btn1: 'Designs entdecken', hero_btn2: 'Design hochladen',
+    sec_categories: 'Kategorien', sec_trending: 'Trenddesigns',
+    sec_designers: 'Ausgewählte Designer', sec_competitions: 'Aktive Wettbewerbe',
+    see_all: 'Alle anzeigen →', tab_today: 'Heute', tab_week: 'Diese Woche', tab_all: 'Alle Zeit',
+    how_title: 'Wie es funktioniert', how1_t: 'Design hochladen', how1_p: '4 erforderliche Bilder, 5-stufiger Prozess.',
+    how2_t: 'Teams entdecken', how2_p: 'Tausende Teams finden dich über Filter.',
+    how3_t: 'Verdienen', how3_p: 'Zahlung bestätigt, Dateien geliefert. 80% gehören dir.',
+    cta_title: 'Bring deine Designs auf eine\nPlattform, die Geld verdient.',
+    cta_sub: 'Kostenlos registrieren, erstes Design heute veröffentlichen.',
+    cta_btn: 'Jetzt starten',
+    filter_sport: 'Sport', filter_color: 'Farbe', filter_style: 'Stil',
+    filter_pattern: 'Muster', filter_license: 'Lizenz', filter_price: 'Preis (₺)',
+    filter_clear: 'Zurücksetzen', sort_popular: 'Beliebteste', sort_newest: 'Neueste',
+    sort_price_asc: 'Preis ↑', sort_price_desc: 'Preis ↓', sort_bestseller: 'Bestseller',
+    buy_btn: 'Kaufen', fav_add: '♡ Favoriten', fav_remove: '♥ Aus Favoriten',
+    license_std: 'Standardlizenz', license_std_desc: 'Mehrere Teams können kaufen',
+    license_excl: 'Exklusivlizenz', license_excl_desc: 'Nur ein Verein — wird nach Kauf entfernt',
+    login_title: 'Anmelden', register_title: 'Registrieren',
+    field_email: 'E-Mail', field_pass: 'Passwort', field_name: 'Name', field_role: 'Kontotyp',
+    role_designer: 'Designer', role_team: 'Team / Verein',
+    google_btn: 'Mit Google fortfahren', logout: 'Abmelden',
+    upload_title: 'Design hochladen', step_images: 'Bilder', step_info: 'Info',
+    step_colors: 'Farben', step_files: 'Dateien', step_price: 'Preis',
+    publish_btn: 'Design veröffentlichen 🚀', next_btn: 'Weiter →', back_btn_txt: '← Zurück',
+    copyright_check: 'Dieses Design gehört mir und ich erkläre das Urheberrecht.',
+    toast_fav_added: 'Zu Favoriten hinzugefügt ♥', toast_fav_removed: 'Aus Favoriten entfernt',
+    toast_login_required: 'Bitte anmelden', toast_published: '🚀 Design hochgeladen! Warten auf Genehmigung.',
+    designs_found: 'Designs gefunden', load_more: 'Mehr laden',
+    back: '← Zurück', by: 'von', earnings_title: 'Einnahmen',
+    dash_designs: 'Designs', dash_sales: 'Verkäufe', dash_likes: 'Likes', dash_pending: 'Ausstehend',
+    footer_tagline: 'Trikot-Design-Ökosystem.', footer_platform: 'Plattform',
+    footer_account: 'Konto', footer_support: 'Support',
+    footer_copy: '© 2026 formaLOLA · Alle Rechte vorbehalten',
+    footer_payment: 'Sichere Zahlung via iyzico',
+    sport_football: 'Fußball', sport_basketball: 'Basketball', sport_volleyball: 'Volleyball',
+    sport_esports: 'Esports', sport_rugby: 'Rugby', sport_american: 'American Football',
+    welcome: 'Willkommen',
+  },
+  fr: {
+    code: 'fr', name: 'Français', flag: '🇫🇷', dir: 'ltr',
+    nav_explore: 'Explorer', nav_competitions: 'Compétitions', nav_designers: 'Designers',
+    nav_how: 'Comment ça marche', nav_login: 'Connexion', nav_upload: '+ Uploader un design',
+    hero_title1: 'Vendez votre design', hero_accent1: 'de maillot.', hero_title2: 'Trouvez votre',
+    hero_accent2: 'kit idéal.', hero_sub: 'Les designers uploadent — Les équipes achètent — Livraison instantanée',
+    hero_btn1: 'Explorer les designs', hero_btn2: 'Uploader un design',
+    sec_categories: 'Catégories', sec_trending: 'Designs tendance',
+    sec_designers: 'Designers en vedette', sec_competitions: 'Compétitions actives',
+    see_all: 'Voir tout →', tab_today: "Aujourd'hui", tab_week: 'Cette semaine', tab_all: 'Tout le temps',
+    how_title: 'Comment ça marche', how1_t: 'Uploadez votre design', how1_p: '4 images requises, processus en 5 étapes.',
+    how2_t: 'Les équipes découvrent', how2_p: 'Des milliers d\'équipes vous trouvent via les filtres.',
+    how3_t: 'Gagnez', how3_p: 'Paiement confirmé, fichiers livrés. 80% pour vous.',
+    cta_title: 'Déplacez vos designs vers\nune plateforme qui rapporte.',
+    cta_sub: 'Inscrivez-vous gratuitement, publiez aujourd\'hui.',
+    cta_btn: 'Commencer',
+    filter_sport: 'Sport', filter_color: 'Couleur', filter_style: 'Style',
+    filter_pattern: 'Motif', filter_license: 'Licence', filter_price: 'Prix (₺)',
+    filter_clear: 'Effacer', sort_popular: 'Plus populaires', sort_newest: 'Plus récents',
+    sort_price_asc: 'Prix ↑', sort_price_desc: 'Prix ↓', sort_bestseller: 'Meilleures ventes',
+    buy_btn: 'Acheter', fav_add: '♡ Favoris', fav_remove: '♥ Retirer des favoris',
+    license_std: 'Licence standard', license_std_desc: 'Plusieurs équipes peuvent acheter',
+    license_excl: 'Licence exclusive', license_excl_desc: 'Un seul club — retiré après vente',
+    login_title: 'Connexion', register_title: 'Inscription',
+    field_email: 'E-mail', field_pass: 'Mot de passe', field_name: 'Nom', field_role: 'Type de compte',
+    role_designer: 'Designer', role_team: 'Équipe / Club',
+    google_btn: 'Continuer avec Google', logout: 'Déconnexion',
+    upload_title: 'Uploader un design', step_images: 'Images', step_info: 'Infos',
+    step_colors: 'Couleurs', step_files: 'Fichiers', step_price: 'Tarif',
+    publish_btn: 'Publier le design 🚀', next_btn: 'Continuer →', back_btn_txt: '← Retour',
+    copyright_check: 'Ce design m\'appartient entièrement et j\'en détiens les droits.',
+    toast_fav_added: 'Ajouté aux favoris ♥', toast_fav_removed: 'Retiré des favoris',
+    toast_login_required: 'Veuillez vous connecter', toast_published: '🚀 Design uploadé! En attente d\'approbation.',
+    designs_found: 'designs trouvés', load_more: 'Charger plus',
+    back: '← Retour', by: 'par', earnings_title: 'Revenus',
+    dash_designs: 'Designs', dash_sales: 'Ventes', dash_likes: 'Likes', dash_pending: 'En attente',
+    footer_tagline: 'Écosystème de design de maillots.', footer_platform: 'Plateforme',
+    footer_account: 'Compte', footer_support: 'Support',
+    footer_copy: '© 2026 formaLOLA · Tous droits réservés',
+    footer_payment: 'Paiement sécurisé via iyzico',
+    sport_football: 'Football', sport_basketball: 'Basketball', sport_volleyball: 'Volleyball',
+    sport_esports: 'Esports', sport_rugby: 'Rugby', sport_american: 'Football américain',
+    welcome: 'Bienvenue',
+  },
+  es: {
+    code: 'es', name: 'Español', flag: '🇪🇸', dir: 'ltr',
+    nav_explore: 'Explorar', nav_competitions: 'Competiciones', nav_designers: 'Diseñadores',
+    nav_how: 'Cómo funciona', nav_login: 'Iniciar sesión', nav_upload: '+ Subir diseño',
+    hero_title1: 'Vende tu diseño', hero_accent1: 'de camiseta.', hero_title2: 'Encuentra tu',
+    hero_accent2: 'kit ideal.', hero_sub: 'Diseñadores suben — Equipos compran — Entrega instantánea',
+    hero_btn1: 'Explorar diseños', hero_btn2: 'Subir diseño',
+    sec_categories: 'Categorías', sec_trending: 'Diseños tendencia',
+    sec_designers: 'Diseñadores destacados', sec_competitions: 'Competiciones activas',
+    see_all: 'Ver todo →', tab_today: 'Hoy', tab_week: 'Esta semana', tab_all: 'Todo el tiempo',
+    how_title: 'Cómo funciona', how1_t: 'Sube tu diseño', how1_p: '4 imágenes requeridas, proceso de 5 pasos.',
+    how2_t: 'Los equipos descubren', how2_p: 'Miles de equipos te encuentran con filtros.',
+    how3_t: 'Gana dinero', how3_p: 'Pago confirmado, archivos entregados. 80% para ti.',
+    cta_title: 'Lleva tus diseños a una\nplataforma que genera dinero.',
+    cta_sub: 'Regístrate gratis, publica hoy.',
+    cta_btn: 'Empezar ahora',
+    filter_sport: 'Deporte', filter_color: 'Color', filter_style: 'Estilo',
+    filter_pattern: 'Patrón', filter_license: 'Licencia', filter_price: 'Precio (₺)',
+    filter_clear: 'Limpiar', sort_popular: 'Más populares', sort_newest: 'Más recientes',
+    sort_price_asc: 'Precio ↑', sort_price_desc: 'Precio ↓', sort_bestseller: 'Más vendidos',
+    buy_btn: 'Comprar', fav_add: '♡ Favoritos', fav_remove: '♥ Quitar de favoritos',
+    license_std: 'Licencia estándar', license_std_desc: 'Varios equipos pueden comprar',
+    license_excl: 'Licencia exclusiva', license_excl_desc: 'Solo un club — eliminado tras la venta',
+    login_title: 'Iniciar sesión', register_title: 'Registrarse',
+    field_email: 'Correo', field_pass: 'Contraseña', field_name: 'Nombre', field_role: 'Tipo de cuenta',
+    role_designer: 'Diseñador', role_team: 'Equipo / Club',
+    google_btn: 'Continuar con Google', logout: 'Cerrar sesión',
+    upload_title: 'Subir diseño', step_images: 'Imágenes', step_info: 'Info',
+    step_colors: 'Colores', step_files: 'Archivos', step_price: 'Precio',
+    publish_btn: 'Publicar diseño 🚀', next_btn: 'Continuar →', back_btn_txt: '← Atrás',
+    copyright_check: 'Este diseño es completamente mío y declaro tener los derechos de autor.',
+    toast_fav_added: 'Añadido a favoritos ♥', toast_fav_removed: 'Eliminado de favoritos',
+    toast_login_required: 'Por favor inicia sesión', toast_published: '🚀 ¡Diseño subido! Esperando aprobación.',
+    designs_found: 'diseños encontrados', load_more: 'Cargar más',
+    back: '← Atrás', by: 'por', earnings_title: 'Ganancias',
+    dash_designs: 'Diseños', dash_sales: 'Ventas', dash_likes: 'Likes', dash_pending: 'Pendiente',
+    footer_tagline: 'Ecosistema de diseño de camisetas.', footer_platform: 'Plataforma',
+    footer_account: 'Cuenta', footer_support: 'Soporte',
+    footer_copy: '© 2026 formaLOLA · Todos los derechos reservados',
+    footer_payment: 'Pago seguro via iyzico',
+    sport_football: 'Fútbol', sport_basketball: 'Baloncesto', sport_volleyball: 'Voleibol',
+    sport_esports: 'Esports', sport_rugby: 'Rugby', sport_american: 'Fútbol americano',
+    welcome: 'Bienvenido',
+  },
+  ar: {
+    code: 'ar', name: 'العربية', flag: '🇸🇦', dir: 'rtl',
+    nav_explore: 'استكشف', nav_competitions: 'المسابقات', nav_designers: 'المصممون',
+    nav_how: 'كيف يعمل', nav_login: 'تسجيل الدخول', nav_upload: '+ رفع تصميم',
+    hero_title1: 'بع تصميم', hero_accent1: 'قميصك.', hero_title2: 'اعثر على',
+    hero_accent2: 'طقمك.', hero_sub: 'المصممون يرفعون — الفرق تشتري — تسليم فوري',
+    hero_btn1: 'استكشف التصاميم', hero_btn2: 'رفع تصميم',
+    sec_categories: 'الفئات', sec_trending: 'تصاميم رائجة',
+    sec_designers: 'مصممون مميزون', sec_competitions: 'مسابقات نشطة',
+    see_all: 'عرض الكل →', tab_today: 'اليوم', tab_week: 'هذا الأسبوع', tab_all: 'كل الوقت',
+    how_title: 'كيف يعمل', how1_t: 'ارفع تصميمك', how1_p: '4 صور مطلوبة، عملية من 5 خطوات.',
+    how2_t: 'الفرق تكتشف', how2_p: 'آلاف الفرق تجدك عبر الفلاتر.',
+    how3_t: 'اكسب', how3_p: 'تأكيد الدفع، تسليم الملفات. 80٪ لك.',
+    cta_title: 'انقل تصاميمك إلى منصة\nتجني المال.',
+    cta_sub: 'سجّل مجاناً، انشر أول تصميم اليوم.',
+    cta_btn: 'ابدأ الآن',
+    filter_sport: 'الرياضة', filter_color: 'اللون', filter_style: 'الأسلوب',
+    filter_pattern: 'النمط', filter_license: 'الترخيص', filter_price: 'السعر (₺)',
+    filter_clear: 'مسح', sort_popular: 'الأكثر شهرة', sort_newest: 'الأحدث',
+    sort_price_asc: 'السعر ↑', sort_price_desc: 'السعر ↓', sort_bestseller: 'الأكثر مبيعاً',
+    buy_btn: 'شراء', fav_add: '♡ إضافة للمفضلة', fav_remove: '♥ إزالة من المفضلة',
+    license_std: 'ترخيص قياسي', license_std_desc: 'يمكن لعدة فرق الشراء',
+    license_excl: 'ترخيص حصري', license_excl_desc: 'نادٍ واحد فقط — يُزال بعد البيع',
+    login_title: 'تسجيل الدخول', register_title: 'إنشاء حساب',
+    field_email: 'البريد الإلكتروني', field_pass: 'كلمة المرور', field_name: 'الاسم', field_role: 'نوع الحساب',
+    role_designer: 'مصمم', role_team: 'فريق / نادٍ',
+    google_btn: 'المتابعة مع Google', logout: 'تسجيل الخروج',
+    upload_title: 'رفع تصميم', step_images: 'الصور', step_info: 'المعلومات',
+    step_colors: 'الألوان', step_files: 'الملفات', step_price: 'السعر',
+    publish_btn: 'نشر التصميم 🚀', next_btn: 'متابعة →', back_btn_txt: '← رجوع',
+    copyright_check: 'هذا التصميم ملكي تماماً وأعلن حقوق النشر.',
+    toast_fav_added: 'أُضيف إلى المفضلة ♥', toast_fav_removed: 'أُزيل من المفضلة',
+    toast_login_required: 'يرجى تسجيل الدخول', toast_published: '🚀 تم رفع التصميم! بانتظار الموافقة.',
+    designs_found: 'تصميم موجود', load_more: 'تحميل المزيد',
+    back: '← رجوع', by: 'بقلم', earnings_title: 'الأرباح',
+    dash_designs: 'التصاميم', dash_sales: 'المبيعات', dash_likes: 'الإعجابات', dash_pending: 'قيد المراجعة',
+    footer_tagline: 'منظومة تصميم القمصان.', footer_platform: 'المنصة',
+    footer_account: 'الحساب', footer_support: 'الدعم',
+    footer_copy: '© 2026 formaLOLA · جميع الحقوق محفوظة',
+    footer_payment: 'دفع آمن عبر iyzico',
+    sport_football: 'كرة القدم', sport_basketball: 'كرة السلة', sport_volleyball: 'كرة الطائرة',
+    sport_esports: 'رياضات إلكترونية', sport_rugby: 'الرجبي', sport_american: 'كرة القدم الأمريكية',
+    welcome: 'مرحباً',
+  },
+  pt: {
+    code: 'pt', name: 'Português', flag: '🇧🇷', dir: 'ltr',
+    nav_explore: 'Explorar', nav_competitions: 'Competições', nav_designers: 'Designers',
+    nav_how: 'Como funciona', nav_login: 'Entrar', nav_upload: '+ Enviar design',
+    hero_title1: 'Venda seu design', hero_accent1: 'de camisa.', hero_title2: 'Encontre seu',
+    hero_accent2: 'kit ideal.', hero_sub: 'Designers enviam — Times compram — Entrega instantânea',
+    hero_btn1: 'Explorar designs', hero_btn2: 'Enviar design',
+    sec_categories: 'Categorias', sec_trending: 'Designs em alta',
+    sec_designers: 'Designers em destaque', sec_competitions: 'Competições ativas',
+    see_all: 'Ver tudo →', tab_today: 'Hoje', tab_week: 'Esta semana', tab_all: 'Todos os tempos',
+    how_title: 'Como funciona', how1_t: 'Envie seu design', how1_p: '4 imagens obrigatórias, processo em 5 etapas.',
+    how2_t: 'Times descobrem', how2_p: 'Milhares de times te encontram com filtros.',
+    how3_t: 'Ganhe', how3_p: 'Pagamento confirmado, arquivos entregues. 80% é seu.',
+    cta_title: 'Leve seus designs para uma\nplataforma que gera dinheiro.',
+    cta_sub: 'Cadastre-se grátis, publique hoje.',
+    cta_btn: 'Começar agora',
+    filter_sport: 'Esporte', filter_color: 'Cor', filter_style: 'Estilo',
+    filter_pattern: 'Padrão', filter_license: 'Licença', filter_price: 'Preço (₺)',
+    filter_clear: 'Limpar', sort_popular: 'Mais populares', sort_newest: 'Mais recentes',
+    sort_price_asc: 'Preço ↑', sort_price_desc: 'Preço ↓', sort_bestseller: 'Mais vendidos',
+    buy_btn: 'Comprar', fav_add: '♡ Favoritos', fav_remove: '♥ Remover dos favoritos',
+    license_std: 'Licença padrão', license_std_desc: 'Vários times podem comprar',
+    license_excl: 'Licença exclusiva', license_excl_desc: 'Apenas um clube — removido após venda',
+    login_title: 'Entrar', register_title: 'Cadastrar',
+    field_email: 'E-mail', field_pass: 'Senha', field_name: 'Nome', field_role: 'Tipo de conta',
+    role_designer: 'Designer', role_team: 'Time / Clube',
+    google_btn: 'Continuar com Google', logout: 'Sair',
+    upload_title: 'Enviar design', step_images: 'Imagens', step_info: 'Info',
+    step_colors: 'Cores', step_files: 'Arquivos', step_price: 'Preço',
+    publish_btn: 'Publicar design 🚀', next_btn: 'Continuar →', back_btn_txt: '← Voltar',
+    copyright_check: 'Este design é totalmente meu e declaro que detenho os direitos autorais.',
+    toast_fav_added: 'Adicionado aos favoritos ♥', toast_fav_removed: 'Removido dos favoritos',
+    toast_login_required: 'Por favor faça login', toast_published: '🚀 Design enviado! Aguardando aprovação.',
+    designs_found: 'designs encontrados', load_more: 'Carregar mais',
+    back: '← Voltar', by: 'por', earnings_title: 'Ganhos',
+    dash_designs: 'Designs', dash_sales: 'Vendas', dash_likes: 'Curtidas', dash_pending: 'Pendente',
+    footer_tagline: 'Ecossistema de design de camisas.', footer_platform: 'Plataforma',
+    footer_account: 'Conta', footer_support: 'Suporte',
+    footer_copy: '© 2026 formaLOLA · Todos os direitos reservados',
+    footer_payment: 'Pagamento seguro via iyzico',
+    sport_football: 'Futebol', sport_basketball: 'Basquete', sport_volleyball: 'Vôlei',
+    sport_esports: 'Esports', sport_rugby: 'Rugby', sport_american: 'Futebol americano',
+    welcome: 'Bem-vindo',
+  },
+  it: {
+    code: 'it', name: 'Italiano', flag: '🇮🇹', dir: 'ltr',
+    nav_explore: 'Esplora', nav_competitions: 'Competizioni', nav_designers: 'Designer',
+    nav_how: 'Come funziona', nav_login: 'Accedi', nav_upload: '+ Carica design',
+    hero_title1: 'Vendi il tuo design', hero_accent1: 'di maglia.', hero_title2: 'Trova il tuo',
+    hero_accent2: 'kit ideale.', hero_sub: 'I designer caricano — Le squadre comprano — Consegna istantanea',
+    hero_btn1: 'Esplora i design', hero_btn2: 'Carica design',
+    sec_categories: 'Categorie', sec_trending: 'Design di tendenza',
+    sec_designers: 'Designer in evidenza', sec_competitions: 'Competizioni attive',
+    see_all: 'Vedi tutto →', tab_today: 'Oggi', tab_week: 'Questa settimana', tab_all: 'Sempre',
+    how_title: 'Come funziona', how1_t: 'Carica il tuo design', how1_p: '4 immagini richieste, processo in 5 passaggi.',
+    how2_t: 'Le squadre scoprono', how2_p: 'Migliaia di squadre ti trovano tramite filtri.',
+    how3_t: 'Guadagna', how3_p: 'Pagamento confermato, file consegnati. L\'80% è tuo.',
+    cta_title: 'Porta i tuoi design su una\npiattaforma che guadagna.',
+    cta_sub: 'Registrati gratis, pubblica oggi.',
+    cta_btn: 'Inizia ora',
+    filter_sport: 'Sport', filter_color: 'Colore', filter_style: 'Stile',
+    filter_pattern: 'Motivo', filter_license: 'Licenza', filter_price: 'Prezzo (₺)',
+    filter_clear: 'Cancella', sort_popular: 'Più popolari', sort_newest: 'Più recenti',
+    sort_price_asc: 'Prezzo ↑', sort_price_desc: 'Prezzo ↓', sort_bestseller: 'Più venduti',
+    buy_btn: 'Acquista', fav_add: '♡ Preferiti', fav_remove: '♥ Rimuovi dai preferiti',
+    license_std: 'Licenza standard', license_std_desc: 'Più squadre possono acquistare',
+    license_excl: 'Licenza esclusiva', license_excl_desc: 'Solo un club — rimosso dopo la vendita',
+    login_title: 'Accedi', register_title: 'Registrati',
+    field_email: 'E-mail', field_pass: 'Password', field_name: 'Nome', field_role: 'Tipo di account',
+    role_designer: 'Designer', role_team: 'Squadra / Club',
+    google_btn: 'Continua con Google', logout: 'Esci',
+    upload_title: 'Carica design', step_images: 'Immagini', step_info: 'Info',
+    step_colors: 'Colori', step_files: 'File', step_price: 'Prezzo',
+    publish_btn: 'Pubblica design 🚀', next_btn: 'Continua →', back_btn_txt: '← Indietro',
+    copyright_check: 'Questo design è completamente mio e dichiaro di possederne il copyright.',
+    toast_fav_added: 'Aggiunto ai preferiti ♥', toast_fav_removed: 'Rimosso dai preferiti',
+    toast_login_required: 'Effettua il login', toast_published: '🚀 Design caricato! In attesa di approvazione.',
+    designs_found: 'design trovati', load_more: 'Carica altro',
+    back: '← Indietro', by: 'di', earnings_title: 'Guadagni',
+    dash_designs: 'Design', dash_sales: 'Vendite', dash_likes: 'Like', dash_pending: 'In attesa',
+    footer_tagline: 'Ecosistema di design di maglie.', footer_platform: 'Piattaforma',
+    footer_account: 'Account', footer_support: 'Supporto',
+    footer_copy: '© 2026 formaLOLA · Tutti i diritti riservati',
+    footer_payment: 'Pagamento sicuro via iyzico',
+    sport_football: 'Calcio', sport_basketball: 'Basket', sport_volleyball: 'Pallavolo',
+    sport_esports: 'Esports', sport_rugby: 'Rugby', sport_american: 'Football americano',
+    welcome: 'Benvenuto',
+  },
+  ru: {
+    code: 'ru', name: 'Русский', flag: '🇷🇺', dir: 'ltr',
+    nav_explore: 'Обзор', nav_competitions: 'Конкурсы', nav_designers: 'Дизайнеры',
+    nav_how: 'Как это работает', nav_login: 'Войти', nav_upload: '+ Загрузить дизайн',
+    hero_title1: 'Продай свой дизайн', hero_accent1: 'формы.', hero_title2: 'Найди свой',
+    hero_accent2: 'идеальный комплект.', hero_sub: 'Дизайнеры загружают — Команды покупают — Мгновенная доставка',
+    hero_btn1: 'Обзор дизайнов', hero_btn2: 'Загрузить дизайн',
+    sec_categories: 'Категории', sec_trending: 'Трендовые дизайны',
+    sec_designers: 'Избранные дизайнеры', sec_competitions: 'Активные конкурсы',
+    see_all: 'Смотреть всё →', tab_today: 'Сегодня', tab_week: 'На этой неделе', tab_all: 'Всё время',
+    how_title: 'Как это работает', how1_t: 'Загрузи дизайн', how1_p: '4 обязательных изображения, 5 шагов.',
+    how2_t: 'Команды находят', how2_p: 'Тысячи команд находят тебя через фильтры.',
+    how3_t: 'Зарабатывай', how3_p: 'Оплата подтверждена, файлы доставлены. 80% твои.',
+    cta_title: 'Переведи свои дизайны на\nплатформу, которая зарабатывает.',
+    cta_sub: 'Зарегистрируйся бесплатно, опубликуй сегодня.',
+    cta_btn: 'Начать',
+    filter_sport: 'Спорт', filter_color: 'Цвет', filter_style: 'Стиль',
+    filter_pattern: 'Узор', filter_license: 'Лицензия', filter_price: 'Цена (₺)',
+    filter_clear: 'Очистить', sort_popular: 'Популярные', sort_newest: 'Новейшие',
+    sort_price_asc: 'Цена ↑', sort_price_desc: 'Цена ↓', sort_bestseller: 'Бестселлеры',
+    buy_btn: 'Купить', fav_add: '♡ В избранное', fav_remove: '♥ Из избранного',
+    license_std: 'Стандартная лицензия', license_std_desc: 'Несколько команд могут купить',
+    license_excl: 'Эксклюзивная лицензия', license_excl_desc: 'Только один клуб — удаляется после продажи',
+    login_title: 'Войти', register_title: 'Регистрация',
+    field_email: 'Эл. почта', field_pass: 'Пароль', field_name: 'Имя', field_role: 'Тип аккаунта',
+    role_designer: 'Дизайнер', role_team: 'Команда / Клуб',
+    google_btn: 'Продолжить с Google', logout: 'Выйти',
+    upload_title: 'Загрузить дизайн', step_images: 'Изображения', step_info: 'Инфо',
+    step_colors: 'Цвета', step_files: 'Файлы', step_price: 'Цена',
+    publish_btn: 'Опубликовать 🚀', next_btn: 'Далее →', back_btn_txt: '← Назад',
+    copyright_check: 'Этот дизайн полностью мой и я заявляю об авторских правах.',
+    toast_fav_added: 'Добавлено в избранное ♥', toast_fav_removed: 'Удалено из избранного',
+    toast_login_required: 'Пожалуйста войдите', toast_published: '🚀 Дизайн загружен! Ожидает одобрения.',
+    designs_found: 'дизайнов найдено', load_more: 'Загрузить ещё',
+    back: '← Назад', by: 'by', earnings_title: 'Доходы',
+    dash_designs: 'Дизайны', dash_sales: 'Продажи', dash_likes: 'Лайки', dash_pending: 'На проверке',
+    footer_tagline: 'Экосистема дизайна форм.', footer_platform: 'Платформа',
+    footer_account: 'Аккаунт', footer_support: 'Поддержка',
+    footer_copy: '© 2026 formaLOLA · Все права защищены',
+    footer_payment: 'Безопасная оплата через iyzico',
+    sport_football: 'Футбол', sport_basketball: 'Баскетбол', sport_volleyball: 'Волейбол',
+    sport_esports: 'Киберспорт', sport_rugby: 'Регби', sport_american: 'Американский футбол',
+    welcome: 'Добро пожаловать',
+  },
+  ja: {
+    code: 'ja', name: '日本語', flag: '🇯🇵', dir: 'ltr',
+    nav_explore: '探索', nav_competitions: 'コンテスト', nav_designers: 'デザイナー',
+    nav_how: '仕組み', nav_login: 'ログイン', nav_upload: '+ デザインをアップ',
+    hero_title1: 'ユニフォームデザインを', hero_accent1: '売ろう。', hero_title2: '理想の',
+    hero_accent2: 'キットを見つけよう。', hero_sub: 'デザイナーがアップ — チームが購入 — 即座に届く',
+    hero_btn1: 'デザインを探す', hero_btn2: 'デザインをアップ',
+    sec_categories: 'カテゴリ', sec_trending: 'トレンドデザイン',
+    sec_designers: '注目デザイナー', sec_competitions: 'アクティブコンテスト',
+    see_all: 'すべて見る →', tab_today: '今日', tab_week: '今週', tab_all: '全期間',
+    how_title: '仕組み', how1_t: 'デザインをアップ', how1_p: '4枚の必須画像、5ステップの簡単プロセス。',
+    how2_t: 'チームが発見', how2_p: '何千ものチームがフィルターであなたを見つける。',
+    how3_t: '稼ぐ', how3_p: '支払い確認、ファイル納品。売上の80%があなたのもの。',
+    cta_title: 'デザインを収益化できる\nプラットフォームに移行しよう。',
+    cta_sub: '無料登録、今日最初のデザインを公開。',
+    cta_btn: '今すぐ始める',
+    filter_sport: 'スポーツ', filter_color: '色', filter_style: 'スタイル',
+    filter_pattern: 'パターン', filter_license: 'ライセンス', filter_price: '価格 (₺)',
+    filter_clear: 'クリア', sort_popular: '人気順', sort_newest: '新着順',
+    sort_price_asc: '価格 ↑', sort_price_desc: '価格 ↓', sort_bestseller: 'ベストセラー',
+    buy_btn: '購入', fav_add: '♡ お気に入り', fav_remove: '♥ お気に入りから削除',
+    license_std: 'スタンダードライセンス', license_std_desc: '複数のチームが購入可能',
+    license_excl: 'エクスクルーシブライセンス', license_excl_desc: '1クラブのみ — 販売後に削除',
+    login_title: 'ログイン', register_title: '登録',
+    field_email: 'メール', field_pass: 'パスワード', field_name: '名前', field_role: 'アカウントタイプ',
+    role_designer: 'デザイナー', role_team: 'チーム / クラブ',
+    google_btn: 'Googleで続ける', logout: 'ログアウト',
+    upload_title: 'デザインをアップ', step_images: '画像', step_info: '情報',
+    step_colors: '色', step_files: 'ファイル', step_price: '価格',
+    publish_btn: 'デザインを公開 🚀', next_btn: '次へ →', back_btn_txt: '← 戻る',
+    copyright_check: 'このデザインは完全に私のものであり、著作権を所有することを宣言します。',
+    toast_fav_added: 'お気に入りに追加 ♥', toast_fav_removed: 'お気に入りから削除',
+    toast_login_required: 'ログインしてください', toast_published: '🚀 デザインがアップされました！承認待ちです。',
+    designs_found: 'デザインが見つかりました', load_more: 'もっと読み込む',
+    back: '← 戻る', by: 'by', earnings_title: '収益',
+    dash_designs: 'デザイン', dash_sales: '売上', dash_likes: 'いいね', dash_pending: '審査中',
+    footer_tagline: 'ユニフォームデザインエコシステム。', footer_platform: 'プラットフォーム',
+    footer_account: 'アカウント', footer_support: 'サポート',
+    footer_copy: '© 2026 formaLOLA · 全著作権所有',
+    footer_payment: 'iyzico経由の安全な支払い',
+    sport_football: 'サッカー', sport_basketball: 'バスケ', sport_volleyball: 'バレー',
+    sport_esports: 'eスポーツ', sport_rugby: 'ラグビー', sport_american: 'アメフト',
+    welcome: 'ようこそ',
+  },
+};
+
+// Aktif dil state
+let currentLang = localStorage.getItem('fl_lang') || 'tr';
+let t = LANGS[currentLang] || LANGS.tr; // aktif çeviri kısayolu
+
+function setLang(code) {
+  if (!LANGS[code]) return;
+  currentLang = code;
+  t = LANGS[code];
+  localStorage.setItem('fl_lang', code);
+  document.documentElement.lang = code;
+  document.documentElement.dir = t.dir || 'ltr';
+  applyLangToPage();
+  // Dil seçici güncelle
+  document.querySelectorAll('.lang-option').forEach(el => {
+    el.classList.toggle('active', el.dataset.lang === code);
+  });
+  closeModal('langModal');
+  showToast(`${t.flag} ${t.name}`, '');
+}
+
+function applyLangToPage() {
+  // Nav
+  setTxt('nav-explore-txt', t.nav_explore);
+  setTxt('nav-competitions-txt', t.nav_competitions);
+  setTxt('nav-designers-txt', t.nav_designers);
+  setTxt('nav-how-txt', t.nav_how);
+  setTxt('navLoginBtn', t.nav_login);
+  setTxt('nav-upload-btn', t.nav_upload);
+  // Dil butonu
+  setTxt('langBtnTxt', t.code.toUpperCase());
+  // Hero
+  setTxt('hero-t1', t.hero_title1);
+  setTxt('hero-a1', t.hero_accent1);
+  setTxt('hero-t2', t.hero_title2);
+  setTxt('hero-a2', t.hero_accent2);
+  setTxt('hero-sub-txt', t.hero_sub);
+  setTxt('hero-btn1', t.hero_btn1);
+  setTxt('hero-btn2', t.hero_btn2);
+  // Sections
+  setTxt('sec-cats-title', t.sec_categories);
+  setTxt('sec-trend-title', t.sec_trending);
+  setTxt('sec-designers-title', t.sec_designers);
+  setTxt('sec-comps-title', t.sec_competitions);
+  // How
+  setTxt('how-main-title', t.how_title);
+  setTxt('how1-title', t.how1_t); setTxt('how1-p', t.how1_p);
+  setTxt('how2-title', t.how2_t); setTxt('how2-p', t.how2_p);
+  setTxt('how3-title', t.how3_t); setTxt('how3-p', t.how3_p);
+  // CTA
+  setTxt('cta-title-txt', t.cta_title);
+  setTxt('cta-sub-txt', t.cta_sub);
+  setTxt('cta-btn-txt', t.cta_btn);
+  // Filters
+  setTxt('fp-label-sport', t.filter_sport);
+  setTxt('fp-label-color', t.filter_color);
+  setTxt('fp-label-style', t.filter_style);
+  setTxt('fp-label-pattern', t.filter_pattern);
+  setTxt('fp-label-license', t.filter_license);
+  setTxt('fp-label-price', t.filter_price);
+  setTxt('fp-clear-btn', t.filter_clear);
+  // Sort
+  const sortSel = document.getElementById('sortSel');
+  if (sortSel) {
+    sortSel.options[0].text = t.sort_popular;
+    sortSel.options[1].text = t.sort_newest;
+    sortSel.options[2].text = t.sort_price_asc;
+    sortSel.options[3].text = t.sort_price_desc;
+    sortSel.options[4].text = t.sort_bestseller;
+  }
+  // Load more
+  setTxt('load-more-btn', t.load_more);
+  // Upload modal
+  setTxt('upload-modal-title', t.upload_title);
+  setTxt('ws1', `1 · ${t.step_images}`);
+  setTxt('ws2', `2 · ${t.step_info}`);
+  setTxt('ws3', `3 · ${t.step_colors}`);
+  setTxt('ws4', `4 · ${t.step_files}`);
+  setTxt('ws5', `5 · ${t.step_price}`);
+  // Login modal
+  setTxt('login-modal-tab', t.login_title);
+  setTxt('register-modal-tab', t.register_title);
+  // Footer
+  setTxt('footer-copy-txt', t.footer_copy);
+  setTxt('footer-payment-txt', t.footer_payment);
+  // RTL desteği için body class
+  document.body.classList.toggle('rtl', t.dir === 'rtl');
+  // Gridi yenile (çeviri gerektiren kartlar için)
+  renderHomeDesigns();
+  if (currentPage === 'explore') applyFilters();
+}
+
+function setTxt(id, val) {
+  const el = document.getElementById(id);
+  if (el && val !== undefined) el.textContent = val;
+}
+
+// Dil seçici modal
+function openLangModal() {
+  const modal = document.getElementById('langModal');
+  if (!modal) return;
+  modal.classList.add('open');
+}
+
+function buildLangModal() {
+  const grid = document.getElementById('langGrid');
+  if (!grid) return;
+  grid.innerHTML = Object.values(LANGS).map(l => `
+    <button class="lang-option ${l.code === currentLang ? 'active' : ''}"
+      data-lang="${l.code}" onclick="setLang('${l.code}')">
+      <span class="lang-flag">${l.flag}</span>
+      <span class="lang-name">${l.name}</span>
+      ${l.code === currentLang ? '<span class="lang-check">✓</span>' : ''}
+    </button>
+  `).join('');
+}
+
 /* ══════════ INIT ══════════ */
 document.addEventListener('DOMContentLoaded', () => {
+  // Dil sistemini başlat
+  t = LANGS[currentLang] || LANGS.tr;
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = t.dir || 'ltr';
+  document.body.classList.toggle('rtl', t.dir === 'rtl');
+  buildLangModal();
+  applyLangToPage();
+
   renderHomeDesigns();
   renderSpotlight();
   renderHomeComps();
   calcEarnings();
   initScrollNav();
-  
-  // Site açılır açılmaz veritabanındaki onaylı tasarımları getir
   fetchApprovedDesigns();
 });
 
@@ -80,48 +651,55 @@ function initScrollNav() {
 /* ══════════ FİRESTORE'DAN VERİ ÇEKME FONKSİYONU ══════════ */
 async function fetchApprovedDesigns() {
   try {
-    const snapshot = await db.collection('designs').where('status', '==', 'approved').orderBy('createdAt', 'desc').get();
+    // orderBy kaldırıldı — Firestore composite index gerektiriyor ve sessizce boş dönüyor.
+    // Sıralama JS tarafında yapılıyor.
+    const snapshot = await db.collection('designs').where('status', '==', 'approved').get();
     const realDesigns = [];
-    
+
     snapshot.forEach(doc => {
       const d = doc.data();
-      // Renk paletten gradient oluştur
       const col1 = (d.colors && d.colors[0]) || '#1f1f26';
       const col2 = (d.colors && d.colors[1]) || '#0c0c0e';
       realDesigns.push({
         id: doc.id,
-        title: d.title,
+        title: d.title || 'Tasarım',
         designer: d.designerName || 'Anonim',
         designerInitials: d.designerInitials || '?',
-        sport: d.sport,
-        style: d.style,
-        pattern: d.pattern,
+        sport: d.sport || 'Futbol',
+        style: d.style || 'modern',
+        pattern: d.pattern || 'minimal',
         colors: d.colors || [],
         price: d.price || 0,
         exclusivePrice: d.exclusivePrice || 0,
         sales: d.sales || 0,
         likes: d.likes || 0,
-        license: d.exclusivePrice > 0 ? 'standard' : 'standard',
-        // Gerçek ImgBB fotoğrafları
+        license: d.exclusivePrice > 0 ? 'exclusive' : 'standard',
         coverUrl: d.coverUrl || '',
         coverThumb: d.coverThumb || '',
         imageUrls: d.imageUrls || {},
-        // Fotoğraf yoksa renk paletten gradient göster
         bg: `linear-gradient(140deg, ${col1}, ${col2})`,
-        num: String(Math.floor(Math.random() * 99) + 1),
+        num: String(Math.floor(Math.random() * 11) + 1),
         kit: d.kit || 'Ev',
-        designerId: d.designerId,
-        desc: d.desc || ''
+        designerId: d.designerId || '',
+        desc: d.desc || '',
+        // createdAt timestamp (Firestore Timestamp objesi)
+        _ts: d.createdAt ? (d.createdAt.toMillis ? d.createdAt.toMillis() : 0) : 0
       });
     });
-    
+
+    // En yeni önce gelsin (JS sıralaması)
+    realDesigns.sort((a, b) => b._ts - a._ts);
+
+    // Gerçek tasarımlar öne, mock arkaya
     ALL_DESIGNS = [...realDesigns, ...MOCK_DESIGNS];
+
     renderHomeDesigns();
     if (currentPage === 'explore') applyFilters();
-    
+
+    console.log(`✓ ${realDesigns.length} onaylı tasarım yüklendi.`);
+
   } catch (error) {
     console.error('Tasarımlar çekilemedi:', error);
-    // Hata olursa sadece mock data göster
     ALL_DESIGNS = [...MOCK_DESIGNS];
     renderHomeDesigns();
   }
@@ -215,7 +793,7 @@ function designCard(d) {
         </div>
         ${badge ? `<div class="dc-badge-top">${badge}</div>` : ''}
         <div class="dc-overlay">
-          <button class="dc-action" onclick="event.stopPropagation();openBuyModal('${d.id}')">Satın Al</button>
+          <button class="dc-action" onclick="event.stopPropagation();openBuyModal('${d.id}')">${t.buy_btn}</button>
           <button class="dc-fav ${isFav ? 'fav-active' : ''}" onclick="event.stopPropagation();toggleFav('${d.id}',this)">${isFav ? '♥' : '♡'}</button>
         </div>
       </div>
@@ -303,7 +881,7 @@ function applyFilters() {
   exploreOffset = Math.min(12, filtered.length);
   grid.innerHTML = filtered.slice(0, exploreOffset).map(d => designCard(d)).join('');
   const count = document.getElementById('resultsCount');
-  if (count) count.textContent = `${filtered.length} tasarım bulundu`;
+  if (count) count.textContent = `${filtered.length} ${t.designs_found}`;
 }
 
 function loadMore() {
@@ -547,7 +1125,6 @@ async function loadDashboardOverview() {
   try {
     const snapshot = await db.collection('designs')
       .where('designerId', '==', currentUser.uid)
-      .orderBy('createdAt', 'desc')
       .get();
 
     let totalDesigns = 0, totalSales = 0, totalLikes = 0, pendingCount = 0;
