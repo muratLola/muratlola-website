@@ -1634,8 +1634,65 @@ img { max-width: 100%; display: block; }
 }
 
 /* ══════════════════════════════════════════
-   RESPONSIVE
+   DİL SİSTEMİ
 ══════════════════════════════════════════ */
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  padding: 7px 12px;
+  min-width: 64px;
+}
+
+.modal-lang { max-width: 520px; }
+
+.lang-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all var(--trans);
+  text-align: left;
+  font-size: 14px;
+  color: var(--text2);
+  position: relative;
+}
+.lang-option:hover { background: var(--bg4); border-color: var(--border2); color: var(--text); }
+.lang-option.active { border-color: var(--accent); background: rgba(230,57,70,0.08); color: var(--text); }
+.lang-flag { font-size: 20px; flex-shrink: 0; }
+.lang-name { flex: 1; font-weight: 500; }
+.lang-check { color: var(--accent); font-size: 14px; }
+
+/* RTL Desteği (Arapça) */
+body.rtl { direction: rtl; }
+body.rtl .nav-inner { flex-direction: row-reverse; }
+body.rtl .hero { flex-direction: row-reverse; }
+body.rtl .explore-wrap { flex-direction: row-reverse; }
+body.rtl .filter-panel { border-right: none; border-left: 1px solid var(--border); }
+body.rtl .how-steps { flex-direction: row-reverse; }
+body.rtl .how-arrow { transform: scaleX(-1); }
+body.rtl .nav-links { flex-direction: row-reverse; }
+body.rtl .footer-top { flex-direction: row-reverse; }
+body.rtl .footer-links { flex-direction: row-reverse; }
+body.rtl .detail-grid { direction: rtl; }
+body.rtl .dc-footer { flex-direction: row-reverse; }
+body.rtl .sec-header { flex-direction: row-reverse; }
+body.rtl .fp-head { flex-direction: row-reverse; }
+body.rtl .step-nav { flex-direction: row-reverse; }
+body.rtl .dash-layout { flex-direction: row-reverse; }
+
 @media (max-width: 1100px) {
   .cats-grid { grid-template-columns: repeat(3, 1fr); }
   .hero { flex-direction: column; padding-top: 60px; text-align: center; }
