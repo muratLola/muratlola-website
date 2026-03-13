@@ -719,6 +719,10 @@ function showPage(pageId) {
     if (pageId === 'designers') renderDesignersPage();
     if (pageId === 'competitions') renderCompetitionsPage();
     if (pageId === 'dashboard') renderDashboard();
+    // Yasal sayfalar — sadece scroll, ek render gerekmez
+    if (['legal-privacy','legal-sales','legal-refund','legal-terms'].includes(pageId)) {
+      // Sayfa zaten HTML'de mevcut, sadece active class yeterli
+    }
   }
 }
 
