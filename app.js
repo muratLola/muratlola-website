@@ -2,6 +2,10 @@
    formaLOLA — app.js
 ═══════════════════════════════════════════ */
 
+/* ══════════ ADMIN AYARLARI ══════════ */
+// SADECE BURAYA YAZDIĞIN MAİLLER ADMİN PANELİNİ GÖREBİLİR
+const ADMIN_EMAILS = ['firat3306ogur@gmail.com'];
+
 /* ══════════ FIREBASE INIT ══════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyCI7Ku7aF2gAf-lDpMwzYfBY0iC_ulg3gE",
@@ -13,7 +17,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db = firebase.firestore(); // YENİ EKLENDİ: Firestore (Veritabanı) tanımı
+const db = firebase.firestore(); 
 /* ═══════════════════════════════════════ */
 
 /* ══════════ MOCK DATA ══════════ */
@@ -475,7 +479,7 @@ function renderCompetitionsPage() {
   `).join('');
 }
 
-/* ══════════ DASHBOARD ══════════ */
+/* ══════════ DASHBOARD & GİZLİ ADMİN PANELİ ══════════ */
 function renderDashboard() {
   if (!currentUser) {
     document.getElementById('dashContent').innerHTML = `
@@ -581,8 +585,72 @@ function dashTab(tab, btn) {
         </div>
       </div>
     `;
+  } else if (tab === 'adminPanel') { // YENİ EKLENEN ADMİN SEKMESİ
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px; color:var(--accent)">Admin Paneli - Onay Bekleyenler</h2>
+      <div id="adminPendingGrid" class="designs-grid" style="grid-template-columns: 1fr;">Yükleniyor...</div>
+    `;
+    loadPendingDesigns();
   }
 }
+
+/* ══════════ ADMİN ONAY/RED FONKSİYONLARI ══════════ */
+async function loadPendingDesigns() {
+  const grid = document.getElementById('adminPendingGrid');
+  try {
+    const snapshot = await db.collection('designs').where('status', '==', 'pending').get();
+    if (snapshot.empty) {
+      grid.innerHTML = '<div style="padding:20px; background:var(--bg3); border-radius:var(--r); color:var(--text2);">Onay bekleyen yeni tasarım yok. 🎉</div>';
+      return;
+    }
+    
+    let html = '';
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      const id = doc.id;
+      html += `
+        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg3); border:1px solid var(--border); border-left:4px solid var(--gold); padding:16px 20px; border-radius:var(--r); margin-bottom:12px;">
+          <div>
+            <div style="font-size:16px; font-weight:500; margin-bottom:4px;">${d.title}</div>
+            <div style="font-size:12px; color:var(--text2); font-family:var(--font-mono)">
+              <span style="color:var(--accent)">by ${d.designerName}</span> • ${d.sport} • ₺${d.price}
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button onclick="approveDesign('${id}')" style="padding:8px 16px; background:rgba(42,157,143,0.15); color:#4ecdc4; border:1px solid #4ecdc4; border-radius:6px; cursor:pointer; font-weight:500; font-size:13px;">✓ Onayla</button>
+            <button onclick="rejectDesign('${id}')" style="padding:8px 16px; background:rgba(230,57,70,0.15); color:var(--accent); border:1px solid var(--accent); border-radius:6px; cursor:pointer; font-weight:500; font-size:13px;">✕ Reddet</button>
+          </div>
+        </div>
+      `;
+    });
+    grid.innerHTML = html;
+  } catch(error) {
+    grid.innerHTML = '<p style="color:var(--accent)">Veriler çekilirken hata oluştu.</p>';
+    console.error(error);
+  }
+}
+
+async function approveDesign(id) {
+  try {
+    await db.collection('designs').doc(id).update({ status: 'approved' });
+    showToast('Tasarım onaylandı ve yayına alındı! ✓', 'success');
+    loadPendingDesigns(); // Listeyi yenile
+  } catch(e) {
+    showToast('Onaylama hatası: ' + e.message, 'error');
+  }
+}
+
+async function rejectDesign(id) {
+  if(!confirm('Bu tasarımı tamamen reddetmek istediğinize emin misiniz?')) return;
+  try {
+    await db.collection('designs').doc(id).update({ status: 'rejected' });
+    showToast('Tasarım reddedildi ✕', '');
+    loadPendingDesigns(); // Listeyi yenile
+  } catch(e) {
+    showToast('Hata: ' + e.message, 'error');
+  }
+}
+
 
 /* ══════════ AUTH (GERÇEK FIREBASE) ══════════ */
 auth.onAuthStateChanged((user) => {
@@ -596,6 +664,16 @@ auth.onAuthStateChanged((user) => {
     if(dashAv) dashAv.textContent = currentUser.name[0].toUpperCase();
     const dashUname = document.getElementById('dashUname');
     if(dashUname) dashUname.textContent = currentUser.name;
+
+    // EĞER GİREN KİŞİ ADMİN İSE GİZLİ BUTONU GÖSTER
+    const adminBtn = document.getElementById('dashAdminBtn');
+    if(adminBtn) {
+      if (ADMIN_EMAILS.includes(user.email)) {
+        adminBtn.classList.remove('hidden');
+      } else {
+        adminBtn.classList.add('hidden');
+      }
+    }
     
   } else {
     currentUser = null;
@@ -760,7 +838,6 @@ function previewSlot(input, slotId) {
   reader.readAsDataURL(file);
 }
 
-// BU FONKSİYON FIRESTORE İÇİN GÜNCELLENDİ
 async function submitDesign() {
   if (!document.getElementById('upCopyright').checked) {
     showToast('Telif beyanını onaylayın', 'error');
@@ -773,7 +850,6 @@ async function submitDesign() {
     return;
   }
 
-  // 1. Formdaki verileri çekiyoruz
   const title = document.getElementById('upTitle').value.trim();
   const sport = document.getElementById('upSport').value;
   const kit = document.getElementById('upKit').value;
@@ -789,7 +865,6 @@ async function submitDesign() {
   const stdPrice = Number(document.getElementById('stdPrice').value) || 0;
   const exclPrice = Number(document.getElementById('exclPrice').value) || 0;
 
-  // Veritabanına gidecek obje
   const newDesign = {
     title: title,
     sport: sport,
@@ -807,15 +882,12 @@ async function submitDesign() {
     likes: 0,
     sales: 0,
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-    status: 'pending' // Onay bekliyor durumu
+    status: 'pending' // Admin onayı bekliyor
   };
 
   try {
     showToast('Veriler kaydediliyor...', '');
-    
-    // Firestore'da "designs" tablosuna (collection) kaydediyoruz
     await db.collection("designs").add(newDesign);
-    
     closeModal('uploadModal');
     showToast('🚀 Tasarım veritabanına kaydedildi! İnceleme süreci başladı.', 'success');
     resetUploadForm();
