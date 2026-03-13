@@ -13,6 +13,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+const db = firebase.firestore(); // YENİ EKLENDİ: Firestore (Veritabanı) tanımı
 /* ═══════════════════════════════════════ */
 
 /* ══════════ MOCK DATA ══════════ */
@@ -716,7 +717,7 @@ function processBuy(id) {
   showToast('🎉 Satın alma tamamlandı! Dosyalar hesabınıza eklendi.', 'success');
 }
 
-/* ══════════ UPLOAD ══════════ */
+/* ══════════ UPLOAD VE FIRESTORE ══════════ */
 function wizGo(step) {
   if (step === 2) {
     const req = ['s-front','s-back','s-detail','s-flat'];
@@ -759,7 +760,8 @@ function previewSlot(input, slotId) {
   reader.readAsDataURL(file);
 }
 
-function submitDesign() {
+// BU FONKSİYON FIRESTORE İÇİN GÜNCELLENDİ
+async function submitDesign() {
   if (!document.getElementById('upCopyright').checked) {
     showToast('Telif beyanını onaylayın', 'error');
     return;
@@ -767,11 +769,60 @@ function submitDesign() {
   if (!currentUser) {
     closeModal('uploadModal');
     showModal('loginModal');
+    showToast('Tasarım yüklemek için giriş yapmalısınız.', 'error');
     return;
   }
-  closeModal('uploadModal');
-  showToast('🚀 Tasarımın yayınlandı! İnceleme süreci 24 saat.', 'success');
-  resetUploadForm();
+
+  // 1. Formdaki verileri çekiyoruz
+  const title = document.getElementById('upTitle').value.trim();
+  const sport = document.getElementById('upSport').value;
+  const kit = document.getElementById('upKit').value;
+  const style = document.getElementById('upStyle').value;
+  const pattern = document.getElementById('upPattern').value;
+  const desc = document.getElementById('upDesc').value.trim();
+  const tags = document.getElementById('upTags').value.split(',').map(t => t.trim());
+
+  const c1 = document.getElementById('c1h').value;
+  const c2 = document.getElementById('c2h').value;
+  const c3 = document.getElementById('c3h').value;
+
+  const stdPrice = Number(document.getElementById('stdPrice').value) || 0;
+  const exclPrice = Number(document.getElementById('exclPrice').value) || 0;
+
+  // Veritabanına gidecek obje
+  const newDesign = {
+    title: title,
+    sport: sport,
+    kit: kit,
+    style: style,
+    pattern: pattern,
+    desc: desc,
+    tags: tags,
+    colors: [c1, c2, c3],
+    price: stdPrice,
+    exclusivePrice: exclPrice,
+    designerId: currentUser.uid,
+    designerName: currentUser.name,
+    designerInitials: currentUser.name[0].toUpperCase(),
+    likes: 0,
+    sales: 0,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    status: 'pending' // Onay bekliyor durumu
+  };
+
+  try {
+    showToast('Veriler kaydediliyor...', '');
+    
+    // Firestore'da "designs" tablosuna (collection) kaydediyoruz
+    await db.collection("designs").add(newDesign);
+    
+    closeModal('uploadModal');
+    showToast('🚀 Tasarım veritabanına kaydedildi! İnceleme süreci başladı.', 'success');
+    resetUploadForm();
+  } catch (error) {
+    console.error("Yükleme Hatası:", error);
+    showToast('Yükleme başarısız: ' + error.message, 'error');
+  }
 }
 
 function resetUploadForm() {
