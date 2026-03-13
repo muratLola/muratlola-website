@@ -18,14 +18,15 @@
       <span class="logo-forma">forma</span><span class="logo-lola">LOLA</span>
     </a>
     <div class="nav-links">
-      <a href="#" class="nav-link" onclick="showPage('explore');return false;">Keşfet</a>
-      <a href="#" class="nav-link" onclick="showPage('competitions');return false;">Yarışmalar</a>
-      <a href="#" class="nav-link" onclick="showPage('designers');return false;">Tasarımcılar</a>
-      <a href="#" class="nav-link" onclick="showPage('how');return false;">Nasıl Çalışır</a>
+      <a href="#" class="nav-link" id="nav-explore-txt" onclick="showPage('explore');return false;">Keşfet</a>
+      <a href="#" class="nav-link" id="nav-competitions-txt" onclick="showPage('competitions');return false;">Yarışmalar</a>
+      <a href="#" class="nav-link" id="nav-designers-txt" onclick="showPage('designers');return false;">Tasarımcılar</a>
+      <a href="#" class="nav-link" id="nav-how-txt" onclick="showPage('how');return false;">Nasıl Çalışır</a>
     </div>
     <div class="nav-actions">
+      <button class="btn-ghost lang-btn" onclick="openLangModal()" title="Dil seç / Language">🌐 <span id="langBtnTxt">TR</span></button>
       <button class="btn-ghost" id="navLoginBtn" onclick="showModal('loginModal')">Giriş Yap</button>
-      <button class="btn-primary" onclick="showModal('uploadModal')">+ Tasarım Yükle</button>
+      <button class="btn-primary" id="nav-upload-btn" onclick="showModal('uploadModal')">+ Tasarım Yükle</button>
       <div class="nav-avatar hidden" id="navAvatar" onclick="showPage('dashboard')">M</div>
     </div>
     <button class="nav-hamburger" onclick="toggleMobileNav()" id="hamburger">
@@ -53,17 +54,17 @@
         1.200+ Tasarım &nbsp;·&nbsp; 340+ Tasarımcı &nbsp;·&nbsp; 5.800+ Satış
       </div>
       <h1 class="hero-h1">
-        Forma tasarımını<br>
-        <span class="hero-accent">sat.</span> Hayalini<br>
-        <span class="hero-accent">bul.</span>
+        <span id="hero-t1">Forma tasarımını</span><br>
+        <span class="hero-accent" id="hero-a1">sat.</span> <span id="hero-t2">Hayalini</span><br>
+        <span class="hero-accent" id="hero-a2">bul.</span>
       </h1>
-      <p class="hero-p">Tasarımcılar yükler &nbsp;&mdash;&nbsp; Takımlar satın alır &nbsp;&mdash;&nbsp; Anında teslim</p>
+      <p class="hero-p" id="hero-sub-txt">Tasarımcılar yükler &nbsp;&mdash;&nbsp; Takımlar satın alır &nbsp;&mdash;&nbsp; Anında teslim</p>
       <div class="hero-actions">
-        <button class="btn-cta" onclick="showPage('explore')">
+        <button class="btn-cta" id="hero-btn1" onclick="showPage('explore')">
           Tasarımları Keşfet
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="btn-cta-ghost" onclick="showModal('uploadModal')">Tasarım Yükle</button>
+        <button class="btn-cta-ghost" id="hero-btn2" onclick="showModal('uploadModal')">Tasarım Yükle</button>
       </div>
     </div>
     <div class="hero-cards">
@@ -100,7 +101,7 @@
   <section class="section">
     <div class="container">
       <div class="sec-header">
-        <h2 class="sec-title">Kategoriler</h2>
+        <h2 class="sec-title" id="sec-cats-title">Kategoriler</h2>
         <a href="#" class="sec-more" onclick="showPage('explore');return false;">Tümünü Gör →</a>
       </div>
       <div class="cats-grid">
@@ -117,7 +118,7 @@
   <section class="section">
     <div class="container">
       <div class="sec-header">
-        <h2 class="sec-title">Trend Tasarımlar</h2>
+        <h2 class="sec-title" id="sec-trend-title">Trend Tasarımlar</h2>
         <div class="trend-tabs">
           <button class="ttab active" onclick="setTrendTab(this)">Bugün</button>
           <button class="ttab" onclick="setTrendTab(this)">Bu Hafta</button>
@@ -151,22 +152,22 @@
 
   <section class="section section-how">
     <div class="container">
-      <h2 class="sec-title centered">Nasıl Çalışır</h2>
+      <h2 class="sec-title centered" id="how-main-title">Nasıl Çalışır</h2>
       <div class="how-steps">
-        <div class="how-s"><div class="how-n">01</div><h3>Tasarımını Yükle</h3><p>4 zorunlu görsel, 5 adımlı kolay süreç. Renk, spor dalı ve lisansını seç.</p></div>
+        <div class="how-s"><div class="how-n">01</div><h3 id="how1-title">Tasarımını Yükle</h3><p id="how1-p">4 zorunlu görsel, 5 adımlı kolay süreç. Renk, spor dalı ve lisansını seç.</p></div>
         <div class="how-arrow">→</div>
-        <div class="how-s"><div class="how-n">02</div><h3>Takımlar Keşfeder</h3><p>Renk, stil ve spor filtresiyle binlerce takım seni bulur.</p></div>
+        <div class="how-s"><div class="how-n">02</div><h3 id="how2-title">Takımlar Keşfeder</h3><p id="how2-p">Renk, stil ve spor filtresiyle binlerce takım seni bulur.</p></div>
         <div class="how-arrow">→</div>
-        <div class="how-s"><div class="how-n">03</div><h3>Kazan</h3><p>Ödeme onaylanır, üretim dosyası teslim edilir. Her satıştan %80 senin.</p></div>
+        <div class="how-s"><div class="how-n">03</div><h3 id="how3-title">Kazan</h3><p id="how3-p">Ödeme onaylanır, üretim dosyası teslim edilir. Her satıştan %80 senin.</p></div>
       </div>
     </div>
   </section>
 
   <section class="cta-section">
     <div class="cta-inner">
-      <h2>Tasarımlarını para kazandıran<br>bir platforma taşı.</h2>
-      <p>Ücretsiz kaydol, ilk tasarımını bugün yayınla.</p>
-      <button class="btn-cta" onclick="showModal('loginModal')">Hemen Başla</button>
+      <h2 id="cta-title-txt">Tasarımlarını para kazandıran<br>bir platforma taşı.</h2>
+      <p id="cta-sub-txt">Ücretsiz kaydol, ilk tasarımını bugün yayınla.</p>
+      <button class="btn-cta" id="cta-btn-txt" onclick="showModal('loginModal')">Hemen Başla</button>
     </div>
   </section>
 
@@ -175,10 +176,10 @@
 <div id="page-explore" class="page">
   <div class="explore-wrap">
     <aside class="filter-panel" id="filterPanel">
-      <div class="fp-head"><h3>Filtrele</h3><button class="fp-clear" onclick="clearFilters()">Temizle</button></div>
+      <div class="fp-head"><h3 id="fp-label-sport-head">Filtrele</h3><button class="fp-clear" id="fp-clear-btn" onclick="clearFilters()">Temizle</button></div>
 
       <div class="fp-group">
-        <div class="fp-label">Spor Dalı</div>
+        <div class="fp-label" id="fp-label-sport">Spor Dalı</div>
         <label class="fp-check"><input type="checkbox" value="Futbol" onchange="applyFilters()"><span>Futbol</span><em>480</em></label>
         <label class="fp-check"><input type="checkbox" value="Basketbol" onchange="applyFilters()"><span>Basketbol</span><em>210</em></label>
         <label class="fp-check"><input type="checkbox" value="Voleybol" onchange="applyFilters()"><span>Voleybol</span><em>156</em></label>
@@ -189,7 +190,7 @@
       </div>
 
       <div class="fp-group">
-        <div class="fp-label">Renk</div>
+        <div class="fp-label" id="fp-label-color">Renk</div>
         <div class="fp-swatches" id="fpSwatches">
           <button class="swatch" style="background:#e63946" data-hex="#e63946" onclick="toggleSwatch(this)" title="Kırmızı"></button>
           <button class="swatch" style="background:#1d3557" data-hex="#1d3557" onclick="toggleSwatch(this)" title="Lacivert"></button>
@@ -205,7 +206,7 @@
       </div>
 
       <div class="fp-group">
-        <div class="fp-label">Stil</div>
+        <div class="fp-label" id="fp-label-style">Stil</div>
         <label class="fp-check"><input type="checkbox" value="modern" onchange="applyFilters()"><span>Modern</span></label>
         <label class="fp-check"><input type="checkbox" value="retro" onchange="applyFilters()"><span>Retro</span></label>
         <label class="fp-check"><input type="checkbox" value="minimal" onchange="applyFilters()"><span>Minimal</span></label>
@@ -215,7 +216,7 @@
       </div>
 
       <div class="fp-group">
-        <div class="fp-label">Desen</div>
+        <div class="fp-label" id="fp-label-pattern">Desen</div>
         <label class="fp-check"><input type="checkbox" value="stripes" onchange="applyFilters()"><span>Çizgili</span></label>
         <label class="fp-check"><input type="checkbox" value="gradient" onchange="applyFilters()"><span>Gradient</span></label>
         <label class="fp-check"><input type="checkbox" value="geometric" onchange="applyFilters()"><span>Geometrik</span></label>
@@ -225,13 +226,13 @@
       </div>
 
       <div class="fp-group">
-        <div class="fp-label">Lisans</div>
+        <div class="fp-label" id="fp-label-license">Lisans</div>
         <label class="fp-check"><input type="checkbox" value="standard" onchange="applyFilters()"><span>Standart</span></label>
         <label class="fp-check"><input type="checkbox" value="exclusive" onchange="applyFilters()"><span>Exclusive</span></label>
       </div>
 
       <div class="fp-group">
-        <div class="fp-label">Fiyat (₺)</div>
+        <div class="fp-label" id="fp-label-price">Fiyat (₺)</div>
         <div class="fp-price-row">
           <input type="number" id="priceMin" placeholder="Min" oninput="applyFilters()">
           <span>—</span>
@@ -260,7 +261,7 @@
       </div>
       <div class="results-count" id="resultsCount">1.200 tasarım</div>
       <div class="designs-grid" id="exploreGrid"></div>
-      <div class="load-more-wrap"><button class="btn-load" onclick="loadMore()">Daha Fazla Yükle</button></div>
+      <div class="load-more-wrap"><button class="btn-load" id="load-more-btn" onclick="loadMore()">Daha Fazla Yükle</button></div>
     </main>
   </div>
 </div>
@@ -342,8 +343,8 @@
   <div class="modal">
     <button class="m-close" onclick="closeModal('loginModal')">×</button>
     <div class="m-tabs">
-      <button class="m-tab active" onclick="authTab('login',this)">Giriş Yap</button>
-      <button class="m-tab" onclick="authTab('register',this)">Kayıt Ol</button>
+      <button class="m-tab active" id="login-modal-tab" onclick="authTab('login',this)">Giriş Yap</button>
+      <button class="m-tab" id="register-modal-tab" onclick="authTab('register',this)">Kayıt Ol</button>
     </div>
     
     <div id="authLogin">
@@ -374,7 +375,7 @@
 <div class="overlay overlay-wide" id="uploadModal" onclick="outsideClose(event,'uploadModal')">
   <div class="modal modal-wide">
     <button class="m-close" onclick="closeModal('uploadModal')">×</button>
-    <h2 class="m-title">Tasarım Yükle</h2>
+    <h2 class="m-title" id="upload-modal-title">Tasarım Yükle</h2>
     <div class="upload-wizard-steps">
       <div class="wiz-step active" id="ws1">1 · Görseller</div>
       <div class="wiz-line"></div>
@@ -511,9 +512,18 @@
         <div class="fl-col"><h4>Destek</h4><a href="#">Yardım Merkezi</a><a href="#">Gizlilik</a><a href="#">Kullanım Şartları</a><a href="#">İletişim</a></div>
       </div>
     </div>
-    <div class="footer-bottom"><span>© 2026 formaLOLA · Tüm hakları saklıdır</span><span>iyzico ile güvenli ödeme</span></div>
+    <div class="footer-bottom"><span id="footer-copy-txt">© 2026 formaLOLA · Tüm hakları saklıdır</span><span id="footer-payment-txt">iyzico ile güvenli ödeme</span></div>
   </div>
 </footer>
+
+<!-- DİL SEÇİCİ MODAL -->
+<div class="overlay" id="langModal" onclick="outsideClose(event,'langModal')">
+  <div class="modal modal-lang">
+    <button class="m-close" onclick="closeModal('langModal')">×</button>
+    <h2 class="m-title">🌐 Dil Seç / Language</h2>
+    <div class="lang-grid" id="langGrid"></div>
+  </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
