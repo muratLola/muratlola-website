@@ -602,52 +602,87 @@ function dashTab(tab, btn) {
   }
 }
 
-/* ══════════ AUTH ══════════ */
-function doLogin() {
+/* ══════════ AUTH (FIREBASE BAĞLANTILI) ══════════ */
+
+// Sistemi dinle: Kullanıcı giriş yapmış mı yapmamış mı?
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUser = { name: user.displayName || user.email.split('@')[0], email: user.email, uid: user.uid };
+    document.getElementById('navLoginBtn').classList.add('hidden');
+    document.getElementById('navAvatar').classList.remove('hidden');
+    document.getElementById('navAvatar').textContent = currentUser.name[0].toUpperCase();
+    
+    // Dashboard açıkken sayfayı yenilerse verileri doldur
+    const dashAv = document.getElementById('dashAv');
+    if(dashAv) dashAv.textContent = currentUser.name[0].toUpperCase();
+    const dashUname = document.getElementById('dashUname');
+    if(dashUname) dashUname.textContent = currentUser.name;
+  } else {
+    currentUser = null;
+    document.getElementById('navLoginBtn').classList.remove('hidden');
+    document.getElementById('navAvatar').classList.add('hidden');
+  }
+});
+
+window.doLogin = async function() {
   const email = document.getElementById('loginEmail').value;
   const pass = document.getElementById('loginPass').value;
   if (!email || !pass) { showToast('E-posta ve şifre gerekli', 'error'); return; }
-  // Firebase: firebase.auth().signInWithEmailAndPassword(email, pass)
-  currentUser = { name: email.split('@')[0], email, role: 'designer' };
-  afterLogin();
+  
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    closeModal('loginModal');
+    showToast(`Hoş geldin! ✓`, 'success');
+  } catch (error) {
+    showToast('Giriş başarısız. Şifre veya e-posta hatalı.', 'error');
+    console.error(error);
+  }
 }
 
-function doGoogleLogin() {
-  // Firebase: firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())
-  currentUser = { name: 'Demo Kullanıcı', email: 'demo@gmail.com', role: 'designer' };
-  afterLogin();
-}
-
-function doRegister() {
+window.doRegister = async function() {
   const name = document.getElementById('regName').value;
   const email = document.getElementById('regEmail').value;
   const pass = document.getElementById('regPass').value;
-  const role = document.getElementById('regRole').value;
   if (!name || !email || !pass) { showToast('Tüm alanları doldurun', 'error'); return; }
-  // Firebase: firebase.auth().createUserWithEmailAndPassword(email, pass)
-  currentUser = { name, email, role };
-  afterLogin();
+  
+  try {
+    // Firebase'de kullanıcıyı oluştur
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+    closeModal('loginModal');
+    showToast('Kayıt başarılı, hoş geldin!', 'success');
+    
+    // Not: Normalde burada kullanıcının adını ve "tasarımcı/takım" rolünü 
+    // Firestore veritabanına da kaydetmemiz gerekecek (Bir sonraki adımda yapacağız)
+  } catch (error) {
+    showToast('Kayıt olunamadı. Şifre çok kısa veya email kullanımda.', 'error');
+    console.error(error);
+  }
 }
 
-function afterLogin() {
-  closeModal('loginModal');
-  document.getElementById('navLoginBtn').classList.add('hidden');
-  document.getElementById('navAvatar').classList.remove('hidden');
-  document.getElementById('navAvatar').textContent = currentUser.name[0].toUpperCase();
-  document.getElementById('dashAv').textContent = currentUser.name[0].toUpperCase();
-  document.getElementById('dashUname').textContent = currentUser.name;
-  showToast(`Hoş geldin, ${currentUser.name}! ✓`, 'success');
+window.doGoogleLogin = async function() {
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+    closeModal('loginModal');
+    showToast('Google ile giriş yapıldı!', 'success');
+  } catch (error) {
+    showToast('Google ile giriş iptal edildi.', 'error');
+  }
 }
 
-function doLogout() {
-  currentUser = null;
-  document.getElementById('navLoginBtn').classList.remove('hidden');
-  document.getElementById('navAvatar').classList.add('hidden');
-  showPage('home');
-  showToast('Çıkış yapıldı', '');
+window.doLogout = async function() {
+  try {
+    await signOut(auth);
+    showPage('home');
+    showToast('Çıkış yapıldı', '');
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-function authTab(tab, btn) {
+// Modül (type="module") kullandığımız için HTML içindeki onclick fonksiyonları
+// doğrudan app.js'yi göremez. Bu yüzden gerekli fonksiyonları window objesine atıyoruz:
+window.authTab = function(tab, btn) {
   document.querySelectorAll('.m-tab').forEach(t => t.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('authLogin').classList.toggle('hidden', tab !== 'login');
@@ -875,4 +910,5 @@ function toggleMobileNav() {
    // Use backend Cloud Function to create iyzico payment token
    // Never expose iyzico secret key on frontend
 ══════════ */
+
 
