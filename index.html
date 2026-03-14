@@ -112,7 +112,7 @@
     <a href="#" onclick="showPage('designers');toggleMobileNav();return false;">Tasarımcılar</a>
     <a href="#" onclick="showPage('how');toggleMobileNav();return false;">Nasıl Çalışır</a>
     <a href="#" onclick="showModal('loginModal');toggleMobileNav();return false;">Giriş Yap</a>
-    <a href="#" class="upload-link" onclick="showModal('uploadModal');toggleMobileNav();return false;">+ Tasarım Yükle</a>
+    <a href="#" class="upload-link" onclick="authThenUpload();toggleMobileNav();return false;">+ Tasarım Yükle</a>
   </div>
 </nav>
 
@@ -137,7 +137,7 @@
           Tasarımları Keşfet
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="btn-cta-ghost" id="hero-btn2" onclick="showModal('uploadModal')">Tasarım Yükle</button>
+        <button class="btn-cta-ghost" id="hero-btn2" onclick="authThenUpload()">Tasarım Yükle</button>
       </div>
     </div>
     <div class="hero-cards">
@@ -171,6 +171,17 @@
     </div>
   </section>
 
+  <section class="trust-strip-wrap">
+    <div class="container">
+      <div class="trust-strip">
+        <div class="trust-pill"><span>✓</span><div><strong>Seçili Tasarımcılar</strong><small>Kalite odaklı vitrin</small></div></div>
+        <div class="trust-pill"><span>★</span><div><strong>Exclusive Lisans</strong><small>Tek kulübe özel satın alma</small></div></div>
+        <div class="trust-pill"><span>🔒</span><div><strong>Güvenli Süreç</strong><small>Admin onayı ve kontrollü yayın</small></div></div>
+        <div class="trust-pill"><span>⚡</span><div><strong>24 Saat İnceleme</strong><small>Hızlı moderasyon akışı</small></div></div>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container">
       <div class="sec-header">
@@ -191,7 +202,23 @@
   <section class="section">
     <div class="container">
       <div class="sec-header">
-        <h2 class="sec-title" id="sec-trend-title">Trend Tasarımlar</h2>
+        <div>
+          <h2 class="sec-title">Öne Çıkan Tasarımlar</h2>
+          <p class="sec-sub">Ana vitrinde dönen, satış potansiyeli yüksek premium seçimler.</p>
+        </div>
+        <a href="#" class="sec-more" onclick="showPage('explore');return false;">Hepsini Gör →</a>
+      </div>
+      <div class="designs-grid" id="featuredGrid"></div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="sec-header">
+        <div>
+          <h2 class="sec-title" id="sec-trend-title">Trending Now</h2>
+          <p class="sec-sub">Görüntülenme, beğeni ve tazeliğe göre otomatik dönen tasarımlar.</p>
+        </div>
         <div class="trend-tabs">
           <button class="ttab active" onclick="setTrendTab(this)">Bugün</button>
           <button class="ttab" onclick="setTrendTab(this)">Bu Hafta</button>
@@ -199,6 +226,31 @@
         </div>
       </div>
       <div class="designs-grid" id="homeGrid"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="sec-header">
+        <div>
+          <h2 class="sec-title">Yeni Yüklenenler</h2>
+          <p class="sec-sub">Yeni onaylanan ve vitrinde ilk kez görünen tasarımlar.</p>
+        </div>
+        <a href="#" class="sec-more" onclick="showPage('explore');return false;">Tümünü Gör →</a>
+      </div>
+      <div class="designs-grid" id="newGrid"></div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="sec-header">
+        <div>
+          <h2 class="sec-title">Editor's Picks</h2>
+          <p class="sec-sub">Görsel dili en güçlü, marka hissi yüksek seçkiler.</p>
+        </div>
+      </div>
+      <div class="designs-grid" id="editorsGrid"></div>
       <div class="center-btn"><button class="btn-outline-full" onclick="showPage('explore')">Tüm Tasarımları Gör</button></div>
     </div>
   </section>
@@ -240,7 +292,7 @@
     <div class="cta-inner">
       <h2 id="cta-title-txt">Tasarımlarını para kazandıran<br>bir platforma taşı.</h2>
       <p id="cta-sub-txt">Ücretsiz kaydol, ilk tasarımını bugün yayınla.</p>
-      <button class="btn-cta" id="cta-btn-txt" onclick="showModal('loginModal')">Hemen Başla</button>
+      <button class="btn-cta" id="cta-btn-txt" onclick="authThenUpload()">Hemen Başla</button>
     </div>
   </section>
 
@@ -450,7 +502,7 @@
   <div class="modal modal-wide">
     <button class="m-close" onclick="closeModal('uploadModal')">×</button>
     <h2 class="m-title" id="upload-modal-title">Tasarım Yükle</h2>
-    <div class="upload-wizard-steps">
+    <div class="upload-shell"><div class="upload-main"><div class="upload-progress"><div><strong id="uploadStageLabel">Adım 1 / 5</strong><small id="uploadProgressText">Temel görsellerini yükle</small></div><div class="upload-progress-bar"><span id="uploadProgressFill" style="width:20%"></span></div></div><div class="upload-wizard-steps">
       <div class="wiz-step active" id="ws1">1 · Görseller</div>
       <div class="wiz-line"></div>
       <div class="wiz-step" id="ws2">2 · Bilgiler</div>
@@ -552,6 +604,37 @@
       </div>
       <div class="step-nav"><button class="btn-back" onclick="wizGo(4)">← Geri</button><button class="btn-form btn-publish" onclick="submitDesign()">Tasarımı Yayınla 🚀</button></div>
     </div>
+
+    <aside class="upload-preview">
+      <div class="uprev-card">
+        <div class="uprev-head">
+          <span class="uprev-kicker">Canlı Önizleme</span>
+          <strong id="upPreviewStatus">Taslak</strong>
+        </div>
+        <div class="uprev-image" id="upPreviewImage">
+          <div class="uprev-image-inner">formaLOLA</div>
+        </div>
+        <div class="uprev-body">
+          <div class="uprev-title" id="upPreviewTitle">Tasarım adı burada görünecek</div>
+          <div class="uprev-sub" id="upPreviewMeta">Futbol · Ev Kit</div>
+          <div class="uprev-price-row">
+            <span id="upPreviewPrice">₺499</span>
+            <span class="uprev-license" id="upPreviewLicense">Standart Lisans</span>
+          </div>
+          <div class="uprev-colors" id="upPreviewColors"></div>
+        </div>
+      </div>
+
+      <div class="uprev-checklist">
+        <div class="uprev-check-title">Yayın checklist</div>
+        <div id="uploadChecklist"></div>
+      </div>
+
+      <div class="uprev-help">
+        <strong>Satış ipucu</strong>
+        <p>Kapak görseli, kısa bir açıklama ve güçlü fiyatlandırma birlikte kullanıldığında dönüşüm belirgin şekilde artar.</p>
+      </div>
+    </aside>
   </div>
 </div>
 
@@ -651,7 +734,7 @@
           <h4>Şirket</h4>
           <a href="#" onclick="showPage('about');return false;">Hakkımızda</a>
           <a href="#" onclick="showPage('contact');return false;">İletişim</a>
-          <a href="mailto:info@muratlola.com">info@muratlola.com</a>
+          <a href="/cdn-cgi/l/email-protection#cda4a3aba28da0b8bfacb9a1a2a1ace3aea2a0"><span class="__cf_email__" data-cfemail="1f767179705f726a6d7e6b7370737e317c7072">[email&#160;protected]</span></a>
         </div>
       </div>
     </div>
@@ -926,7 +1009,7 @@
 <!-- ════════════════════════════════
      Firebase & App Script
 ════════════════════════════════ -->
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 <script src="app.js"></script>
@@ -977,7 +1060,7 @@
 
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:16px;letter-spacing:.5px">İletişim</h2>
     <p style="font-size:15px;color:var(--text2);line-height:1.7">
-      E-posta: <a href="mailto:info@muratlola.com" style="color:var(--accent)">info@muratlola.com</a><br>
+      E-posta: <a href="/cdn-cgi/l/email-protection#71181f171e311c040310051d1e1d105f121e1c" style="color:var(--accent)"><span class="__cf_email__" data-cfemail="c6afa8a0a986abb3b4a7b2aaa9aaa7e8a5a9ab">[email&#160;protected]</span></a><br>
       Instagram: <a href="https://instagram.com/formalola" target="_blank" style="color:var(--accent)">@formalola</a><br>
       Web: <a href="https://muratlola.com" style="color:var(--accent)">muratlola.com</a>
     </p>
@@ -1008,7 +1091,7 @@
     </div>
     <div style="margin-top:28px;padding:20px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg)">
       <div style="font-size:14px;color:var(--text2);line-height:1.8">
-        📧 <a href="mailto:info@muratlola.com" style="color:var(--accent)">info@muratlola.com</a><br>
+        📧 <a href="/cdn-cgi/l/email-protection#bcd5d2dad3fcd1c9ceddc8d0d3d0dd92dfd3d1" style="color:var(--accent)"><span class="__cf_email__" data-cfemail="056c6b636a456870776471696a69642b666a68">[email&#160;protected]</span></a><br>
         📍 Türkiye<br>
         ⏱ Yanıt süresi: 1-2 iş günü
       </div>
@@ -1037,7 +1120,7 @@
       <h2>4. Çerezleri Kontrol Etme</h2>
       <p>Tarayıcı ayarlarınızdan çerezleri devre dışı bırakabilirsiniz. Ancak bu durumda oturum açma ve dil tercihi gibi özellikler çalışmayabilir.</p>
       <h2>5. İletişim</h2>
-      <p>Çerez politikamıza ilişkin sorularınız için: <strong>info@muratlola.com</strong></p>
+      <p>Çerez politikamıza ilişkin sorularınız için: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5831363e3718352d2a392c34373439763b3735">[email&#160;protected]</a></strong></p>
     </div>
   </div>
 </div>
@@ -1057,7 +1140,7 @@
       <p style="font-size:17px;color:var(--text2);margin-bottom:28px;line-height:1.6">Discover and buy premium football kit designs from the world's best designers. Custom jersey designs for your team, club or academy.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="btn-cta" onclick="showPage('explore')">Explore Designs</button>
-        <button class="btn-ghost2" onclick="showModal('uploadModal')">Upload Your Design</button>
+        <button class="btn-ghost2" onclick="authThenUpload()">Upload Your Design</button>
       </div>
     </div>
     <div class="designs-grid" id="seoKitGrid"></div>
@@ -1080,20 +1163,4 @@
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:48px">
       <div class="cat" onclick="filterByCategory('Futbol')"><div class="cat-ico">⚽</div><span>Football Kits</span></div>
-      <div class="cat" onclick="filterByCategory('Basketbol')"><div class="cat-ico">🏀</div><span>Basketball</span></div>
-      <div class="cat" onclick="filterByCategory('Voleybol')"><div class="cat-ico">🏐</div><span>Volleyball</span></div>
-      <div class="cat" onclick="filterByCategory('E-Spor')"><div class="cat-ico">🎮</div><span>Esports Jerseys</span></div>
-      <div class="cat" onclick="filterByCategory('Rugby')"><div class="cat-ico">🏉</div><span>Rugby Kits</span></div>
-    </div>
-    <div class="designs-grid" id="seoJerseyGrid"></div>
-  </div>
-</div>
-
-<!-- /designers -->  
-<!-- Already exists as page-designers -->
-
-<!-- /competitions -->
-<!-- Already exists as page-competitions -->
-
-</body>
-</html>
+      <div class="cat" onclick="filterByCategory('Basketbol')"><div class="cat-ico">🏀</div><span
