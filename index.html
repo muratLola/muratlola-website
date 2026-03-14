@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>formaLOLA — Forma Tasarım Marketplace</title>
-  <meta name="description" content="Forma tasarımını sat, hayalindeki formayı bul. Tasarımcılar yükler, takımlar keşfeder." />
+  <meta name="description" content="Forma tasarımını sat, hayalindeki formayı bul. Tasarımcılar yükler, kulüpler keşfeder." />
   <meta name="theme-color" content="#ef4444" />
   <meta name="robots" content="index,follow" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="formaLOLA — Forma Tasarım Marketplace" />
-  <meta property="og:description" content="Forma tasarımını sat, hayalindeki formayı bul. Tasarımcılar yükler, takımlar keşfeder." />
+  <meta property="og:description" content="Forma tasarımını sat, hayalindeki formayı bul. Tasarımcılar yükler, kulüpler keşfeder." />
   <meta property="og:url" content="https://muratlola.com/" />
   <meta property="og:image" content="https://muratlola.com/og-image.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=1" />
+  <link rel="stylesheet" href="style.css?v=3" />
 </head>
 <body>
   <nav class="nav" id="mainNav">
@@ -54,7 +54,7 @@
       <section class="trust-strip-wrap">
         <div class="container trust-strip">
           <div class="trust-pill"><span>✓</span><div><strong>Kurallı Moderasyon</strong><small>Uygun olmayan tasarımlar vitrine düşmez</small></div></div>
-          <div class="trust-pill"><span>★</span><div><strong>Exclusive Lisans</strong><small>İleride tek kulübe özel satış desteği</small></div></div>
+          <div class="trust-pill"><span>★</span><div><strong>Premium Dashboard</strong><small>Profil, tasarım ve yönetim tek panelde</small></div></div>
           <div class="trust-pill"><span>⚡</span><div><strong>Gerçek Sayaçlar</strong><small>Sabit rakam yok, veriden okunur</small></div></div>
           <div class="trust-pill"><span>🔒</span><div><strong>Firebase Auth</strong><small>Email ve Google ile giriş</small></div></div>
         </div>
@@ -135,6 +135,10 @@
       </div>
     </section>
 
+    <section id="page-profile" class="page">
+      <div class="container narrow" id="profilePageContent"></div>
+    </section>
+
     <section id="page-about" class="page">
       <div class="container legal-doc">
         <h1>Hakkımızda</h1>
@@ -169,30 +173,100 @@
 
     <section id="page-dashboard" class="page">
       <div class="container narrow">
-        <div class="dashboard-head">
-          <div>
-            <h2>Dashboard</h2>
-            <p id="dashboardWelcome">Hoş geldin</p>
+        <div class="dashboard-shell">
+          <div class="dashboard-hero">
+            <div class="dashboard-profile-card">
+              <div class="dashboard-profile-top">
+                <div class="profile-avatar profile-avatar-large" id="dashAvatarWrap">M</div>
+                <div>
+                  <h2 id="dashboardName">Dashboard</h2>
+                  <p id="dashboardWelcome">Hoş geldin</p>
+                  <div class="dashboard-role-line"><span class="chip" id="dashRoleChip">Rol seçilmedi</span><span class="muted small" id="dashJoinedInfo">Profil yükleniyor</span></div>
+                </div>
+              </div>
+              <div class="dashboard-profile-actions">
+                <button class="btn btn-primary" onclick="authThenUpload()">+ Tasarım Yükle</button>
+                <button class="btn btn-ghost" onclick="showModal('profileEditModal')">Profili Düzenle</button>
+                <button class="btn btn-ghost" onclick="logout()">Çıkış Yap</button>
+              </div>
+            </div>
+            <div class="metrics-grid small">
+              <div class="metric-card"><strong id="dashTotalDesigns">0</strong><span>Tasarım</span></div>
+              <div class="metric-card"><strong id="dashPendingDesigns">0</strong><span>Bekleyen</span></div>
+              <div class="metric-card"><strong id="dashApprovedDesigns">0</strong><span>Onaylı</span></div>
+              <div class="metric-card"><strong id="dashLikes">0</strong><span>Toplam Beğeni</span></div>
+            </div>
           </div>
-          <div class="dashboard-actions">
-            <button class="btn btn-primary" onclick="authThenUpload()">+ Tasarım Yükle</button>
-            <button class="btn btn-ghost" onclick="logout()">Çıkış Yap</button>
+
+          <div class="dashboard-tabs" id="dashboardTabs">
+            <button class="dtab active" onclick="switchDashboardTab('overview', this)">Genel Bakış</button>
+            <button class="dtab" onclick="switchDashboardTab('designs', this)">Tasarımlarım</button>
+            <button class="dtab" onclick="switchDashboardTab('purchases', this)">Satın Aldıklarım</button>
+            <button class="dtab" onclick="switchDashboardTab('favorites', this)">Favoriler</button>
+            <button class="dtab admin-only hidden" id="adminTabBtn" onclick="switchDashboardTab('admin', this)">Admin Paneli</button>
           </div>
-        </div>
-        <div class="metrics-grid small">
-          <div class="metric-card"><strong id="dashTotalDesigns">0</strong><span>Tasarım</span></div>
-          <div class="metric-card"><strong id="dashPendingDesigns">0</strong><span>Bekleyen</span></div>
-          <div class="metric-card"><strong id="dashApprovedDesigns">0</strong><span>Onaylı</span></div>
-          <div class="metric-card"><strong id="dashRole">—</strong><span>Rol</span></div>
-        </div>
-        <div class="dashboard-panels">
-          <div class="panel">
-            <div class="panel-head"><h3>Tasarımlarım</h3></div>
-            <div id="myDesigns"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><h3>Satın Aldıklarım</h3></div>
-            <div id="myPurchases"><p class="muted">Ödeme demo modunda. Satın alma kayıtları ileride burada listelenecek.</p></div>
+
+          <div class="dashboard-content">
+            <div id="dashboardTab-overview" class="dashboard-tab active">
+              <div class="dashboard-panels two-col">
+                <div class="panel">
+                  <div class="panel-head"><h3>Profil Özeti</h3></div>
+                  <div class="profile-summary-grid">
+                    <div class="summary-line"><span>Ad</span><strong id="profileSummaryName">—</strong></div>
+                    <div class="summary-line"><span>E-posta</span><strong id="profileSummaryEmail">—</strong></div>
+                    <div class="summary-line"><span>Kullanıcı Adı</span><strong id="profileSummaryUsername">—</strong></div>
+                    <div class="summary-line"><span>Ülke</span><strong id="profileSummaryCountry">—</strong></div>
+                  </div>
+                </div>
+                <div class="panel">
+                  <div class="panel-head"><h3>Hızlı İşlemler</h3></div>
+                  <div class="quick-actions-grid">
+                    <button class="quick-action" onclick="authThenUpload()">Yeni Tasarım</button>
+                    <button class="quick-action" onclick="showModal('profileEditModal')">Profil Fotoğrafı</button>
+                    <button class="quick-action" onclick="showPage('profile')">Kişisel Sayfam</button>
+                    <button class="quick-action" onclick="showPage('explore')">Keşfet</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="dashboardTab-designs" class="dashboard-tab">
+              <div class="panel">
+                <div class="panel-head"><h3>Tasarımlarım</h3></div>
+                <div id="myDesigns"></div>
+              </div>
+            </div>
+
+            <div id="dashboardTab-purchases" class="dashboard-tab">
+              <div class="panel">
+                <div class="panel-head"><h3>Satın Aldıklarım</h3></div>
+                <div id="myPurchases"><p class="muted">Ödeme demo modunda. Satın alma kayıtları ileride burada listelenecek.</p></div>
+              </div>
+            </div>
+
+            <div id="dashboardTab-favorites" class="dashboard-tab">
+              <div class="panel">
+                <div class="panel-head"><h3>Favoriler</h3></div>
+                <div id="myFavorites"></div>
+              </div>
+            </div>
+
+            <div id="dashboardTab-admin" class="dashboard-tab">
+              <div class="dashboard-panels admin-grid">
+                <div class="panel">
+                  <div class="panel-head"><h3>Bekleyen Tasarımlar</h3></div>
+                  <div id="adminPendingDesigns"></div>
+                </div>
+                <div class="panel">
+                  <div class="panel-head"><h3>İletişim Mesajları</h3></div>
+                  <div id="adminContactMessages"></div>
+                </div>
+                <div class="panel full-span">
+                  <div class="panel-head"><h3>Kullanıcılar</h3></div>
+                  <div id="adminUsers"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -313,23 +387,68 @@
     </div>
   </div>
 
-  <div class="modal hidden" id="uploadModal">
-    <div class="modal-card upload-card">
-      <button class="modal-close" onclick="closeModal('uploadModal')">×</button>
-      <h3>Tasarım Yükle</h3>
-      <div class="upload-grid">
+  <div class="modal hidden" id="profileEditModal">
+    <div class="modal-card profile-edit-card">
+      <button class="modal-close" onclick="closeModal('profileEditModal')">×</button>
+      <h3>Profili Düzenle</h3>
+      <div class="profile-edit-grid">
         <div>
+          <label>Ad Soyad</label>
+          <input id="profileNameInput" type="text" placeholder="Ad Soyad">
+          <label>Kullanıcı Adı</label>
+          <input id="profileUsernameInput" type="text" placeholder="kullanici-adi">
+          <label>Ülke</label>
+          <input id="profileCountryInput" type="text" placeholder="TR">
+          <label>Biyografi</label>
+          <textarea id="profileBioInput" rows="5" placeholder="Kendini anlat"></textarea>
+        </div>
+        <div>
+          <label>Profil Fotoğrafı</label>
+          <input id="profileImageFile" type="file" accept="image/*">
+          <button class="btn btn-ghost full" onclick="uploadAvatarToImgBB()">Fotoğrafı Yükle</button>
+          <input id="profilePhotoUrl" type="text" placeholder="Profil fotoğraf URL'i" readonly>
+          <div class="profile-photo-preview" id="profilePhotoPreview">Önizleme yok</div>
+          <button class="btn btn-primary btn-large full" onclick="saveProfile()">Profili Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="uploadModal">
+    <div class="modal-card upload-card classic-upload-card">
+      <button class="modal-close" onclick="closeModal('uploadModal')">×</button>
+      <div class="upload-head">
+        <div>
+          <h3>Tasarım Yükle</h3>
+          <p>Eski premium akışa yakın, daha güçlü bir tasarım yükleme paneli.</p>
+        </div>
+        <div class="upload-stepbar">
+          <span class="upload-step active">01 Bilgiler</span>
+          <span class="upload-step active">02 Görsel</span>
+          <span class="upload-step active">03 Lisans</span>
+        </div>
+      </div>
+      <div class="upload-classic-grid">
+        <div class="upload-main-col">
           <label>Tasarım Başlığı</label>
           <input id="upTitle" type="text" placeholder="Örn: Midnight Pro Kit">
-          <label>Spor</label>
-          <select id="upSport">
-            <option value="football">Futbol</option>
-            <option value="basketball">Basketbol</option>
-            <option value="volleyball">Voleybol</option>
-            <option value="esports">E-Spor</option>
-          </select>
+          <div class="inline-2">
+            <div>
+              <label>Spor</label>
+              <select id="upSport">
+                <option value="football">Futbol</option>
+                <option value="basketball">Basketbol</option>
+                <option value="volleyball">Voleybol</option>
+                <option value="esports">E-Spor</option>
+              </select>
+            </div>
+            <div>
+              <label>Etiketler</label>
+              <input id="upTags" type="text" placeholder="retro, kırmızı, minimal">
+            </div>
+          </div>
           <label>Açıklama</label>
-          <textarea id="upDesc" rows="5" placeholder="Tasarımı açıklayın"></textarea>
+          <textarea id="upDesc" rows="7" placeholder="Tasarımı, ilhamını ve kullanım amacını yaz."></textarea>
           <div class="price-row">
             <div>
               <label>Standart Lisans Fiyatı (₺)</label>
@@ -340,16 +459,23 @@
               <input id="upExclusivePrice" type="number" min="0" placeholder="4999">
             </div>
           </div>
-        </div>
-        <div>
-          <label>Önizleme Görseli</label>
-          <input id="upImageFile" type="file" accept="image/*">
-          <button class="btn btn-ghost full" onclick="uploadPreviewToImgBB()">Görseli Yükle</button>
-          <input id="upPreviewUrl" type="text" placeholder="Yüklenen görsel URL'i" readonly>
-          <div class="upload-preview" id="uploadPreview">Önizleme yok</div>
           <label>Kaynak Dosya Linki (AI/PDF/ZIP URL)</label>
           <input id="upSourceUrl" type="url" placeholder="https://...">
           <p class="muted small">Storage kullanılmadığı için kaynak dosya linkini harici olarak yönetmen gerekir.</p>
+        </div>
+        <div class="upload-side-col">
+          <label>Önizleme Görseli</label>
+          <div class="upload-file-row">
+            <input id="upImageFile" type="file" accept="image/*">
+            <button class="btn btn-ghost" onclick="uploadPreviewToImgBB()">Görseli Yükle</button>
+          </div>
+          <input id="upPreviewUrl" type="text" placeholder="Yüklenen görsel URL'i" readonly>
+          <div class="upload-preview premium-preview" id="uploadPreview">Önizleme yok</div>
+          <div class="upload-preview-meta">
+            <div><span>Başlık</span><strong id="uploadLiveTitle">—</strong></div>
+            <div><span>Spor</span><strong id="uploadLiveSport">—</strong></div>
+            <div><span>Fiyat</span><strong id="uploadLivePrice">—</strong></div>
+          </div>
           <button class="btn btn-primary btn-large full" onclick="submitDesign()">Tasarıma Gönder</button>
         </div>
       </div>
@@ -368,6 +494,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-  <script src="app.js?v=1"></script>
+  <script src="app.js?v=3"></script>
 </body>
 </html>

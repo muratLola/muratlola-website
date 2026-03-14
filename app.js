@@ -20,6 +20,8 @@ let allDesigns = [];
 let pendingIntent = null;
 let currentLang = localStorage.getItem('fl_lang') || 'tr';
 let t = null;
+let currentProfileId = null;
+let favoriteIds = new Set();
 
 const LANGS = {
   tr: {
@@ -52,11 +54,23 @@ function showToast(msg, type='') {
   el.textContent = msg;
   el.className = `toast show ${type}`;
   clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => { el.className = 'toast'; }, 2600);
+  showToast._t = setTimeout(() => { el.className = 'toast'; }, 2800);
 }
 function showModal(id){ const el=$(id); if(el) el.classList.remove('hidden'); }
 function closeModal(id){ const el=$(id); if(el) el.classList.add('hidden'); }
-function closeAllModals(){ document.querySelectorAll('.modal').forEach(m=>m.classList.add('hidden')); }
+function closeAllModals(){ document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden')); }
+
+function formatDate(ts){
+  const d = ts?.toDate?.() || (ts?.seconds ? new Date(ts.seconds * 1000) : null);
+  return d ? d.toLocaleDateString('tr-TR') : '—';
+}
+
+function formatRole(role){
+  if (role === 'designer') return 'Tasarımcı';
+  if (role === 'club') return 'Takım / Kulüp';
+  if (role === 'admin') return 'Admin';
+  return 'Rol seçilmedi';
+}
 
 function showPage(page) {
   currentPage = page;
@@ -65,6 +79,7 @@ function showPage(page) {
   if (target) target.classList.add('active');
   if (page === 'dashboard') renderDashboard();
   if (page === 'explore') applyFilters();
+  if (page === 'profile') renderPublicProfile(currentProfileId || currentUser?.uid || null);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -85,9 +100,7 @@ function buildLangModal(){
     </button>`).join('');
 }
 function openLangModal(){ buildLangModal(); showModal('langModal'); }
-function setLang(code){
-  currentLang = code; localStorage.setItem('fl_lang', code); applyLanguage(); buildLangModal(); closeModal('langModal');
-}
+function setLang(code){ currentLang = code; localStorage.setItem('fl_lang', code); applyLanguage(); buildLangModal(); closeModal('langModal'); }
 function applyLanguage(){
   t = LANGS[currentLang] || LANGS.tr;
   document.documentElement.lang = currentLang;
@@ -103,53 +116,32 @@ async function ensureUserDoc(user, forcedRole = null) {
   const ref = db.collection('users').doc(user.uid);
   const snap = await ref.get();
   const base = {
-    name: user.displayName || user.email.split('@')[0],
+    name: user.displayName || user.email?.split('@')[0] || 'User',
     email: user.email || '',
     photoURL: user.photoURL || '',
     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
   };
   if (!snap.exists) {
-    const role = forcedRole || null;
     const data = {
       ...base,
-      role,
+      role: forcedRole || (user.email === ADMIN_EMAIL ? 'admin' : null),
       status: 'active',
       country: 'TR',
+      bio: '',
+      username: (user.email || 'user').split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase(),
       totalSales: 0,
       totalEarnings: 0,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     };
-    if (user.email === ADMIN_EMAIL) data.role = 'admin';
     await ref.set(data);
     return data;
   }
+  const current = snap.data() || {};
   await ref.set(base, { merge: true });
-  return { ...snap.data(), ...base };
+  return { ...current, ...base };
 }
 
-function needsRoleSelection(profile) {
-  return !profile?.role || profile.role === 'pending_role';
-}
-
-async function chooseRole(role) {
-  if (!auth.currentUser) return;
-  try {
-    await db.collection('users').doc(auth.currentUser.uid).set({
-      role,
-      status: 'active',
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-    closeModal('roleModal');
-    showToast('Hesap tipi kaydedildi', 'success');
-    await reloadCurrentUser();
-    if (pendingIntent === 'upload') {
-      pendingIntent = null;
-      authThenUpload();
-    }
-  } catch (e) {
-    showToast('Rol kaydedilemedi: ' + e.message, 'error');
-  }
-}
+function needsRoleSelection(profile) { return !profile?.role || profile.role === 'pending_role'; }
 
 async function reloadCurrentUser() {
   const user = auth.currentUser;
@@ -160,9 +152,15 @@ async function reloadCurrentUser() {
     email: user.email || '',
     name: profile?.name || user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
     role: profile?.role || null,
+    username: profile?.username || '',
+    bio: profile?.bio || '',
+    country: profile?.country || '',
+    photoURL: profile?.photoURL || '',
+    createdAt: profile?.createdAt || null,
     isAdmin: (profile?.role === 'admin') || user.email === ADMIN_EMAIL
   };
   updateAuthUI();
+  await loadFavorites();
 }
 
 function updateAuthUI() {
@@ -171,13 +169,15 @@ function updateAuthUI() {
   const avatar = $('navAvatar');
   if (avatar) {
     avatar.classList.toggle('hidden', !loggedIn);
-    if (loggedIn) avatar.textContent = (currentUser.name || 'U')[0].toUpperCase();
+    avatar.innerHTML = currentUser?.photoURL ? `<img src="${sanitizeHTML(currentUser.photoURL)}" alt="avatar">` : sanitizeHTML((currentUser?.name || 'U')[0].toUpperCase());
   }
+  $('adminTabBtn')?.classList.toggle('hidden', !currentUser?.isAdmin);
 }
 
 auth.onAuthStateChanged(async (user) => {
   if (!user) {
     currentUser = null;
+    favoriteIds = new Set();
     updateAuthUI();
     return;
   }
@@ -188,17 +188,35 @@ auth.onAuthStateChanged(async (user) => {
       email: user.email || '',
       name: profile?.name || user.displayName || user.email.split('@')[0],
       role: profile?.role || null,
+      username: profile?.username || '',
+      bio: profile?.bio || '',
+      country: profile?.country || '',
+      photoURL: profile?.photoURL || '',
+      createdAt: profile?.createdAt || null,
       isAdmin: (profile?.role === 'admin') || user.email === ADMIN_EMAIL
     };
     updateAuthUI();
+    await loadFavorites();
     if (needsRoleSelection(profile)) showModal('roleModal');
-    if ($('dashboardWelcome')) $('dashboardWelcome').textContent = `Hoş geldin, ${currentUser.name}`;
     renderDashboard();
   } catch (e) {
     console.error(e);
     showToast('Kullanıcı profili yüklenemedi', 'error');
   }
 });
+
+async function chooseRole(role) {
+  if (!auth.currentUser) return;
+  try {
+    await db.collection('users').doc(auth.currentUser.uid).set({ role, status: 'active', updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    closeModal('roleModal');
+    showToast('Hesap tipi kaydedildi', 'success');
+    await reloadCurrentUser();
+    if (pendingIntent === 'upload') { pendingIntent = null; authThenUpload(); }
+  } catch (e) {
+    showToast('Rol kaydedilemedi: ' + e.message, 'error');
+  }
+}
 
 async function doLogin() {
   const email = $('loginEmail').value.trim();
@@ -208,9 +226,7 @@ async function doLogin() {
     await auth.signInWithEmailAndPassword(email, pass);
     closeModal('authModal');
     showToast('Hoş geldin', 'success');
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
+  } catch (e) { showToast(e.message, 'error'); }
 }
 
 async function doRegister() {
@@ -225,9 +241,7 @@ async function doRegister() {
     await ensureUserDoc(cred.user, role);
     closeModal('authModal');
     showToast('Kayıt başarılı', 'success');
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
+  } catch (e) { showToast(e.message, 'error'); }
 }
 
 async function doGoogleLogin() {
@@ -236,20 +250,12 @@ async function doGoogleLogin() {
     const result = await auth.signInWithPopup(provider);
     const profile = await ensureUserDoc(result.user);
     closeModal('authModal');
-    if (needsRoleSelection(profile)) {
-      showModal('roleModal');
-    } else {
-      showToast('Google ile giriş başarılı', 'success');
-    }
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
+    if (needsRoleSelection(profile)) showModal('roleModal');
+    else showToast('Google ile giriş başarılı', 'success');
+  } catch (e) { showToast(e.message, 'error'); }
 }
 
-async function logout() {
-  await auth.signOut();
-  showPage('home');
-}
+async function logout() { await auth.signOut(); showPage('home'); }
 
 function authThenUpload() {
   if (!currentUser) {
@@ -268,25 +274,40 @@ function authThenUpload() {
     showToast('Tasarım yüklemek için hesap tipin Tasarımcı olmalı', 'error');
     return;
   }
+  syncUploadLivePreview();
   showModal('uploadModal');
+}
+
+async function uploadImageToImgBB(file) {
+  const fd = new FormData();
+  fd.append('image', file);
+  const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method:'POST', body: fd });
+  const json = await res.json();
+  if (!json?.success) throw new Error(json?.error?.message || 'Yükleme başarısız');
+  return json.data.url;
 }
 
 async function uploadPreviewToImgBB() {
   const file = $('upImageFile').files?.[0];
   if (!file) return showToast('Önce bir görsel seçin', 'error');
-  const fd = new FormData();
-  fd.append('image', file);
   try {
     showToast('Görsel yükleniyor...');
-    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method:'POST', body: fd });
-    const json = await res.json();
-    if (!json?.success) throw new Error(json?.error?.message || 'Yükleme başarısız');
-    $('upPreviewUrl').value = json.data.url;
-    $('uploadPreview').innerHTML = `<img src="${sanitizeHTML(json.data.url)}" alt="preview">`;
+    const url = await uploadImageToImgBB(file);
+    $('upPreviewUrl').value = url;
+    $('uploadPreview').innerHTML = `<img src="${sanitizeHTML(url)}" alt="preview">`;
+    syncUploadLivePreview();
     showToast('Görsel yüklendi', 'success');
-  } catch (e) {
-    showToast('ImgBB hatası: ' + e.message, 'error');
-  }
+  } catch (e) { showToast('ImgBB hatası: ' + e.message, 'error'); }
+}
+
+function syncUploadLivePreview() {
+  const title = $('upTitle')?.value?.trim() || '—';
+  const sportMap = { football:'Futbol', basketball:'Basketbol', volleyball:'Voleybol', esports:'E-Spor' };
+  const sport = sportMap[$('upSport')?.value] || '—';
+  const price = $('upPrice')?.value ? `₺${Number($('upPrice').value).toLocaleString('tr-TR')}` : '—';
+  if ($('uploadLiveTitle')) $('uploadLiveTitle').textContent = title;
+  if ($('uploadLiveSport')) $('uploadLiveSport').textContent = sport;
+  if ($('uploadLivePrice')) $('uploadLivePrice').textContent = price;
 }
 
 async function submitDesign() {
@@ -297,38 +318,79 @@ async function submitDesign() {
   const description = $('upDesc').value.trim();
   const coverImage = $('upPreviewUrl').value.trim();
   const sourceUrl = $('upSourceUrl').value.trim();
+  const tags = $('upTags').value.trim().split(',').map(x => x.trim()).filter(Boolean).slice(0,8);
   const priceStandard = Number($('upPrice').value || 0);
   const priceExclusive = Number($('upExclusivePrice').value || 0);
   if (!title || !description || !coverImage || !priceStandard) return showToast('Başlık, açıklama, görsel ve fiyat gerekli', 'error');
   try {
     await db.collection('designs').add({
-      title,
-      sport,
-      description,
-      coverImage,
-      previewUrl: coverImage,
-      sourceUrl,
-      priceStandard,
-      priceExclusive,
+      title, sport, description, coverImage, previewUrl: coverImage, sourceUrl, tags,
+      priceStandard, priceExclusive,
       designerId: currentUser.uid,
       designerName: currentUser.name,
+      designerUsername: currentUser.username || '',
       designerEmail: currentUser.email,
+      designerPhotoURL: currentUser.photoURL || '',
       status: 'pending',
       visibility: 'private',
       featured: false,
-      views: 0,
-      likes: 0,
-      sales: 0,
+      editorPick: false,
+      views: 0, likes: 0, sales: 0,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
+    ['upTitle','upDesc','upPreviewUrl','upSourceUrl','upPrice','upExclusivePrice','upTags'].forEach(id => { if ($(id)) $(id).value=''; });
+    if ($('upImageFile')) $('upImageFile').value = '';
+    $('uploadPreview').textContent = 'Önizleme yok';
+    syncUploadLivePreview();
     closeModal('uploadModal');
-    $('upTitle').value=''; $('upDesc').value=''; $('upPreviewUrl').value=''; $('upSourceUrl').value=''; $('upPrice').value=''; $('upExclusivePrice').value=''; $('uploadPreview').textContent='Önizleme yok';
     showToast('Tasarım gönderildi. Admin onayı bekleniyor.', 'success');
     renderDashboard();
-  } catch (e) {
-    showToast('Tasarım kaydedilemedi: ' + e.message, 'error');
-  }
+  } catch (e) { showToast('Tasarım kaydedilemedi: ' + e.message, 'error'); }
+}
+
+async function uploadAvatarToImgBB() {
+  const file = $('profileImageFile').files?.[0];
+  if (!file) return showToast('Önce profil fotoğrafı seçin', 'error');
+  try {
+    showToast('Profil fotoğrafı yükleniyor...');
+    const url = await uploadImageToImgBB(file);
+    $('profilePhotoUrl').value = url;
+    $('profilePhotoPreview').innerHTML = `<img src="${sanitizeHTML(url)}" alt="avatar preview">`;
+    showToast('Profil fotoğrafı yüklendi', 'success');
+  } catch (e) { showToast('ImgBB hatası: ' + e.message, 'error'); }
+}
+
+function populateProfileEditor() {
+  if (!currentUser) return;
+  $('profileNameInput').value = currentUser.name || '';
+  $('profileUsernameInput').value = currentUser.username || '';
+  $('profileCountryInput').value = currentUser.country || '';
+  $('profileBioInput').value = currentUser.bio || '';
+  $('profilePhotoUrl').value = currentUser.photoURL || '';
+  $('profilePhotoPreview').innerHTML = currentUser.photoURL ? `<img src="${sanitizeHTML(currentUser.photoURL)}" alt="avatar">` : 'Önizleme yok';
+}
+
+async function saveProfile() {
+  if (!currentUser) return showToast('Giriş yapmalısın', 'error');
+  const name = $('profileNameInput').value.trim();
+  const username = $('profileUsernameInput').value.trim().toLowerCase().replace(/[^a-z0-9_-]/g,'');
+  const country = $('profileCountryInput').value.trim() || 'TR';
+  const bio = $('profileBioInput').value.trim();
+  const photoURL = $('profilePhotoUrl').value.trim();
+  if (!name || !username) return showToast('Ad ve kullanıcı adı gerekli', 'error');
+  try {
+    await db.collection('users').doc(currentUser.uid).set({
+      name, username, country, bio, photoURL,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge:true });
+    if (auth.currentUser?.displayName !== name) await auth.currentUser.updateProfile({ displayName: name, photoURL: photoURL || null });
+    closeModal('profileEditModal');
+    showToast('Profil güncellendi', 'success');
+    await reloadCurrentUser();
+    renderDashboard();
+    if (currentPage === 'profile') renderPublicProfile(currentUser.uid);
+  } catch (e) { showToast('Profil güncellenemedi: ' + e.message, 'error'); }
 }
 
 async function fetchApprovedDesigns() {
@@ -337,7 +399,7 @@ async function fetchApprovedDesigns() {
     allDesigns = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     renderHome();
     applyFilters();
-    renderDesigners();
+    await renderDesigners();
     updateLiveCounters();
   } catch (e) {
     console.error(e);
@@ -352,7 +414,7 @@ function buildDesignCard(d) {
     <article class="design-card" onclick="openDesign('${d.id}')">
       <div class="design-cover">${badge}${img}</div>
       <div class="design-body">
-        <div class="design-meta"><span>${sanitizeHTML((d.sport||'').toUpperCase())}</span><span>${sanitizeHTML(d.designerName || 'Designer')}</span></div>
+        <div class="design-meta"><span>${sanitizeHTML((d.sport||'').toUpperCase())}</span><span onclick="event.stopPropagation(); openProfilePage('${d.designerId || ''}')">${sanitizeHTML(d.designerName || 'Designer')}</span></div>
         <h3 class="design-title">${sanitizeHTML(d.title || 'İsimsiz Tasarım')}</h3>
         <p class="design-desc">${sanitizeHTML(d.description || '')}</p>
         <div class="design-footer"><strong class="price">₺${Number(d.priceStandard||0).toLocaleString('tr-TR')}</strong><span class="soft">👁 ${d.views||0} · ❤️ ${d.likes||0}</span></div>
@@ -361,7 +423,7 @@ function buildDesignCard(d) {
 }
 
 function renderHome() {
-  const featured = [...allDesigns].sort((a,b)=> (b.likes||0)+(b.views||0) - ((a.likes||0)+(a.views||0))).slice(0,6);
+  const featured = [...allDesigns].sort((a,b)=> (Number(b.featured)||0)*1000 + (b.likes||0)+(b.views||0) - (((Number(a.featured)||0)*1000) + (a.likes||0)+(a.views||0))).slice(0,6);
   const newest = [...allDesigns].sort((a,b)=> (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,6);
   $('featuredGrid').innerHTML = featured.map(buildDesignCard).join('') || `<p class="muted">Henüz onaylı tasarım yok.</p>`;
   $('newGrid').innerHTML = newest.map(buildDesignCard).join('') || `<p class="muted">Henüz onaylı tasarım yok.</p>`;
@@ -388,38 +450,54 @@ function applyFilters() {
 }
 function clearFilters(){ $('filterSport').value=''; $('sortSelect').value='new'; applyFilters(); }
 
-function renderDesigners() {
-  const byDesigner = new Map();
-  for (const d of allDesigns) {
-    const id = d.designerId || 'unknown';
-    if (!byDesigner.has(id)) byDesigner.set(id, { id, name: d.designerName || 'Designer', count:0, likes:0 });
-    const item = byDesigner.get(id); item.count++; item.likes += Number(d.likes||0);
+async function renderDesigners() {
+  try {
+    const snap = await db.collection('users').where('role','==','designer').get();
+    const userMap = new Map(snap.docs.map(d=>[d.id,{ id:d.id, ...d.data() }]));
+    const counts = new Map();
+    for (const d of allDesigns) {
+      if (!d.designerId) continue;
+      const existing = counts.get(d.designerId) || { count:0, likes:0 };
+      existing.count += 1; existing.likes += Number(d.likes||0);
+      counts.set(d.designerId, existing);
+    }
+    const cards = [...userMap.values()].sort((a,b)=> (counts.get(b.id)?.count||0) - (counts.get(a.id)?.count||0)).map(x => `
+      <div class="designer-card clickable" onclick="openProfilePage('${x.id}')">
+        <div class="designer-top">
+          <div class="designer-avatar">${x.photoURL ? `<img src="${sanitizeHTML(x.photoURL)}" alt="avatar">` : sanitizeHTML((x.name||'D')[0].toUpperCase())}</div>
+          <div><strong>${sanitizeHTML(x.name || 'Designer')}</strong><div class="muted small">@${sanitizeHTML(x.username || 'designer')}</div></div>
+        </div>
+        <div class="designer-stats"><span>${counts.get(x.id)?.count || 0} tasarım</span><span>${counts.get(x.id)?.likes || 0} beğeni</span></div>
+      </div>`).join('');
+    $('designersGrid').innerHTML = cards || `<p class="muted">Henüz tasarımcı verisi yok.</p>`;
+  } catch (e) {
+    console.error(e);
+    $('designersGrid').innerHTML = `<p class="muted">Tasarımcılar yüklenemedi.</p>`;
   }
-  const cards = [...byDesigner.values()].sort((a,b)=> b.count - a.count).map(x => `
-    <div class="designer-card">
-      <div class="designer-top"><div class="designer-avatar">${sanitizeHTML((x.name||'D')[0].toUpperCase())}</div><div><strong>${sanitizeHTML(x.name)}</strong><div class="muted small">Tasarımcı</div></div></div>
-      <div class="designer-stats"><span>${x.count} tasarım</span><span>${x.likes} beğeni</span></div>
-    </div>`).join('');
-  $('designersGrid').innerHTML = cards || `<p class="muted">Henüz tasarımcı verisi yok.</p>`;
 }
 
 async function openDesign(id) {
-  const design = allDesigns.find(x => x.id === id) || (await db.collection('designs').doc(id).get()).data();
-  if (!design) return;
+  let design = allDesigns.find(x => x.id === id);
+  if (!design) {
+    const doc = await db.collection('designs').doc(id).get();
+    if (!doc.exists) return;
+    design = { id: doc.id, ...doc.data() };
+  }
   try { await db.collection('designs').doc(id).set({ views: firebase.firestore.FieldValue.increment(1), updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true }); } catch {}
-  const d = { id, ...design };
+  const d = design;
+  const isFav = favoriteIds.has(id);
   $('designModalContent').innerHTML = `
     <div class="design-detail">
       <div class="design-detail-cover">${d.coverImage ? `<img src="${sanitizeHTML(d.coverImage)}" alt="${sanitizeHTML(d.title)}">` : ''}</div>
       <div>
-        <div class="design-meta"><span>${sanitizeHTML((d.sport||'').toUpperCase())}</span><span>${sanitizeHTML(d.designerName||'Designer')}</span></div>
+        <div class="design-meta"><span>${sanitizeHTML((d.sport||'').toUpperCase())}</span><span onclick="event.stopPropagation(); openProfilePage('${d.designerId || ''}')">${sanitizeHTML(d.designerName||'Designer')}</span></div>
         <h2 class="section-head" style="display:block;margin-bottom:8px"><span style="font-family:'Bebas Neue',sans-serif;font-size:52px">${sanitizeHTML(d.title || 'İsimsiz Tasarım')}</span></h2>
         <p class="muted">${sanitizeHTML(d.description || '')}</p>
-        <div style="margin-top:16px"><span class="chip">Standart ₺${Number(d.priceStandard||0).toLocaleString('tr-TR')}</span>${d.priceExclusive?`<span class="chip">Exclusive ₺${Number(d.priceExclusive).toLocaleString('tr-TR')}</span>`:''}</div>
+        <div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:8px"><span class="chip">Standart ₺${Number(d.priceStandard||0).toLocaleString('tr-TR')}</span>${d.priceExclusive?`<span class="chip">Exclusive ₺${Number(d.priceExclusive).toLocaleString('tr-TR')}</span>`:''}${(d.tags||[]).map(tag=>`<span class="chip">#${sanitizeHTML(tag)}</span>`).join('')}</div>
         <div class="detail-actions">
           <button class="btn btn-primary" onclick="demoBuy('${d.id}','standard')">Demo Satın Al</button>
           <button class="btn btn-ghost" onclick="copyShareLink('${d.id}')">Paylaş</button>
-          <button class="btn btn-ghost" onclick="toggleLike('${d.id}')">Beğen</button>
+          <button class="btn btn-ghost" onclick="toggleFavorite('${d.id}')">${isFav ? 'Favoriden Çıkar' : 'Favoriye Ekle'}</button>
         </div>
         ${d.sourceUrl ? `<p class="muted small" style="margin-top:16px">Kaynak dosya bağlantısı sistemde kayıtlı.</p>` : ''}
       </div>
@@ -427,44 +505,207 @@ async function openDesign(id) {
   showModal('designModal');
 }
 
-async function toggleLike(id) {
+async function toggleFavorite(designId) {
+  if (!currentUser) { showModal('authModal'); return showToast('Favori için giriş yapmalısın'); }
+  const ref = db.collection('users').doc(currentUser.uid).collection('favorites').doc(designId);
   try {
-    await db.collection('designs').doc(id).set({ likes: firebase.firestore.FieldValue.increment(1) }, { merge:true });
-    showToast('Beğeni eklendi', 'success');
-    fetchApprovedDesigns();
-  } catch (e) { showToast('Beğeni kaydedilemedi', 'error'); }
+    if (favoriteIds.has(designId)) {
+      await ref.delete();
+      favoriteIds.delete(designId);
+      showToast('Favorilerden çıkarıldı', 'success');
+    } else {
+      await ref.set({ designId, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      favoriteIds.add(designId);
+      showToast('Favorilere eklendi', 'success');
+    }
+    if (!closeModal) return;
+    if (!$('designModal').classList.contains('hidden')) openDesign(designId);
+    if (currentPage === 'dashboard') renderFavorites();
+  } catch (e) { showToast('Favori güncellenemedi: ' + e.message, 'error'); }
+}
+
+async function loadFavorites() {
+  if (!currentUser) { favoriteIds = new Set(); return; }
+  try {
+    const snap = await db.collection('users').doc(currentUser.uid).collection('favorites').get();
+    favoriteIds = new Set(snap.docs.map(d => d.id));
+  } catch { favoriteIds = new Set(); }
 }
 
 function copyShareLink(designId) {
   const shareUrl = `${window.location.origin}${window.location.pathname}?design=${designId}`;
   navigator.clipboard.writeText(shareUrl).then(() => showToast('Tasarım linki kopyalandı', 'success')).catch(() => showToast('Link kopyalanamadı', 'error'));
 }
+function demoBuy(id, licenseType) { showToast(`Ödeme demo modunda. ${licenseType === 'standard' ? 'Standart' : 'Exclusive'} lisans ekranı başvuru sonrası aktifleştirilecek.`); }
 
-function demoBuy(id, licenseType) {
-  showToast(`Ödeme demo modunda. ${licenseType === 'standard' ? 'Standart' : 'Exclusive'} lisans ekranı başvuru sonrası aktifleştirilecek.`);
+function switchDashboardTab(tab, btn) {
+  document.querySelectorAll('.dashboard-tab').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.dtab').forEach(el => el.classList.remove('active'));
+  $(`dashboardTab-${tab}`)?.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (tab === 'favorites') renderFavorites();
+  if (tab === 'admin' && currentUser?.isAdmin) renderAdminPanel();
 }
 
 async function renderDashboard() {
   if (!currentUser) {
-    $('myDesigns').innerHTML = `<p class="muted">Dashboard için giriş yapmalısın.</p>`;
+    ['myDesigns','myFavorites','myPurchases'].forEach(id => { if ($(id)) $(id).innerHTML = `<div class="empty-state">Dashboard için giriş yapmalısın.</div>`; });
     return;
   }
-  $('dashRole').textContent = currentUser.role || 'Rol seçilmedi';
+  populateProfileEditor();
+  $('dashboardName').textContent = currentUser.name || 'Dashboard';
   $('dashboardWelcome').textContent = `Hoş geldin, ${currentUser.name}`;
+  $('dashRoleChip').textContent = formatRole(currentUser.role);
+  $('dashJoinedInfo').textContent = `Katılım: ${formatDate(currentUser.createdAt)}`;
+  $('profileSummaryName').textContent = currentUser.name || '—';
+  $('profileSummaryEmail').textContent = currentUser.email || '—';
+  $('profileSummaryUsername').textContent = currentUser.username ? '@' + currentUser.username : '—';
+  $('profileSummaryCountry').textContent = currentUser.country || '—';
+  $('dashAvatarWrap').innerHTML = currentUser.photoURL ? `<img src="${sanitizeHTML(currentUser.photoURL)}" alt="avatar">` : sanitizeHTML((currentUser.name||'U')[0].toUpperCase());
+
   try {
     const snap = await db.collection('designs').where('designerId', '==', currentUser.uid).get();
     const rows = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const totalLikes = rows.reduce((sum,r)=>sum+Number(r.likes||0),0);
     $('dashTotalDesigns').textContent = rows.length;
     $('dashPendingDesigns').textContent = rows.filter(x => x.status === 'pending').length;
     $('dashApprovedDesigns').textContent = rows.filter(x => x.status === 'approved').length;
-    $('myDesigns').innerHTML = rows.length ? rows.map(r => `
-      <div class="design-row">
-        <strong>${sanitizeHTML(r.title)}</strong>
-        <span class="soft">${sanitizeHTML(r.status)}</span>
-      </div>`).join('') : `<p class="muted">Henüz tasarımın yok.</p>`;
+    $('dashLikes').textContent = totalLikes;
+    $('myDesigns').innerHTML = rows.length ? rows.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).map(r => `
+      <div class="design-row-card">
+        <div class="row-meta">
+          <strong>${sanitizeHTML(r.title)}</strong>
+          <span class="muted">${sanitizeHTML(r.description || '')}</span>
+        </div>
+        <div class="row-actions">
+          <span class="row-status ${sanitizeHTML(r.status)}">${sanitizeHTML(r.status)}</span>
+          <button class="mini-btn" onclick="openDesign('${r.id}')">Görüntüle</button>
+        </div>
+      </div>`).join('') : `<div class="empty-state">Henüz tasarımın yok.</div>`;
   } catch (e) {
-    $('myDesigns').innerHTML = `<p class="muted">Tasarımlar yüklenemedi.</p>`;
+    $('myDesigns').innerHTML = `<div class="empty-state">Tasarımlar yüklenemedi.</div>`;
   }
+  renderFavorites();
+  if (currentUser.isAdmin) renderAdminPanel();
+}
+
+function renderFavorites() {
+  const favs = allDesigns.filter(d => favoriteIds.has(d.id));
+  $('myFavorites').innerHTML = favs.length ? favs.map(buildDesignCard).join('') : `<div class="empty-state">Henüz favori tasarımın yok.</div>`;
+}
+
+async function renderAdminPanel() {
+  if (!currentUser?.isAdmin) return;
+  await Promise.all([renderPendingDesigns(), renderContactMessages(), renderUsersAdmin()]);
+}
+
+async function renderPendingDesigns() {
+  try {
+    const snap = await db.collection('designs').where('status','==','pending').get();
+    const rows = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    $('adminPendingDesigns').innerHTML = rows.length ? rows.map(r => `
+      <div class="admin-list-item">
+        <div class="row-meta">
+          <strong>${sanitizeHTML(r.title)}</strong>
+          <span class="muted">${sanitizeHTML(r.designerName || 'Designer')} · ₺${Number(r.priceStandard||0).toLocaleString('tr-TR')}</span>
+        </div>
+        <div class="row-actions">
+          <button class="mini-btn success" onclick="moderateDesign('${r.id}','approve')">Onayla</button>
+          <button class="mini-btn danger" onclick="moderateDesign('${r.id}','reject')">Reddet</button>
+        </div>
+      </div>`).join('') : `<div class="empty-state">Bekleyen tasarım yok.</div>`;
+  } catch (e) { $('adminPendingDesigns').innerHTML = `<div class="empty-state">Bekleyen tasarımlar yüklenemedi.</div>`; }
+}
+
+async function moderateDesign(id, action) {
+  if (!currentUser?.isAdmin) return;
+  try {
+    if (action === 'approve') {
+      await db.collection('designs').doc(id).set({ status:'approved', visibility:'public', updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
+      showToast('Tasarım onaylandı', 'success');
+    } else {
+      const rejectReason = prompt('Reddetme sebebi (opsiyonel)') || '';
+      await db.collection('designs').doc(id).set({ status:'rejected', rejectReason, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
+      showToast('Tasarım reddedildi', 'success');
+    }
+    await fetchApprovedDesigns();
+    renderDashboard();
+  } catch (e) { showToast('Moderasyon hatası: ' + e.message, 'error'); }
+}
+
+async function renderContactMessages() {
+  try {
+    const snap = await db.collection('contact_messages').orderBy('createdAt','desc').limit(10).get();
+    const rows = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    $('adminContactMessages').innerHTML = rows.length ? rows.map(r => `
+      <div class="message-row">
+        <div class="row-meta"><strong>${sanitizeHTML(r.name || 'Anonim')}</strong><span class="muted">${sanitizeHTML(r.subject || 'Konu yok')} · ${sanitizeHTML(r.email || '')}</span><span class="muted">${sanitizeHTML(r.message || '')}</span></div>
+      </div>`).join('') : `<div class="empty-state">Mesaj yok.</div>`;
+  } catch (e) { $('adminContactMessages').innerHTML = `<div class="empty-state">Mesajlar yüklenemedi.</div>`; }
+}
+
+async function renderUsersAdmin() {
+  try {
+    const snap = await db.collection('users').orderBy('updatedAt','desc').limit(20).get();
+    const rows = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    $('adminUsers').innerHTML = rows.length ? rows.map(r => `
+      <div class="user-row">
+        <div class="row-meta"><strong>${sanitizeHTML(r.name || 'Kullanıcı')}</strong><span class="muted">${sanitizeHTML(r.email || '')} · ${formatRole(r.role)} · ${sanitizeHTML(r.status || 'active')}</span></div>
+        <div class="row-actions">
+          <button class="mini-btn" onclick="openProfilePage('${r.id}')">Profil</button>
+          ${r.role !== 'admin' ? `<button class="mini-btn ${r.status==='suspended'?'success':'danger'}" onclick="toggleUserStatus('${r.id}','${r.status || 'active'}')">${r.status==='suspended' ? 'Aktifleştir' : 'Askıya Al'}</button>` : ''}
+        </div>
+      </div>`).join('') : `<div class="empty-state">Kullanıcı yok.</div>`;
+  } catch (e) { $('adminUsers').innerHTML = `<div class="empty-state">Kullanıcılar yüklenemedi.</div>`; }
+}
+
+async function toggleUserStatus(uid, currentStatus) {
+  if (!currentUser?.isAdmin) return;
+  try {
+    const next = currentStatus === 'suspended' ? 'active' : 'suspended';
+    await db.collection('users').doc(uid).set({ status: next, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
+    showToast(`Kullanıcı durumu: ${next}`, 'success');
+    renderUsersAdmin();
+  } catch (e) { showToast('Kullanıcı güncellenemedi: ' + e.message, 'error'); }
+}
+
+function openProfilePage(uid) {
+  currentProfileId = uid;
+  showPage('profile');
+}
+
+async function renderPublicProfile(uid) {
+  const el = $('profilePageContent');
+  if (!uid) { el.innerHTML = `<div class="empty-state">Profil bulunamadı.</div>`; return; }
+  try {
+    const [userDoc, designsSnap] = await Promise.all([
+      db.collection('users').doc(uid).get(),
+      db.collection('designs').where('designerId','==',uid).where('status','==','approved').where('visibility','==','public').get()
+    ]);
+    if (!userDoc.exists) { el.innerHTML = `<div class="empty-state">Profil bulunamadı.</div>`; return; }
+    const u = userDoc.data();
+    const designs = designsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const likes = designs.reduce((sum,d)=>sum+Number(d.likes||0),0);
+    const views = designs.reduce((sum,d)=>sum+Number(d.views||0),0);
+    el.innerHTML = `
+      <div class="profile-card-public">
+        <div class="public-top">
+          <div class="profile-avatar profile-avatar-large">${u.photoURL ? `<img src="${sanitizeHTML(u.photoURL)}" alt="avatar">` : sanitizeHTML((u.name||'U')[0].toUpperCase())}</div>
+          <div>
+            <h1>${sanitizeHTML(u.name || 'Designer')}</h1>
+            <p>@${sanitizeHTML(u.username || 'designer')}</p>
+            <p>${sanitizeHTML(u.bio || 'Henüz biyografi eklenmedi.')}</p>
+          </div>
+        </div>
+        <div class="public-stats">
+          <div class="public-stat"><strong>${designs.length}</strong><span>Tasarım</span></div>
+          <div class="public-stat"><strong>${likes}</strong><span>Beğeni</span></div>
+          <div class="public-stat"><strong>${views}</strong><span>Görüntülenme</span></div>
+          <div class="public-stat"><strong>${sanitizeHTML(u.country || '—')}</strong><span>Ülke</span></div>
+        </div>
+        <div class="panel"><div class="panel-head"><h3>Yayınlanan Tasarımlar</h3></div>${designs.length ? `<div class="card-grid">${designs.map(buildDesignCard).join('')}</div>` : `<div class="empty-state">Henüz yayınlanan tasarım yok.</div>`}</div>
+      </div>`;
+  } catch (e) { console.error(e); el.innerHTML = `<div class="empty-state">Profil yüklenemedi.</div>`; }
 }
 
 async function submitContactForm(e) {
@@ -477,22 +718,11 @@ async function submitContactForm(e) {
   const btn = e.target.querySelector('button[type="submit"]');
   btn.disabled = true;
   try {
-    await db.collection('contact_messages').add({
-      name,
-      email,
-      subject,
-      message,
-      userId: currentUser?.uid || null,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      status: 'new'
-    });
+    await db.collection('contact_messages').add({ name, email, subject, message, userId: currentUser?.uid || null, createdAt: firebase.firestore.FieldValue.serverTimestamp(), status: 'new' });
     e.target.reset();
     showToast('Mesajın gönderildi', 'success');
-  } catch (e) {
-    showToast('Gönderim hatası: ' + e.message, 'error');
-  } finally {
-    btn.disabled = false;
-  }
+  } catch (e) { showToast('Gönderim hatası: ' + e.message, 'error'); }
+  finally { btn.disabled = false; }
 }
 
 async function updateLiveCounters() {
@@ -500,7 +730,7 @@ async function updateLiveCounters() {
     const [designsSnap, usersSnap, ordersSnap] = await Promise.all([
       db.collection('designs').where('status','==','approved').where('visibility','==','public').get(),
       db.collection('users').get(),
-      db.collection('orders').get().catch(()=>({ docs: [] }))
+      db.collection('orders').get().catch(()=>({ size:0, docs: [] }))
     ]);
     const approvedCount = designsSnap.size;
     const users = usersSnap.docs.map(d => d.data());
@@ -512,10 +742,7 @@ async function updateLiveCounters() {
     $('metricOrders').textContent = ordersCount.toLocaleString('tr-TR');
     $('metricCountries').textContent = countriesCount.toLocaleString('tr-TR');
     $('heroStatsText').textContent = `${approvedCount.toLocaleString('tr-TR')} Tasarım · ${designersCount.toLocaleString('tr-TR')} Tasarımcı · ${ordersCount.toLocaleString('tr-TR')} Satış`;
-  } catch (e) {
-    $('heroStatsText').textContent = 'Sayaçlar yüklenemedi';
-    console.warn(e);
-  }
+  } catch (e) { $('heroStatsText').textContent = 'Sayaçlar yüklenemedi'; console.warn(e); }
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
@@ -523,9 +750,9 @@ window.addEventListener('DOMContentLoaded', async () => {
   buildLangModal();
   $('contactForm').addEventListener('submit', submitContactForm);
   document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', (e)=>{ if (e.target === m) m.classList.add('hidden'); }));
+  ['upTitle','upSport','upPrice'].forEach(id => $(id)?.addEventListener('input', syncUploadLivePreview));
+  syncUploadLivePreview();
   await fetchApprovedDesigns();
   const sharedDesignId = new URLSearchParams(window.location.search).get('design');
-  if (sharedDesignId) {
-    try { await openDesign(sharedDesignId); } catch {}
-  }
+  if (sharedDesignId) { try { await openDesign(sharedDesignId); } catch {} }
 });
