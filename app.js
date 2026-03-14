@@ -21,31 +21,18 @@ const db = firebase.firestore();
 /* ═══════════════════════════════════════ */
 
 /* ══════════ MOCK DATA (Örnek Vitrin) ══════════ */
-const MOCK_DESIGNS = [
-  { id: 'm1', title: 'Gece Yarısı Pro', designer: 'MertStudio', designerInitials: 'MS', sport: 'Futbol', style: 'modern', pattern: 'gradient', colors: ['#0a0a0a','#e63946','#ffffff'], price: 449, exclusivePrice: 3999, sales: 128, likes: 342, license: 'standard', bg: 'linear-gradient(140deg,#0a0a0a,#1a1a2e)', num: '10', kit: 'Deplasman' },
-  { id: 'm2', title: 'Anadolu Kırmızısı', designer: 'FormArt', designerInitials: 'FA', sport: 'Futbol', style: 'retro', pattern: 'stripes', colors: ['#e63946','#1d1d1d','#f4f1de'], price: 299, exclusivePrice: 2499, sales: 89, likes: 211, license: 'standard', bg: 'linear-gradient(140deg,#e63946,#8b0000)', num: '7', kit: 'Ev' },
-  { id: 'm3', title: 'Cyber Esports Kit', designer: 'NeonLab', designerInitials: 'NL', sport: 'E-Spor', style: 'futuristic', pattern: 'geometric', colors: ['#0d1b2a','#415a77','#e9c46a'], price: 599, exclusivePrice: 5499, sales: 67, likes: 198, license: 'exclusive', bg: 'linear-gradient(140deg,#0d1b2a,#415a77)', num: '9', kit: 'Ev' },
-  { id: 'm4', title: 'Bosphorus Wave', designer: 'IstanbulKit', designerInitials: 'IK', sport: 'Basketbol', style: 'modern', pattern: 'abstract', colors: ['#1d3557','#457b9d','#a8dadc'], price: 389, exclusivePrice: 3500, sales: 54, likes: 167, license: 'standard', bg: 'linear-gradient(140deg,#1d3557,#457b9d)', num: '23', kit: 'Deplasman' },
-  { id: 'm5', title: 'Sarı Kaplan', designer: 'TigerDesign', designerInitials: 'TD', sport: 'Futbol', style: 'classic', pattern: 'stripes', colors: ['#e9c46a','#1d1d1d','#ffffff'], price: 329, exclusivePrice: 2999, sales: 103, likes: 289, license: 'standard', bg: 'linear-gradient(140deg,#e9c46a,#f4a261)', num: '11', kit: 'Ev' },
-  { id: 'm6', title: 'Mor Şimşek', designer: 'EliteKit', designerInitials: 'EK', sport: 'Voleybol', style: 'futuristic', pattern: 'geometric', colors: ['#8338ec','#3a0ca3','#f72585'], price: 449, exclusivePrice: 4000, sales: 41, likes: 134, license: 'standard', bg: 'linear-gradient(140deg,#8338ec,#3a0ca3)', num: '6', kit: 'Ev' },
-  { id: 'm7', title: 'Arctic Pro', designer: 'NordKit', designerInitials: 'NK', sport: 'Basketbol', style: 'minimal', pattern: 'minimal', colors: ['#f4f1de','#e9c46a','#1d1d1d'], price: 269, exclusivePrice: 2200, sales: 77, likes: 156, license: 'standard', bg: 'linear-gradient(140deg,#e9ecef,#dee2e6)', num: '3', kit: 'Deplasman' },
-  { id: 'm8', title: 'Karadeniz Fırtınası', designer: 'BlackSeaDesign', designerInitials: 'BD', sport: 'Rugby', style: 'modern', pattern: 'abstract', colors: ['#023e8a','#0077b6','#90e0ef'], price: 519, exclusivePrice: 4800, sales: 32, likes: 98, license: 'exclusive', bg: 'linear-gradient(140deg,#023e8a,#0077b6)', num: '8', kit: 'Ev' },
-];
+/* ══ MOCK_DESIGNS kaldırıldı ══ */
+const MOCK_DESIGNS = [];
 
-const MOCK_DESIGNERS = [
-  { id: 1, name: 'MertStudio', initials: 'MS', bio: 'Futbol forma uzmanı', sales: 128, designs: 24, rating: 4.9, level: 'master' },
-  { id: 2, name: 'NeonLab', initials: 'NL', bio: 'E-spor & fütüristik tasarım', sales: 67, designs: 18, rating: 4.8, level: 'elite' },
-];
+/* ══ MOCK_DESIGNERS kaldırıldı ══ */
+const MOCK_DESIGNERS = [];
 
-const MOCK_COMPETITIONS = [
-  { id: 1, club: 'Bosphorus FC', desc: '2026-27 sezonu Ev forması tasarım yarışması', prize: '₺5.000', deadline: '15 gün kaldı', entries: 34 },
-  { id: 2, club: 'Ankara Thunder', desc: 'E-Spor takımımız için yeni kimlik arıyoruz', prize: '$800', deadline: '8 gün kaldı', entries: 19 },
-  { id: 3, club: 'Ege Volley', desc: 'Kadın voleybol takımı Deplasman forması', prize: '₺3.500', deadline: '22 gün kaldı', entries: 11 },
-];
+/* ══ MOCK_COMPETITIONS kaldırıldı ══ */
+const MOCK_COMPETITIONS = [];
 
 /* ══════════ STATE ══════════ */
 // SİTEDEKİ TÜM TASARIMLAR BURADA TOPLANACAK (Gerçekler + Örnekler)
-let ALL_DESIGNS = [...MOCK_DESIGNS]; 
+let ALL_DESIGNS = []; // Sadece Firestore gerçek verisi 
 
 let currentPage = 'home';
 let previousPage = 'home';
@@ -55,6 +42,7 @@ let currentDesignId = null;
 let exploreOffset = 0;
 let selectedColors = new Set();
 let currentUploadStep = 1;
+const SLOT_LABELS = { 's-front': 'Ön Görünüm *', 's-back': 'Arka Görünüm *', 's-detail': 'Yakın Detay *', 's-flat': 'Flat Design *', 's-model': 'Model Mockup', 's-tex': 'Kumaş Texture', 's-pat': 'Pattern Zoom', 's-var': 'Renk Varyasyonu', 's-field': 'Saha Mockup', 's-pkg': 'Packaging' };
 let uploadedImages = {};
 
 /* ══════════════════════════════════════════
@@ -640,6 +628,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSpotlight();
   renderHomeComps();
   calcEarnings();
+  bindUploadPreviewEvents();
   initScrollNav();
   fetchApprovedDesigns();
   // Review textarea karakter sayacı
@@ -701,7 +690,7 @@ async function fetchApprovedDesigns() {
     realDesigns.sort((a, b) => b._ts - a._ts);
 
     // Gerçek tasarımlar öne, mock arkaya
-    ALL_DESIGNS = [...realDesigns, ...MOCK_DESIGNS];
+    ALL_DESIGNS = [...realDesigns]; // Sadece gerçek tasarımlar
 
     renderHomeDesigns();
     if (currentPage === 'explore') applyFilters();
@@ -710,7 +699,7 @@ async function fetchApprovedDesigns() {
 
   } catch (error) {
     console.error('Tasarımlar çekilemedi:', error);
-    ALL_DESIGNS = [...MOCK_DESIGNS];
+    ALL_DESIGNS = []; // Firestore bağlantı hatası — boş liste
     renderHomeDesigns();
   }
 }
@@ -748,15 +737,77 @@ function filterByCategory(cat) {
 }
 
 /* ══════════ RENDER HOME ══════════ */
+function shuffleArray(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+function getFreshnessBoost(design) {
+  const created = design?.createdAt?.toDate ? design.createdAt.toDate() : null;
+  if (!created) return 0;
+  const diffDays = (Date.now() - created.getTime()) / 86400000;
+  if (diffDays <= 3) return 20;
+  if (diffDays <= 7) return 10;
+  if (diffDays <= 14) return 5;
+  return 0;
+}
+
+function renderGridById(id, list) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = list.map(d => designCard(d)).join('');
+}
+
 function renderHomeDesigns() {
-  const grid = document.getElementById('homeGrid');
-  if (!grid) return;
-  grid.innerHTML = ALL_DESIGNS.slice(0, 8).map(d => designCard(d)).join('');
+  const approved = ALL_DESIGNS.filter(d => !d.status || d.status === 'approved');
+  const pool = approved.length ? approved : ALL_DESIGNS;
+  // Hiç tasarım yoksa tüm grid'lere boş state bas
+  if (!pool.length) {
+    const emptyHtml = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px">
+      <div style="font-size:44px;margin-bottom:16px">🎨</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:26px;margin-bottom:10px">Platform Yeni Açıldı!</h3>
+      <p style="color:var(--text2);margin-bottom:22px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.6">
+        İlk tasarımcıların yüklemeleri onaylandıkça burada görünecek.<br>Sen de ekibine katıl!
+      </p>
+      <button class="btn-cta" onclick="showModal('loginModal')">Tasarımcı Olarak Katıl</button>
+    </div>`;
+    ['featuredGrid','homeGrid','newGrid','editorsGrid'].forEach(id => {
+      const g = document.getElementById(id);
+      if (g) g.innerHTML = emptyHtml;
+    });
+    return;
+  }
+  const featuredPool = shuffleArray(pool.filter(d => d.license === 'exclusive' || (d.sales || 0) >= 35 || (d.likes || 0) >= 80));
+  const featured = (featuredPool.length ? featuredPool : shuffleArray(pool)).slice(0, 8);
+
+  const trendingPool = [...pool].sort((a, b) => {
+    const aScore = (a.views || ((a.likes || 0) * 6)) + ((a.likes || 0) * 4) + ((a.sales || 0) * 10) + getFreshnessBoost(a);
+    const bScore = (b.views || ((b.likes || 0) * 6)) + ((b.likes || 0) * 4) + ((b.sales || 0) * 10) + getFreshnessBoost(b);
+    return bScore - aScore;
+  });
+  const trending = trendingPool.slice(0, 6);
+
+  const newest = [...pool].sort((a, b) => {
+    const ad = a?.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+    const bd = b?.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+    if (ad || bd) return bd - ad;
+    return String(b.id).localeCompare(String(a.id));
+  }).slice(0, 8);
+
+  const editors = shuffleArray(pool.filter(d => (d.pattern === 'geometric' || d.style === 'minimal' || d.style === 'retro' || d.license === 'exclusive'))).slice(0, 4);
+
+  renderGridById('featuredGrid', featured);
+  renderGridById('homeGrid', trending);
+  renderGridById('newGrid', newest);
+  renderGridById('editorsGrid', editors);
 }
 
 function renderSpotlight() {
   const el = document.getElementById('spotlightGrid');
   if (!el) return;
+  if (!MOCK_DESIGNERS.length) {
+    el.innerHTML = '<p style="color:var(--text3);font-size:13px;padding:20px 0">Tasarımcılar yakında burada görünecek.</p>';
+    return;
+  }
   el.innerHTML = MOCK_DESIGNERS.map(d => `
     <div class="spotlight-card" onclick="showDesignerProfile('${d.id}')">
       <div class="sp-avatar">${d.initials}</div>
@@ -774,54 +825,78 @@ function renderSpotlight() {
 function renderHomeComps() {
   const el = document.getElementById('homeComps');
   if (!el) return;
+  if (!MOCK_COMPETITIONS.length) {
+    el.innerHTML = '<p style="color:var(--text3);font-size:13px;padding:20px 0">Aktif yarışma bulunmuyor. Yakında açılacak!</p>';
+    return;
+  }
   el.innerHTML = MOCK_COMPETITIONS.map(c => compCard(c)).join('');
 }
 
 /* ══════════ DESIGN CARD ══════════ */
 function designCard(d) {
   const isFav = favorites.has(String(d.id));
-  const colDots = (d.colors || []).map(c => `<div class="dc-color-dot" style="background:${c}"></div>`).join('');
-  const licTag = d.license === 'exclusive' ? `<span class="tag tag-excl" style="font-size:10px;padding:3px 7px">Exclusive</span>` : '';
-  const hotTag = d.sales > 80 ? `<span class="tag tag-hot" style="font-size:10px;padding:3px 7px">Çok Satan</span>` : d.id === 'm1' || d.id === 'm2' ? `<span class="tag tag-new" style="font-size:10px;padding:3px 7px">Yeni</span>` : '';
-  const badge = licTag || hotTag;
+  const colDots = (d.colors || []).slice(0, 5).map(c => `<div class="dc-color-dot" style="background:${c}"></div>`).join('');
+  const licenseText = d.license === 'exclusive' ? 'Exclusive' : 'Standart';
+  const primaryBadge = d.license === 'exclusive'
+    ? `<span class="tag tag-excl" style="font-size:10px;padding:3px 8px">Exclusive</span>`
+    : (d.sales > 80
+      ? `<span class="tag tag-hot" style="font-size:10px;padding:3px 8px">Çok Satan</span>`
+      : `<span class="tag tag-new" style="font-size:10px;padding:3px 8px">Yeni Sezon</span>`);
+  const views = d.views || ((d.likes || 0) * 7 + (d.sales || 0) * 13);
+  const desc = d.desc || `${d.style || 'premium'} ${d.pattern || 'kit'} diliyle hazırlanan, kulüpler için hazır lisanslanabilir tasarım.`;
 
-  // Gerçek fotoğraf varsa göster, yoksa gradient placeholder
   const imgContent = d.coverUrl
-    ? `<img src="${d.coverThumb || d.coverUrl}" alt="${d.title}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    ? `<img src="${d.coverThumb || d.coverUrl}" alt="${d.title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
     : '';
   const placeholderStyle = d.coverUrl ? 'display:none' : 'display:flex';
 
   return `
-    <div class="design-card" onclick="showDesignDetail('${d.id}')">
+    <article class="design-card" onclick="showDesignDetail('${d.id}')">
       <div class="dc-img">
         <div style="width:100%;height:100%;position:relative;overflow:hidden">
           ${imgContent}
-          <div class="dc-img-placeholder" style="background:${d.bg};width:100%;height:100%;position:${d.coverUrl?'absolute':'relative'};inset:0;${placeholderStyle};align-items:center;justify-content:center">
-            <div style="width:70px;height:84px;background:rgba(255,255,255,0.12);border-radius:8px 8px 14px 14px;display:flex;align-items:center;justify-content:center;position:relative;border:1px solid rgba(255,255,255,0.08)">
+          <div class="dc-img-placeholder" style="background:${d.bg};width:100%;height:100%;position:${d.coverUrl ? 'absolute' : 'relative'};inset:0;${placeholderStyle};align-items:center;justify-content:center">
+            <div style="width:78px;height:92px;background:rgba(255,255,255,0.12);border-radius:8px 8px 16px 16px;display:flex;align-items:center;justify-content:center;position:relative;border:1px solid rgba(255,255,255,0.08)">
               <div style="position:absolute;left:0;right:0;height:3px;top:50%;transform:translateY(-50%);background:${d.colors && d.colors[1] ? d.colors[1] : 'rgba(255,255,255,0.4)'}"></div>
-              <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:rgba(255,255,255,0.7);position:relative;z-index:1">${d.num}</span>
+              <span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(255,255,255,0.78);position:relative;z-index:1">${d.num || '9'}</span>
             </div>
           </div>
         </div>
-        ${badge ? `<div class="dc-badge-top">${badge}</div>` : ''}
+        <div class="dc-topline">
+          <div class="dc-badge-top">${primaryBadge}</div>
+          <span class="dc-stat-chip">👁 ${views.toLocaleString('tr-TR')}</span>
+        </div>
         <div class="dc-overlay">
-          <button class="dc-action" onclick="event.stopPropagation();openBuyModal('${d.id}')">${t.buy_btn}</button>
+          <div class="dc-actions">
+            <button class="dc-action-secondary" onclick="event.stopPropagation();showDesignDetail('${d.id}')">Önizle</button>
+            <button class="dc-action" onclick="event.stopPropagation();openBuyModal('${d.id}')">${t.buy_btn}</button>
+          </div>
           <button class="dc-fav ${isFav ? 'fav-active' : ''}" onclick="event.stopPropagation();toggleFav('${d.id}',this)">${isFav ? '♥' : '♡'}</button>
         </div>
       </div>
       <div class="dc-body">
-        <div class="dc-sport">${d.sport}</div>
+        <div class="dc-sport-row">
+          <div class="dc-sport">${d.sport}</div>
+          <span class="dc-license-pill">${licenseText}</span>
+        </div>
         <div class="dc-title">${d.title}</div>
-        <div class="dc-designer">by <span onclick="event.stopPropagation();showDesignerProfile('${d.id}')">${d.designer}</span></div>
-        <div class="dc-footer">
-          <span class="dc-price">₺${(d.price||0).toLocaleString('tr-TR')}</span>
-          <div class="dc-meta">
-            <span>♥ ${d.likes}</span>
+        <div class="dc-designer">by <span onclick="event.stopPropagation();showDesignerProfile('${d.id}')">${d.designer || d.designerName || 'formaLOLA Studio'}</span></div>
+        <div class="dc-desc">${desc}</div>
+        <div class="dc-bottom">
+          <div>
             <div class="dc-colors">${colDots}</div>
+            <div class="dc-metrics">
+              <span class="dc-metric">♥ ${(d.likes || 0).toLocaleString('tr-TR')}</span>
+              <span class="dc-metric">🛒 ${(d.sales || 0).toLocaleString('tr-TR')}</span>
+            </div>
+          </div>
+          <div class="dc-price-wrap">
+            <span class="dc-price">₺${(d.price || 0).toLocaleString('tr-TR')}</span>
+            <span class="dc-price-note">Standart lisans başlangıcı</span>
           </div>
         </div>
       </div>
-    </div>
+    </article>
   `;
 }
 
@@ -891,6 +966,16 @@ function applyFilters() {
   const grid = document.getElementById('exploreGrid');
   if (!grid) return;
   exploreOffset = Math.min(12, filtered.length);
+  if (!filtered.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px">
+      <div style="font-size:40px;margin-bottom:14px">🔍</div>
+      <p style="color:var(--text2);margin-bottom:18px">Henüz onaylı tasarım bulunmuyor veya filtrelere uygun tasarım yok.</p>
+      <button class="btn-out" onclick="clearFilters()">Filtreleri Temizle</button>
+    </div>`;
+    const count = document.getElementById('resultsCount');
+    if (count) count.textContent = '0 tasarım';
+    return;
+  }
   grid.innerHTML = filtered.slice(0, exploreOffset).map(d => designCard(d)).join('');
   const count = document.getElementById('resultsCount');
   if (count) count.textContent = `${filtered.length} ${t.designs_found}`;
@@ -1292,26 +1377,18 @@ function dashTab(tab, btn) {
         <div style="padding:12px 18px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em">
           <span>Tasarım</span><span>Alıcı</span><span>Fiyat</span><span>Tarih</span>
         </div>
-        ${[
-          { d: 'Gece Yarısı Pro', b: 'FC Bosphorus', p: '₺449', t: '12 Mar 2026' },
-          { d: 'Anadolu Kırmızısı', b: 'Ankara United', p: '₺299', t: '9 Mar 2026' },
-          { d: 'Geo Minimal', b: 'Ege Voleybol', p: '₺299', t: '5 Mar 2026' },
-        ].map(s => `
-          <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-size:13px;align-items:center">
-            <span>${s.d}</span><span style="color:var(--text2)">${s.b}</span>
-            <span style="color:var(--accent);font-family:'DM Mono',monospace">${s.p}</span>
-            <span style="color:var(--text3);font-size:12px">${s.t}</span>
-          </div>
-        `).join('')}
+                <div id="salesRowsInner" style="padding:20px;text-align:center;color:var(--text2)">
+          Gerçek satışlar Firestore'dan yükleniyor...
+        </div>
       </div>
     `;
   } else if (tab === 'earnings') {
     el.innerHTML = `
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Kazançlar</h2>
       <div class="dash-stats">
-        <div class="ds-card"><div class="ds-label">Bu Ay</div><div class="ds-val gold">₺2.150</div></div>
-        <div class="ds-card"><div class="ds-label">Toplam</div><div class="ds-val gold">₺8.640</div></div>
-        <div class="ds-card"><div class="ds-label">Bekleyen</div><div class="ds-val">₺449</div></div>
+        <div class="ds-card"><div class="ds-label">Bu Ay</div><div class="ds-val gold" id="earningsThisMonth">₺0</div></div>
+        <div class="ds-card"><div class="ds-label">Toplam</div><div class="ds-val gold" id="earningsTotal">₺0</div></div>
+        <div class="ds-card"><div class="ds-label">Bekleyen</div><div class="ds-val" id="earningsPending">₺0</div></div>
       </div>
       <div style="margin-top:20px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
         <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Minimum ₺500 tutarında çekim yapabilirsin</div>
@@ -1829,6 +1906,93 @@ async function uploadAllSlotImages() {
   return results;
 }
 
+/* ══════════ UPLOAD PREVIEW HELPERS ══════════ */
+function getUploadImageData(slotId) {
+  const img = document.getElementById(slotId)?.querySelector('img');
+  return img?.src || '';
+}
+
+function updateUploadProgress(step = currentUploadStep) {
+  const fill = document.getElementById('uploadProgressFill');
+  const text = document.getElementById('uploadProgressText');
+  const label = document.getElementById('uploadStageLabel');
+  const map = {
+    1: 'Temel görsellerini yükle',
+    2: 'Tasarım bilgilerini doldur',
+    3: 'Renk paletini netleştir',
+    4: 'Teslim dosyalarını hazırla',
+    5: 'Fiyatı belirle ve yayınla'
+  };
+  if (fill) fill.style.width = `${step * 20}%`;
+  if (label) label.textContent = `Adım ${step} / 5`;
+  if (text) text.textContent = map[step] || 'Yayın akışı';
+}
+
+function buildUploadChecklist() {
+  const items = [
+    { label: '4 zorunlu görsel', done: ['s-front','s-back','s-detail','s-flat'].every(id => getUploadImageData(id)) },
+    { label: 'Tasarım adı', done: !!document.getElementById('upTitle')?.value.trim() },
+    { label: 'Açıklama', done: (document.getElementById('upDesc')?.value.trim().length || 0) >= 40 },
+    { label: 'Renk paleti', done: !!document.getElementById('c1h')?.value.trim() },
+    { label: 'Standart fiyat', done: (Number(document.getElementById('stdPrice')?.value) || 0) > 0 },
+    { label: 'Telif onayı', done: !!document.getElementById('upCopyright')?.checked }
+  ];
+  const host = document.getElementById('uploadChecklist');
+  if (!host) return;
+  host.innerHTML = items.map(item => `
+    <div class="upload-check-item ${item.done ? 'done' : ''}">
+      <span>${item.label}</span>
+      <span>${item.done ? 'Hazır' : 'Bekliyor'}</span>
+    </div>
+  `).join('');
+}
+
+function updateUploadPreview() {
+  const title = document.getElementById('upTitle')?.value.trim() || 'Tasarım adı burada görünecek';
+  const sport = document.getElementById('upSport')?.value || 'Futbol';
+  const kit = document.getElementById('upKit')?.value || 'Ev';
+  const desc = document.getElementById('upDesc')?.value.trim();
+  const image = getUploadImageData('s-front') || getUploadImageData('s-flat');
+  const c1 = document.getElementById('c1h')?.value || '#e63946';
+  const c2 = document.getElementById('c2h')?.value || '#1d1d1d';
+  const c3 = document.getElementById('c3h')?.value || '#ffffff';
+  const stdPrice = Number(document.getElementById('stdPrice')?.value) || 499;
+  const exclEnabled = !!document.getElementById('pcExcl')?.checked;
+  const status = document.getElementById('upPreviewStatus');
+  const imgHost = document.getElementById('upPreviewImage');
+  const colorsHost = document.getElementById('upPreviewColors');
+
+  const previewTitle = document.getElementById('upPreviewTitle');
+  const previewMeta = document.getElementById('upPreviewMeta');
+  const previewPrice = document.getElementById('upPreviewPrice');
+  const previewLicense = document.getElementById('upPreviewLicense');
+
+  if (previewTitle) previewTitle.textContent = title;
+  if (previewMeta) previewMeta.textContent = `${sport} · ${kit}`;
+  if (previewPrice) previewPrice.textContent = `₺${stdPrice.toLocaleString('tr-TR')}`;
+  if (previewLicense) previewLicense.textContent = exclEnabled ? 'Standart + Exclusive' : 'Standart Lisans';
+  if (status) status.textContent = desc.length >= 40 ? 'Güçlü listeleme' : 'Taslak';
+
+  if (colorsHost) colorsHost.innerHTML = [c1, c2, c3].filter(Boolean).map(color => `<span class="uprev-color" style="background:${color}"></span>`).join('');
+  if (imgHost) {
+    imgHost.innerHTML = image
+      ? `<img src="${image}" alt="Önizleme">`
+      : `<div class="uprev-image-inner">formaLOLA</div>`;
+  }
+  buildUploadChecklist();
+}
+
+function bindUploadPreviewEvents() {
+  ['upTitle','upSport','upKit','upDesc','stdPrice','exclPrice','pcExcl','upCopyright','c1h','c2h','c3h'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', updateUploadPreview);
+    el.addEventListener('change', updateUploadPreview);
+  });
+  updateUploadProgress(1);
+  updateUploadPreview();
+}
+
 /* ══════════ UPLOAD VE FIRESTORE ══════════ */
 function wizGo(step) {
   if (step === 2) {
@@ -1856,6 +2020,8 @@ function wizGo(step) {
     document.getElementById('ws' + i)?.classList.add('done');
   }
   currentUploadStep = step;
+  updateUploadProgress(step);
+  updateUploadPreview();
 }
 
 function previewSlot(input, slotId) {
@@ -1867,6 +2033,7 @@ function previewSlot(input, slotId) {
     if (slot) {
       slot.innerHTML = `<img src="${e.target.result}" class="is-preview" alt="preview">`;
       slot.closest('.img-slot').classList.add('filled');
+      updateUploadPreview();
     }
   };
   reader.readAsDataURL(file);
@@ -1939,7 +2106,9 @@ async function submitDesign() {
       coverThumb: imageUrls.front?.thumb || '',  // Küçük önizleme
       likes: 0,
       sales: 0,
+      views: 0,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       status: 'pending'
     };
 
@@ -1949,6 +2118,7 @@ async function submitDesign() {
     closeModal('uploadModal');
     showToast('🚀 Tasarım yüklendi! Admin onayı bekleniyor (max 24 saat).', 'success');
     resetUploadForm();
+    updateUploadPreview();
 
   } catch (error) {
     console.error('Yükleme Hatası:', error);
@@ -1963,14 +2133,30 @@ function resetUploadForm() {
   document.getElementById('upDesc').value = '';
   document.getElementById('upTags').value = '';
   document.getElementById('upCopyright').checked = false;
-  ['s-front','s-back','s-detail','s-flat','s-model','s-tex','s-pat','s-var','s-field','s-pkg'].forEach(id => {
+  document.getElementById('stdPrice').value = 499;
+  document.getElementById('exclPrice').value = 4999;
+  document.getElementById('pcStd').checked = true;
+  document.getElementById('pcExcl').checked = false;
+  ['c1h','c2h','c3h'].forEach((id, idx) => {
+    const defaults = ['#e63946', '#1d1d1d', '#ffffff'];
+    const input = document.getElementById(id);
+    const color = document.getElementById(`c${idx + 1}`);
+    if (input) input.value = defaults[idx];
+    if (color) color.value = defaults[idx];
+  });
+  Object.entries(SLOT_LABELS).forEach(([id, label]) => {
     const el = document.getElementById(id);
     if (el) {
       const slot = el.closest('.img-slot');
-      el.innerHTML = `<div class="is-plus">+</div><div class="is-lbl">${el.querySelector('.is-lbl')?.textContent || ''}</div>`;
+      const fileInput = slot?.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = '';
+      el.innerHTML = `<div class="is-plus">+</div><div class="is-lbl">${label}</div>`;
       slot?.classList.remove('filled');
     }
   });
+  calcEarnings();
+  updateUploadProgress(1);
+  updateUploadPreview();
 }
 
 function calcEarnings() {
@@ -1980,17 +2166,22 @@ function calcEarnings() {
   const exclEl = document.getElementById('exclEarn');
   if (stdEl) stdEl.textContent = `₺${Math.round(std * 0.8).toLocaleString('tr-TR')}`;
   if (exclEl) exclEl.textContent = `₺${Math.round(excl * 0.8).toLocaleString('tr-TR')}`;
+  updateUploadPreview();
 }
+
 
 /* ══════════ COLOR SYNC ══════════ */
 function syncColor(colorId, hexId) {
   const el = document.getElementById(hexId);
   if (el) el.value = document.getElementById(colorId).value;
+  updateUploadPreview();
 }
+
 function syncHex(hexId, colorId) {
   const hex = document.getElementById(hexId).value;
   if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
     document.getElementById(colorId).value = hex;
+    updateUploadPreview();
   }
 }
 
@@ -2000,11 +2191,11 @@ function toggleFav(id, btn) {
   if (favorites.has(stringId)) {
     favorites.delete(stringId);
     showToast('Favorilerden çıkarıldı', '');
-    if (btn) btn.textContent = btn.classList.contains('btn-fav-full') ? '♡ Favorilere Ekle' : '♡';
+    if (btn) { btn.textContent = btn.classList.contains('btn-fav-full') ? '♡ Favorilere Ekle' : '♡'; btn.classList.remove('fav-active'); }
   } else {
     favorites.add(stringId);
     showToast('Favorilere eklendi ♥', 'success');
-    if (btn) btn.textContent = btn.classList.contains('btn-fav-full') ? '♥ Favorilerden Çıkar' : '♥';
+    if (btn) { btn.textContent = btn.classList.contains('btn-fav-full') ? '♥ Favorilerden Çıkar' : '♥'; btn.classList.add('fav-active'); }
   }
 }
 
@@ -2094,13 +2285,7 @@ function buildNotifsContent() {
   if (!el) return;
 
   // Mock bildirimler (gerçekte Firestore'dan çekilir)
-  const notifs = [
-    { id: 1, type: 'sale',   icon: '🎉', title: 'Tasarımın satıldı!',         sub: 'Gece Yarısı Pro — FC Bosphorus satın aldı',  time: '2 saat önce',  read: false },
-    { id: 2, type: 'review', icon: '⭐', title: 'Yeni yorum aldın',           sub: '"Harika kalite, çok beğendik!" — FC Bosphorus', time: '5 saat önce',  read: false },
-    { id: 3, type: 'badge',  icon: '🏆', title: 'Pro seviyesine ulaştın!',    sub: 'Tebrikler! Artık %15 daha fazla görünürlük',   time: '1 gün önce',   read: false },
-    { id: 4, type: 'comp',   icon: '🏅', title: 'Yeni yarışma açıldı',        sub: 'Bosphorus FC — ₺5.000 ödüllü tasarım yarışması',time: '2 gün önce', read: true  },
-    { id: 5, type: 'info',   icon: '📢', title: 'Hoş geldin!',                sub: 'formaLOLA\'ya hoş geldin. İlk tasarımını yükle!',time: '3 gün önce', read: true  },
-  ];
+  const notifs = []; // Firestore'dan gerçek bildirimler
 
   _unreadNotifCount = notifs.filter(n => !n.read).length;
   const badge = document.getElementById('navNotifBadge');
@@ -2519,17 +2704,12 @@ renderDesignersPage = function() {
   if (!grid) return;
 
   // Daha fazla mock tasarımcı
-  const allDesigners = [
-    { id: 1,  name: 'MertStudio',      initials: 'MS', bio: 'Futbol forma uzmanı', sales: 128, designs: 24, rating: 4.9, level: 'master' },
-    { id: 2,  name: 'NeonLab',         initials: 'NL', bio: 'E-spor & fütüristik tasarım', sales: 67, designs: 18, rating: 4.8, level: 'elite' },
-    { id: 3,  name: 'IstanbulKit',     initials: 'IK', bio: 'Türk motifli formalar', sales: 54, designs: 15, rating: 4.7, level: 'pro' },
-    { id: 4,  name: 'FormArt',         initials: 'FA', bio: 'Retro koleksiyon ustası', sales: 89, designs: 31, rating: 4.8, level: 'elite' },
-    { id: 5,  name: 'TigerDesign',     initials: 'TD', bio: 'Agresif, dinamik formalar', sales: 103, designs: 27, rating: 4.9, level: 'master' },
-    { id: 6,  name: 'VintageFC',       initials: 'VF', bio: '70-80ler nostalji uzmanı', sales: 91, designs: 22, rating: 4.7, level: 'elite' },
-    { id: 7,  name: 'NordKit',         initials: 'NK', bio: 'Minimalist Kuzey stili', sales: 77, designs: 19, rating: 4.6, level: 'pro' },
-    { id: 8,  name: 'BlackSeaDesign',  initials: 'BD', bio: 'Karadeniz ilhamlı tasarımlar', sales: 32, designs: 11, rating: 4.5, level: 'pro' },
-  ];
+  const allDesigners = []; // Firestore'dan gerçek tasarımcılar yüklenir
 
+  if (!allDesigners.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="font-size:40px;margin-bottom:14px">👥</div><p style="color:var(--text2);margin-bottom:18px">Henüz kayıtlı tasarımcı bulunmuyor.<br>İlk sen ol!</p><button class="btn-cta" onclick="showModal('loginModal')">Tasarımcı Olarak Katıl</button></div>';
+    return;
+  }
   grid.innerHTML = allDesigners.map(d => `
     <div class="designer-card" onclick="showDesignerPublicProfile('${d.id}','${d.name}')">
       <div class="designer-card-top">
@@ -2565,15 +2745,12 @@ const _origRenderCompsPage = renderCompetitionsPage;
 renderCompetitionsPage = function() {
   const grid = document.getElementById('compsGrid');
   if (!grid) return;
-  const comps = [
-    { id: 1, club: 'Bosphorus FC',      desc: '2026-27 sezonu Ev forması tasarım yarışması — Siyah-beyaz üzerine modern tutum',       prize: '₺5.000', deadline: '15 gün kaldı', entries: 34 },
-    { id: 2, club: 'Ankara Thunder',    desc: 'E-Spor takımımız için yeni kimlik arıyoruz — Agresif, fütüristik, dijital estetik',     prize: '$800',   deadline: '8 gün kaldı',  entries: 19 },
-    { id: 3, club: 'Ege Volley',        desc: 'Kadın voleybol takımı Deplasman forması — Ege mavisi ve doğa motifleri tercih edilir', prize: '₺3.500', deadline: '22 gün kaldı', entries: 11 },
-    { id: 4, club: 'İstanbul Lions',    desc: 'Amerikan futbol takımı tam kit tasarımı — Aslan ve kırmızı-altın tema',                 prize: '$1.200', deadline: '30 gün kaldı', entries: 7  },
-    { id: 5, club: 'Kocaeli United',    desc: 'Yeni kurulan gençlik futbol kulübü için 3 kit (Ev / Deplasman / 3.) tasarımı',          prize: '₺4.200', deadline: '18 gün kaldı', entries: 23 },
-    { id: 6, club: 'Pixel Esports',     desc: 'Valorant ve CS2 kadromuz için modern e-spor forması — neon ve siyah ağırlıklı',        prize: '₺2.800', deadline: '12 gün kaldı', entries: 41 },
-  ];
+  const comps = []; // Firestore competitions koleksiyonundan gelecek
 
+  if (!comps.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="font-size:40px;margin-bottom:14px">🏆</div><p style="color:var(--text2);margin-bottom:18px">Şu an aktif bir yarışma bulunmuyor.</p><button class="btn-cta" onclick="showModal('loginModal')">Bildirim Al</button></div>';
+    return;
+  }
   grid.innerHTML = comps.map(c => `
     <div class="comp-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
