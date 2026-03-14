@@ -6,6 +6,7 @@
 // SADECE BURAYA YAZDIĞIN MAİLLER ADMİN PANELİNİ GÖREBİLİR
 // Admin yetkisi Firestore users.role üzerinden yönetilir
 const ADMIN_EMAILS = [];
+const ROLE_LABELS = { designer: 'Tasarımcı', club: 'Takım / Kulüp', admin: 'Admin' };
 
 /* ══════════ FIREBASE INIT ══════════ */
 const firebaseConfig = {
@@ -20,81 +21,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore(); 
 /* ═══════════════════════════════════════ */
-
-function fsNow() {
-  return firebase.firestore.FieldValue.serverTimestamp();
-}
-
-async function ensureUserShellDoc(user) {
-  if (!user) return null;
-  const ref = db.collection('users').doc(user.uid);
-  const snap = await ref.get();
-  if (!snap.exists) {
-    const providerId = user.providerData && user.providerData[0] ? user.providerData[0].providerId : 'password';
-    const shell = {
-      name: user.displayName || user.email?.split('@')[0] || 'Kullanıcı',
-      email: user.email || '',
-      role: null,
-      status: 'active',
-      level: 'rookie',
-      photoURL: user.photoURL || '',
-      provider: providerId,
-      createdAt: fsNow(),
-      updatedAt: fsNow()
-    };
-    await ref.set(shell, { merge: true });
-    return shell;
-  }
-  return snap.data();
-}
-
-function roleLabelTr(role) {
-  return role === 'club' ? 'Takım / Kulüp' : 'Tasarımcı';
-}
-
-function openRoleModal() {
-  const modal = document.getElementById('roleModal');
-  if (!modal) return;
-  modal.classList.add('show');
-}
-
-function closeRoleModal(force = false) {
-  const modal = document.getElementById('roleModal');
-  if (!modal) return;
-  if (!force && currentUser && !currentUser.role) return;
-  modal.classList.remove('show');
-}
-
-async function completeRoleSelection(role) {
-  if (!currentUser?.uid) {
-    showToast('Önce giriş yapmalısın', 'error');
-    return;
-  }
-  if (!['designer','club'].includes(role)) {
-    showToast('Geçerli bir rol seç', 'error');
-    return;
-  }
-  const user = auth.currentUser;
-  const payload = {
-    name: user?.displayName || currentUser.name || 'Kullanıcı',
-    email: user?.email || currentUser.email || '',
-    role,
-    status: 'active',
-    level: 'rookie',
-    photoURL: user?.photoURL || currentUser.photoURL || '',
-    updatedAt: fsNow()
-  };
-  await db.collection('users').doc(currentUser.uid).set(payload, { merge: true });
-  currentUser.role = role;
-  currentUser.isAdmin = role === 'admin';
-  closeRoleModal(true);
-  showToast(`${roleLabelTr(role)} hesabın hazır!`, 'success');
-  if (currentUser.pendingUpload) {
-    currentUser.pendingUpload = false;
-    showModal('uploadModal');
-  }
-}
-
 
 /* ══════════ MOCK DATA (Örnek Vitrin) ══════════ */
 const MOCK_DESIGNS = [];
@@ -706,6 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
   bindUploadPreviewEvents();
   initScrollNav();
   fetchApprovedDesigns();
+  loadPlatformStats();
   // Review textarea karakter sayacı
   const rt = document.getElementById('reviewText');
   if (rt) rt.addEventListener('input', () => {
@@ -1543,6 +1470,118 @@ async function rejectDesign(id) {
   }
 }
 
+
+async function ensureUserDoc(user) {
+  if (!user) return null;
+  const ref = db.collection('users').doc(user.uid);
+  const snap = await ref.get();
+  if (!snap.exists) {
+    const baseProfile = {
+      name: user.displayName || user.email.split('@')[0],
+      email: user.email || '',
+      role: null,
+      status: 'active',
+      level: 'rookie',
+      country: null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    await ref.set(baseProfile, { merge: true });
+    return baseProfile;
+  }
+  const data = snap.data() || {};
+  const patch = {};
+  if (!data.email && user.email) patch.email = user.email;
+  if (!data.name) patch.name = user.displayName || user.email.split('@')[0];
+  if (!('status' in data)) patch.status = 'active';
+  if (Object.keys(patch).length) {
+    patch.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+    await ref.set(patch, { merge: true });
+  }
+  return { ...data, ...patch };
+}
+
+function requireRoleSelection() {
+  showModal('roleModal');
+  showToast('Önce hesap tipini seçmelisin', '');
+}
+
+async function selectAccountRole(role) {
+  if (!currentUser?.uid) {
+    closeModal('roleModal');
+    showModal('loginModal');
+    return;
+  }
+  if (!['designer','club'].includes(role)) return;
+  try {
+    await db.collection('users').doc(currentUser.uid).set({
+      role,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    currentUser.role = role;
+    closeModal('roleModal');
+    showToast(`Hesap tipi güncellendi: ${ROLE_LABELS[role]}`, 'success');
+  } catch (e) {
+    showToast('Rol kaydedilemedi: ' + e.message, 'error');
+  }
+}
+
+function formatStatNumber(value) {
+  const n = Number(value || 0);
+  return new Intl.NumberFormat('tr-TR').format(n);
+}
+
+async function loadPlatformStats() {
+  try {
+    const [designSnap, userSnap, orderSnap] = await Promise.all([
+      db.collection('designs').where('status', '==', 'approved').get(),
+      db.collection('users').get(),
+      db.collection('orders').get()
+    ]);
+
+    const approvedDesigns = designSnap.size;
+    const users = userSnap.docs.map(d => d.data() || {});
+    const designers = users.filter(u => u.role === 'designer' && u.status !== 'banned').length;
+    const sales = orderSnap.docs.filter(d => {
+      const x = d.data() || {};
+      return x.paymentStatus === 'paid' || x.status === 'paid';
+    }).length;
+    const countries = new Set(users.map(u => (u.country || '').trim()).filter(Boolean)).size;
+
+    const sets = {
+      heroStatDesigns: `${formatStatNumber(approvedDesigns)} Tasarım`,
+      heroStatDesigners: `${formatStatNumber(designers)} Tasarımcı`,
+      heroStatSales: `${formatStatNumber(sales)} Satış`,
+      statDesigns: formatStatNumber(approvedDesigns),
+      statDesigners: formatStatNumber(designers),
+      statSales: formatStatNumber(sales),
+      statCountries: countries ? formatStatNumber(countries) : '—'
+    };
+    Object.entries(sets).forEach(([id,val]) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    });
+  } catch (e) {
+    console.warn('Platform stats yüklenemedi:', e.message);
+  }
+}
+
+function refreshCategoryCounts() {
+  const counts = {};
+  (ALL_DESIGNS || []).forEach(d => {
+    const sport = d.sport || 'Diğer';
+    counts[sport] = (counts[sport] || 0) + 1;
+  });
+  document.querySelectorAll('[data-sport-count]').forEach(el => {
+    const key = el.getAttribute('data-sport-count');
+    el.textContent = formatStatNumber(counts[key] || 0);
+  });
+  document.querySelectorAll('[data-filter-count]').forEach(el => {
+    const key = el.getAttribute('data-filter-count');
+    el.textContent = formatStatNumber(counts[key] || 0);
+  });
+}
+
 /* ══════════ AUTH (GERÇEK FIREBASE) ══════════ */
 auth.onAuthStateChanged(async (user) => {
   const loginBtn  = document.getElementById('navLoginBtn');
@@ -1555,22 +1594,19 @@ auth.onAuthStateChanged(async (user) => {
   if (user) {
     let profile = null;
     try {
-      profile = await ensureUserShellDoc(user);
-    } catch (e) {
-      console.warn('Profil okunamadı:', e.message);
-    }
+      profile = await ensureUserDoc(user);
+    } catch(e) { console.warn('Profil okunamadı:', e.message); }
 
     const role = profile?.role || null;
     const isAdmin = role === 'admin';
 
     currentUser = {
-      name: profile?.name || user.displayName || user.email.split('@')[0],
-      email: user.email,
-      uid: user.uid,
-      role,
-      photoURL: profile?.photoURL || user.photoURL || '',
-      isAdmin,
-      pendingUpload: false
+      name:    profile?.name || user.displayName || user.email.split('@')[0],
+      email:   user.email,
+      uid:     user.uid,
+      role:    role,
+      status:  profile?.status || 'active',
+      isAdmin: isAdmin
     };
 
     if (loginBtn) loginBtn.classList.add('hidden');
@@ -1578,22 +1614,16 @@ auth.onAuthStateChanged(async (user) => {
     if (dashAv)   dashAv.textContent    = currentUser.name[0].toUpperCase();
     if (dashUname)dashUname.textContent = currentUser.name;
     if (notifBtn) notifBtn.classList.remove('hidden');
+    // Admin butonu - Firestore role tabanlı
     if (adminBtn) adminBtn.classList.toggle('hidden', !isAdmin);
     buildNotifsContent();
-
-    if (!role) {
-      openRoleModal();
-      showToast('Devam etmek için hesap tipini seç', '');
-    } else {
-      closeRoleModal(true);
-    }
+    if (!role) showModal('roleModal');
   } else {
     currentUser = null;
     if (loginBtn) loginBtn.classList.remove('hidden');
     if (avatar)   avatar.classList.add('hidden');
     if (notifBtn) notifBtn.classList.add('hidden');
     if (adminBtn) adminBtn.classList.add('hidden');
-    closeRoleModal(true);
   }
 });
 
@@ -1605,9 +1635,11 @@ function authThenUpload() {
     return;
   }
   if (!currentUser.role) {
-    currentUser.pendingUpload = true;
-    openRoleModal();
-    showToast('Önce hesap tipini seçmelisin', '');
+    requireRoleSelection();
+    return;
+  }
+  if (currentUser.role !== 'designer' && !currentUser.isAdmin) {
+    showToast('Tasarım yüklemek için tasarımcı hesabı gerekli', 'error');
     return;
   }
   showModal('uploadModal');
@@ -1636,7 +1668,7 @@ async function doRegister() {
   const name = document.getElementById('regName')?.value?.trim();
   const email = document.getElementById('regEmail').value;
   const pass = document.getElementById('regPass').value;
-  const role = document.getElementById('regRole')?.value || 'designer';
+  const role = (document.getElementById('regRole')?.value || 'designer') === 'team' ? 'club' : (document.getElementById('regRole')?.value || 'designer');
   if (!name || !email || !pass) { showToast('Tüm alanları doldurun', 'error'); return; }
   if (pass.length < 6) { showToast('Şifre en az 6 karakter olmalı', 'error'); return; }
   try {
@@ -1650,11 +1682,9 @@ async function doRegister() {
       role: role,
       status: 'active',
       level: 'rookie',
-      provider: 'password',
-      photoURL: '',
-      createdAt: fsNow(),
-      updatedAt: fsNow()
-    }, { merge: true });
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
     closeModal('loginModal');
     showToast(`Hoş geldin, ${name}! ✓`, 'success');
   } catch (error) {
@@ -1669,15 +1699,13 @@ async function doRegister() {
 
 async function doGoogleLogin() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: 'select_account' });
   try {
-    const cred = await auth.signInWithPopup(provider);
-    await ensureUserShellDoc(cred.user);
+    const result = await auth.signInWithPopup(provider);
+    await ensureUserDoc(result.user);
     closeModal('loginModal');
     showToast('Google ile giriş yapıldı!', 'success');
   } catch (error) {
-    console.error(error);
-    showToast('Google girişi tamamlanamadı.', 'error');
+    showToast('Giriş iptal edildi.', 'error');
   }
 }
 
@@ -3334,7 +3362,7 @@ async function sendContactForm() {
     showToast('Mesajınız gönderildi! En kısa sürede dönüş yapacağız. ✓', 'success');
   } catch(e) {
     if (btn) { btn.disabled = false; btn.textContent = 'Mesaj Gönder'; }
-    showToast('Gönderim hatası: ' + e.message, 'error');
+    showToast(e.code === 'permission-denied' ? 'İletişim formu için Firestore rules izni gerekli.' : ('Gönderim hatası: ' + e.message), 'error');
     console.error('Contact form:', e);
   }
 }
