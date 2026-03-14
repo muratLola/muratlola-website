@@ -96,3 +96,15 @@
 .design-gallery-thumb.active,.design-gallery-thumb:hover{opacity:1;border-color:rgba(239,68,68,.5)}
 .design-gallery-thumb img{width:100%;height:80px;object-fit:cover;display:block}
 .final-upload-card .upload-preview{min-height:220px}
+
+
+/* launch refinements */
+.avatar.has-image,.profile-avatar{padding:0;overflow:hidden;border-radius:50%;background:linear-gradient(180deg,#151a29,#0f1320)}
+.avatar.has-image img,.profile-avatar img,.designer-avatar img{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%;aspect-ratio:1/1}
+.designer-avatar{overflow:hidden;border-radius:50%}
+.modal-card.upload-card{max-height:min(92vh,980px);overflow-y:auto;scrollbar-width:thin}
+.final-upload-card{padding-bottom:18px}
+.upload-submit-bar{position:sticky;bottom:-2px;z-index:3;background:linear-gradient(180deg,rgba(11,16,32,.78),rgba(11,16,32,.98));backdrop-filter:blur(10px);padding-top:14px;margin-top:14px;border-top:1px solid rgba(255,255,255,.06)}
+.upload-submit-bar .muted{margin-top:8px;text-align:center}
+.auth-link{margin-top:10px}
+.empty-state{padding:28px;border:1px dashed rgba(255,255,255,.08);border-radius:18px;color:var(--muted);text-align:center;background:rgba(255,255,255,.02)}

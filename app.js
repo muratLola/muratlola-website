@@ -23,6 +23,8 @@ let t = null;
 let currentProfileId = null;
 let favoriteIds = new Set();
 let uploadedGalleryUrls = [];
+let editingDesignId = null;
+let lastDesignDoc = null;
 
 const LANGS = {
   tr: {
@@ -170,6 +172,7 @@ function updateAuthUI() {
   const avatar = $('navAvatar');
   if (avatar) {
     avatar.classList.toggle('hidden', !loggedIn);
+    avatar.classList.toggle('has-image', !!currentUser?.photoURL);
     avatar.innerHTML = currentUser?.photoURL ? `<img src="${sanitizeHTML(currentUser.photoURL)}" alt="avatar">` : sanitizeHTML((currentUser?.name || 'U')[0].toUpperCase());
   }
   $('adminTabBtn')?.classList.toggle('hidden', !currentUser?.isAdmin);
@@ -224,9 +227,13 @@ async function doLogin() {
   const pass = $('loginPass').value;
   if (!email || !pass) return showToast('E-posta ve şifre gerekli', 'error');
   try {
-    await auth.signInWithEmailAndPassword(email, pass);
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
     closeModal('authModal');
-    showToast('Hoş geldin', 'success');
+    if (cred.user && !cred.user.emailVerified && !cred.user.providerData.some(p => p.providerId === 'google.com')) {
+      showToast('E-posta doğrulama linki gelen kutunda. Hesabını doğrulaman önerilir.', '');
+    } else {
+      showToast('Hoş geldin', 'success');
+    }
   } catch (e) { showToast(e.message, 'error'); }
 }
 
@@ -245,12 +252,14 @@ async function doRegister() {
   const pass = $('regPass').value;
   const role = $('regRole').value;
   if (!name || !email || !pass) return showToast('Tüm alanları doldurun', 'error');
+  if (pass.length < 6) return showToast('Şifre en az 6 karakter olmalı', 'error');
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
     await cred.user.updateProfile({ displayName: name });
     await ensureUserDoc(cred.user, role);
+    try { await cred.user.sendEmailVerification(); } catch {}
     closeModal('authModal');
-    showToast('Kayıt başarılı', 'success');
+    showToast('Kayıt başarılı. Doğrulama e-postası gönderildi.', 'success');
   } catch (e) { showToast(e.message, 'error'); }
 }
 
@@ -284,6 +293,7 @@ function authThenUpload() {
     showToast('Tasarım yüklemek için hesap tipin Tasarımcı olmalı', 'error');
     return;
   }
+  if (!editingDesignId) resetUploadForm();
   syncUploadLivePreview();
   showModal('uploadModal');
 }
@@ -359,6 +369,52 @@ function syncUploadLivePreview() {
   if ($('uploadLiveGalleryCount')) $('uploadLiveGalleryCount').textContent = `${uploadedGalleryUrls.length} görsel`;
 }
 
+function resetUploadForm() {
+  editingDesignId = null;
+  lastDesignDoc = null;
+  ['upTitle','upDesc','upPreviewUrl','upSourceUrl','upPrice','upExclusivePrice','upTags'].forEach(id => { if ($(id)) $(id).value=''; });
+  if ($('upSport')) $('upSport').value = 'football';
+  if ($('upImageFile')) $('upImageFile').value = '';
+  if ($('upGalleryFiles')) $('upGalleryFiles').value = '';
+  uploadedGalleryUrls = [];
+  renderGalleryPreview();
+  if ($('uploadPreview')) $('uploadPreview').textContent = 'Önizleme yok';
+  if ($('uploadSubmitBtn')) $('uploadSubmitBtn').textContent = 'Tasarıma Gönder';
+  if ($('uploadSubmitHelper')) $('uploadSubmitHelper').textContent = 'Tasarımlar önce moderasyona düşer, sonra yayına alınır.';
+  syncUploadLivePreview();
+}
+
+async function editDesign(id) {
+  if (!currentUser) return;
+  try {
+    const doc = await db.collection('designs').doc(id).get();
+    if (!doc.exists) return showToast('Tasarım bulunamadı', 'error');
+    const d = { id: doc.id, ...doc.data() };
+    if (d.designerId !== currentUser.uid && !currentUser.isAdmin) return showToast('Bu tasarımı düzenleme yetkin yok', 'error');
+    editingDesignId = id;
+    lastDesignDoc = d;
+    $('upTitle').value = d.title || '';
+    $('upSport').value = d.sport || 'football';
+    $('upDesc').value = d.description || '';
+    $('upPreviewUrl').value = d.coverImage || '';
+    $('upSourceUrl').value = d.sourceUrl || '';
+    $('upTags').value = Array.isArray(d.tags) ? d.tags.join(', ') : '';
+    $('upPrice').value = d.priceStandard || '';
+    $('upExclusivePrice').value = d.priceExclusive || '';
+    uploadedGalleryUrls = Array.isArray(d.galleryImages) ? d.galleryImages.slice() : [];
+    renderGalleryPreview();
+    if ($('uploadPreview')) {
+      $('uploadPreview').innerHTML = d.coverImage ? `<img src="${sanitizeHTML(d.coverImage)}" alt="preview">` : 'Önizleme yok';
+    }
+    if ($('uploadSubmitBtn')) $('uploadSubmitBtn').textContent = 'Değişiklikleri Kaydet';
+    if ($('uploadSubmitHelper')) $('uploadSubmitHelper').textContent = 'Düzenlenen tasarım tekrar incelenmek üzere kaydedilir.';
+    syncUploadLivePreview();
+    showModal('uploadModal');
+  } catch (e) {
+    showToast('Tasarım düzenleme ekranı açılamadı: ' + e.message, 'error');
+  }
+}
+
 async function submitDesign() {
   if (!currentUser) return showToast('Giriş yapmalısın', 'error');
   if (currentUser.role !== 'designer' && !currentUser.isAdmin) return showToast('Yalnızca tasarımcılar yükleyebilir', 'error');
@@ -372,7 +428,7 @@ async function submitDesign() {
   const priceExclusive = Number($('upExclusivePrice').value || 0);
   if (!title || !description || !coverImage || !priceStandard) return showToast('Başlık, açıklama, kapak görseli ve fiyat gerekli', 'error');
   try {
-    await db.collection('designs').add({
+    const payload = {
       title, sport, description, coverImage, previewUrl: coverImage, galleryImages: uploadedGalleryUrls.slice(0, 8), sourceUrl, tags,
       priceStandard, priceExclusive,
       designerId: currentUser.uid,
@@ -385,19 +441,31 @@ async function submitDesign() {
       featured: false,
       editorPick: false,
       archived: false,
-      views: 0, likes: 0, sales: 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      rejectReason: null,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    ['upTitle','upDesc','upPreviewUrl','upSourceUrl','upPrice','upExclusivePrice','upTags'].forEach(id => { if ($(id)) $(id).value=''; });
-    if ($('upImageFile')) $('upImageFile').value = '';
-    if ($('upGalleryFiles')) $('upGalleryFiles').value = '';
-    uploadedGalleryUrls = [];
-    renderGalleryPreview();
-    $('uploadPreview').textContent = 'Önizleme yok';
-    syncUploadLivePreview();
+    };
+
+    if (editingDesignId) {
+      const existing = lastDesignDoc || {};
+      await db.collection('designs').doc(editingDesignId).set({
+        ...payload,
+        views: existing.views || 0,
+        likes: existing.likes || 0,
+        sales: existing.sales || 0,
+        createdAt: existing.createdAt || firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      showToast('Tasarım güncellendi. Yeniden moderasyona gönderildi.', 'success');
+    } else {
+      await db.collection('designs').add({
+        ...payload,
+        views: 0, likes: 0, sales: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showToast('Tasarım gönderildi. Admin onayı bekleniyor.', 'success');
+    }
+    resetUploadForm();
     closeModal('uploadModal');
-    showToast('Tasarım gönderildi. Admin onayı bekleniyor.', 'success');
+    await fetchApprovedDesigns();
     renderDashboard();
   } catch (e) { showToast('Tasarım kaydedilemedi: ' + e.message, 'error'); }
 }
@@ -448,7 +516,7 @@ async function saveProfile() {
 
 async function fetchApprovedDesigns() {
   try {
-    const snap = await db.collection('designs').where('status', '==', 'approved').where('visibility', '==', 'public').get();
+    const snap = await db.collection('designs').where('status', '==', 'approved').where('visibility', '==', 'public').limit(24).get();
     allDesigns = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     renderHome();
     applyFilters();
@@ -536,12 +604,23 @@ async function renderDesigners() {
 
 async function openDesign(id) {
   let design = allDesigns.find(x => x.id === id);
+  let freshDoc = null;
   if (!design) {
     const doc = await db.collection('designs').doc(id).get();
     if (!doc.exists) return;
+    freshDoc = doc;
     design = { id: doc.id, ...doc.data() };
   }
   const d = design;
+  if (currentUser && d.status === 'approved') {
+    try {
+      await db.collection('designs').doc(id).update({ views: firebase.firestore.FieldValue.increment(1) });
+      d.views = Number(d.views || 0) + 1;
+      allDesigns = allDesigns.map(item => item.id === id ? { ...item, views: d.views } : item);
+    } catch (e) {
+      console.warn('Views güncellenemedi', e?.message || e);
+    }
+  }
   const isFav = favoriteIds.has(id);
   const gallery = [d.coverImage, ...((d.galleryImages || []).filter(Boolean))].filter(Boolean);
   const main = gallery[0] || '';
@@ -555,7 +634,7 @@ async function openDesign(id) {
         <div class="design-meta"><span>${sanitizeHTML((d.sport||'').toUpperCase())}</span><span onclick="event.stopPropagation(); openProfilePage('${d.designerId || ''}')">${sanitizeHTML(d.designerName||'Designer')}</span></div>
         <h2 class="section-head" style="display:block;margin-bottom:8px"><span style="font-family:'Bebas Neue',sans-serif;font-size:52px">${sanitizeHTML(d.title || 'İsimsiz Tasarım')}</span></h2>
         <p class="muted">${sanitizeHTML(d.description || '')}</p>
-        <div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:8px"><span class="chip">Standart ₺${Number(d.priceStandard||0).toLocaleString('tr-TR')}</span>${d.priceExclusive?`<span class="chip">Exclusive ₺${Number(d.priceExclusive).toLocaleString('tr-TR')}</span>`:''}${(d.tags||[]).map(tag=>`<span class="chip">#${sanitizeHTML(tag)}</span>`).join('')}</div>
+        <div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:8px"><span class="chip">Standart ₺${Number(d.priceStandard||0).toLocaleString('tr-TR')}</span>${d.priceExclusive?`<span class="chip">Exclusive ₺${Number(d.priceExclusive).toLocaleString('tr-TR')}</span>`:''}<span class="chip">👁 ${Number(d.views||0)}</span><span class="chip">❤️ ${Number(d.likes||0)}</span>${(d.tags||[]).map(tag=>`<span class="chip">#${sanitizeHTML(tag)}</span>`).join('')}</div>
         <div class="detail-actions">
           <button class="btn btn-primary" onclick="demoBuy('${d.id}','standard')">Demo Satın Al</button>
           <button class="btn btn-ghost" onclick="copyShareLink('${d.id}')">Paylaş</button>
@@ -576,19 +655,25 @@ function setDesignMainImage(url, btn) {
 async function toggleFavorite(designId) {
   if (!currentUser) { showModal('authModal'); return showToast('Favori için giriş yapmalısın'); }
   const ref = db.collection('users').doc(currentUser.uid).collection('favorites').doc(designId);
+  const designRef = db.collection('designs').doc(designId);
   try {
     if (favoriteIds.has(designId)) {
       await ref.delete();
       favoriteIds.delete(designId);
+      try { await designRef.update({ likes: firebase.firestore.FieldValue.increment(-1) }); } catch (e) { console.warn('likes azaltılamadı', e?.message||e); }
       showToast('Favorilerden çıkarıldı', 'success');
     } else {
       await ref.set({ designId, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
       favoriteIds.add(designId);
+      try { await designRef.update({ likes: firebase.firestore.FieldValue.increment(1) }); } catch (e) { console.warn('likes artırılamadı', e?.message||e); }
       showToast('Favorilere eklendi', 'success');
     }
-    if (!closeModal) return;
+    const local = allDesigns.find(d => d.id === designId);
+    if (local) local.likes = Math.max(0, Number(local.likes || 0) + (favoriteIds.has(designId) ? 1 : -1));
     if (!$('designModal').classList.contains('hidden')) openDesign(designId);
     if (currentPage === 'dashboard') renderFavorites();
+    if (currentPage === 'explore') applyFilters();
+    renderHome();
   } catch (e) { showToast('Favori güncellenemedi: ' + e.message, 'error'); }
 }
 
@@ -648,6 +733,7 @@ async function renderDashboard() {
         <div class="row-actions">
           <span class="row-status ${sanitizeHTML(r.status)}">${sanitizeHTML(r.status)}</span>
           <button class="mini-btn" onclick="openDesign('${r.id}')">Görüntüle</button>
+          <button class="mini-btn" onclick="editDesign('${r.id}')">Düzenle</button>
         </div>
       </div>`).join('') : `<div class="empty-state">Henüz tasarımın yok.</div>`;
   } catch (e) {
@@ -862,8 +948,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   buildLangModal();
   $('contactForm').addEventListener('submit', submitContactForm);
   document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', (e)=>{ if (e.target === m && m.id !== 'roleModal') m.classList.add('hidden'); }));
-  ['upTitle','upSport','upPrice'].forEach(id => $(id)?.addEventListener('input', syncUploadLivePreview));
+  ['upTitle','upSport','upPrice','upExclusivePrice','upTags'].forEach(id => $(id)?.addEventListener('input', syncUploadLivePreview));
+  $('upDesc')?.addEventListener('input', syncUploadLivePreview);
   syncUploadLivePreview();
+  resetUploadForm();
   renderGalleryPreview();
   await fetchApprovedDesigns();
   const sharedDesignId = new URLSearchParams(window.location.search).get('design');
