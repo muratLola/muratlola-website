@@ -100,6 +100,8 @@
             <h3>Filtrele</h3>
             <button class="link-btn" onclick="clearFilters()">Temizle</button>
           </div>
+          <label>Arama</label>
+          <input id="searchInput" type="text" placeholder="Başlık, açıklama, etiket..." oninput="applyFilters()">
           <label>Spor Dalı</label>
           <select id="filterSport" onchange="applyFilters()">
             <option value="">Tümü</option>
@@ -262,6 +264,10 @@
                   <div id="adminContactMessages"></div>
                 </div>
                 <div class="panel full-span">
+                  <div class="panel-head"><h3>Yayınlanan Tasarımları Yönet</h3></div>
+                  <div id="adminPublishedDesigns"></div>
+                </div>
+                <div class="panel full-span">
                   <div class="panel-head"><h3>Kullanıcılar</h3></div>
                   <div id="adminUsers"></div>
                 </div>
@@ -348,6 +354,7 @@
         <label>Şifre</label>
         <input id="loginPass" type="password" placeholder="Şifre">
         <button class="btn btn-primary btn-large full" onclick="doLogin()">Giriş Yap</button>
+        <button class="link-btn auth-link" onclick="resetPassword()">Şifremi Unuttum</button>
         <button class="btn btn-ghost btn-large full" onclick="doGoogleLogin()">Google ile Devam Et</button>
       </div>
       <div id="registerPane" class="hidden">
@@ -369,7 +376,6 @@
 
   <div class="modal hidden" id="roleModal">
     <div class="modal-card role-card">
-      <button class="modal-close" onclick="closeModal('roleModal')">×</button>
       <h3>Hesap Tipini Seç</h3>
       <p>Google ile ilk girişten sonra devam etmek için hesap tipini seçmelisin.</p>
       <div class="role-grid">
@@ -414,18 +420,19 @@
     </div>
   </div>
 
-  <div class="modal hidden" id="uploadModal">
-    <div class="modal-card upload-card classic-upload-card">
+    <div class="modal hidden" id="uploadModal">
+    <div class="modal-card upload-card classic-upload-card final-upload-card">
       <button class="modal-close" onclick="closeModal('uploadModal')">×</button>
       <div class="upload-head">
         <div>
           <h3>Tasarım Yükle</h3>
-          <p>Eski premium akışa yakın, daha güçlü bir tasarım yükleme paneli.</p>
+          <p>İlk kullanıcılar için hızlı, premium ve daha güçlü yükleme deneyimi.</p>
         </div>
         <div class="upload-stepbar">
           <span class="upload-step active">01 Bilgiler</span>
-          <span class="upload-step active">02 Görsel</span>
-          <span class="upload-step active">03 Lisans</span>
+          <span class="upload-step active">02 Kapak</span>
+          <span class="upload-step active">03 Galeri</span>
+          <span class="upload-step active">04 Lisans</span>
         </div>
       </div>
       <div class="upload-classic-grid">
@@ -461,20 +468,30 @@
           </div>
           <label>Kaynak Dosya Linki (AI/PDF/ZIP URL)</label>
           <input id="upSourceUrl" type="url" placeholder="https://...">
-          <p class="muted small">Storage kullanılmadığı için kaynak dosya linkini harici olarak yönetmen gerekir.</p>
+          <p class="muted small">Storage olmadığı için kaynak dosya linkini harici olarak yönetmen gerekir.</p>
         </div>
         <div class="upload-side-col">
-          <label>Önizleme Görseli</label>
+          <label>Kapak Görseli</label>
           <div class="upload-file-row">
             <input id="upImageFile" type="file" accept="image/*">
-            <button class="btn btn-ghost" onclick="uploadPreviewToImgBB()">Görseli Yükle</button>
+            <button class="btn btn-ghost" onclick="uploadPreviewToImgBB()">Kapak Yükle</button>
           </div>
-          <input id="upPreviewUrl" type="text" placeholder="Yüklenen görsel URL'i" readonly>
+          <input id="upPreviewUrl" type="text" placeholder="Kapak görsel URL'i" readonly>
           <div class="upload-preview premium-preview" id="uploadPreview">Önizleme yok</div>
+
+          <label>Galeri Görselleri (birden fazla)</label>
+          <div class="upload-file-row">
+            <input id="upGalleryFiles" type="file" accept="image/*" multiple>
+            <button class="btn btn-ghost" onclick="uploadGalleryToImgBB()">Galeri Yükle</button>
+          </div>
+          <div id="galleryStatus" class="muted small">Henüz galeri görseli yüklenmedi.</div>
+          <div class="gallery-preview-grid" id="galleryPreviewGrid"></div>
+
           <div class="upload-preview-meta">
             <div><span>Başlık</span><strong id="uploadLiveTitle">—</strong></div>
             <div><span>Spor</span><strong id="uploadLiveSport">—</strong></div>
             <div><span>Fiyat</span><strong id="uploadLivePrice">—</strong></div>
+            <div><span>Galeri</span><strong id="uploadLiveGalleryCount">0 görsel</strong></div>
           </div>
           <button class="btn btn-primary btn-large full" onclick="submitDesign()">Tasarıma Gönder</button>
         </div>

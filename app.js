@@ -22,6 +22,7 @@ let currentLang = localStorage.getItem('fl_lang') || 'tr';
 let t = null;
 let currentProfileId = null;
 let favoriteIds = new Set();
+let uploadedGalleryUrls = [];
 
 const LANGS = {
   tr: {
@@ -229,6 +230,15 @@ async function doLogin() {
   } catch (e) { showToast(e.message, 'error'); }
 }
 
+async function resetPassword() {
+  const email = $('loginEmail').value.trim();
+  if (!email) return showToast('Önce e-posta adresini yaz', 'error');
+  try {
+    await auth.sendPasswordResetEmail(email);
+    showToast('Şifre sıfırlama bağlantısı gönderildi', 'success');
+  } catch (e) { showToast('Şifre sıfırlama hatası: ' + e.message, 'error'); }
+}
+
 async function doRegister() {
   const name = $('regName').value.trim();
   const email = $('regEmail').value.trim();
@@ -300,6 +310,44 @@ async function uploadPreviewToImgBB() {
   } catch (e) { showToast('ImgBB hatası: ' + e.message, 'error'); }
 }
 
+async function uploadGalleryToImgBB() {
+  const files = Array.from($('upGalleryFiles').files || []);
+  if (!files.length) return showToast('Galeri için en az bir görsel seçin', 'error');
+  try {
+    showToast('Galeri görselleri yükleniyor...');
+    for (const file of files) {
+      const url = await uploadImageToImgBB(file);
+      if (!uploadedGalleryUrls.includes(url)) uploadedGalleryUrls.push(url);
+    }
+    renderGalleryPreview();
+    syncUploadLivePreview();
+    showToast('Galeri güncellendi', 'success');
+  } catch (e) { showToast('Galeri yükleme hatası: ' + e.message, 'error'); }
+}
+
+function removeGalleryImage(index) {
+  uploadedGalleryUrls.splice(index, 1);
+  renderGalleryPreview();
+  syncUploadLivePreview();
+}
+
+function renderGalleryPreview() {
+  const grid = $('galleryPreviewGrid');
+  const status = $('galleryStatus');
+  if (status) status.textContent = uploadedGalleryUrls.length ? `${uploadedGalleryUrls.length} galeri görseli yüklendi.` : 'Henüz galeri görseli yüklenmedi.';
+  if (!grid) return;
+  if (!uploadedGalleryUrls.length) {
+    grid.innerHTML = '';
+    return;
+  }
+  grid.innerHTML = uploadedGalleryUrls.map((url, index) => `
+    <div class="gallery-thumb">
+      <img src="${sanitizeHTML(url)}" alt="gallery ${index+1}">
+      <button type="button" class="gallery-remove" onclick="removeGalleryImage(${index})">×</button>
+    </div>
+  `).join('');
+}
+
 function syncUploadLivePreview() {
   const title = $('upTitle')?.value?.trim() || '—';
   const sportMap = { football:'Futbol', basketball:'Basketbol', volleyball:'Voleybol', esports:'E-Spor' };
@@ -308,6 +356,7 @@ function syncUploadLivePreview() {
   if ($('uploadLiveTitle')) $('uploadLiveTitle').textContent = title;
   if ($('uploadLiveSport')) $('uploadLiveSport').textContent = sport;
   if ($('uploadLivePrice')) $('uploadLivePrice').textContent = price;
+  if ($('uploadLiveGalleryCount')) $('uploadLiveGalleryCount').textContent = `${uploadedGalleryUrls.length} görsel`;
 }
 
 async function submitDesign() {
@@ -321,10 +370,10 @@ async function submitDesign() {
   const tags = $('upTags').value.trim().split(',').map(x => x.trim()).filter(Boolean).slice(0,8);
   const priceStandard = Number($('upPrice').value || 0);
   const priceExclusive = Number($('upExclusivePrice').value || 0);
-  if (!title || !description || !coverImage || !priceStandard) return showToast('Başlık, açıklama, görsel ve fiyat gerekli', 'error');
+  if (!title || !description || !coverImage || !priceStandard) return showToast('Başlık, açıklama, kapak görseli ve fiyat gerekli', 'error');
   try {
     await db.collection('designs').add({
-      title, sport, description, coverImage, previewUrl: coverImage, sourceUrl, tags,
+      title, sport, description, coverImage, previewUrl: coverImage, galleryImages: uploadedGalleryUrls.slice(0, 8), sourceUrl, tags,
       priceStandard, priceExclusive,
       designerId: currentUser.uid,
       designerName: currentUser.name,
@@ -335,12 +384,16 @@ async function submitDesign() {
       visibility: 'private',
       featured: false,
       editorPick: false,
+      archived: false,
       views: 0, likes: 0, sales: 0,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     ['upTitle','upDesc','upPreviewUrl','upSourceUrl','upPrice','upExclusivePrice','upTags'].forEach(id => { if ($(id)) $(id).value=''; });
     if ($('upImageFile')) $('upImageFile').value = '';
+    if ($('upGalleryFiles')) $('upGalleryFiles').value = '';
+    uploadedGalleryUrls = [];
+    renderGalleryPreview();
     $('uploadPreview').textContent = 'Önizleme yok';
     syncUploadLivePreview();
     closeModal('uploadModal');
@@ -439,8 +492,13 @@ function renderHome() {
 function applyFilters() {
   const sport = $('filterSport')?.value || '';
   const sort = $('sortSelect')?.value || 'new';
+  const q = ($('searchInput')?.value || '').trim().toLowerCase();
   let arr = [...allDesigns];
   if (sport) arr = arr.filter(d => d.sport === sport);
+  if (q) arr = arr.filter(d => {
+    const hay = [d.title, d.description, ...(d.tags || []), d.designerName].join(' ').toLowerCase();
+    return hay.includes(q);
+  });
   if (sort === 'new') arr.sort((a,b)=> (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
   if (sort === 'popular') arr.sort((a,b)=> ((b.likes||0)+(b.views||0)*0.5) - ((a.likes||0)+(a.views||0)*0.5));
   if (sort === 'priceAsc') arr.sort((a,b)=> (a.priceStandard||0) - (b.priceStandard||0));
@@ -448,7 +506,7 @@ function applyFilters() {
   $('exploreGrid').innerHTML = arr.map(buildDesignCard).join('') || `<p class="muted">Sonuç bulunamadı.</p>`;
   $('exploreCount').textContent = `${arr.length} tasarım`;
 }
-function clearFilters(){ $('filterSport').value=''; $('sortSelect').value='new'; applyFilters(); }
+function clearFilters(){ if($('filterSport')) $('filterSport').value=''; if($('sortSelect')) $('sortSelect').value='new'; if($('searchInput')) $('searchInput').value=''; applyFilters(); }
 
 async function renderDesigners() {
   try {
@@ -483,12 +541,16 @@ async function openDesign(id) {
     if (!doc.exists) return;
     design = { id: doc.id, ...doc.data() };
   }
-  try { await db.collection('designs').doc(id).set({ views: firebase.firestore.FieldValue.increment(1), updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true }); } catch {}
   const d = design;
   const isFav = favoriteIds.has(id);
+  const gallery = [d.coverImage, ...((d.galleryImages || []).filter(Boolean))].filter(Boolean);
+  const main = gallery[0] || '';
   $('designModalContent').innerHTML = `
     <div class="design-detail">
-      <div class="design-detail-cover">${d.coverImage ? `<img src="${sanitizeHTML(d.coverImage)}" alt="${sanitizeHTML(d.title)}">` : ''}</div>
+      <div>
+        <div class="design-detail-cover">${main ? `<img id="designMainImage" src="${sanitizeHTML(main)}" alt="${sanitizeHTML(d.title)}">` : ''}</div>
+        ${gallery.length > 1 ? `<div class="design-gallery-strip">${gallery.map((img, idx)=>`<button type="button" class="design-gallery-thumb ${idx===0?'active':''}" onclick="setDesignMainImage('${sanitizeHTML(img)}', this)"><img src="${sanitizeHTML(img)}" alt="galeri ${idx+1}"></button>`).join('')}</div>` : ''}
+      </div>
       <div>
         <div class="design-meta"><span>${sanitizeHTML((d.sport||'').toUpperCase())}</span><span onclick="event.stopPropagation(); openProfilePage('${d.designerId || ''}')">${sanitizeHTML(d.designerName||'Designer')}</span></div>
         <h2 class="section-head" style="display:block;margin-bottom:8px"><span style="font-family:'Bebas Neue',sans-serif;font-size:52px">${sanitizeHTML(d.title || 'İsimsiz Tasarım')}</span></h2>
@@ -503,6 +565,12 @@ async function openDesign(id) {
       </div>
     </div>`;
   showModal('designModal');
+}
+function setDesignMainImage(url, btn) {
+  const img = $('designMainImage');
+  if (img) img.src = url;
+  document.querySelectorAll('.design-gallery-thumb').forEach(el => el.classList.remove('active'));
+  btn?.classList.add('active');
 }
 
 async function toggleFavorite(designId) {
@@ -596,7 +664,7 @@ function renderFavorites() {
 
 async function renderAdminPanel() {
   if (!currentUser?.isAdmin) return;
-  await Promise.all([renderPendingDesigns(), renderContactMessages(), renderUsersAdmin()]);
+  await Promise.all([renderPendingDesigns(), renderContactMessages(), renderUsersAdmin(), renderPublishedDesignsAdmin()]);
 }
 
 async function renderPendingDesigns() {
@@ -612,6 +680,8 @@ async function renderPendingDesigns() {
         <div class="row-actions">
           <button class="mini-btn success" onclick="moderateDesign('${r.id}','approve')">Onayla</button>
           <button class="mini-btn danger" onclick="moderateDesign('${r.id}','reject')">Reddet</button>
+          <button class="mini-btn" onclick="moderateDesign('${r.id}','archive')">Arşivle</button>
+          <button class="mini-btn danger" onclick="moderateDesign('${r.id}','delete')">Sil</button>
         </div>
       </div>`).join('') : `<div class="empty-state">Bekleyen tasarım yok.</div>`;
   } catch (e) { $('adminPendingDesigns').innerHTML = `<div class="empty-state">Bekleyen tasarımlar yüklenemedi.</div>`; }
@@ -620,17 +690,59 @@ async function renderPendingDesigns() {
 async function moderateDesign(id, action) {
   if (!currentUser?.isAdmin) return;
   try {
+    const ref = db.collection('designs').doc(id);
     if (action === 'approve') {
-      await db.collection('designs').doc(id).set({ status:'approved', visibility:'public', updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
+      await ref.set({ status:'approved', visibility:'public', archived:false, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
       showToast('Tasarım onaylandı', 'success');
-    } else {
+    } else if (action === 'reject') {
       const rejectReason = prompt('Reddetme sebebi (opsiyonel)') || '';
-      await db.collection('designs').doc(id).set({ status:'rejected', rejectReason, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
+      await ref.set({ status:'rejected', visibility:'private', rejectReason, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
       showToast('Tasarım reddedildi', 'success');
+    } else if (action === 'archive') {
+      await ref.set({ status:'archived', visibility:'private', archived:true, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
+      showToast('Tasarım arşivlendi', 'success');
+    } else if (action === 'delete') {
+      if (!confirm('Bu tasarımı kalıcı olarak silmek istediğine emin misin?')) return;
+      await ref.delete();
+      showToast('Tasarım silindi', 'success');
+    } else if (action === 'feature') {
+      const doc = await ref.get();
+      await ref.set({ featured: !doc.data()?.featured, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
+      showToast('Öne çıkan durumu güncellendi', 'success');
+    } else if (action === 'editorPick') {
+      const doc = await ref.get();
+      await ref.set({ editorPick: !doc.data()?.editorPick, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge:true });
+      showToast('Editör seçimi durumu güncellendi', 'success');
     }
     await fetchApprovedDesigns();
     renderDashboard();
   } catch (e) { showToast('Moderasyon hatası: ' + e.message, 'error'); }
+}
+
+
+async function renderPublishedDesignsAdmin() {
+  const target = $('adminPublishedDesigns');
+  if (!target) return;
+  try {
+    const snap = await db.collection('designs').orderBy('updatedAt','desc').limit(20).get();
+    const rows = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    target.innerHTML = rows.length ? rows.map(r => `
+      <div class="admin-list-item">
+        <div class="row-meta">
+          <strong>${sanitizeHTML(r.title || 'İsimsiz Tasarım')}</strong>
+          <span class="muted">${sanitizeHTML(r.designerName || 'Designer')} · ${sanitizeHTML(r.status || 'pending')} · ₺${Number(r.priceStandard||0).toLocaleString('tr-TR')}</span>
+        </div>
+        <div class="row-actions">
+          <button class="mini-btn" onclick="openDesign('${r.id}')">Aç</button>
+          <button class="mini-btn" onclick="moderateDesign('${r.id}','archive')">Arşivle</button>
+          <button class="mini-btn" onclick="moderateDesign('${r.id}','feature')">${r.featured ? 'Featured Kapat' : 'Featured Yap'}</button>
+          <button class="mini-btn" onclick="moderateDesign('${r.id}','editorPick')">${r.editorPick ? 'Pick Kapat' : 'Editor Pick'}</button>
+          <button class="mini-btn danger" onclick="moderateDesign('${r.id}','delete')">Sil</button>
+        </div>
+      </div>`).join('') : `<div class="empty-state">Yönetilecek tasarım yok.</div>`;
+  } catch (e) {
+    target.innerHTML = `<div class="empty-state">Tasarımlar yüklenemedi.</div>`;
+  }
 }
 
 async function renderContactMessages() {
@@ -749,9 +861,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   applyLanguage();
   buildLangModal();
   $('contactForm').addEventListener('submit', submitContactForm);
-  document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', (e)=>{ if (e.target === m) m.classList.add('hidden'); }));
+  document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', (e)=>{ if (e.target === m && m.id !== 'roleModal') m.classList.add('hidden'); }));
   ['upTitle','upSport','upPrice'].forEach(id => $(id)?.addEventListener('input', syncUploadLivePreview));
   syncUploadLivePreview();
+  renderGalleryPreview();
   await fetchApprovedDesigns();
   const sharedDesignId = new URLSearchParams(window.location.search).get('design');
   if (sharedDesignId) { try { await openDesign(sharedDesignId); } catch {} }
