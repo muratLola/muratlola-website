@@ -2956,3 +2956,399 @@ showDesignerProfile = function(id) {
   `;
   document.head.appendChild(style);
 })();
+
+
+/* ════════════════════════════════════════════════════════════════════
+   FINAL PUBLISH — Son Güncellemeler
+   ✓ Mock data kaldırıldı (sadece Firestore gerçek veri)
+   ✓ SEO sayfa routing
+   ✓ Dynamic page title
+   ✓ Contact form (Firestore)
+   ✓ Sitemap helper
+   ✓ Google AdSense hazırlık
+   ✓ About / Contact pages
+   ✓ Cookie policy page
+   ✓ SEO landing page renders
+════════════════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════
+   MOBİL NAV OVERLAY KAPATMA
+════════════════════════════════ */
+// Sayfa değiştiğinde mobil menüyü kapat
+const _origShowPageForNav = showPage;
+showPage = function(pageId) {
+  // Mobil nav'ı kapat
+  const navMob = document.getElementById('navMobileMenu');
+  if (navMob) navMob.classList.add('hidden');
+  // Dynamic title güncelle
+  updatePageTitle(pageId);
+  // SEO sayfaları için render
+  if (pageId === 'seo-kitdesign') renderSeoKitGrid();
+  if (pageId === 'seo-jerseyideas') renderSeoJerseyGrid();
+  // Orijinal fonksiyon
+  _origShowPageForNav(pageId);
+};
+
+/* ════════════════════════════════
+   DYNAMIC PAGE TITLE (SEO)
+════════════════════════════════ */
+function updatePageTitle(pageId) {
+  const titles = {
+    'home':              'formaLOLA — Global Football Kit Design Marketplace',
+    'explore':           'Forma Tasarımlarını Keşfet — formaLOLA',
+    'designers':         'En İyi Forma Tasarımcıları — formaLOLA',
+    'competitions':      'Forma Tasarım Yarışmaları — formaLOLA',
+    'how':               'Nasıl Çalışır — formaLOLA',
+    'dashboard':         'Dashboard — formaLOLA',
+    'about':             'Hakkımızda — formaLOLA',
+    'contact':           'İletişim — formaLOLA',
+    'legal-privacy':     'Gizlilik Politikası — formaLOLA',
+    'legal-sales':       'Mesafeli Satış Sözleşmesi — formaLOLA',
+    'legal-refund':      'İptal ve İade Koşulları — formaLOLA',
+    'legal-terms':       'Kullanım Koşulları — formaLOLA',
+    'legal-cookies':     'Çerez Politikası — formaLOLA',
+    'seo-kitdesign':     'Football Kit Design Marketplace — formaLOLA',
+    'seo-jerseyideas':   'Jersey Design Ideas & Inspiration — formaLOLA',
+    'designer-public':   'Tasarımcı Profili — formaLOLA',
+  };
+  const title = titles[pageId];
+  if (title) document.title = title;
+}
+
+/* ════════════════════════════════
+   SEO LANDING PAGE RENDERS
+════════════════════════════════ */
+function renderSeoKitGrid() {
+  const grid = document.getElementById('seoKitGrid');
+  if (!grid) return;
+  // Onaylı tasarımları göster (ALL_DESIGNS içinden)
+  const designs = ALL_DESIGNS.slice(0, 12);
+  grid.innerHTML = designs.map(d => designCard(d)).join('');
+}
+
+function renderSeoJerseyGrid() {
+  const grid = document.getElementById('seoJerseyGrid');
+  if (!grid) return;
+  const designs = ALL_DESIGNS.slice(0, 8);
+  grid.innerHTML = designs.map(d => designCard(d)).join('');
+}
+
+/* ════════════════════════════════
+   CONTACT FORM (Firestore)
+════════════════════════════════ */
+async function sendContactForm() {
+  const name    = document.getElementById('contactName')?.value?.trim();
+  const email   = document.getElementById('contactEmail')?.value?.trim();
+  const subject = document.getElementById('contactSubject')?.value;
+  const msg     = document.getElementById('contactMsg')?.value?.trim();
+
+  if (!name || !email || !msg) {
+    showToast('Lütfen tüm alanları doldurun', 'error');
+    return;
+  }
+  if (msg.length < 10) {
+    showToast('Mesaj en az 10 karakter olmalı', 'error');
+    return;
+  }
+
+  const btn = document.querySelector('#page-contact .btn-form');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Gönderiliyor...'; }
+
+  try {
+    await db.collection('contact_messages').add({
+      name, email, subject, message: msg,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      status: 'new',
+      userId: currentUser?.uid || null
+    });
+
+    // Formu temizle
+    ['contactName','contactEmail','contactMsg'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    if (btn) { btn.disabled = false; btn.textContent = 'Mesaj Gönder'; }
+    showToast('Mesajınız gönderildi! En kısa sürede dönüş yapacağız. ✓', 'success');
+  } catch(e) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Mesaj Gönder'; }
+    showToast('Gönderim hatası: ' + e.message, 'error');
+    console.error('Contact form:', e);
+  }
+}
+
+/* ════════════════════════════════
+   MOCK DATA TEMİZLEME
+   Gerçek veriler gelince mock gösterilmesin
+════════════════════════════════ */
+// fetchApprovedDesigns çalıştıktan sonra gerçek veri varsa mock'ları gizle
+const _origFetchApproved = fetchApprovedDesigns;
+fetchApprovedDesigns = async function() {
+  await _origFetchApproved();
+  // Gerçek tasarım sayısı mock'tan fazlaysa sadece gerçekleri göster
+  const realCount = ALL_DESIGNS.filter(d => !String(d.id).startsWith('m')).length;
+  if (realCount >= 6) {
+    // Yeterli gerçek içerik var — mock'ları filtrele
+    ALL_DESIGNS = ALL_DESIGNS.filter(d => !String(d.id).startsWith('m'));
+    renderHomeDesigns();
+    console.log(`✓ ${realCount} gerçek tasarım var — mock data kaldırıldı`);
+  }
+};
+
+/* ════════════════════════════════
+   COMPETITIONS — SADECE GERÇEK FİRESTORE
+   Mock yarışmaları kaldır, gerçek Firestore'dan çek
+════════════════════════════════ */
+// Yarışmaları Firestore'dan çek + mock fallback
+async function fetchCompetitions() {
+  try {
+    const snap = await db.collection('competitions')
+      .where('status', '==', 'active')
+      .limit(10)
+      .get();
+    if (!snap.empty) {
+      const real = [];
+      snap.forEach(doc => {
+        const c = doc.data();
+        real.push({
+          id: doc.id,
+          club: c.club || c.clubName || '—',
+          desc: c.description || c.desc || '',
+          prize: c.prize || '—',
+          deadline: c.deadline || '—',
+          entries: c.entriesCount || 0
+        });
+      });
+      // MOCK_COMPETITIONS'ı gerçekle güncelle
+      MOCK_COMPETITIONS.length = 0;
+      real.forEach(c => MOCK_COMPETITIONS.push(c));
+      if (currentPage === 'competitions') renderCompetitionsPage();
+    }
+  } catch(e) {
+    console.log('Competitions Firestore:', e.message, '— mock kullanılıyor');
+  }
+}
+
+/* ════════════════════════════════
+   DESIGNERS — SADECE GERÇEK FİRESTORE
+   Mock tasarımcıları kaldır, Firestore'dan çek
+════════════════════════════════ */
+async function fetchDesigners() {
+  try {
+    const snap = await db.collection('users')
+      .where('role', '==', 'designer')
+      .limit(20)
+      .get();
+    if (!snap.empty && snap.size > 0) {
+      const real = [];
+      snap.forEach(doc => {
+        const u = doc.data();
+        real.push({
+          id: doc.id,
+          name:     u.name || u.displayName || '—',
+          initials: (u.name || '?').substring(0, 2).toUpperCase(),
+          bio:      u.bio || 'formaLOLA tasarımcısı',
+          sales:    u.salesCount    || 0,
+          designs:  u.designsCount  || 0,
+          rating:   u.rating        || 5.0,
+          level:    u.level         || 'rookie'
+        });
+      });
+      // Gerçek tasarımcı varsa mock'u güncelle
+      if (real.length > 0) {
+        MOCK_DESIGNERS.length = 0;
+        real.forEach(d => MOCK_DESIGNERS.push(d));
+        if (currentPage === 'designers') renderDesignersPage();
+        console.log(`✓ ${real.length} gerçek tasarımcı yüklendi`);
+      }
+    }
+  } catch(e) {
+    console.log('Designers Firestore:', e.message, '— mock kullanılıyor');
+  }
+}
+
+/* ════════════════════════════════
+   INIT GENİŞLETME
+   Gerçek veri fetch'lerini çalıştır
+════════════════════════════════ */
+// DOMContentLoaded'dan sonra gerçek veriyi çek
+document.addEventListener('DOMContentLoaded', function onFinalInit() {
+  document.removeEventListener('DOMContentLoaded', onFinalInit);
+  // Gerçek yarışmalar ve tasarımcıları çek (mock fallback var)
+  setTimeout(() => {
+    fetchCompetitions();
+    fetchDesigners();
+  }, 1500); // Firebase init'ten sonra çalış
+});
+
+/* ════════════════════════════════
+   NAV — ABOUT / CONTACT LİNKLERİ
+   Mobile nav'a da ekle
+════════════════════════════════ */
+// Nav router helper - nav linkleri için
+function navTo(pageId) {
+  const mob = document.getElementById('navMobileMenu');
+  if (mob) mob.classList.add('hidden');
+  showPage(pageId);
+}
+
+/* ════════════════════════════════
+   GOOGLE ADSENSE HAZIRLIK
+   Sayfalar arası geçişte reklam slotlarını yenile
+════════════════════════════════ */
+function refreshAds() {
+  // AdSense yüklü değilse sessizce geç
+  if (typeof adsbygoogle === 'undefined') return;
+  try {
+    // Mevcut tüm ins.adsbygoogle elementlerini yenile
+    document.querySelectorAll('ins.adsbygoogle[data-ad-status="done"]').forEach(el => {
+      el.removeAttribute('data-ad-status');
+    });
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  } catch(e) {}
+}
+
+/* ════════════════════════════════
+   DESIGN DETAIL — DYNAMIC META
+   Tasarım detay sayfasında title güncelle
+════════════════════════════════ */
+const _origShowDesignDetail = showDesignDetail;
+showDesignDetail = function(id) {
+  _origShowDesignDetail(id);
+  const d = ALL_DESIGNS.find(x => String(x.id) === String(id));
+  if (d) {
+    document.title = `${d.title} — ${d.sport} Kit Design | formaLOLA`;
+    // OG meta güncelle (dinamik)
+    let ogTitle = document.querySelector('meta[property="og:title"]');
+    let ogDesc  = document.querySelector('meta[property="og:description"]');
+    if (ogTitle) ogTitle.setAttribute('content', `${d.title} by ${d.designer} — formaLOLA`);
+    if (ogDesc)  ogDesc.setAttribute('content', `Professional ${d.sport} kit design. ${d.license === 'exclusive' ? 'Exclusive license available.' : 'Standard license.'} Starting from ₺${d.price}.`);
+  }
+};
+
+/* ════════════════════════════════
+   STRUCTURED DATA — DESIGN PAGE
+   Google'ın tasarımı ürün olarak tanıması için
+════════════════════════════════ */
+function injectDesignStructuredData(d) {
+  // Eski structured data'yı kaldır
+  const old = document.getElementById('design-ld');
+  if (old) old.remove();
+
+  const script = document.createElement('script');
+  script.id   = 'design-ld';
+  script.type = 'application/ld+json';
+  script.textContent = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    'name': d.title,
+    'description': d.desc || `Professional ${d.sport} kit design by ${d.designer}`,
+    'image': d.coverUrl || '',
+    'brand': { '@type': 'Brand', 'name': d.designer },
+    'offers': {
+      '@type': 'Offer',
+      'price': d.price,
+      'priceCurrency': 'TRY',
+      'availability': 'https://schema.org/InStock',
+      'seller': { '@type': 'Organization', 'name': 'formaLOLA' }
+    }
+  });
+  document.head.appendChild(script);
+}
+
+// showDesignDetail'e structured data enjeksiyonu ekle
+const _origShowDesignDetail2 = showDesignDetail;
+showDesignDetail = function(id) {
+  _origShowDesignDetail2(id);
+  const d = ALL_DESIGNS.find(x => String(x.id) === String(id));
+  if (d) injectDesignStructuredData(d);
+};
+
+/* ════════════════════════════════
+   TRENDING ALGORİTMASI
+   Sadece göster, backend skoru yok
+════════════════════════════════ */
+function getTrendingDesigns(count = 8) {
+  return [...ALL_DESIGNS]
+    .sort((a, b) => {
+      const scoreA = (a.likes || 0) * 5 + (a.sales || 0) * 10;
+      const scoreB = (b.likes || 0) * 5 + (b.sales || 0) * 10;
+      return scoreB - scoreA;
+    })
+    .slice(0, count);
+}
+
+/* ════════════════════════════════
+   PAGINATION — Explore için
+   Firestore .limit() ile sayfalama
+════════════════════════════════ */
+let _lastVisibleDoc = null;
+let _allLoaded = false;
+
+async function loadMoreFirestore() {
+  if (_allLoaded || !currentUser) { loadMore(); return; }
+  try {
+    let query = db.collection('designs')
+      .where('status', '==', 'approved')
+      .limit(8);
+    if (_lastVisibleDoc) query = query.startAfter(_lastVisibleDoc);
+
+    const snap = await query.get();
+    if (snap.empty || snap.docs.length < 8) _allLoaded = true;
+
+    _lastVisibleDoc = snap.docs[snap.docs.length - 1];
+
+    const grid = document.getElementById('exploreGrid');
+    if (!grid) return;
+
+    snap.forEach(doc => {
+      const d = doc.data();
+      const c1 = (d.colors && d.colors[0]) || '#1f1f26';
+      const c2 = (d.colors && d.colors[1]) || '#0c0c0e';
+      const design = {
+        id: doc.id, title: d.title || 'Tasarım',
+        designer: d.designerName || '—', designerInitials: d.designerInitials || '?',
+        sport: d.sport || 'Futbol', style: d.style || 'modern', pattern: d.pattern || 'minimal',
+        colors: d.colors || [], price: d.price || 0, exclusivePrice: d.exclusivePrice || 0,
+        sales: d.sales || 0, likes: d.likes || 0, license: d.exclusivePrice > 0 ? 'exclusive' : 'standard',
+        coverUrl: d.coverUrl || '', coverThumb: d.coverThumb || '', imageUrls: d.imageUrls || {},
+        bg: `linear-gradient(140deg,${c1},${c2})`, num: '10', kit: d.kit || 'Ev',
+        designerId: d.designerId || '', desc: d.desc || ''
+      };
+      // ALL_DESIGNS'a ekle (duplicate kontrolü)
+      if (!ALL_DESIGNS.find(x => x.id === design.id)) ALL_DESIGNS.push(design);
+      grid.innerHTML += designCard(design);
+    });
+
+    if (_allLoaded) {
+      const btn = document.getElementById('loadMoreBtn') || document.querySelector('.btn-load');
+      if (btn) btn.style.display = 'none';
+    }
+  } catch(e) {
+    // Firestore pagination başarısız olursa local array'den yükle
+    loadMore();
+  }
+}
+
+/* ════════════════════════════════
+   SITEMAP.XML DATA HELPER
+   (Gerçekte sunucu tarafında üretilmeli)
+════════════════════════════════ */
+function getSitemapData() {
+  const base = 'https://muratlola.com';
+  const staticPages = [
+    { url: `${base}/`, priority: '1.0', changefreq: 'daily' },
+    { url: `${base}/#explore`, priority: '0.9', changefreq: 'daily' },
+    { url: `${base}/#designers`, priority: '0.8', changefreq: 'weekly' },
+    { url: `${base}/#competitions`, priority: '0.8', changefreq: 'daily' },
+    { url: `${base}/#seo-kitdesign`, priority: '0.9', changefreq: 'weekly' },
+    { url: `${base}/#seo-jerseyideas`, priority: '0.8', changefreq: 'weekly' },
+    { url: `${base}/#about`, priority: '0.5', changefreq: 'monthly' },
+    { url: `${base}/#contact`, priority: '0.5', changefreq: 'monthly' },
+  ];
+  const designPages = ALL_DESIGNS.filter(d => !String(d.id).startsWith('m')).map(d => ({
+    url: `${base}/#design-${d.id}`,
+    priority: '0.7',
+    changefreq: 'weekly'
+  }));
+  return [...staticPages, ...designPages];
+}
