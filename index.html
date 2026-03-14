@@ -77,7 +77,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style_marketplace.css?v=20260314-premium-1">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -112,7 +112,7 @@
     <a href="#" onclick="showPage('designers');toggleMobileNav();return false;">Tasarımcılar</a>
     <a href="#" onclick="showPage('how');toggleMobileNav();return false;">Nasıl Çalışır</a>
     <a href="#" onclick="showModal('loginModal');toggleMobileNav();return false;">Giriş Yap</a>
-    <a href="#" class="upload-link" onclick="showModal('uploadModal');toggleMobileNav();return false;">+ Tasarım Yükle</a>
+    <a href="#" class="upload-link" onclick="authThenUpload();toggleMobileNav();return false;">+ Tasarım Yükle</a>
   </div>
 </nav>
 
@@ -124,7 +124,7 @@
     <div class="hero-content">
       <div class="hero-eyebrow">
         <span class="eyebrow-dot"></span>
-        1.200+ Tasarım &nbsp;·&nbsp; 340+ Tasarımcı &nbsp;·&nbsp; 5.800+ Satış
+        <span id="heroStatDesigns">— Tasarım</span> &nbsp;·&nbsp; <span id="heroStatDesigners">— Tasarımcı</span> &nbsp;·&nbsp; <span id="heroStatSales">— Satış</span>
       </div>
       <h1 class="hero-h1">
         <span id="hero-t1">Forma tasarımını</span><br>
@@ -137,7 +137,7 @@
           Tasarımları Keşfet
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="btn-cta-ghost" id="hero-btn2" onclick="showModal('uploadModal')">Tasarım Yükle</button>
+        <button class="btn-cta-ghost" id="hero-btn2" onclick="authThenUpload()">Tasarım Yükle</button>
       </div>
     </div>
     <div class="hero-cards">
@@ -146,17 +146,17 @@
           <div class="shirt-svg dark"><div class="shirt-stripe" style="background:#e63946"></div><div class="shirt-num">10</div></div>
         </div>
         <div class="hc-body">
-          <span class="hc-title">Gece Yarısı Pro</span>
-          <div class="hc-row"><span class="hc-price">₺449</span><span class="tag tag-hot">Çok Satan</span></div>
+          <span class="hc-title">Premium Futbol Kiti</span>
+          <div class="hc-row"><span class="hc-price">Keşfet →</span><span class="tag tag-hot">Çok Satan</span></div>
         </div>
       </div>
       <div class="hero-card" style="--hc-delay:0.1s" onclick="showPage('explore')">
-        <div class="hc-preview" style="background:linear-gradient(140deg,#fff5f5,#ffe0e0)">
-          <div class="shirt-svg light"><div class="shirt-stripe dark-stripe"></div><div class="shirt-num dark-num">7</div></div>
+        <div class="hc-preview" style="background:linear-gradient(140deg,#e63946,#8b1a22)">
+          <div class="shirt-svg dark"><div class="shirt-stripe" style="background:rgba(255,255,255,0.3)"></div><div class="shirt-num">7</div></div>
         </div>
         <div class="hc-body">
-          <span class="hc-title">Anadolu Kırmızısı</span>
-          <div class="hc-row"><span class="hc-price">₺299</span><span class="tag tag-new">Yeni</span></div>
+          <span class="hc-title">Retro Koleksiyon</span>
+          <div class="hc-row"><span class="hc-price">Keşfet →</span><span class="tag tag-new">Yeni</span></div>
         </div>
       </div>
       <div class="hero-card" style="--hc-delay:0.2s" onclick="showPage('explore')">
@@ -164,9 +164,20 @@
           <div class="shirt-svg dark"><div class="shirt-stripe" style="background:#e9c46a"></div><div class="shirt-num" style="color:#e9c46a">9</div></div>
         </div>
         <div class="hc-body">
-          <span class="hc-title">Cyber Esports Kit</span>
-          <div class="hc-row"><span class="hc-price">₺599</span><span class="tag tag-excl">Exclusive</span></div>
+          <span class="hc-title">E-Spor Kiti</span>
+          <div class="hc-row"><span class="hc-price">Keşfet →</span><span class="tag tag-excl">Exclusive</span></div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust-strip-wrap">
+    <div class="container">
+      <div class="trust-strip">
+        <div class="trust-pill"><span>✓</span><div><strong>Seçili Tasarımcılar</strong><small>Kalite odaklı vitrin</small></div></div>
+        <div class="trust-pill"><span>★</span><div><strong>Exclusive Lisans</strong><small>Tek kulübe özel satın alma</small></div></div>
+        <div class="trust-pill"><span>🔒</span><div><strong>Güvenli Süreç</strong><small>Admin onayı ve kontrollü yayın</small></div></div>
+        <div class="trust-pill"><span>⚡</span><div><strong>24 Saat İnceleme</strong><small>Hızlı moderasyon akışı</small></div></div>
       </div>
     </div>
   </section>
@@ -178,12 +189,12 @@
         <a href="#" class="sec-more" onclick="showPage('explore');return false;">Tümünü Gör →</a>
       </div>
       <div class="cats-grid">
-        <div class="cat-item" onclick="filterByCategory('Futbol')"><div class="cat-ico">⚽</div><span class="cat-nm">Futbol</span><span class="cat-ct">480</span></div>
-        <div class="cat-item" onclick="filterByCategory('Basketbol')"><div class="cat-ico">🏀</div><span class="cat-nm">Basketbol</span><span class="cat-ct">210</span></div>
-        <div class="cat-item" onclick="filterByCategory('Voleybol')"><div class="cat-ico">🏐</div><span class="cat-nm">Voleybol</span><span class="cat-ct">156</span></div>
-        <div class="cat-item cat-esports" onclick="filterByCategory('E-Spor')"><div class="cat-ico">🎮</div><span class="cat-nm">E-Spor</span><span class="cat-ct">312</span></div>
-        <div class="cat-item" onclick="filterByCategory('Rugby')"><div class="cat-ico">🏉</div><span class="cat-nm">Rugby</span><span class="cat-ct">88</span></div>
-        <div class="cat-item" onclick="filterByCategory('Amerikan Futbolu')"><div class="cat-ico">🏈</div><span class="cat-nm">Amerikan</span><span class="cat-ct">64</span></div>
+        <div class="cat-item" onclick="filterByCategory('Futbol')"><div class="cat-ico">⚽</div><span class="cat-nm">Futbol</span><span class="cat-ct" data-sport-count="Futbol">—</span></div>
+        <div class="cat-item" onclick="filterByCategory('Basketbol')"><div class="cat-ico">🏀</div><span class="cat-nm">Basketbol</span><span class="cat-ct" data-sport-count="Basketbol">—</span></div>
+        <div class="cat-item" onclick="filterByCategory('Voleybol')"><div class="cat-ico">🏐</div><span class="cat-nm">Voleybol</span><span class="cat-ct" data-sport-count="Voleybol">—</span></div>
+        <div class="cat-item cat-esports" onclick="filterByCategory('E-Spor')"><div class="cat-ico">🎮</div><span class="cat-nm">E-Spor</span><span class="cat-ct" data-sport-count="E-Spor">—</span></div>
+        <div class="cat-item" onclick="filterByCategory('Rugby')"><div class="cat-ico">🏉</div><span class="cat-nm">Rugby</span><span class="cat-ct" data-sport-count="Rugby">—</span></div>
+        <div class="cat-item" onclick="filterByCategory('Amerikan Futbolu')"><div class="cat-ico">🏈</div><span class="cat-nm">Amerikan</span><span class="cat-ct" data-sport-count="Amerikan Futbolu">—</span></div>
       </div>
     </div>
   </section>
@@ -191,7 +202,23 @@
   <section class="section">
     <div class="container">
       <div class="sec-header">
-        <h2 class="sec-title" id="sec-trend-title">Trend Tasarımlar</h2>
+        <div>
+          <h2 class="sec-title">Öne Çıkan Tasarımlar</h2>
+          <p class="sec-sub">Ana vitrinde dönen, satış potansiyeli yüksek premium seçimler.</p>
+        </div>
+        <a href="#" class="sec-more" onclick="showPage('explore');return false;">Hepsini Gör →</a>
+      </div>
+      <div class="designs-grid" id="featuredGrid"></div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="sec-header">
+        <div>
+          <h2 class="sec-title" id="sec-trend-title">Trending Now</h2>
+          <p class="sec-sub">Görüntülenme, beğeni ve tazeliğe göre otomatik dönen tasarımlar.</p>
+        </div>
         <div class="trend-tabs">
           <button class="ttab active" onclick="setTrendTab(this)">Bugün</button>
           <button class="ttab" onclick="setTrendTab(this)">Bu Hafta</button>
@@ -199,6 +226,31 @@
         </div>
       </div>
       <div class="designs-grid" id="homeGrid"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="sec-header">
+        <div>
+          <h2 class="sec-title">Yeni Yüklenenler</h2>
+          <p class="sec-sub">Yeni onaylanan ve vitrinde ilk kez görünen tasarımlar.</p>
+        </div>
+        <a href="#" class="sec-more" onclick="showPage('explore');return false;">Tümünü Gör →</a>
+      </div>
+      <div class="designs-grid" id="newGrid"></div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="sec-header">
+        <div>
+          <h2 class="sec-title">Editor's Picks</h2>
+          <p class="sec-sub">Görsel dili en güçlü, marka hissi yüksek seçkiler.</p>
+        </div>
+      </div>
+      <div class="designs-grid" id="editorsGrid"></div>
       <div class="center-btn"><button class="btn-outline-full" onclick="showPage('explore')">Tüm Tasarımları Gör</button></div>
     </div>
   </section>
@@ -240,7 +292,7 @@
     <div class="cta-inner">
       <h2 id="cta-title-txt">Tasarımlarını para kazandıran<br>bir platforma taşı.</h2>
       <p id="cta-sub-txt">Ücretsiz kaydol, ilk tasarımını bugün yayınla.</p>
-      <button class="btn-cta" id="cta-btn-txt" onclick="showModal('loginModal')">Hemen Başla</button>
+      <button class="btn-cta" id="cta-btn-txt" onclick="authThenUpload()">Hemen Başla</button>
     </div>
   </section>
 
@@ -253,13 +305,13 @@
 
       <div class="fp-group">
         <div class="fp-label" id="fp-label-sport">Spor Dalı</div>
-        <label class="fp-check"><input type="checkbox" value="Futbol" onchange="applyFilters()"><span>Futbol</span><em>480</em></label>
-        <label class="fp-check"><input type="checkbox" value="Basketbol" onchange="applyFilters()"><span>Basketbol</span><em>210</em></label>
-        <label class="fp-check"><input type="checkbox" value="Voleybol" onchange="applyFilters()"><span>Voleybol</span><em>156</em></label>
-        <label class="fp-check"><input type="checkbox" value="E-Spor" onchange="applyFilters()"><span>E-Spor</span><em>312</em></label>
-        <label class="fp-check"><input type="checkbox" value="Rugby" onchange="applyFilters()"><span>Rugby</span><em>88</em></label>
-        <label class="fp-check"><input type="checkbox" value="Amerikan Futbolu" onchange="applyFilters()"><span>Amerikan Fut.</span><em>64</em></label>
-        <label class="fp-check"><input type="checkbox" value="Hentbol" onchange="applyFilters()"><span>Hentbol</span><em>42</em></label>
+        <label class="fp-check"><input type="checkbox" value="Futbol" onchange="applyFilters()"><span>Futbol</span><em data-filter-count="Futbol">—</em></label>
+        <label class="fp-check"><input type="checkbox" value="Basketbol" onchange="applyFilters()"><span>Basketbol</span><em data-filter-count="Basketbol">—</em></label>
+        <label class="fp-check"><input type="checkbox" value="Voleybol" onchange="applyFilters()"><span>Voleybol</span><em data-filter-count="Voleybol">—</em></label>
+        <label class="fp-check"><input type="checkbox" value="E-Spor" onchange="applyFilters()"><span>E-Spor</span><em data-filter-count="E-Spor">—</em></label>
+        <label class="fp-check"><input type="checkbox" value="Rugby" onchange="applyFilters()"><span>Rugby</span><em data-filter-count="Rugby">—</em></label>
+        <label class="fp-check"><input type="checkbox" value="Amerikan Futbolu" onchange="applyFilters()"><span>Amerikan Fut.</span><em data-filter-count="Amerikan Futbolu">—</em></label>
+        <label class="fp-check"><input type="checkbox" value="Hentbol" onchange="applyFilters()"><span>Hentbol</span><em data-filter-count="Hentbol">—</em></label>
       </div>
 
       <div class="fp-group">
@@ -446,11 +498,23 @@
   </div>
 </div>
 
+<div class="overlay" id="roleModal" onclick="outsideClose(event,'roleModal')">
+  <div class="modal">
+    <button class="m-close" onclick="closeModal('roleModal')">×</button>
+    <h2 class="m-title">Hesap tipini seç</h2>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:18px">Google ile ilk girişten sonra devam etmek için hesap tipini seçmelisin.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <button class="btn-form" type="button" onclick="selectAccountRole('designer')">🎨 Tasarımcı</button>
+      <button class="btn-outline-full" type="button" onclick="selectAccountRole('club')">⚽ Takım / Kulüp</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay overlay-wide" id="uploadModal" onclick="outsideClose(event,'uploadModal')">
   <div class="modal modal-wide">
     <button class="m-close" onclick="closeModal('uploadModal')">×</button>
     <h2 class="m-title" id="upload-modal-title">Tasarım Yükle</h2>
-    <div class="upload-wizard-steps">
+    <div class="upload-shell"><div class="upload-main"><div class="upload-progress"><div><strong id="uploadStageLabel">Adım 1 / 5</strong><small id="uploadProgressText">Temel görsellerini yükle</small></div><div class="upload-progress-bar"><span id="uploadProgressFill" style="width:20%"></span></div></div><div class="upload-wizard-steps">
       <div class="wiz-step active" id="ws1">1 · Görseller</div>
       <div class="wiz-line"></div>
       <div class="wiz-step" id="ws2">2 · Bilgiler</div>
@@ -552,6 +616,37 @@
       </div>
       <div class="step-nav"><button class="btn-back" onclick="wizGo(4)">← Geri</button><button class="btn-form btn-publish" onclick="submitDesign()">Tasarımı Yayınla 🚀</button></div>
     </div>
+
+    <aside class="upload-preview">
+      <div class="uprev-card">
+        <div class="uprev-head">
+          <span class="uprev-kicker">Canlı Önizleme</span>
+          <strong id="upPreviewStatus">Taslak</strong>
+        </div>
+        <div class="uprev-image" id="upPreviewImage">
+          <div class="uprev-image-inner">formaLOLA</div>
+        </div>
+        <div class="uprev-body">
+          <div class="uprev-title" id="upPreviewTitle">Tasarım adı burada görünecek</div>
+          <div class="uprev-sub" id="upPreviewMeta">Futbol · Ev Kit</div>
+          <div class="uprev-price-row">
+            <span id="upPreviewPrice">₺499</span>
+            <span class="uprev-license" id="upPreviewLicense">Standart Lisans</span>
+          </div>
+          <div class="uprev-colors" id="upPreviewColors"></div>
+        </div>
+      </div>
+
+      <div class="uprev-checklist">
+        <div class="uprev-check-title">Yayın checklist</div>
+        <div id="uploadChecklist"></div>
+      </div>
+
+      <div class="uprev-help">
+        <strong>Satış ipucu</strong>
+        <p>Kapak görseli, kısa bir açıklama ve güçlü fiyatlandırma birlikte kullanıldığında dönüşüm belirgin şekilde artar.</p>
+      </div>
+    </aside>
   </div>
 </div>
 
@@ -652,12 +747,25 @@
           <a href="#" onclick="showPage('about');return false;">Hakkımızda</a>
           <a href="#" onclick="showPage('contact');return false;">İletişim</a>
           <a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a>
+          <a href="https://instagram.com/muratlolaa" target="_blank" rel="noopener">📷 @muratlolaa</a>
+          <a href="https://twitter.com/muratLola" target="_blank" rel="noopener">𝕏 @muratLola</a>
         </div>
       </div>
     </div>
     <div class="footer-bottom">
       <span id="footer-copy-txt">© 2026 formaLOLA · Tüm hakları saklıdır</span>
-      <span id="footer-payment-txt">256-bit SSL ile şifrelenmiş güvenli ödeme</span>
+      <div class="footer-social">
+        <a href="https://instagram.com/muratlolaa" target="_blank" rel="noopener" class="footer-social-link" title="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+        </a>
+        <a href="https://twitter.com/muratLola" target="_blank" rel="noopener" class="footer-social-link" title="X / Twitter">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="mailto:lolamurat26@gmail.com" class="footer-social-link" title="E-posta">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><rect x="2" y="4" width="20" height="16" rx="3" stroke="currentColor" stroke-width="1.5"/><path d="M2 7l10 7 10-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </a>
+      </div>
+      <span id="footer-payment-txt">256-bit SSL şifreli güvenli ödeme</span>
     </div>
   </div>
 </footer>
@@ -673,7 +781,7 @@
       <p class="legal-date">Son güncelleme: 13 Mart 2026</p>
 
       <h2>1. Veri Sorumlusu</h2>
-      <p>Bu Gizlilik Politikası, <strong>formaLOLA</strong> ("Platform", "Biz") tarafından yönetilen <strong>muratlola.com</strong> alan adlı web sitesi için geçerlidir. Kişisel verilerinizin işlenmesine ilişkin her türlü soru ve talebiniz için <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="274e494148674a525546534b484b460944484a">[email&#160;protected]</a></strong> adresine ulaşabilirsiniz.</p>
+      <p>Bu Gizlilik Politikası, <strong>formaLOLA</strong> ("Platform", "Biz") tarafından yönetilen <strong>muratlola.com</strong> alan adlı web sitesi için geçerlidir. Kişisel verilerinizin işlenmesine ilişkin her türlü soru ve talebiniz için <strong><a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a></strong> adresine ulaşabilirsiniz.</p>
 
       <h2>2. Toplanan Kişisel Veriler</h2>
       <p>Platformumuzu kullandığınızda aşağıdaki kişisel veriler toplanabilir:</p>
@@ -711,13 +819,13 @@
         <li>Verilerin silinmesini veya yok edilmesini talep etme</li>
         <li>İşleme itiraz etme</li>
       </ul>
-      <p>Haklarınızı kullanmak için <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0c65626a634c61797e6d786063606d226f6361">[email&#160;protected]</a></strong> adresine yazabilirsiniz.</p>
+      <p>Haklarınızı kullanmak için <strong><a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a></strong> adresine yazabilirsiniz.</p>
 
       <h2>7. Çerezler (Cookie)</h2>
       <p>Platformumuz; oturum yönetimi, kullanıcı tercihlerinin hatırlanması ve platform performansının ölçülmesi amacıyla çerezler kullanmaktadır. Tarayıcı ayarlarınızdan çerezleri devre dışı bırakabilirsiniz; ancak bu durumda bazı platform özellikleri çalışmayabilir.</p>
 
       <h2>8. İletişim</h2>
-      <p>Gizlilik politikamıza ilişkin sorularınız için: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f0999e969fb09d858291849c9f9c91de939f9d">[email&#160;protected]</a></strong></p>
+      <p>Gizlilik politikamıza ilişkin sorularınız için: <strong><a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a></strong></p>
     </div>
   </div>
 </div>
@@ -732,7 +840,7 @@
 
       <h2>Madde 1 — Taraflar</h2>
       <p><strong>SATICI:</strong> formaLOLA (muratlola.com) — Türkiye<br>
-      <strong>E-posta:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="51383f373e113c242330253d3e3d307f323e3c">[email&#160;protected]</a><br><br>
+      <strong>E-posta:</strong> <a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a><br><br>
       <strong>ALICI:</strong> Platforma kayıtlı kullanıcı (Tasarım satın alan kişi veya kuruluş)</p>
 
       <h2>Madde 2 — Konu</h2>
@@ -795,13 +903,13 @@
       </ul>
 
       <h2>4. İade Süreci</h2>
-      <p>İade talebinizi <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="026b6c646d426f777063766e6d6e632c616d6f">[email&#160;protected]</a></strong> adresine, sipariş numaranız ve sorunu açıklayan bir mesajla iletebilirsiniz. Talebiniz <strong>3 iş günü</strong> içinde incelenir. Onaylanan iadeler, ödemenizin yapıldığı kartınıza <strong>5-10 iş günü</strong> içinde yansıtılır.</p>
+      <p>İade talebinizi <strong><a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a></strong> adresine, sipariş numaranız ve sorunu açıklayan bir mesajla iletebilirsiniz. Talebiniz <strong>3 iş günü</strong> içinde incelenir. Onaylanan iadeler, ödemenizin yapıldığı kartınıza <strong>5-10 iş günü</strong> içinde yansıtılır.</p>
 
       <h2>5. Exclusive Lisans İadeleri</h2>
       <p>Exclusive Lisans satın alımlarında, satın alma gerçekleştiği anda tasarım platformdan kaldırıldığından ve telif hakkı devredildiğinden iade işlemi teknik olarak mümkün değildir. Dosya teslimat hatası durumları bu kapsam dışındadır.</p>
 
       <h2>6. İletişim</h2>
-      <p>İptal ve iade talepleriniz için: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fd94939b92bd90888f9c899192919cd39e9290">[email&#160;protected]</a></strong><br>
+      <p>İptal ve iade talepleriniz için: <strong><a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a></strong><br>
       Yanıt süresi: En geç 3 iş günü</p>
     </div>
   </div>
@@ -843,7 +951,7 @@
       <p>formaLOLA, yüklenen tasarımların kalitesi, üretim sonuçları veya tasarımcının sözleşme yükümlülüklerinden doğan sorumluluklar için garanti vermez. Platform, aracı konumundadır.</p>
 
       <h2>7. Hesap Güvenliği</h2>
-      <p>Hesap güvenliğinizden siz sorumlusunuz. Hesabınızın yetkisiz kullanımını fark etmeniz durumunda derhal <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0960676f6649647c7b687d65666568276a6664">[email&#160;protected]</a> adresini bilgilendiriniz.</p>
+      <p>Hesap güvenliğinizden siz sorumlusunuz. Hesabınızın yetkisiz kullanımını fark etmeniz durumunda derhal <a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a> adresini bilgilendiriniz.</p>
 
       <h2>8. Değişiklikler</h2>
       <p>formaLOLA, bu koşulları önceden haber vermeksizin değiştirme hakkını saklıdır.</p>
@@ -926,34 +1034,10 @@
 <!-- ════════════════════════════════
      Firebase & App Script
 ════════════════════════════════ -->
-
-
-<div class="overlay" id="roleModal" onclick="outsideClose(event,'roleModal')">
-  <div class="modal role-modal">
-    <button class="m-close" onclick="closeRoleModal()">×</button>
-    <div class="m-head">
-      <h3>Hesap tipini seç</h3>
-      <p style="font-size:13px;color:var(--text2);margin-top:6px">Google ile giriş tamamlandı. Devam etmek için hesap tipini seçmelisin.</p>
-    </div>
-    <div class="role-grid">
-      <button class="role-card" onclick="completeRoleSelection('designer')">
-        <div class="role-card-ico">🎨</div>
-        <div class="role-card-title">Tasarımcı</div>
-        <div class="role-card-text">Tasarım yükle, satış yap ve profilini büyüt.</div>
-      </button>
-      <button class="role-card" onclick="completeRoleSelection('club')">
-        <div class="role-card-ico">🏟️</div>
-        <div class="role-card-title">Takım / Kulüp</div>
-        <div class="role-card-text">Tasarımları keşfet, favorile ve satın al.</div>
-      </button>
-    </div>
-  </div>
-</div>
-
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-<script src="app_marketplace.js?v=20260314-premium-1"></script>
+<script src="app.js"></script>
 
 <!-- ════════════════════════════════
      ABOUT PAGE
@@ -980,28 +1064,28 @@
     <p style="font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:24px">formaLOLA; forma tasarımcıları ile amatör ve profesyonel spor kulüplerini buluşturan küresel bir pazaryeridir. Amacımız, dünyanın her köşesindeki spor takımının erişilebilir fiyatlarla profesyonel forma tasarımına ulaşmasını sağlarken, tasarımcılara küresel bir vitrin ve sürdürülebilir gelir imkânı sunmaktır.</p>
 
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:20px;letter-spacing:.5px">Platform Rakamları</h2>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:48px">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:48px" id="aboutStatsGrid">
       <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">1.200+</div>
+        <div id="statDesigns" style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">—</div>
         <div style="font-size:12px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace">Tasarım</div>
       </div>
       <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">340+</div>
+        <div id="statDesigners" style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">—</div>
         <div style="font-size:12px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace">Tasarımcı</div>
       </div>
       <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">5.800+</div>
+        <div id="statSales" style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">—</div>
         <div style="font-size:12px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace">Satış</div>
       </div>
       <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">28</div>
+        <div id="statCountries" style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">—</div>
         <div style="font-size:12px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace">Ülke</div>
       </div>
     </div>
 
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:16px;letter-spacing:.5px">İletişim</h2>
     <p style="font-size:15px;color:var(--text2);line-height:1.7">
-      E-posta: <a href="mailto:lolamurat26@gmail.com" style="color:var(--accent)">lolamurat26@gmail.com</a><br>
+      E-posta: <a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a><br>
       Instagram: <a href="https://instagram.com/formalola" target="_blank" style="color:var(--accent)">@formalola</a><br>
       Web: <a href="https://muratlola.com" style="color:var(--accent)">muratlola.com</a>
     </p>
@@ -1032,7 +1116,7 @@
     </div>
     <div style="margin-top:28px;padding:20px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg)">
       <div style="font-size:14px;color:var(--text2);line-height:1.8">
-        📧 <a href="mailto:lolamurat26@gmail.com" style="color:var(--accent)">lolamurat26@gmail.com</a><br>
+        📧 <a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a><br>
         📍 Türkiye<br>
         ⏱ Yanıt süresi: 1-2 iş günü
       </div>
@@ -1061,7 +1145,7 @@
       <h2>4. Çerezleri Kontrol Etme</h2>
       <p>Tarayıcı ayarlarınızdan çerezleri devre dışı bırakabilirsiniz. Ancak bu durumda oturum açma ve dil tercihi gibi özellikler çalışmayabilir.</p>
       <h2>5. İletişim</h2>
-      <p>Çerez politikamıza ilişkin sorularınız için: <strong>lolamurat26@gmail.com</strong></p>
+      <p>Çerez politikamıza ilişkin sorularınız için: <strong><a href="mailto:lolamurat26@gmail.com">lolamurat26@gmail.com</a></strong></p>
     </div>
   </div>
 </div>
@@ -1081,7 +1165,7 @@
       <p style="font-size:17px;color:var(--text2);margin-bottom:28px;line-height:1.6">Discover and buy premium football kit designs from the world's best designers. Custom jersey designs for your team, club or academy.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="btn-cta" onclick="showPage('explore')">Explore Designs</button>
-        <button class="btn-ghost2" onclick="showModal('uploadModal')">Upload Your Design</button>
+        <button class="btn-ghost2" onclick="authThenUpload()">Upload Your Design</button>
       </div>
     </div>
     <div class="designs-grid" id="seoKitGrid"></div>
@@ -1104,20 +1188,4 @@
 
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:48px">
       <div class="cat" onclick="filterByCategory('Futbol')"><div class="cat-ico">⚽</div><span>Football Kits</span></div>
-      <div class="cat" onclick="filterByCategory('Basketbol')"><div class="cat-ico">🏀</div><span>Basketball</span></div>
-      <div class="cat" onclick="filterByCategory('Voleybol')"><div class="cat-ico">🏐</div><span>Volleyball</span></div>
-      <div class="cat" onclick="filterByCategory('E-Spor')"><div class="cat-ico">🎮</div><span>Esports Jerseys</span></div>
-      <div class="cat" onclick="filterByCategory('Rugby')"><div class="cat-ico">🏉</div><span>Rugby Kits</span></div>
-    </div>
-    <div class="designs-grid" id="seoJerseyGrid"></div>
-  </div>
-</div>
-
-<!-- /designers -->  
-<!-- Already exists as page-designers -->
-
-<!-- /competitions -->
-<!-- Already exists as page-competitions -->
-
-</body>
-</html>
+      <div class="cat" onclick="filterByCategory('Basketbol')"><div class="cat-ico">🏀</div><span
