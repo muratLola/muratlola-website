@@ -2635,14 +2635,3 @@ body.rtl .hero { flex-direction: row-reverse; }
   .legal-doc h1 { font-size: 28px; }
   #langGrid { grid-template-columns: 1fr; }
 }
-
-
-/* ROLE MODAL */
-.role-modal { max-width: 620px; }
-.role-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; margin-top:14px; }
-.role-card { text-align:left; border:1px solid var(--border); background:var(--bg3); border-radius:16px; padding:20px; color:var(--text); transition:all .2s ease; }
-.role-card:hover { border-color: var(--accent); transform: translateY(-2px); background: var(--bg4); }
-.role-card-ico { font-size:28px; margin-bottom:12px; }
-.role-card-title { font-size:18px; font-weight:600; margin-bottom:8px; }
-.role-card-text { font-size:13px; color:var(--text2); line-height:1.55; }
-@media (max-width: 700px) { .role-grid { grid-template-columns: 1fr; } }
