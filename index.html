@@ -2,7 +2,76 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta name="keywords" content="football kit design, jersey design, soccer jersey design, custom football kits, forma tasarım, jersey design marketplace, football kit designer, sports jersey design, kit design platform, forma tasarım platformu">
+<meta name="author" content="formaLOLA">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#e63946">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://muratlola.com/">
+<meta property="og:title" content="formaLOLA — Global Football Kit Design Marketplace">
+<meta property="og:description" content="Discover and buy premium football kit designs. Designers upload, teams buy, instant delivery. The global marketplace for jersey design.">
+<meta property="og:image" content="https://muratlola.com/og-image.jpg">
+<meta property="og:site_name" content="formaLOLA">
+<meta property="og:locale" content="tr_TR">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@formalola">
+<meta name="twitter:title" content="formaLOLA — Global Football Kit Design Marketplace">
+<meta name="twitter:description" content="Discover and buy premium football kit designs. Designers upload, teams buy, instant delivery.">
+<meta name="twitter:image" content="https://muratlola.com/og-image.jpg">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://muratlola.com/">
+
+<!-- Structured Data: WebSite -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "formaLOLA",
+  "url": "https://muratlola.com",
+  "description": "Global Football Kit Design Marketplace — Designers upload, teams buy, instant delivery.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://muratlola.com/?search={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+<!-- Structured Data: Organization -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "formaLOLA",
+  "url": "https://muratlola.com",
+  "logo": "https://muratlola.com/logo.png",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "email": "info@muratlola.com"
+  }
+}
+</script>
+
+<!-- Cookie consent minimal -->
+<script>
+  window.addEventListener('DOMContentLoaded', function() {
+    if (!localStorage.getItem('fl_cookie')) {
+      var bar = document.createElement('div');
+      bar.id = 'cookieBar';
+      bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#111114;border-top:1px solid rgba(255,255,255,0.08);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;z-index:9999;font-size:13px;color:#888898;flex-wrap:wrap';
+      bar.innerHTML = '<span>Bu site çerezler kullanır. Daha fazla bilgi için <a href="#" onclick="showPage('legal-privacy');document.getElementById('cookieBar').style.display='none'" style="color:#e63946">Gizlilik Politikası</a>'na bakın.</span><button onclick="localStorage.setItem('fl_cookie','1');this.closest('#cookieBar').style.display='none'" style="padding:8px 18px;background:#e63946;border:none;border-radius:8px;color:#fff;font-size:13px;cursor:pointer;white-space:nowrap">Anladım</button>';
+      document.body.appendChild(bar);
+    }
+  });
+</script>
+
 <title>formaLOLA — Forma Tasarım Marketplace</title>
 <meta name="description" content="Forma tasarımını sat, hayalindeki formayı bul. Tasarımcılar yükler, takımlar satın alır.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -576,7 +645,13 @@
           <a href="#" onclick="showPage('legal-sales');return false;">Mesafeli Satış Sözleşmesi</a>
           <a href="#" onclick="showPage('legal-refund');return false;">İptal ve İade Koşulları</a>
           <a href="#" onclick="showPage('legal-terms');return false;">Kullanım Koşulları</a>
-          <a href="#">İletişim</a>
+          <a href="#" onclick="showPage('legal-cookies');return false;">Çerez Politikası</a>
+        </div>
+        <div class="fl-col">
+          <h4>Şirket</h4>
+          <a href="#" onclick="showPage('about');return false;">Hakkımızda</a>
+          <a href="#" onclick="showPage('contact');return false;">İletişim</a>
+          <a href="mailto:info@muratlola.com">info@muratlola.com</a>
         </div>
       </div>
     </div>
@@ -855,5 +930,170 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 <script src="app.js"></script>
+
+<!-- ════════════════════════════════
+     ABOUT PAGE
+════════════════════════════════ -->
+<div id="page-about" class="page">
+  <div class="container" style="max-width:900px;padding-top:60px;padding-bottom:80px">
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:52px;margin-bottom:8px;letter-spacing:.5px">formaLOLA Hakkında</h1>
+    <p style="font-size:16px;color:var(--text2);margin-bottom:40px;line-height:1.7">Forma tasarım ekosisteminin küresel merkezi.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:48px">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px">
+        <div style="font-size:32px;margin-bottom:12px">🎨</div>
+        <h3 style="font-size:18px;font-weight:500;margin-bottom:10px">Tasarımcılar İçin</h3>
+        <p style="font-size:14px;color:var(--text2);line-height:1.7">Forma tasarımlarını platforma yükle, küresel takımlara sat. Her satıştan %80'i senin. Tasarımcı profilin, satış istatistiklerin ve kazançların tek bir panelde.</p>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px">
+        <div style="font-size:32px;margin-bottom:12px">⚽</div>
+        <h3 style="font-size:18px;font-weight:500;margin-bottom:10px">Takımlar İçin</h3>
+        <p style="font-size:14px;color:var(--text2);line-height:1.7">Binlerce profesyonel forma tasarımı arasından filtrele, beğen, satın al. Standart veya Exclusive lisansla üretim dosyaları anında hesabına teslim edilir.</p>
+      </div>
+    </div>
+
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:20px;letter-spacing:.5px">Misyonumuz</h2>
+    <p style="font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:24px">formaLOLA; forma tasarımcıları ile amatör ve profesyonel spor kulüplerini buluşturan küresel bir pazaryeridir. Amacımız, dünyanın her köşesindeki spor takımının erişilebilir fiyatlarla profesyonel forma tasarımına ulaşmasını sağlarken, tasarımcılara küresel bir vitrin ve sürdürülebilir gelir imkânı sunmaktır.</p>
+
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:20px;letter-spacing:.5px">Platform Rakamları</h2>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:48px">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">1.200+</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace">Tasarım</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">340+</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace">Tasarımcı</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">5.800+</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace">Satış</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--accent)">28</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace">Ülke</div>
+      </div>
+    </div>
+
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:16px;letter-spacing:.5px">İletişim</h2>
+    <p style="font-size:15px;color:var(--text2);line-height:1.7">
+      E-posta: <a href="mailto:info@muratlola.com" style="color:var(--accent)">info@muratlola.com</a><br>
+      Instagram: <a href="https://instagram.com/formalola" target="_blank" style="color:var(--accent)">@formalola</a><br>
+      Web: <a href="https://muratlola.com" style="color:var(--accent)">muratlola.com</a>
+    </p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     CONTACT PAGE
+════════════════════════════════ -->
+<div id="page-contact" class="page">
+  <div class="container" style="max-width:700px;padding-top:60px;padding-bottom:80px">
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:52px;margin-bottom:8px;letter-spacing:.5px">İletişim</h1>
+    <p style="font-size:16px;color:var(--text2);margin-bottom:36px">Soru, öneri veya iş birliği için bize ulaşın.</p>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px">
+      <div class="fg"><label>Adınız</label><input type="text" id="contactName" placeholder="Adınız Soyadınız"></div>
+      <div class="fg"><label>E-posta</label><input type="email" id="contactEmail" placeholder="ornek@email.com"></div>
+      <div class="fg"><label>Konu</label>
+        <select id="contactSubject">
+          <option>Genel Soru</option>
+          <option>Tasarımcı Başvurusu</option>
+          <option>Teknik Destek</option>
+          <option>İş Birliği</option>
+          <option>Telif Hakkı İhlali</option>
+        </select>
+      </div>
+      <div class="fg"><label>Mesajınız</label><textarea id="contactMsg" rows="5" placeholder="Mesajınızı yazın..."></textarea></div>
+      <button class="btn-form" onclick="sendContactForm()">Mesaj Gönder</button>
+    </div>
+    <div style="margin-top:28px;padding:20px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg)">
+      <div style="font-size:14px;color:var(--text2);line-height:1.8">
+        📧 <a href="mailto:info@muratlola.com" style="color:var(--accent)">info@muratlola.com</a><br>
+        📍 Türkiye<br>
+        ⏱ Yanıt süresi: 1-2 iş günü
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     COOKIE POLICY PAGE
+════════════════════════════════ -->
+<div id="page-legal-cookies" class="page">
+  <div class="container legal-container">
+    <button class="back-btn" onclick="goBack()">← Geri</button>
+    <div class="legal-doc">
+      <h1>Çerez (Cookie) Politikası</h1><p class="legal-date">Son güncelleme: Mart 2026</p>
+      <h2>1. Çerezler Nedir?</h2>
+      <p>Çerezler, tarayıcınız aracılığıyla cihazınıza kaydedilen küçük metin dosyalarıdır. Web siteleri bu dosyalar aracılığıyla oturum bilgilerini, dil tercihlerini ve diğer kişiselleştirme verilerini hatırlar.</p>
+      <h2>2. Hangi Çerezleri Kullanıyoruz?</h2>
+      <ul>
+        <li><strong>Zorunlu Çerezler:</strong> Oturum yönetimi ve güvenlik (Firebase Authentication)</li>
+        <li><strong>Tercih Çerezleri:</strong> Dil seçimi (fl_lang), çerez onayı (fl_cookie)</li>
+        <li><strong>Analitik Çerezler:</strong> Google Analytics (ileride eklenecek) — ziyaretçi istatistikleri</li>
+      </ul>
+      <h2>3. Üçüncü Taraf Çerezleri</h2>
+      <p>Platformumuz Google Firebase ve ImgBB hizmetlerini kullanmaktadır. Bu hizmetler kendi çerez politikaları kapsamında veri işleyebilir.</p>
+      <h2>4. Çerezleri Kontrol Etme</h2>
+      <p>Tarayıcı ayarlarınızdan çerezleri devre dışı bırakabilirsiniz. Ancak bu durumda oturum açma ve dil tercihi gibi özellikler çalışmayabilir.</p>
+      <h2>5. İletişim</h2>
+      <p>Çerez politikamıza ilişkin sorularınız için: <strong>info@muratlola.com</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SEO LANDING PAGES
+     (Google indexlemesi için)
+════════════════════════════════ -->
+
+<!-- /football-kit-design -->
+<div id="page-seo-kitdesign" class="page">
+  <div class="container" style="padding-top:50px;padding-bottom:80px">
+    <div style="text-align:center;max-width:700px;margin:0 auto 60px">
+      <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6vw,72px);line-height:.95;margin-bottom:18px;letter-spacing:.5px">
+        Football Kit Design<br><span style="color:var(--accent)">Marketplace</span>
+      </h1>
+      <p style="font-size:17px;color:var(--text2);margin-bottom:28px;line-height:1.6">Discover and buy premium football kit designs from the world's best designers. Custom jersey designs for your team, club or academy.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-cta" onclick="showPage('explore')">Explore Designs</button>
+        <button class="btn-ghost2" onclick="showModal('uploadModal')">Upload Your Design</button>
+      </div>
+    </div>
+    <div class="designs-grid" id="seoKitGrid"></div>
+    <div style="text-align:center;margin-top:32px">
+      <button class="btn-out" onclick="showPage('explore')">View All Designs →</button>
+    </div>
+  </div>
+</div>
+
+<!-- /jersey-design-ideas -->
+<div id="page-seo-jerseyideas" class="page">
+  <div class="container" style="padding-top:50px;padding-bottom:80px">
+    <div style="text-align:center;max-width:700px;margin:0 auto 50px">
+      <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6vw,68px);line-height:.95;margin-bottom:18px;letter-spacing:.5px">
+        Jersey Design<br><span style="color:var(--accent)">Ideas & Inspiration</span>
+      </h1>
+      <p style="font-size:17px;color:var(--text2);margin-bottom:28px;line-height:1.6">Browse hundreds of professional jersey design ideas. From retro classics to futuristic concepts — find the perfect design for your team.</p>
+      <button class="btn-cta" onclick="showPage('explore')">Browse All Jersey Designs</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:48px">
+      <div class="cat" onclick="filterByCategory('Futbol')"><div class="cat-ico">⚽</div><span>Football Kits</span></div>
+      <div class="cat" onclick="filterByCategory('Basketbol')"><div class="cat-ico">🏀</div><span>Basketball</span></div>
+      <div class="cat" onclick="filterByCategory('Voleybol')"><div class="cat-ico">🏐</div><span>Volleyball</span></div>
+      <div class="cat" onclick="filterByCategory('E-Spor')"><div class="cat-ico">🎮</div><span>Esports Jerseys</span></div>
+      <div class="cat" onclick="filterByCategory('Rugby')"><div class="cat-ico">🏉</div><span>Rugby Kits</span></div>
+    </div>
+    <div class="designs-grid" id="seoJerseyGrid"></div>
+  </div>
+</div>
+
+<!-- /designers -->  
+<!-- Already exists as page-designers -->
+
+<!-- /competitions -->
+<!-- Already exists as page-competitions -->
+
 </body>
 </html>
