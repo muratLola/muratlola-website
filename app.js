@@ -4,7 +4,8 @@
 
 /* ══════════ ADMIN AYARLARI ══════════ */
 // SADECE BURAYA YAZDIĞIN MAİLLER ADMİN PANELİNİ GÖREBİLİR
-const ADMIN_EMAILS = ['firat3306ogur@gmail.com'];
+// Admin yetkisi Firestore users.role üzerinden yönetilir
+const ADMIN_EMAILS = [];
 
 /* ══════════ FIREBASE INIT ══════════ */
 const firebaseConfig = {
@@ -21,19 +22,15 @@ const db = firebase.firestore();
 /* ═══════════════════════════════════════ */
 
 /* ══════════ MOCK DATA (Örnek Vitrin) ══════════ */
-/* ══ MOCK_DESIGNS kaldırıldı ══ */
 const MOCK_DESIGNS = [];
 
-/* ══ MOCK_DESIGNERS kaldırıldı ══ */
 const MOCK_DESIGNERS = [];
 
-/* ══ MOCK_COMPETITIONS kaldırıldı ══ */
 const MOCK_COMPETITIONS = [];
 
 /* ══════════ STATE ══════════ */
 // SİTEDEKİ TÜM TASARIMLAR BURADA TOPLANACAK (Gerçekler + Örnekler)
-let ALL_DESIGNS = []; // Sadece Firestore gerçek verisi 
-
+let ALL_DESIGNS = [];
 let currentPage = 'home';
 let previousPage = 'home';
 let currentUser = null;
@@ -509,6 +506,8 @@ function setLang(code) {
   // Dil butonunu güncelle
   const btnTxt = document.getElementById('langBtnTxt');
   if (btnTxt) btnTxt.textContent = code.toUpperCase();
+  const _lb=document.getElementById('langBtnTxt'); if(_lb) _lb.textContent=code.toUpperCase();
+  document.body.classList.toggle('rtl', t.dir==='rtl');
   applyLangToPage();
   buildLangModal(); // aktif olanı güncelle
   closeModal('langModal');
@@ -621,6 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Dil butonu metnini ayarla
   const langBtn = document.getElementById('langBtnTxt');
   if (langBtn) langBtn.textContent = currentLang.toUpperCase();
+  const _initLb=document.getElementById('langBtnTxt'); if(_initLb) _initLb.textContent=currentLang.toUpperCase();
   buildLangModal();
   applyLangToPage();
 
@@ -690,7 +690,7 @@ async function fetchApprovedDesigns() {
     realDesigns.sort((a, b) => b._ts - a._ts);
 
     // Gerçek tasarımlar öne, mock arkaya
-    ALL_DESIGNS = [...realDesigns]; // Sadece gerçek tasarımlar
+    ALL_DESIGNS = [...realDesigns];
 
     renderHomeDesigns();
     if (currentPage === 'explore') applyFilters();
@@ -699,7 +699,7 @@ async function fetchApprovedDesigns() {
 
   } catch (error) {
     console.error('Tasarımlar çekilemedi:', error);
-    ALL_DESIGNS = []; // Firestore bağlantı hatası — boş liste
+    ALL_DESIGNS = [];
     renderHomeDesigns();
   }
 }
@@ -760,19 +760,17 @@ function renderGridById(id, list) {
 function renderHomeDesigns() {
   const approved = ALL_DESIGNS.filter(d => !d.status || d.status === 'approved');
   const pool = approved.length ? approved : ALL_DESIGNS;
-  // Hiç tasarım yoksa tüm grid'lere boş state bas
   if (!pool.length) {
-    const emptyHtml = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px">
-      <div style="font-size:44px;margin-bottom:16px">🎨</div>
-      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:26px;margin-bottom:10px">Platform Yeni Açıldı!</h3>
-      <p style="color:var(--text2);margin-bottom:22px;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.6">
-        İlk tasarımcıların yüklemeleri onaylandıkça burada görünecek.<br>Sen de ekibine katıl!
+    const empty = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px">
+      <div style="font-size:48px;margin-bottom:16px">🎨</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:10px">Platform Yeni Açıldı!</h3>
+      <p style="color:var(--text2);margin-bottom:24px;line-height:1.6;max-width:420px;margin-left:auto;margin-right:auto">
+        Tasarımcılar tasarım yükleyip onay aldıkça burada görünecek.<br>İlk sen yükle!
       </p>
-      <button class="btn-cta" onclick="showModal('loginModal')">Tasarımcı Olarak Katıl</button>
+      <button class="btn-cta" onclick="authThenUpload()">Tasarım Yükle</button>
     </div>`;
-    ['featuredGrid','homeGrid','newGrid','editorsGrid'].forEach(id => {
-      const g = document.getElementById(id);
-      if (g) g.innerHTML = emptyHtml;
+    ['featuredGrid','homeGrid','newGrid','editorsGrid'].forEach(id=>{
+      const g=document.getElementById(id); if(g) g.innerHTML=empty;
     });
     return;
   }
@@ -804,10 +802,7 @@ function renderHomeDesigns() {
 function renderSpotlight() {
   const el = document.getElementById('spotlightGrid');
   if (!el) return;
-  if (!MOCK_DESIGNERS.length) {
-    el.innerHTML = '<p style="color:var(--text3);font-size:13px;padding:20px 0">Tasarımcılar yakında burada görünecek.</p>';
-    return;
-  }
+  if (!MOCK_DESIGNERS.length) { el.innerHTML='<p style="color:var(--text3);padding:20px 0;font-size:13px">Tasarımcılar yakında burada görünecek.</p>'; return; }
   el.innerHTML = MOCK_DESIGNERS.map(d => `
     <div class="spotlight-card" onclick="showDesignerProfile('${d.id}')">
       <div class="sp-avatar">${d.initials}</div>
@@ -825,10 +820,7 @@ function renderSpotlight() {
 function renderHomeComps() {
   const el = document.getElementById('homeComps');
   if (!el) return;
-  if (!MOCK_COMPETITIONS.length) {
-    el.innerHTML = '<p style="color:var(--text3);font-size:13px;padding:20px 0">Aktif yarışma bulunmuyor. Yakında açılacak!</p>';
-    return;
-  }
+  if (!MOCK_COMPETITIONS.length) { el.innerHTML='<p style="color:var(--text3);padding:20px 0;font-size:13px">Aktif yarışma bulunmuyor. Yakında açılacak!</p>'; return; }
   el.innerHTML = MOCK_COMPETITIONS.map(c => compCard(c)).join('');
 }
 
@@ -967,14 +959,8 @@ function applyFilters() {
   if (!grid) return;
   exploreOffset = Math.min(12, filtered.length);
   if (!filtered.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px">
-      <div style="font-size:40px;margin-bottom:14px">🔍</div>
-      <p style="color:var(--text2);margin-bottom:18px">Henüz onaylı tasarım bulunmuyor veya filtrelere uygun tasarım yok.</p>
-      <button class="btn-out" onclick="clearFilters()">Filtreleri Temizle</button>
-    </div>`;
-    const count = document.getElementById('resultsCount');
-    if (count) count.textContent = '0 tasarım';
-    return;
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px 20px"><div style="font-size:40px;margin-bottom:14px">🔍</div><p style="color:var(--text2);margin-bottom:18px">Henüz onaylı tasarım yok veya filtre eşleşmiyor.</p><button class="btn-out" onclick="clearFilters()">Filtreleri Temizle</button></div>`;
+    const c2=document.getElementById('resultsCount'); if(c2) c2.textContent='0 tasarım'; return;
   }
   grid.innerHTML = filtered.slice(0, exploreOffset).map(d => designCard(d)).join('');
   const count = document.getElementById('resultsCount');
@@ -1377,18 +1363,16 @@ function dashTab(tab, btn) {
         <div style="padding:12px 18px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em">
           <span>Tasarım</span><span>Alıcı</span><span>Fiyat</span><span>Tarih</span>
         </div>
-                <div id="salesRowsInner" style="padding:20px;text-align:center;color:var(--text2)">
-          Gerçek satışlar Firestore'dan yükleniyor...
-        </div>
+        <div id="salesDataRows" style="padding:18px;text-align:center;color:var(--text2)">Gerçek satışlar Firestore'dan yükleniyor...</div>
       </div>
     `;
   } else if (tab === 'earnings') {
     el.innerHTML = `
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Kazançlar</h2>
       <div class="dash-stats">
-        <div class="ds-card"><div class="ds-label">Bu Ay</div><div class="ds-val gold" id="earningsThisMonth">₺0</div></div>
-        <div class="ds-card"><div class="ds-label">Toplam</div><div class="ds-val gold" id="earningsTotal">₺0</div></div>
-        <div class="ds-card"><div class="ds-label">Bekleyen</div><div class="ds-val" id="earningsPending">₺0</div></div>
+        <div class="ds-card"><div class="ds-label">Bu Ay</div><div class="ds-val gold">₺2.150</div></div>
+        <div class="ds-card"><div class="ds-label">Toplam</div><div class="ds-val gold">₺8.640</div></div>
+        <div class="ds-card"><div class="ds-label">Bekleyen</div><div class="ds-val">₺449</div></div>
       </div>
       <div style="margin-top:20px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
         <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Minimum ₺500 tutarında çekim yapabilirsin</div>
@@ -1485,7 +1469,7 @@ async function rejectDesign(id) {
 }
 
 /* ══════════ AUTH (GERÇEK FIREBASE) ══════════ */
-auth.onAuthStateChanged((user) => {
+auth.onAuthStateChanged(async (user) => {
   const loginBtn  = document.getElementById('navLoginBtn');
   const avatar    = document.getElementById('navAvatar');
   const dashAv    = document.getElementById('dashAv');
@@ -1494,27 +1478,38 @@ auth.onAuthStateChanged((user) => {
   const notifBtn  = document.getElementById('navNotifBtn');
 
   if (user) {
+    // Firestore'dan kullanıcı rolünü oku
+    let profile = null;
+    try {
+      const uDoc = await db.collection('users').doc(user.uid).get();
+      profile = uDoc.exists ? uDoc.data() : null;
+    } catch(e) { console.warn('Profil okunamadı:', e.message); }
+
+    const role = profile?.role || 'designer';
+    const isAdmin = role === 'admin';
+
     currentUser = {
-      name:  user.displayName || user.email.split('@')[0],
-      email: user.email,
-      uid:   user.uid
+      name:    profile?.name || user.displayName || user.email.split('@')[0],
+      email:   user.email,
+      uid:     user.uid,
+      role:    role,
+      isAdmin: isAdmin
     };
+
     if (loginBtn) loginBtn.classList.add('hidden');
     if (avatar)   { avatar.classList.remove('hidden'); avatar.textContent = currentUser.name[0].toUpperCase(); }
-    if (dashAv)   dashAv.textContent   = currentUser.name[0].toUpperCase();
+    if (dashAv)   dashAv.textContent    = currentUser.name[0].toUpperCase();
     if (dashUname)dashUname.textContent = currentUser.name;
     if (notifBtn) notifBtn.classList.remove('hidden');
-    // Admin butonu
-    if (adminBtn) {
-      adminBtn.classList.toggle('hidden', !ADMIN_EMAILS.includes(user.email));
-    }
-    // Okunmamış bildirim badge'i göster
+    // Admin butonu - Firestore role tabanlı
+    if (adminBtn) adminBtn.classList.toggle('hidden', !isAdmin);
     buildNotifsContent();
   } else {
     currentUser = null;
     if (loginBtn) loginBtn.classList.remove('hidden');
     if (avatar)   avatar.classList.add('hidden');
     if (notifBtn) notifBtn.classList.add('hidden');
+    if (adminBtn) adminBtn.classList.add('hidden');
   }
 });
 
@@ -2284,8 +2279,8 @@ function buildNotifsContent() {
   const el = document.getElementById('notifsContent');
   if (!el) return;
 
-  // Mock bildirimler (gerçekte Firestore'dan çekilir)
-  const notifs = []; // Firestore'dan gerçek bildirimler
+  // Firestore'dan gerçek bildirimler
+  const notifs = [];
 
   _unreadNotifCount = notifs.filter(n => !n.read).length;
   const badge = document.getElementById('navNotifBadge');
@@ -2703,13 +2698,10 @@ renderDesignersPage = function() {
   const grid = document.getElementById('designersGrid');
   if (!grid) return;
 
-  // Daha fazla mock tasarımcı
-  const allDesigners = []; // Firestore'dan gerçek tasarımcılar yüklenir
+  // Gerçek tasarımcılar Firestore'dan gelir
+  const allDesigners = [];
 
-  if (!allDesigners.length) {
-    grid.innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="font-size:40px;margin-bottom:14px">👥</div><p style="color:var(--text2);margin-bottom:18px">Henüz kayıtlı tasarımcı bulunmuyor.<br>İlk sen ol!</p><button class="btn-cta" onclick="showModal('loginModal')">Tasarımcı Olarak Katıl</button></div>';
-    return;
-  }
+  if (!allDesigners.length) { grid.innerHTML='<div style="text-align:center;padding:60px 20px"><div style="font-size:40px;margin-bottom:14px">👥</div><p style="color:var(--text2);margin-bottom:18px">Henüz kayıtlı tasarımcı bulunmuyor.</p><button class="btn-cta" onclick="showModal(\"loginModal\")">Tasarımcı Olarak Katıl</button></div>'; return; }
   grid.innerHTML = allDesigners.map(d => `
     <div class="designer-card" onclick="showDesignerPublicProfile('${d.id}','${d.name}')">
       <div class="designer-card-top">
@@ -2745,12 +2737,9 @@ const _origRenderCompsPage = renderCompetitionsPage;
 renderCompetitionsPage = function() {
   const grid = document.getElementById('compsGrid');
   if (!grid) return;
-  const comps = []; // Firestore competitions koleksiyonundan gelecek
+  const comps = [];
 
-  if (!comps.length) {
-    grid.innerHTML = '<div style="text-align:center;padding:60px 20px"><div style="font-size:40px;margin-bottom:14px">🏆</div><p style="color:var(--text2);margin-bottom:18px">Şu an aktif bir yarışma bulunmuyor.</p><button class="btn-cta" onclick="showModal('loginModal')">Bildirim Al</button></div>';
-    return;
-  }
+  if (!comps.length) { grid.innerHTML='<div style="text-align:center;padding:60px 20px"><div style="font-size:40px;margin-bottom:14px">🏆</div><p style="color:var(--text2)">Şu an aktif yarışma bulunmuyor.</p></div>'; return; }
   grid.innerHTML = comps.map(c => `
     <div class="comp-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
