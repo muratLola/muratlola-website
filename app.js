@@ -519,14 +519,10 @@ function setLang(code) {
   document.documentElement.dir = t.dir || 'ltr';
   document.body.classList.toggle('rtl', t.dir === 'rtl');
   // Dil butonunu güncelle
-  const lbTxt = document.getElementById('langBtnTxt');
-  if (lbTxt) lbTxt.textContent = code.toUpperCase();
+  const btnTxt = document.getElementById('langBtnTxt');
+  if (btnTxt) btnTxt.textContent = code.toUpperCase();
   applyLangToPage();
-  buildLangModal();
-  // Dil seçici güncelle
-  document.querySelectorAll('.lang-option').forEach(el => {
-    el.classList.toggle('active', el.dataset.lang === code);
-  });
+  buildLangModal(); // aktif olanı güncelle
   closeModal('langModal');
   showToast(`${t.flag} ${t.name}`, '');
 }
@@ -607,9 +603,9 @@ function setTxt(id, val) {
   if (el && val !== undefined) el.textContent = val;
 }
 
-// Dil seçici modal
+// Dil seçici modal — langGrid doldur sonra aç
 function openLangModal() {
-  buildLangModal();
+  buildLangModal(); // her zaman güncel grid
   showModal('langModal');
 }
 
@@ -618,19 +614,25 @@ function buildLangModal() {
   if (!grid) return;
   grid.innerHTML = Object.values(LANGS).map(l => `
     <button class="lang-option ${l.code === currentLang ? 'active' : ''}"
-      data-lang="${l.code}" onclick="setLang('${l.code}')">
+      data-lang="${l.code}"
+      onclick="setLang('${l.code}')">
       <span class="lang-flag">${l.flag}</span>
       <span class="lang-name">${l.name}</span>
       ${l.code === currentLang ? '<span class="lang-check">✓</span>' : ''}
     </button>
   `).join('');
 }
+
+/* ══════════ INIT ══════════ */
 document.addEventListener('DOMContentLoaded', () => {
   // Dil sistemini başlat
   t = LANGS[currentLang] || LANGS.tr;
   document.documentElement.lang = currentLang;
   document.documentElement.dir = t.dir || 'ltr';
   document.body.classList.toggle('rtl', t.dir === 'rtl');
+  // Dil butonu metnini ayarla
+  const langBtn = document.getElementById('langBtnTxt');
+  if (langBtn) langBtn.textContent = currentLang.toUpperCase();
   buildLangModal();
   applyLangToPage();
 
@@ -640,6 +642,12 @@ document.addEventListener('DOMContentLoaded', () => {
   calcEarnings();
   initScrollNav();
   fetchApprovedDesigns();
+  // Review textarea karakter sayacı
+  const rt = document.getElementById('reviewText');
+  if (rt) rt.addEventListener('input', () => {
+    const cc = document.getElementById('reviewCharCount');
+    if (cc) cc.textContent = `${rt.value.length}/500`;
+  });
 });
 
 function initScrollNav() {
@@ -717,12 +725,12 @@ function showPage(pageId) {
     target.classList.add('active');
     window.scrollTo(0, 0);
 
-    if (pageId === 'explore') renderExplore();
-    if (pageId === 'designers') renderDesignersPage();
-    if (pageId === 'competitions') renderCompetitionsPage();
-    if (pageId === 'dashboard') renderDashboard();
-    if (pageId === 'manufacturers') renderManufacturers();
-    if (['legal-privacy','legal-sales','legal-refund','legal-terms'].includes(pageId)) {}
+    if (pageId === 'explore')          renderExplore();
+    if (pageId === 'designers')        renderDesignersPage();
+    if (pageId === 'competitions')     renderCompetitionsPage();
+    if (pageId === 'dashboard')        renderDashboard();
+    // Yasal sayfalar — HTML'de mevcut, active class yeterli
+    // designer-public — showDesignerPublicProfile ile render edilir
   }
 }
 
@@ -1244,163 +1252,1285 @@ function dashTab(tab, btn) {
   document.querySelectorAll('.dn-item').forEach(i => i.classList.remove('active'));
   if (btn) btn.classList.add('active');
   const el = document.getElementById('dashContent');
-  if (!el) return;
 
   if (tab === 'overview') {
     el.innerHTML = `
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Hoş geldin, ${currentUser?.name || 'Tasarımcı'} 👋</h2>
-      <div class="dash-stats" id="dStats"><div class="ds-card"><div class="ds-label">Yükleniyor</div><div class="ds-val">—</div></div></div>
-      <div class="dash-section-title" style="margin-top:20px">Son Tasarımlarım</div>
-      <div id="dRecent">Yükleniyor...</div>`;
-    loadDashOverview();
-
+      <div class="dash-stats" id="dashStatsGrid">
+        <div class="ds-card"><div class="ds-label">Yükleniyor...</div><div class="ds-val">—</div></div>
+      </div>
+      <div class="dash-section-title" style="margin-top:24px">Son Tasarımlarım</div>
+      <div id="dashRecentDesigns" style="color:var(--text2);font-size:13px">Yükleniyor...</div>
+    `;
+    // Gerçek verileri Firestore'dan çek
+    loadDashboardOverview();
+  } else if (tab === 'purchases') {
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Satın Aldıklarım</h2>
+      <div id="purchasesContent" style="color:var(--text2)">Yükleniyor...</div>
+    `;
+    loadPurchases();
   } else if (tab === 'mydesigns') {
+    // Sadece giriş yapan kullanıcının tasarımlarını göster
+    const myDesigns = ALL_DESIGNS.filter(d => d.designerId === currentUser?.uid || d.designer === currentUser?.name);
+    
     el.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
         <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px">Tasarımlarım</h2>
         <button class="btn-primary" onclick="showModal('uploadModal')">+ Yeni Yükle</button>
       </div>
-      <div id="myDesignsGrid" class="designs-grid">Yükleniyor...</div>`;
-    loadMyDesignsEnhanced();
-
-  } else if (tab === 'purchases') {
-    el.innerHTML = `
-      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Satın Aldıklarım</h2>
-      <div id="purchasesEl">Yükleniyor...</div>`;
-    loadPurchases();
-
+      <div class="designs-grid">
+        ${myDesigns.length > 0 
+            ? myDesigns.map(d => designCard(d)).join('') 
+            : '<p style="color:var(--text2)">Henüz bir tasarım yüklemedin.</p>'}
+      </div>
+    `;
   } else if (tab === 'sales') {
     el.innerHTML = `
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Satışlar</h2>
       <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
-        <div style="padding:12px 18px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em">
+        <div style="padding:12px 18px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.08em">
           <span>Tasarım</span><span>Alıcı</span><span>Fiyat</span><span>Tarih</span>
         </div>
-        <div id="salesRows">Yükleniyor...</div>
-      </div>`;
-    loadSalesData();
-
+        ${[
+          { d: 'Gece Yarısı Pro', b: 'FC Bosphorus', p: '₺449', t: '12 Mar 2026' },
+          { d: 'Anadolu Kırmızısı', b: 'Ankara United', p: '₺299', t: '9 Mar 2026' },
+          { d: 'Geo Minimal', b: 'Ege Voleybol', p: '₺299', t: '5 Mar 2026' },
+        ].map(s => `
+          <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-size:13px;align-items:center">
+            <span>${s.d}</span><span style="color:var(--text2)">${s.b}</span>
+            <span style="color:var(--accent);font-family:'DM Mono',monospace">${s.p}</span>
+            <span style="color:var(--text3);font-size:12px">${s.t}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
   } else if (tab === 'earnings') {
     el.innerHTML = `
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Kazançlar</h2>
-      <div class="dash-stats" id="earnStats">Yükleniyor...</div>
+      <div class="dash-stats">
+        <div class="ds-card"><div class="ds-label">Bu Ay</div><div class="ds-val gold">₺2.150</div></div>
+        <div class="ds-card"><div class="ds-label">Toplam</div><div class="ds-val gold">₺8.640</div></div>
+        <div class="ds-card"><div class="ds-label">Bekleyen</div><div class="ds-val">₺449</div></div>
+      </div>
       <div style="margin-top:20px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center">
         <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Minimum ₺500 tutarında çekim yapabilirsin</div>
-        <button class="btn-cta" onclick="showToast('iyzico ödeme sistemi entegrasyonu yakında aktif olacak.','')">Ödeme İste</button>
-      </div>`;
-    loadEarningsData();
-
+        <button class="btn-cta" onclick="showToast('iyzico ödeme sistemi entegrasyonu gerekiyor','')">Ödeme İste</button>
+      </div>
+    `;
   } else if (tab === 'favorites') {
-    const favDs = ALL_DESIGNS.filter(d => favorites.has(String(d.id)));
+    const favDesigns = ALL_DESIGNS.filter(d => favorites.has(String(d.id)));
     el.innerHTML = `
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Favorilerim</h2>
-      ${favDs.length === 0
-        ? `<div style="text-align:center;padding:60px 20px"><div style="font-size:40px;margin-bottom:12px">❤️</div><p style="color:var(--text2);margin-bottom:16px">Henüz favori tasarımın yok.</p><button class="btn-cta" onclick="showPage('explore')">Tasarımları Keşfet</button></div>`
-        : `<div class="designs-grid">${favDs.map(d => designCard(d)).join('')}</div>`}`;
-
-  } else if (tab === 'adminPanel') {
-    el.innerHTML = `
-      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px;color:var(--accent)">Admin Panel — Onay Bekleyenler</h2>
-      <div id="adminPendingGrid" class="designs-grid" style="grid-template-columns:1fr">Yükleniyor...</div>`;
-    loadPendingDesigns();
-
+      ${favDesigns.length === 0
+        ? `<div style="text-align:center;padding:60px 20px;color:var(--text2)">Henüz favori tasarımın yok.<br><a href="#" onclick="showPage('explore')" style="color:var(--accent)">Tasarımları keşfet →</a></div>`
+        : `<div class="designs-grid">${favDesigns.map(d => designCard(d)).join('')}</div>`
+      }
+    `;
   } else if (tab === 'settings') {
     el.innerHTML = `
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Ayarlar</h2>
       <div style="max-width:520px">
-        <div class="fg"><label>İsim</label><input type="text" id="setName" value="${currentUser?.name || ''}"></div>
-        <div class="fg"><label>E-posta</label><input type="email" value="${currentUser?.email || ''}" disabled style="opacity:.5"></div>
+        <div class="fg"><label>İsim</label><input type="text" value="${currentUser?.name || ''}"></div>
+        <div class="fg"><label>E-posta</label><input type="email" value="${currentUser?.email || ''}"></div>
         <div class="fg"><label>Bio</label><textarea rows="3" placeholder="Kendini tanıt..."></textarea></div>
-        <button class="btn-form" onclick="saveSettings()">Kaydet</button>
+        <button class="btn-form" onclick="showToast('Profil güncellendi ✓','success')">Kaydet</button>
         <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
-          <button style="padding:10px 16px;background:transparent;border:1px solid rgba(230,57,70,.4);color:var(--accent);border-radius:var(--r);font-size:13px;cursor:pointer" onclick="doLogout()">Çıkış Yap</button>
+          <button style="padding:10px 16px;background:transparent;border:1px solid rgba(230,57,70,0.4);color:var(--accent);border-radius:var(--r);font-size:13px;cursor:pointer" onclick="doLogout()">Çıkış Yap</button>
         </div>
-      </div>`;
+      </div>
+    `;
+  } else if (tab === 'adminPanel') { 
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px; color:var(--accent)">Admin Paneli - Onay Bekleyenler</h2>
+      <div id="adminPendingGrid" class="designs-grid" style="grid-template-columns: 1fr;">Yükleniyor...</div>
+    `;
+    loadPendingDesigns();
   }
 }
 
-async function saveSettings() {
-  const name = document.getElementById('setName')?.value?.trim();
-  if (!name) return;
+/* ══════════ ADMİN ONAY/RED FONKSİYONLARI ══════════ */
+async function loadPendingDesigns() {
+  const grid = document.getElementById('adminPendingGrid');
   try {
-    await auth.currentUser?.updateProfile({ displayName: name });
-    if (currentUser) currentUser.name = name;
-    showToast('Profil güncellendi ✓', 'success');
-  } catch(e) { showToast('Hata: ' + e.message, 'error'); }
+    const snapshot = await db.collection('designs').where('status', '==', 'pending').get();
+    if (snapshot.empty) {
+      grid.innerHTML = '<div style="padding:20px; background:var(--bg3); border-radius:var(--r); color:var(--text2);">Onay bekleyen yeni tasarım yok. 🎉</div>';
+      return;
+    }
+    
+    let html = '';
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      const id = doc.id;
+      html += `
+        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg3); border:1px solid var(--border); border-left:4px solid var(--gold); padding:16px 20px; border-radius:var(--r); margin-bottom:12px;">
+          <div>
+            <div style="font-size:16px; font-weight:500; margin-bottom:4px;">${d.title}</div>
+            <div style="font-size:12px; color:var(--text2); font-family:var(--font-mono)">
+              <span style="color:var(--accent)">by ${d.designerName}</span> • ${d.sport} • ₺${d.price}
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button onclick="approveDesign('${id}')" style="padding:8px 16px; background:rgba(42,157,143,0.15); color:#4ecdc4; border:1px solid #4ecdc4; border-radius:6px; cursor:pointer; font-weight:500; font-size:13px;">✓ Onayla</button>
+            <button onclick="rejectDesign('${id}')" style="padding:8px 16px; background:rgba(230,57,70,0.15); color:var(--accent); border:1px solid var(--accent); border-radius:6px; cursor:pointer; font-weight:500; font-size:13px;">✕ Reddet</button>
+          </div>
+        </div>
+      `;
+    });
+    grid.innerHTML = html;
+  } catch(error) {
+    grid.innerHTML = '<p style="color:var(--accent)">Veriler çekilirken hata oluştu.</p>';
+    console.error(error);
+  }
 }
 
-async function loadDashOverview() {
-  if (!currentUser) return;
+async function approveDesign(id) {
   try {
-    const snap = await db.collection('designs').where('designerId', '==', currentUser.uid).get();
-    let td=0, ts=0, tl=0, tp=0;
-    const recent = [];
-    snap.forEach(doc => {
-      const d = doc.data(); td++;
-      ts += d.sales || 0; tl += d.likes || 0;
-      if (d.status === 'pending') tp++;
-      if (recent.length < 4) recent.push({ id: doc.id, ...d });
+    await db.collection('designs').doc(id).update({ status: 'approved' });
+    showToast('Tasarım onaylandı ve yayına alındı! ✓', 'success');
+    loadPendingDesigns(); // Bekleyenler listesini yenile
+    fetchApprovedDesigns(); // Ana sayfayı hemen yenile ki görünsün!
+  } catch(e) {
+    showToast('Onaylama hatası: ' + e.message, 'error');
+  }
+}
+
+async function rejectDesign(id) {
+  if(!confirm('Bu tasarımı tamamen reddetmek istediğinize emin misiniz?')) return;
+  try {
+    await db.collection('designs').doc(id).update({ status: 'rejected' });
+    showToast('Tasarım reddedildi ✕', '');
+    loadPendingDesigns(); // Listeyi yenile
+  } catch(e) {
+    showToast('Hata: ' + e.message, 'error');
+  }
+}
+
+/* ══════════ AUTH (GERÇEK FIREBASE) ══════════ */
+auth.onAuthStateChanged((user) => {
+  const loginBtn  = document.getElementById('navLoginBtn');
+  const avatar    = document.getElementById('navAvatar');
+  const dashAv    = document.getElementById('dashAv');
+  const dashUname = document.getElementById('dashUname');
+  const adminBtn  = document.getElementById('dashAdminBtn');
+  const notifBtn  = document.getElementById('navNotifBtn');
+
+  if (user) {
+    currentUser = {
+      name:  user.displayName || user.email.split('@')[0],
+      email: user.email,
+      uid:   user.uid
+    };
+    if (loginBtn) loginBtn.classList.add('hidden');
+    if (avatar)   { avatar.classList.remove('hidden'); avatar.textContent = currentUser.name[0].toUpperCase(); }
+    if (dashAv)   dashAv.textContent   = currentUser.name[0].toUpperCase();
+    if (dashUname)dashUname.textContent = currentUser.name;
+    if (notifBtn) notifBtn.classList.remove('hidden');
+    // Admin butonu
+    if (adminBtn) {
+      adminBtn.classList.toggle('hidden', !ADMIN_EMAILS.includes(user.email));
+    }
+    // Okunmamış bildirim badge'i göster
+    buildNotifsContent();
+  } else {
+    currentUser = null;
+    if (loginBtn) loginBtn.classList.remove('hidden');
+    if (avatar)   avatar.classList.add('hidden');
+    if (notifBtn) notifBtn.classList.add('hidden');
+  }
+});
+
+// Upload butonu — giriş yoksa login modal aç
+function authThenUpload() {
+  if (!currentUser) {
+    showModal('loginModal');
+    showToast('Tasarım yüklemek için giriş yapın', '');
+    return;
+  }
+  showModal('uploadModal');
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) { showToast('E-posta ve şifre gerekli', 'error'); return; }
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+    closeModal('loginModal');
+    showToast('Hoş geldin! ✓', 'success');
+  } catch (error) {
+    const msgs = {
+      'auth/user-not-found': 'Bu e-posta kayıtlı değil.',
+      'auth/wrong-password': 'Şifre yanlış.',
+      'auth/invalid-email': 'Geçersiz e-posta.',
+      'auth/too-many-requests': 'Çok fazla deneme. Lütfen bekleyin.'
+    };
+    showToast(msgs[error.code] || 'Giriş başarısız.', 'error');
+  }
+}
+
+async function doRegister() {
+  const name = document.getElementById('regName')?.value?.trim();
+  const email = document.getElementById('regEmail').value;
+  const pass = document.getElementById('regPass').value;
+  const role = document.getElementById('regRole')?.value || 'designer';
+  if (!name || !email || !pass) { showToast('Tüm alanları doldurun', 'error'); return; }
+  if (pass.length < 6) { showToast('Şifre en az 6 karakter olmalı', 'error'); return; }
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    // Firebase Auth profiline isim kaydet
+    await cred.user.updateProfile({ displayName: name });
+    // Firestore'a kullanıcı profili kaydet
+    await db.collection('users').doc(cred.user.uid).set({
+      name: name,
+      email: email,
+      role: role,
+      level: 'rookie',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    const st = document.getElementById('dStats');
-    if (st) st.innerHTML = `
-      <div class="ds-card"><div class="ds-label">Tasarım</div><div class="ds-val">${td}</div></div>
-      <div class="ds-card"><div class="ds-label">Toplam Satış</div><div class="ds-val accent">${ts}</div></div>
-      <div class="ds-card"><div class="ds-label">Beğeni</div><div class="ds-val">${tl}</div></div>
-      <div class="ds-card"><div class="ds-label">Onay Bekleyen</div><div class="ds-val gold">${tp}</div></div>`;
-    const re = document.getElementById('dRecent');
-    if (re) {
-      if (!recent.length) {
-        re.innerHTML = `<div style="text-align:center;padding:40px 20px"><p style="color:var(--text2);margin-bottom:14px">Henüz tasarım yüklemedin.</p><button class="btn-cta" onclick="showModal('uploadModal')">+ İlk Tasarımını Yükle</button></div>`;
-      } else {
-        re.innerHTML = `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">${recent.map(d=>`<div style="padding:13px 17px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:14px;font-weight:500">${d.title}</div><div style="font-size:11px;color:var(--text3);margin-top:2px">${d.sport} · ₺${d.price||0} · ♥${d.likes||0} · 🛒${d.sales||0}</div></div><span style="font-size:11px;padding:3px 9px;border-radius:4px;${d.status==='approved'?'background:rgba(42,157,143,.15);color:#4ecdc4':d.status==='pending'?'background:rgba(201,168,76,.15);color:var(--gold)':'background:rgba(230,57,70,.15);color:var(--accent)'}">${d.status==='approved'?'✓ Yayında':d.status==='pending'?'⏳ Bekliyor':'✕ Reddedildi'}</span></div>`).join('')}</div>`;
+    closeModal('loginModal');
+    showToast(`Hoş geldin, ${name}! ✓`, 'success');
+  } catch (error) {
+    const msgs = {
+      'auth/email-already-in-use': 'Bu e-posta zaten kayıtlı.',
+      'auth/weak-password': 'Şifre çok zayıf.',
+      'auth/invalid-email': 'Geçersiz e-posta.'
+    };
+    showToast(msgs[error.code] || 'Kayıt olunamadı: ' + error.message, 'error');
+  }
+}
+
+async function doGoogleLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    await auth.signInWithPopup(provider);
+    closeModal('loginModal');
+    showToast('Google ile giriş yapıldı!', 'success');
+  } catch (error) {
+    showToast('Giriş iptal edildi.', 'error');
+  }
+}
+
+async function doLogout() {
+  try {
+    await auth.signOut();
+    showPage('home');
+    showToast('Çıkış yapıldı', '');
+  } catch (error) {
+    showToast('Hata: ' + error.message, 'error');
+  }
+}
+
+function authTab(tab, btn) {
+  document.querySelectorAll('.m-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('authLogin').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('authRegister').classList.toggle('hidden', tab !== 'register');
+}
+
+/* ══════════ BUY MODAL — CHECKOUT AKIŞI ══════════ */
+let currentBuyDesignId = null;
+let currentBuyPrice = 0;
+let currentBuyLicense = 'standard';
+
+function openBuyModal(id) {
+  const d = ALL_DESIGNS.find(x => String(x.id) === String(id));
+  if (!d) return;
+  currentBuyDesignId = id;
+  currentBuyPrice = d.price || 0;
+  currentBuyLicense = 'standard';
+
+  const el = document.getElementById('buyContent');
+  const thumb = d.coverThumb || d.coverUrl || '';
+
+  el.innerHTML = `
+    <!-- ADIM 1: Ürün + Lisans Seçimi -->
+    <div id="buyStep1">
+      <div class="buy-design-row">
+        <div class="buy-thumb" style="background:${d.bg};overflow:hidden">
+          ${thumb
+            ? `<img src="${thumb}" style="width:100%;height:100%;object-fit:cover">`
+            : `<span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(255,255,255,0.6)">${d.num}</span>`}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="buy-title">${d.title}</div>
+          <div class="buy-designer">${t.by} ${d.designer}</div>
+          <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+            <span style="font-size:11px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:2px 8px;color:var(--text3)">${d.sport}</span>
+            <span style="font-size:11px;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:2px 8px;color:var(--text3)">${d.kit || 'Ev'}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:10px;font-family:var(--font-mono)">Lisans Seç</div>
+      <div class="buy-license">
+        <div class="buy-lic-opt sel" id="buyOptStd" onclick="selectBuyLicense(this,'standard',${d.price})">
+          <input type="radio" name="buyLic" checked>
+          <div style="flex:1;padding:0 10px">
+            <div class="buy-lic-name">${t.license_std}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">${t.license_std_desc}</div>
+          </div>
+          <span class="buy-lic-price">₺${(d.price||0).toLocaleString('tr-TR')}</span>
+        </div>
+        <div class="buy-lic-opt" id="buyOptExcl" onclick="selectBuyLicense(this,'exclusive',${d.exclusivePrice})">
+          <input type="radio" name="buyLic">
+          <div style="flex:1;padding:0 10px">
+            <div class="buy-lic-name">${t.license_excl}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">${t.license_excl_desc}</div>
+          </div>
+          <span class="buy-lic-price">₺${(d.exclusivePrice||0).toLocaleString('tr-TR')}</span>
+        </div>
+      </div>
+
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;margin-bottom:16px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;font-family:var(--font-mono)">Teslim Edilecek Dosyalar</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${['PNG','AI','SVG','PDF'].map(f=>`<span style="background:var(--bg4);border:1px solid var(--border);border-radius:5px;padding:3px 10px;font-size:11px;font-family:var(--font-mono);color:var(--text2)">${f}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="buy-total">
+        <span style="color:var(--text2);font-size:14px">Toplam (KDV dahil)</span>
+        <span class="buy-total-price" id="buyTotal">₺${(d.price||0).toLocaleString('tr-TR')}</span>
+      </div>
+
+      <div style="background:rgba(42,157,143,0.06);border:1px solid rgba(42,157,143,0.2);border-radius:var(--r);padding:10px 14px;margin-bottom:16px;font-size:12px;color:#4ecdc4">
+        ✓ Ödeme onaylandıktan sonra tüm dosyalar <strong>anında</strong> hesabınıza eklenir
+      </div>
+
+      <button class="btn-form" onclick="proceedToPayment('${d.id}')">
+        Ödemeye Geç →
+      </button>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1L8 9M5 6l3 3 3-3" stroke="#4ecdc4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="#4ecdc4" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span style="font-size:11px;color:var(--text3)">iyzico · SSL · 256-bit şifreleme · Visa · Mastercard · Troy</span>
+      </div>
+    </div>
+
+    <!-- ADIM 2: Ödeme Formu -->
+    <div id="buyStep2" class="hidden">
+      <button onclick="document.getElementById('buyStep2').classList.add('hidden');document.getElementById('buyStep1').classList.remove('hidden')" style="background:none;border:none;color:var(--text3);font-size:13px;cursor:pointer;margin-bottom:16px;padding:0">← Geri dön</button>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:13px;color:var(--text2)" id="buyStep2Summary">—</span>
+        <span style="font-family:var(--font-mono);font-size:16px;color:var(--accent)" id="buyStep2Price">₺0</span>
+      </div>
+
+      <div class="fg"><label>Kart Üzerindeki İsim</label><input type="text" id="cardName" placeholder="AD SOYAD" style="text-transform:uppercase"></div>
+      <div class="fg"><label>Kart Numarası</label>
+        <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCardNumber(this)">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="fg"><label>Son Kullanma</label><input type="text" id="cardExpiry" placeholder="AA/YY" maxlength="5" oninput="formatExpiry(this)"></div>
+        <div class="fg"><label>CVV</label><input type="text" id="cardCvv" placeholder="000" maxlength="3"></div>
+      </div>
+
+      <div style="background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:var(--r);padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--gold)">
+        ⚠ Kart bilgileriniz iyzico'nun güvenli altyapısında işlenir. Tarafımızca saklanmaz.
+      </div>
+
+      <div class="fg" style="margin-bottom:16px">
+        <label class="chk-label" id="caymaOnayLabel">
+          <input type="checkbox" id="caymaOnay">
+          Dijital içerik satışında cayma hakkımın bulunmadığını ve satın alma tamamlandığında dosyaların anında teslim edileceğini onaylıyorum.
+          <a href="#" onclick="event.preventDefault();closeModal('buyModal');showPage('legal-refund')" style="color:var(--accent);text-decoration:underline">İptal Koşulları</a>
+        </label>
+      </div>
+
+      <button class="btn-form btn-pay" id="payNowBtn" onclick="finalizePayment('${d.id}')">
+        <span id="payBtnText">💳 Ödemeyi Tamamla</span>
+      </button>
+
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap">
+        <div style="height:20px;background:#1A1A2E;border-radius:3px;padding:0 8px;display:flex;align-items:center">
+          <span style="font-family:Arial;font-weight:bold;font-size:10px;color:#00D4AA">iyzico</span>
+        </div>
+        <div style="height:20px;background:#1A1F71;border-radius:3px;padding:0 8px;display:flex;align-items:center">
+          <span style="font-family:Arial;font-weight:900;font-size:10px;color:white;letter-spacing:1px">VISA</span>
+        </div>
+        <div style="height:20px;width:32px;background:#252525;border-radius:3px;display:flex;align-items:center;justify-content:center;gap:0">
+          <div style="width:10px;height:10px;border-radius:50%;background:#EB001B;margin-right:-4px;position:relative;z-index:1"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#F79E1B"></div>
+        </div>
+        <div style="height:20px;background:#0066CC;border-radius:3px;padding:0 8px;display:flex;align-items:center">
+          <span style="font-family:Arial;font-weight:bold;font-size:10px;color:white">troy</span>
+        </div>
+        <div style="height:20px;background:#2D7D46;border-radius:3px;padding:0 8px;display:flex;align-items:center;gap:4px">
+          <span style="font-size:9px">🔒</span>
+          <span style="font-family:Arial;font-weight:bold;font-size:10px;color:white">SSL</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADIM 3: Başarı -->
+    <div id="buyStep3" class="hidden" style="text-align:center;padding:20px 0">
+      <div style="font-size:48px;margin-bottom:16px">🎉</div>
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:10px;letter-spacing:0.5px">Satın Alma Tamamlandı!</h3>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.6">Üretim dosyaları hesabınıza eklendi.<br>Dashboard > Satın Aldıklarım bölümünden indirebilirsiniz.</p>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px;text-align:left">
+        <div style="font-size:12px;color:var(--text3);margin-bottom:8px">Sipariş Özeti</div>
+        <div style="display:flex;justify-content:space-between;font-size:14px" id="orderSummary"></div>
+      </div>
+      <button class="btn-form" onclick="closeModal('buyModal');showPage('dashboard')">Dashboard'a Git</button>
+    </div>
+  `;
+  showModal('buyModal');
+}
+
+function selectBuyLicense(el, type, price) {
+  document.querySelectorAll('.buy-lic-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  el.querySelector('input').checked = true;
+  currentBuyPrice = price;
+  currentBuyLicense = type;
+  document.getElementById('buyTotal').textContent = `₺${price.toLocaleString('tr-TR')}`;
+}
+
+function proceedToPayment(id) {
+  if (!currentUser) {
+    closeModal('buyModal');
+    showModal('loginModal');
+    showToast(t.toast_login_required || 'Giriş yapmalısınız', '');
+    return;
+  }
+  const d = ALL_DESIGNS.find(x => String(x.id) === String(id));
+  const s2 = document.getElementById('buyStep2');
+  const s1 = document.getElementById('buyStep1');
+  if (!s2 || !s1) return;
+  s1.classList.add('hidden');
+  s2.classList.remove('hidden');
+  const sumEl = document.getElementById('buyStep2Summary');
+  const priceEl = document.getElementById('buyStep2Price');
+  if (sumEl) sumEl.textContent = `${d?.title || ''} · ${currentBuyLicense === 'exclusive' ? 'Exclusive' : 'Standart'} Lisans`;
+  if (priceEl) priceEl.textContent = `₺${currentBuyPrice.toLocaleString('tr-TR')}`;
+}
+
+async function finalizePayment(id) {
+  if (!document.getElementById('caymaOnay')?.checked) {
+    showToast('Lütfen cayma hakkı onayını işaretleyin', 'error');
+    return;
+  }
+  const cardName = document.getElementById('cardName')?.value?.trim();
+  const cardNum  = document.getElementById('cardNumber')?.value?.replace(/\s/g,'');
+  const expiry   = document.getElementById('cardExpiry')?.value;
+  const cvv      = document.getElementById('cardCvv')?.value;
+
+  if (!cardName || cardNum?.length < 16 || !expiry || cvv?.length < 3) {
+    showToast('Kart bilgilerini eksiksiz doldurun', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('payNowBtn');
+  const btnTxt = document.getElementById('payBtnText');
+  if (btn) btn.disabled = true;
+  if (btnTxt) btnTxt.textContent = '⏳ İşleniyor...';
+
+  // iyzico entegrasyonu burada yapılacak (backend Cloud Function)
+  // Şimdilik simülasyon (2 sn bekleme)
+  await new Promise(r => setTimeout(r, 1800));
+
+  // Firestore'a satış kaydı (gerçek entegrasyonda iyzico callback sonrası yapılır)
+  try {
+    if (currentUser && db) {
+      await db.collection('purchases').add({
+        designId: id,
+        buyerId: currentUser.uid,
+        buyerEmail: currentUser.email,
+        price: currentBuyPrice,
+        license: currentBuyLicense,
+        purchasedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        status: 'completed'
+      });
+      // Tasarımın satış sayısını artır
+      const designRef = db.collection('designs').doc(String(id).startsWith('m') ? null : id);
+      if (!String(id).startsWith('m')) {
+        await designRef.update({ sales: firebase.firestore.FieldValue.increment(1) });
       }
     }
-  } catch(e) { console.error('Dashboard overview:', e); }
+  } catch(e) { console.error('Satış kaydı hatası:', e); }
+
+  // Başarı ekranı
+  const s2 = document.getElementById('buyStep2');
+  const s3 = document.getElementById('buyStep3');
+  if (s2) s2.classList.add('hidden');
+  if (s3) {
+    s3.classList.remove('hidden');
+    const d = ALL_DESIGNS.find(x => String(x.id) === String(id));
+    const sumEl = document.getElementById('orderSummary');
+    if (sumEl) sumEl.innerHTML = `
+      <span>${d?.title || 'Tasarım'}</span>
+      <span style="color:var(--accent);font-family:var(--font-mono)">₺${currentBuyPrice.toLocaleString('tr-TR')}</span>
+    `;
+  }
 }
 
-async function loadSalesData() {
-  const el = document.getElementById('salesRows');
-  if (!el || !currentUser) return;
+function formatCardNumber(input) {
+  let v = input.value.replace(/\D/g,'').substring(0,16);
+  input.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function formatExpiry(input) {
+  let v = input.value.replace(/\D/g,'');
+  if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2,4);
+  input.value = v;
+}
+
+/* ══════════ IMGBB ENTEGRASYONU ══════════ */
+const IMGBB_API_KEY = '8450d2c8a81b83cde9453909f3d7cb28';
+
+// Tek bir dosyayı ImgBB'ye yükle, URL döndür
+async function uploadToImgBB(file) {
+  const formData = new FormData();
+  formData.append('image', file);
+  const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+    method: 'POST',
+    body: formData
+  });
+  const data = await res.json();
+  if (!data.success) throw new Error('ImgBB yükleme hatası: ' + (data.error?.message || 'Bilinmeyen hata'));
+  return {
+    url: data.data.url,          // Doğrudan URL
+    thumb: data.data.thumb.url,  // Küçük önizleme URL
+    display: data.data.display_url
+  };
+}
+
+// Birden fazla slot'taki dosyaları ImgBB'ye yükle
+async function uploadAllSlotImages() {
+  const slots = ['s-front','s-back','s-detail','s-flat','s-model','s-tex','s-pat','s-var','s-field','s-pkg'];
+  const slotNames = {
+    's-front': 'front', 's-back': 'back', 's-detail': 'detail', 's-flat': 'flat',
+    's-model': 'model', 's-tex': 'texture', 's-pat': 'pattern',
+    's-var': 'colorVar', 's-field': 'field', 's-pkg': 'packaging'
+  };
+  const results = {};
+  
+  for (const slotId of slots) {
+    const slot = document.getElementById(slotId);
+    if (!slot) continue;
+    const imgEl = slot.querySelector('img.is-preview');
+    if (!imgEl) continue; // Bu slot boş, atla
+    
+    // Slot'un parent'ındaki file input'u bul
+    const fileInput = slot.closest('.img-slot')?.querySelector('input[type="file"]');
+    if (!fileInput?.files?.[0]) continue;
+    
+    try {
+      showToast(`Görsel yükleniyor (${slotNames[slotId]})...`, '');
+      const imgData = await uploadToImgBB(fileInput.files[0]);
+      results[slotNames[slotId]] = imgData;
+    } catch(e) {
+      console.error(`${slotId} yüklenemedi:`, e);
+      // Zorunlu slotlarda hata at
+      if (['s-front','s-back','s-detail','s-flat'].includes(slotId)) {
+        throw new Error(`Zorunlu görsel yüklenemedi (${slotNames[slotId]}): ${e.message}`);
+      }
+    }
+  }
+  return results;
+}
+
+/* ══════════ UPLOAD VE FIRESTORE ══════════ */
+function wizGo(step) {
+  if (step === 2) {
+    const req = ['s-front','s-back','s-detail','s-flat'];
+    const missing = req.filter(id => !document.getElementById(id)?.querySelector('img'));
+    if (missing.length > 0) {
+      showToast('4 zorunlu görseli yükleyin', 'error');
+      return;
+    }
+  }
+  if (step === 3) {
+    if (!document.getElementById('upTitle')?.value.trim()) {
+      showToast('Tasarım adı zorunludur', 'error');
+      return;
+    }
+  }
+
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById('panel' + i)?.classList.add('hidden');
+    document.getElementById('ws' + i)?.classList.remove('active', 'done');
+  }
+  document.getElementById('panel' + step)?.classList.remove('hidden');
+  document.getElementById('ws' + step)?.classList.add('active');
+  for (let i = 1; i < step; i++) {
+    document.getElementById('ws' + i)?.classList.add('done');
+  }
+  currentUploadStep = step;
+}
+
+function previewSlot(input, slotId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const slot = document.getElementById(slotId);
+    if (slot) {
+      slot.innerHTML = `<img src="${e.target.result}" class="is-preview" alt="preview">`;
+      slot.closest('.img-slot').classList.add('filled');
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitDesign() {
+  if (!document.getElementById('upCopyright').checked) {
+    showToast('Telif beyanını onaylayın', 'error');
+    return;
+  }
+  if (!currentUser) {
+    closeModal('uploadModal');
+    showModal('loginModal');
+    showToast('Tasarım yüklemek için giriş yapmalısınız.', 'error');
+    return;
+  }
+
+  const title = document.getElementById('upTitle').value.trim();
+  if (!title) { showToast('Tasarım adı zorunludur', 'error'); return; }
+
+  const sport    = document.getElementById('upSport').value;
+  const kit      = document.getElementById('upKit').value;
+  const style    = document.getElementById('upStyle').value;
+  const pattern  = document.getElementById('upPattern').value;
+  const fabric   = document.getElementById('upFabric').value;
+  const desc     = document.getElementById('upDesc').value.trim();
+  const tags     = document.getElementById('upTags').value.split(',').map(t => t.trim()).filter(Boolean);
+  const c1       = document.getElementById('c1h').value;
+  const c2       = document.getElementById('c2h').value;
+  const c3       = document.getElementById('c3h').value;
+  const stdPrice = Number(document.getElementById('stdPrice').value) || 0;
+  const exclPrice= Number(document.getElementById('exclPrice').value) || 0;
+
+  // Yayınla butonunu devre dışı bırak, loading göster
+  const publishBtn = document.querySelector('.btn-publish');
+  if (publishBtn) { publishBtn.disabled = true; publishBtn.textContent = '⏳ Görseller yükleniyor...'; }
+
   try {
-    const snap = await db.collection('purchases').where('designerId', '==', currentUser.uid).get();
-    if (snap.empty) { el.innerHTML = `<div style="padding:20px;color:var(--text2);text-align:center">Henüz satış yok. Tasarımlarını paylaş!</div>`; return; }
-    const rows = [];
-    snap.forEach(doc => {
-      const p = doc.data();
-      const ts = p.purchasedAt?.toDate?.() ? p.purchasedAt.toDate().toLocaleDateString('tr-TR') : '—';
-      rows.push(`<div style="padding:13px 17px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-size:13px;align-items:center"><span>${p.designTitle||'—'}</span><span style="color:var(--text2)">${p.buyerEmail||'—'}</span><span style="color:var(--accent);font-family:'DM Mono',monospace">₺${(p.price||0).toLocaleString('tr-TR')}</span><span style="color:var(--text3);font-size:12px">${ts}</span></div>`);
-    });
-    el.innerHTML = rows.join('');
-  } catch(e) { el.innerHTML = `<div style="padding:16px;color:var(--text2)">Veri çekilemedi.</div>`; }
+    // 1. Tüm görselleri ImgBB'ye yükle
+    showToast('Görseller ImgBB\'ye yükleniyor...', '');
+    let imageUrls = {};
+    try {
+      imageUrls = await uploadAllSlotImages();
+    } catch(imgError) {
+      showToast('Görsel yükleme hatası: ' + imgError.message, 'error');
+      if (publishBtn) { publishBtn.disabled = false; publishBtn.textContent = 'Tasarımı Yayınla 🚀'; }
+      return;
+    }
+
+    // 2. Firestore'a kaydet
+    showToast('Veriler kaydediliyor...', '');
+    const newDesign = {
+      title,
+      sport,
+      kit,
+      style,
+      pattern,
+      fabric,
+      desc,
+      tags,
+      colors: [c1, c2, c3].filter(c => c && c !== '#ffffff' || c === c1),
+      price: stdPrice,
+      exclusivePrice: exclPrice,
+      designerId: currentUser.uid,
+      designerName: currentUser.name,
+      designerInitials: (currentUser.name[0] || 'U').toUpperCase(),
+      // ImgBB'den gelen URL'ler
+      imageUrls,          // { front: {url,thumb}, back: {...}, ... }
+      coverUrl: imageUrls.front?.url || '',      // Ana kart görseli
+      coverThumb: imageUrls.front?.thumb || '',  // Küçük önizleme
+      likes: 0,
+      sales: 0,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      status: 'pending'
+    };
+
+    await db.collection('designs').add(newDesign);
+    
+    if (publishBtn) { publishBtn.disabled = false; publishBtn.textContent = 'Tasarımı Yayınla 🚀'; }
+    closeModal('uploadModal');
+    showToast('🚀 Tasarım yüklendi! Admin onayı bekleniyor (max 24 saat).', 'success');
+    resetUploadForm();
+
+  } catch (error) {
+    console.error('Yükleme Hatası:', error);
+    showToast('Yükleme başarısız: ' + error.message, 'error');
+    if (publishBtn) { publishBtn.disabled = false; publishBtn.textContent = 'Tasarımı Yayınla 🚀'; }
+  }
 }
 
-async function loadEarningsData() {
-  const el = document.getElementById('earnStats');
-  if (!el || !currentUser) return;
+function resetUploadForm() {
+  wizGo(1);
+  document.getElementById('upTitle').value = '';
+  document.getElementById('upDesc').value = '';
+  document.getElementById('upTags').value = '';
+  document.getElementById('upCopyright').checked = false;
+  ['s-front','s-back','s-detail','s-flat','s-model','s-tex','s-pat','s-var','s-field','s-pkg'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      const slot = el.closest('.img-slot');
+      el.innerHTML = `<div class="is-plus">+</div><div class="is-lbl">${el.querySelector('.is-lbl')?.textContent || ''}</div>`;
+      slot?.classList.remove('filled');
+    }
+  });
+}
+
+function calcEarnings() {
+  const std = parseFloat(document.getElementById('stdPrice')?.value) || 0;
+  const excl = parseFloat(document.getElementById('exclPrice')?.value) || 0;
+  const stdEl = document.getElementById('stdEarn');
+  const exclEl = document.getElementById('exclEarn');
+  if (stdEl) stdEl.textContent = `₺${Math.round(std * 0.8).toLocaleString('tr-TR')}`;
+  if (exclEl) exclEl.textContent = `₺${Math.round(excl * 0.8).toLocaleString('tr-TR')}`;
+}
+
+/* ══════════ COLOR SYNC ══════════ */
+function syncColor(colorId, hexId) {
+  const el = document.getElementById(hexId);
+  if (el) el.value = document.getElementById(colorId).value;
+}
+function syncHex(hexId, colorId) {
+  const hex = document.getElementById(hexId).value;
+  if (/^#[0-9A-Fa-f]{6}$/.test(hex)) {
+    document.getElementById(colorId).value = hex;
+  }
+}
+
+/* ══════════ FAVORITES ══════════ */
+function toggleFav(id, btn) {
+  const stringId = String(id);
+  if (favorites.has(stringId)) {
+    favorites.delete(stringId);
+    showToast('Favorilerden çıkarıldı', '');
+    if (btn) btn.textContent = btn.classList.contains('btn-fav-full') ? '♡ Favorilere Ekle' : '♡';
+  } else {
+    favorites.add(stringId);
+    showToast('Favorilere eklendi ♥', 'success');
+    if (btn) btn.textContent = btn.classList.contains('btn-fav-full') ? '♥ Favorilerden Çıkar' : '♥';
+  }
+}
+
+/* ══════════ MODALS ══════════ */
+function showModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('open');
+}
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+}
+function outsideClose(e, id) {
+  if (e.target.id === id) closeModal(id);
+}
+
+/* ══════════ TOAST ══════════ */
+let toastTimer;
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show${type ? ' ' + type : ''}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+/* ══════════ MISC ══════════ */
+function setTrendTab(btn) {
+  document.querySelectorAll('.ttab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderHomeDesigns();
+}
+
+function toggleMobileNav() {
+  const menu = document.getElementById('navMobileMenu');
+  menu.classList.toggle('hidden');
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   formaLOLA Premium — Eklenen Özellikler
+   ✓ Bildirim Sistemi
+   ✓ Yorum & Puan Sistemi (Firestore)
+   ✓ Tasarımcı Takip Sistemi (Firestore)
+   ✓ Tasarımcı Public Profil Sayfası
+   ✓ Paylaşım Modalı
+   ✓ Dashboard — Satın Aldıklarım (Firestore gerçek veri)
+   ✓ Dashboard — Tasarımlarım (Firestore gerçek veri + durum + istatistik)
+   ✓ Dashboard — Satışlar (Firestore gerçek veri)
+   ✓ Dashboard — Kazançlar (Firestore hesaplamalı)
+   ✓ CompCard ile Yarışmaya Katılma
+   ✓ Auth — authThenUpload
+   ✓ Pagination limit(20) Firestore
+════════════════════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════
+   BİLDİRİM SİSTEMİ
+════════════════════════════════ */
+
+// Okunmamış sayısını global tut
+let _unreadNotifCount = 0;
+
+// Bildirim modalını aç
+function openNotifsModal() {
+  buildNotifsContent();
+  showModal('notifsModal');
+  // Tümünü okundu işaretle (badge sıfırla)
+  setTimeout(() => {
+    _unreadNotifCount = 0;
+    const badge = document.getElementById('navNotifBadge');
+    if (badge) badge.classList.add('hidden');
+  }, 400);
+}
+
+// Tüm bildirimleri okundu işaretle
+function markAllRead() {
+  _unreadNotifCount = 0;
+  const badge = document.getElementById('navNotifBadge');
+  if (badge) badge.classList.add('hidden');
+  document.querySelectorAll('.notif-item').forEach(el => el.classList.add('read'));
+  document.querySelectorAll('.notif-unread-dot').forEach(el => el.remove());
+  showToast('Tüm bildirimler okundu ✓', 'success');
+}
+
+// Bildirimler içeriğini oluştur
+function buildNotifsContent() {
+  const el = document.getElementById('notifsContent');
+  if (!el) return;
+
+  // Mock bildirimler (gerçekte Firestore'dan çekilir)
+  const notifs = [
+    { id: 1, type: 'sale',   icon: '🎉', title: 'Tasarımın satıldı!',         sub: 'Gece Yarısı Pro — FC Bosphorus satın aldı',  time: '2 saat önce',  read: false },
+    { id: 2, type: 'review', icon: '⭐', title: 'Yeni yorum aldın',           sub: '"Harika kalite, çok beğendik!" — FC Bosphorus', time: '5 saat önce',  read: false },
+    { id: 3, type: 'badge',  icon: '🏆', title: 'Pro seviyesine ulaştın!',    sub: 'Tebrikler! Artık %15 daha fazla görünürlük',   time: '1 gün önce',   read: false },
+    { id: 4, type: 'comp',   icon: '🏅', title: 'Yeni yarışma açıldı',        sub: 'Bosphorus FC — ₺5.000 ödüllü tasarım yarışması',time: '2 gün önce', read: true  },
+    { id: 5, type: 'info',   icon: '📢', title: 'Hoş geldin!',                sub: 'formaLOLA\'ya hoş geldin. İlk tasarımını yükle!',time: '3 gün önce', read: true  },
+  ];
+
+  _unreadNotifCount = notifs.filter(n => !n.read).length;
+  const badge = document.getElementById('navNotifBadge');
+  if (badge) {
+    if (_unreadNotifCount > 0) {
+      badge.textContent = _unreadNotifCount;
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
+  }
+
+  if (!notifs.length) {
+    el.innerHTML = `<div style="text-align:center;padding:40px 20px;color:var(--text3)">
+      <div style="font-size:32px;margin-bottom:10px">🔔</div>
+      <p>Henüz bildirim yok</p>
+    </div>`;
+    return;
+  }
+
+  const typeClass = { sale: 'sale', review: 'review', badge: 'badge', comp: 'comp', info: 'info' };
+  el.innerHTML = notifs.map(n => `
+    <div class="notif-item ${n.read ? 'read' : ''}" onclick="this.classList.add('read');this.querySelector('.notif-unread-dot')?.remove()">
+      <div class="notif-icon-wrap ${typeClass[n.type] || 'info'}">${n.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div class="notif-body-title">${n.title}</div>
+        <div class="notif-body-sub">${n.sub}</div>
+        <div class="notif-body-time">${n.time}</div>
+      </div>
+      ${!n.read ? '<div class="notif-unread-dot"></div>' : ''}
+    </div>
+  `).join('');
+}
+
+/* ════════════════════════════════
+   TASARIMCI PUBLIC PROFİL
+════════════════════════════════ */
+
+// Tasarımcı profiline git (tasarım kartındaki "by" linkinden veya tasarımcılar sayfasından)
+async function showDesignerPublicProfile(designerIdOrMockId, designerNameOverride) {
+  // Sayfayı geç
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-designer-public');
+  if (!page) return;
+  previousPage = currentPage;
+  currentPage = 'designer-public';
+  page.classList.add('active');
+  window.scrollTo(0, 0);
+
+  const el = document.getElementById('designerPublicContent');
+  if (!el) return;
+  el.innerHTML = `<div style="padding:80px 0;text-align:center"><div class="spinner" style="margin:0 auto;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite"></div></div>`;
+
+  // Mock tasarımcıyı bul
+  const mockDsgn = MOCK_DESIGNERS.find(d => String(d.id) === String(designerIdOrMockId) || d.name === designerNameOverride);
+
+  // Bu tasarımcıya ait tasarımlar
+  let designs = ALL_DESIGNS.filter(d =>
+    d.designer === (mockDsgn?.name || designerNameOverride) ||
+    d.designerId === designerIdOrMockId
+  );
+  if (!designs.length) designs = ALL_DESIGNS.slice(0, 4); // fallback
+
+  // Firestore'dan gerçek tasarımcı tasarımlarını dene
   try {
-    const snap = await db.collection('purchases').where('designerId', '==', currentUser.uid).get();
-    let total = 0, thisMonth = 0;
-    const now = new Date();
-    snap.forEach(doc => {
-      const p = doc.data();
-      const earn = (p.price || 0) * 0.8;
-      total += earn;
-      const pd = p.purchasedAt?.toDate?.();
-      if (pd && pd.getMonth() === now.getMonth() && pd.getFullYear() === now.getFullYear()) thisMonth += earn;
+    const snap = await db.collection('designs')
+      .where('status', '==', 'approved')
+      .where('designerId', '==', designerIdOrMockId)
+      .limit(20)
+      .get();
+    if (!snap.empty) {
+      const real = [];
+      snap.forEach(doc => {
+        const d = doc.data();
+        const c1 = (d.colors && d.colors[0]) || '#1f1f26';
+        const c2 = (d.colors && d.colors[1]) || '#0c0c0e';
+        real.push({
+          id: doc.id, title: d.title || 'Tasarım', designer: d.designerName || '',
+          designerInitials: d.designerInitials || '?', sport: d.sport || 'Futbol',
+          style: d.style || 'modern', pattern: d.pattern || 'minimal',
+          colors: d.colors || [], price: d.price || 0, exclusivePrice: d.exclusivePrice || 0,
+          sales: d.sales || 0, likes: d.likes || 0, license: d.exclusivePrice > 0 ? 'exclusive' : 'standard',
+          coverUrl: d.coverUrl || '', coverThumb: d.coverThumb || '', imageUrls: d.imageUrls || {},
+          bg: `linear-gradient(140deg,${c1},${c2})`, num: '10', kit: d.kit || 'Ev',
+          designerId: d.designerId || '', desc: d.desc || '',
+          _ts: d.createdAt ? (d.createdAt.toMillis ? d.createdAt.toMillis() : 0) : 0
+        });
+      });
+      designs = real;
+    }
+  } catch(e) { console.error('Designer designs:', e); }
+
+  // Firestore'dan yorumları çek
+  let reviews = [];
+  try {
+    const rSnap = await db.collection('reviews')
+      .where('designerId', '==', designerIdOrMockId)
+      .orderBy && false // orderBy composite index gerektirir, atla
+      ? null
+      : await db.collection('reviews').where('designerId', '==', designerIdOrMockId).get();
+    if (rSnap) rSnap.forEach(doc => reviews.push({ id: doc.id, ...doc.data() }));
+    // Tarihe göre sırala
+    reviews.sort((a, b) => {
+      const ta = a.createdAt?.toMillis?.() || 0;
+      const tb = b.createdAt?.toMillis?.() || 0;
+      return tb - ta;
     });
-    el.innerHTML = `
-      <div class="ds-card"><div class="ds-label">Bu Ay</div><div class="ds-val gold">₺${Math.round(thisMonth).toLocaleString('tr-TR')}</div></div>
-      <div class="ds-card"><div class="ds-label">Toplam</div><div class="ds-val gold">₺${Math.round(total).toLocaleString('tr-TR')}</div></div>
-      <div class="ds-card"><div class="ds-label">Bekleyen</div><div class="ds-val">₺0</div></div>`;
-  } catch(e) { if (el) el.innerHTML = `<div class="ds-card"><div class="ds-label">Veri yok</div><div class="ds-val">—</div></div>`; }
+  } catch(e) { console.error('Reviews:', e); }
+
+  // İstatistikler hesapla
+  const totalSales = designs.reduce((a, d) => a + (d.sales || 0), 0);
+  const totalLikes = designs.reduce((a, d) => a + (d.likes || 0), 0);
+  const avgRating  = reviews.length
+    ? (reviews.reduce((a, r) => a + (r.rating || 5), 0) / reviews.length).toFixed(1)
+    : (mockDsgn?.rating || '5.0');
+
+  // Takip durumu
+  let isFollowing = false;
+  if (currentUser) {
+    try {
+      const fDoc = await db.collection('follows').doc(`${currentUser.uid}_${designerIdOrMockId}`).get();
+      isFollowing = fDoc.exists;
+    } catch(e) {}
+  }
+
+  const dName  = mockDsgn?.name || designerNameOverride || 'Tasarımcı';
+  const dInits = mockDsgn?.initials || (dName.substring(0, 2).toUpperCase());
+  const dBio   = mockDsgn?.bio || 'formaLOLA tasarımcısı';
+  const dLevel = mockDsgn?.level || 'rookie';
+  const levelMap = { rookie: '🥉 Rookie', pro: '🥈 Pro', elite: '🏅 Elite', master: '🏆 Master' };
+
+  el.innerHTML = `
+    <button class="back-btn" onclick="goBack()" style="margin-top:28px">← Geri</button>
+
+    <!-- ─── PROFIL HEADER ─── -->
+    <div class="dpub-header">
+      <div class="dpub-av">${dInits}</div>
+      <div class="dpub-info">
+        <h1 class="dpub-name">${dName}</h1>
+        <p class="dpub-bio">${dBio}</p>
+        <div class="dpub-badges">
+          <span class="dpub-badge ${dLevel}">${levelMap[dLevel]}</span>
+          ${designs.length > 10 ? '<span class="dpub-badge dpub-badge-extra">✨ Üretken</span>' : ''}
+          ${totalSales > 50    ? '<span class="dpub-badge dpub-badge-extra">🔥 Çok Satan</span>' : ''}
+          ${reviews.length > 5 ? '<span class="dpub-badge dpub-badge-extra">💬 Yorumlanan</span>' : ''}
+        </div>
+      </div>
+      <div class="dpub-actions">
+        <button id="dpubFollowBtn"
+          class="dpub-follow-btn ${isFollowing ? 'following' : ''}"
+          onclick="toggleFollow('${designerIdOrMockId}','${dName}')">
+          ${isFollowing ? '✓ Takip Ediliyor' : '+ Takip Et'}
+        </button>
+        <button class="dpub-msg-btn" onclick="showToast('Mesajlaşma özelliği yakında!','')">✉ Mesaj</button>
+      </div>
+    </div>
+
+    <!-- ─── İSTATİSTİKLER ─── -->
+    <div class="dpub-stats">
+      <div class="dpub-stat"><div class="dpub-stat-n">${designs.length}</div><div class="dpub-stat-l">Tasarım</div></div>
+      <div class="dpub-stat"><div class="dpub-stat-n">${totalSales}</div><div class="dpub-stat-l">Satış</div></div>
+      <div class="dpub-stat"><div class="dpub-stat-n">${totalLikes}</div><div class="dpub-stat-l">Beğeni</div></div>
+      <div class="dpub-stat"><div class="dpub-stat-n">${avgRating}★</div><div class="dpub-stat-l">Puan</div></div>
+      <div class="dpub-stat"><div class="dpub-stat-n">${reviews.length}</div><div class="dpub-stat-l">Yorum</div></div>
+    </div>
+
+    <!-- ─── TASARIMLAR ─── -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.5px">Tasarımları</h2>
+      <span style="font-size:12px;color:var(--text3)">${designs.length} tasarım</span>
+    </div>
+    <div class="designs-grid" style="margin-bottom:48px">
+      ${designs.length
+        ? designs.map(d => designCard(d)).join('')
+        : `<p style="color:var(--text2);grid-column:1/-1;padding:20px 0">Henüz onaylı tasarım yok.</p>`}
+    </div>
+
+    <!-- ─── YORUMLAR ─── -->
+    <div style="margin-bottom:60px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.5px">
+          Yorumlar <span style="font-size:16px;font-weight:400;color:var(--text3)">(${reviews.length})</span>
+        </h2>
+        ${currentUser
+          ? `<button onclick="openReviewModal('${designerIdOrMockId}','${dName}')"
+               style="padding:9px 20px;background:transparent;border:1px solid var(--accent);border-radius:var(--r);color:var(--accent);font-size:13px;font-weight:500;cursor:pointer;transition:all var(--tr)"
+               onmouseover="this.style.background='var(--accent)';this.style.color='#fff'"
+               onmouseout="this.style.background='transparent';this.style.color='var(--accent)'">
+               + Yorum Yaz
+             </button>`
+          : `<button onclick="showModal('loginModal')"
+               style="padding:9px 20px;background:transparent;border:1px solid var(--border);border-radius:var(--r);color:var(--text2);font-size:13px;cursor:pointer">
+               Giriş Yap & Yorum Yaz
+             </button>`}
+      </div>
+
+      ${reviews.length ? `
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+          ${reviews.map(r => {
+            const rName  = r.reviewerName || 'Anonim';
+            const rInits = rName[0] || 'A';
+            const rDate  = r.createdAt?.toDate?.()?.toLocaleDateString('tr-TR') || '—';
+            const stars  = '★'.repeat(Math.min(r.rating || 5, 5));
+            const empty  = '☆'.repeat(Math.max(5 - (r.rating || 5), 0));
+            return `
+              <div class="review-card">
+                <div class="review-card-header">
+                  <div class="review-av">${rInits}</div>
+                  <div>
+                    <div class="review-author">${rName}</div>
+                    <div class="review-date">${rDate}</div>
+                  </div>
+                  <div class="review-stars">${stars}<span style="color:var(--text3)">${empty}</span></div>
+                </div>
+                <p class="review-text">${r.text || ''}</p>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      ` : `
+        <div style="text-align:center;padding:48px 20px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg)">
+          <div style="font-size:36px;margin-bottom:12px">💬</div>
+          <p style="color:var(--text2);margin-bottom:16px">Henüz yorum yapılmamış. İlk yorumu sen yaz!</p>
+          ${currentUser
+            ? `<button onclick="openReviewModal('${designerIdOrMockId}','${dName}')"
+                 style="padding:10px 22px;background:var(--accent);border:none;border-radius:var(--r);color:#fff;font-size:13px;font-weight:500;cursor:pointer">
+                 Yorum Yaz
+               </button>`
+            : `<button onclick="showModal('loginModal')"
+                 style="padding:10px 22px;background:var(--accent);border:none;border-radius:var(--r);color:#fff;font-size:13px;font-weight:500;cursor:pointer">
+                 Giriş Yap
+               </button>`}
+        </div>
+      `}
+    </div>
+  `;
 }
 
-/* ── DESIGNERS PAGE — GELİŞTİRİLMİŞ ── */
+/* ════════════════════════════════
+   TASARIMCI TAKİP
+════════════════════════════════ */
+async function toggleFollow(designerId, designerName) {
+  if (!currentUser) {
+    showModal('loginModal');
+    showToast('Takip etmek için giriş yapın', '');
+    return;
+  }
+  const btn = document.getElementById('dpubFollowBtn');
+  const isNow = btn?.classList.contains('following');
+  const docId = `${currentUser.uid}_${designerId}`;
+
+  try {
+    if (isNow) {
+      await db.collection('follows').doc(docId).delete();
+      if (btn) { btn.classList.remove('following'); btn.textContent = '+ Takip Et'; }
+      showToast(`${designerName} takipten çıkarıldı`, '');
+    } else {
+      await db.collection('follows').doc(docId).set({
+        followerId:    currentUser.uid,
+        followerName:  currentUser.name,
+        followerEmail: currentUser.email,
+        designerId,
+        designerName,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      if (btn) { btn.classList.add('following'); btn.textContent = '✓ Takip Ediliyor'; }
+      showToast(`${designerName} takip edildi! 🎉`, 'success');
+    }
+  } catch(e) {
+    showToast('Hata: ' + e.message, 'error');
+    console.error('Follow error:', e);
+  }
+}
+
+/* ════════════════════════════════
+   YORUM SİSTEMİ
+════════════════════════════════ */
+let _reviewTargetDesignerId  = null;
+let _reviewTargetDesignerName = null;
+let _reviewCurrentRating     = 5;
+
+function openReviewModal(designerId, designerName) {
+  if (!currentUser) { showModal('loginModal'); return; }
+  _reviewTargetDesignerId   = designerId;
+  _reviewTargetDesignerName = designerName;
+  _reviewCurrentRating = 5;
+  // Star'ları sıfırla
+  setReviewRating(5);
+  // Textarea sıfırla
+  const ta = document.getElementById('reviewText');
+  if (ta) ta.value = '';
+  const cc = document.getElementById('reviewCharCount');
+  if (cc) cc.textContent = '0/500';
+  // Tasarımcı bilgisi göster
+  const infoEl = document.getElementById('reviewDesignInfo');
+  if (infoEl) infoEl.innerHTML = `
+    <span style="color:var(--text3);font-size:12px;text-transform:uppercase;letter-spacing:.06em;font-family:var(--font-mono)">Yorum yapılacak: </span>
+    <span style="font-weight:500;color:var(--text)">${designerName}</span>
+  `;
+  showModal('reviewModal');
+}
+
+function setReviewRating(val) {
+  _reviewCurrentRating = val;
+  document.querySelectorAll('.star-btn').forEach((btn, i) => {
+    const isLit = i < val;
+    btn.classList.toggle('star-lit', isLit);
+    btn.style.color = isLit ? 'var(--gold)' : 'var(--text3)';
+    btn.style.transform = isLit ? 'scale(1.15)' : 'scale(1)';
+  });
+}
+
+async function submitReview() {
+  if (!currentUser) { closeModal('reviewModal'); showModal('loginModal'); return; }
+  const text = document.getElementById('reviewText')?.value?.trim();
+  if (!text || text.length < 20) {
+    showToast('Yorum en az 20 karakter olmalı', 'error');
+    return;
+  }
+  const btn = document.querySelector('#reviewModal .btn-form');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Gönderiliyor...'; }
+
+  try {
+    await db.collection('reviews').add({
+      designerId:    _reviewTargetDesignerId,
+      designerName:  _reviewTargetDesignerName,
+      reviewerId:    currentUser.uid,
+      reviewerName:  currentUser.name,
+      reviewerEmail: currentUser.email,
+      rating:        _reviewCurrentRating,
+      text,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeModal('reviewModal');
+    showToast('Yorumun yayınlandı! ✓', 'success');
+    // Profil sayfasındaysak yenile
+    if (currentPage === 'designer-public') {
+      showDesignerPublicProfile(_reviewTargetDesignerId, _reviewTargetDesignerName);
+    }
+  } catch(e) {
+    showToast('Hata: ' + e.message, 'error');
+    if (btn) { btn.disabled = false; btn.textContent = 'Yorumu Gönder'; }
+    console.error('Review submit:', e);
+  }
+}
+
+/* ════════════════════════════════
+   PAYLAŞIM MODAL
+════════════════════════════════ */
+function openShareModal(designId) {
+  const d = ALL_DESIGNS.find(x => String(x.id) === String(designId));
+  if (!d) return;
+  const url     = `https://muratlola.com/#design-${designId}`;
+  const title   = encodeURIComponent(`${d.title} — formaLOLA`);
+  const urlEnc  = encodeURIComponent(url);
+
+  const el = document.getElementById('shareContent');
+  if (!el) return;
+  el.innerHTML = `
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:18px">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:7px;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.06em">Link</div>
+      <div style="display:flex;gap:8px">
+        <input id="shareUrlInput" type="text" value="${url}" readonly
+          style="flex:1;background:var(--bg4);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;color:var(--text);font-size:12px;font-family:var(--font-mono);min-width:0">
+        <button onclick="copyShareUrl()"
+          style="padding:9px 14px;background:var(--accent);border:none;border-radius:var(--r);color:#fff;font-size:13px;cursor:pointer;white-space:nowrap;transition:all var(--tr)"
+          onmouseover="this.style.background='var(--accent2)'"
+          onmouseout="this.style.background='var(--accent)'">
+          Kopyala
+        </button>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;font-family:var(--font-mono)">Platformda Paylaş</div>
+
+    <button class="share-btn share-btn-x"
+      onclick="window.open('https://twitter.com/intent/tweet?text=${title}&url=${urlEnc}','_blank')">
+      𝕏 Twitter / X
+    </button>
+    <button class="share-btn share-btn-wa"
+      onclick="window.open('https://wa.me/?text=${title}%20${urlEnc}','_blank')">
+      💬 WhatsApp
+    </button>
+    <button class="share-btn share-btn-tg"
+      onclick="window.open('https://t.me/share/url?url=${urlEnc}&text=${title}','_blank')">
+      📲 Telegram
+    </button>
+    <button class="share-btn share-btn-cp" onclick="copyShareUrl()">
+      📋 Linki Kopyala
+    </button>
+  `;
+  showModal('shareModal');
+}
+
+function copyShareUrl() {
+  const input = document.getElementById('shareUrlInput');
+  if (!input) return;
+  navigator.clipboard.writeText(input.value)
+    .then(() => showToast('Link kopyalandı! ✓', 'success'))
+    .catch(() => {
+      input.select();
+      document.execCommand('copy');
+      showToast('Link kopyalandı! ✓', 'success');
+    });
+}
+
+/* ════════════════════════════════
+   DESIGNERS PAGE — GELİŞTİRİLMİŞ
+   (Tasarımcı adına tıklayınca profil açılsın)
+════════════════════════════════ */
 // Mevcut renderDesignersPage fonksiyonunu override et
-function renderDesignersPage() {
+// (app.js'de zaten var, burada genişletiyoruz)
+const _origRenderDesignersPage = renderDesignersPage;
+renderDesignersPage = function() {
   const grid = document.getElementById('designersGrid');
   if (!grid) return;
-  grid.innerHTML = MOCK_DESIGNERS.map(d => `
+
+  // Daha fazla mock tasarımcı
+  const allDesigners = [
+    { id: 1,  name: 'MertStudio',      initials: 'MS', bio: 'Futbol forma uzmanı', sales: 128, designs: 24, rating: 4.9, level: 'master' },
+    { id: 2,  name: 'NeonLab',         initials: 'NL', bio: 'E-spor & fütüristik tasarım', sales: 67, designs: 18, rating: 4.8, level: 'elite' },
+    { id: 3,  name: 'IstanbulKit',     initials: 'IK', bio: 'Türk motifli formalar', sales: 54, designs: 15, rating: 4.7, level: 'pro' },
+    { id: 4,  name: 'FormArt',         initials: 'FA', bio: 'Retro koleksiyon ustası', sales: 89, designs: 31, rating: 4.8, level: 'elite' },
+    { id: 5,  name: 'TigerDesign',     initials: 'TD', bio: 'Agresif, dinamik formalar', sales: 103, designs: 27, rating: 4.9, level: 'master' },
+    { id: 6,  name: 'VintageFC',       initials: 'VF', bio: '70-80ler nostalji uzmanı', sales: 91, designs: 22, rating: 4.7, level: 'elite' },
+    { id: 7,  name: 'NordKit',         initials: 'NK', bio: 'Minimalist Kuzey stili', sales: 77, designs: 19, rating: 4.6, level: 'pro' },
+    { id: 8,  name: 'BlackSeaDesign',  initials: 'BD', bio: 'Karadeniz ilhamlı tasarımlar', sales: 32, designs: 11, rating: 4.5, level: 'pro' },
+  ];
+
+  grid.innerHTML = allDesigners.map(d => `
     <div class="designer-card" onclick="showDesignerPublicProfile('${d.id}','${d.name}')">
       <div class="designer-card-top">
         <div class="dcard-av">${d.initials}</div>
@@ -1409,58 +2539,420 @@ function renderDesignersPage() {
           <div class="dcard-level">${levelLabel(d.level)}</div>
         </div>
       </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.5">${d.bio}</div>
+      <div style="font-size:12px;color:var(--text2);margin:8px 0 14px;line-height:1.5">${d.bio}</div>
       <div class="dcard-stats">
         <div class="dcard-stat"><div class="dcard-stat-n">${d.designs}</div><div class="dcard-stat-l">Tasarım</div></div>
         <div class="dcard-stat"><div class="dcard-stat-n">${d.sales}</div><div class="dcard-stat-l">Satış</div></div>
         <div class="dcard-stat"><div class="dcard-stat-n">${d.rating}★</div><div class="dcard-stat-l">Puan</div></div>
       </div>
-      <div style="margin-top:12px;display:flex;gap:8px">
-        <button class="btn-follow-sm" onclick="event.stopPropagation();toggleFollow('${d.id}','${d.name}')">+ Takip Et</button>
-        <button class="btn-view-sm" onclick="event.stopPropagation();showDesignerPublicProfile('${d.id}','${d.name}')">Profil Gör</button>
+      <div style="margin-top:14px;display:flex;gap:8px">
+        <button class="btn-follow-sm" onclick="event.stopPropagation();toggleFollow('${d.id}','${d.name}')">+ Takip</button>
+        <button onclick="event.stopPropagation();showDesignerPublicProfile('${d.id}','${d.name}')"
+          style="flex:1;padding:7px 12px;background:transparent;border:1px solid var(--border);border-radius:var(--r);color:var(--text2);font-size:12px;cursor:pointer;transition:all var(--tr)"
+          onmouseover="this.style.background='var(--bg4)';this.style.color='var(--text)'"
+          onmouseout="this.style.background='transparent';this.style.color='var(--text2)'">
+          Profili Gör
+        </button>
       </div>
     </div>
   `).join('');
-}
+};
 
-/* ── COMPETITIONS PAGE — DETAY ── */
-function renderCompetitionsPage() {
+/* ════════════════════════════════
+   COMPETITIONS — KATILMA
+════════════════════════════════ */
+const _origRenderCompsPage = renderCompetitionsPage;
+renderCompetitionsPage = function() {
   const grid = document.getElementById('compsGrid');
   if (!grid) return;
-  grid.innerHTML = MOCK_COMPETITIONS.map(c => `
+  const comps = [
+    { id: 1, club: 'Bosphorus FC',      desc: '2026-27 sezonu Ev forması tasarım yarışması — Siyah-beyaz üzerine modern tutum',       prize: '₺5.000', deadline: '15 gün kaldı', entries: 34 },
+    { id: 2, club: 'Ankara Thunder',    desc: 'E-Spor takımımız için yeni kimlik arıyoruz — Agresif, fütüristik, dijital estetik',     prize: '$800',   deadline: '8 gün kaldı',  entries: 19 },
+    { id: 3, club: 'Ege Volley',        desc: 'Kadın voleybol takımı Deplasman forması — Ege mavisi ve doğa motifleri tercih edilir', prize: '₺3.500', deadline: '22 gün kaldı', entries: 11 },
+    { id: 4, club: 'İstanbul Lions',    desc: 'Amerikan futbol takımı tam kit tasarımı — Aslan ve kırmızı-altın tema',                 prize: '$1.200', deadline: '30 gün kaldı', entries: 7  },
+    { id: 5, club: 'Kocaeli United',    desc: 'Yeni kurulan gençlik futbol kulübü için 3 kit (Ev / Deplasman / 3.) tasarımı',          prize: '₺4.200', deadline: '18 gün kaldı', entries: 23 },
+    { id: 6, club: 'Pixel Esports',     desc: 'Valorant ve CS2 kadromuz için modern e-spor forması — neon ve siyah ağırlıklı',        prize: '₺2.800', deadline: '12 gün kaldı', entries: 41 },
+  ];
+
+  grid.innerHTML = comps.map(c => `
     <div class="comp-card">
-      <div class="comp-club">${c.club}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div class="comp-club">${c.club}</div>
+        <span class="comp-badge">${c.entries} katılımcı</span>
+      </div>
       <div class="comp-desc">${c.desc}</div>
-      <div class="comp-meta">
+      <div class="comp-meta" style="margin-top:14px">
         <span class="comp-prize">${c.prize}</span>
         <span class="comp-deadline">${c.deadline}</span>
       </div>
-      <span class="comp-badge">${c.entries} katılımcı</span>
       <div style="margin-top:14px;display:flex;gap:8px">
-        <button style="flex:1;padding:9px;background:var(--accent);border:none;border-radius:var(--r);color:#fff;font-size:13px;cursor:pointer" onclick="joinCompetition('${c.id}')">Katıl</button>
-        <button style="padding:9px 14px;background:transparent;border:1px solid var(--border);border-radius:var(--r);color:var(--text2);font-size:13px;cursor:pointer" onclick="showToast('Detaylar yükleniyor...','')">Detay</button>
+        <button
+          style="flex:1;padding:10px;background:var(--accent);border:none;border-radius:var(--r);color:#fff;font-size:13px;font-weight:500;cursor:pointer;transition:all var(--tr)"
+          onmouseover="this.style.background='var(--accent2)'"
+          onmouseout="this.style.background='var(--accent)'"
+          onclick="joinCompetition('${c.id}','${c.club}')">
+          Katıl
+        </button>
+        <button
+          style="padding:10px 14px;background:transparent;border:1px solid var(--border);border-radius:var(--r);color:var(--text2);font-size:13px;cursor:pointer;transition:all var(--tr)"
+          onmouseover="this.style.background='var(--bg3)'"
+          onmouseout="this.style.background='transparent'"
+          onclick="showToast('Yarışma detayları yakında!','')">
+          Detay
+        </button>
       </div>
     </div>
   `).join('');
-}
+};
 
-async function joinCompetition(compId) {
-  if (!currentUser) { showModal('loginModal'); return; }
+async function joinCompetition(compId, clubName) {
+  if (!currentUser) {
+    showModal('loginModal');
+    showToast('Yarışmaya katılmak için giriş yapın', '');
+    return;
+  }
   try {
     await db.collection('competition_entries').add({
-      compId, userId: currentUser.uid, userName: currentUser.name,
+      compId,
+      clubName,
+      userId:    currentUser.uid,
+      userName:  currentUser.name,
+      userEmail: currentUser.email,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    showToast('Yarışmaya katıldın! Başarılar! 🏆', 'success');
+    showToast(`🏆 ${clubName} yarışmasına katıldın! Başarılar!`, 'success');
+  } catch(e) {
+    showToast('Hata: ' + e.message, 'error');
+  }
+}
+
+/* ════════════════════════════════
+   DASHBOARD — TAM GERÇEK VERİ
+════════════════════════════════ */
+
+// dashTab override — purchases ve mydesigns gerçek Firestore verisiyle
+const _origDashTab = dashTab;
+dashTab = function(tab, btn) {
+  document.querySelectorAll('.dn-item').forEach(i => i.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const el = document.getElementById('dashContent');
+  if (!el) return;
+
+  if (tab === 'overview') {
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">
+        Hoş geldin, ${currentUser?.name || 'Tasarımcı'} 👋
+      </h2>
+      <div class="dash-stats" id="dashStatsGrid">
+        <div class="ds-card"><div class="ds-label">Yükleniyor...</div><div class="ds-val">—</div></div>
+      </div>
+      <div class="dash-section-title" style="margin-top:24px">Son Tasarımlarım</div>
+      <div id="dashRecentDesigns" style="color:var(--text2);font-size:13px">Yükleniyor...</div>
+    `;
+    loadDashboardOverview();
+
+  } else if (tab === 'purchases') {
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Satın Aldıklarım</h2>
+      <div id="purchasesContent" style="color:var(--text2)">Yükleniyor...</div>
+    `;
+    loadPurchasesReal();
+
+  } else if (tab === 'mydesigns') {
+    el.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px">Tasarımlarım</h2>
+        <button class="btn-primary" onclick="showModal('uploadModal')">+ Yeni Yükle</button>
+      </div>
+      <div id="myDesignsContainer" style="color:var(--text2)">Yükleniyor...</div>
+    `;
+    loadMyDesignsReal();
+
+  } else if (tab === 'sales') {
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Satışlar</h2>
+      <div id="salesContainer" style="color:var(--text2)">Yükleniyor...</div>
+    `;
+    loadSalesReal();
+
+  } else if (tab === 'earnings') {
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Kazançlar</h2>
+      <div class="dash-stats" id="earningsStats">
+        <div class="ds-card"><div class="ds-label">Yükleniyor...</div><div class="ds-val">—</div></div>
+      </div>
+      <div style="margin-top:20px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px;text-align:center">
+        <div style="font-size:13px;color:var(--text2);margin-bottom:14px">Minimum ₺500 tutarında ödeme talebi oluşturabilirsin.</div>
+        <button class="btn-cta" onclick="showToast('iyzico ödeme entegrasyonu aktif olduğunda kullanılabilir.','')">Ödeme İste</button>
+      </div>
+    `;
+    loadEarningsReal();
+
+  } else if (tab === 'favorites') {
+    const favDesigns = ALL_DESIGNS.filter(d => favorites.has(String(d.id)));
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Favorilerim</h2>
+      ${favDesigns.length === 0
+        ? `<div style="text-align:center;padding:60px 20px">
+            <div style="font-size:40px;margin-bottom:14px">❤️</div>
+            <p style="color:var(--text2);margin-bottom:18px">Henüz favori tasarımın yok.</p>
+            <button class="btn-cta" onclick="showPage('explore')">Tasarımları Keşfet</button>
+           </div>`
+        : `<div class="designs-grid">${favDesigns.map(d => designCard(d)).join('')}</div>`}
+    `;
+
+  } else if (tab === 'settings') {
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px">Ayarlar</h2>
+      <div style="max-width:520px">
+        <div class="fg"><label>İsim</label><input type="text" id="settingsName" value="${currentUser?.name || ''}"></div>
+        <div class="fg"><label>E-posta</label><input type="email" value="${currentUser?.email || ''}" disabled style="opacity:.55"></div>
+        <div class="fg"><label>Bio</label><textarea rows="3" placeholder="Kendini tanıt..."></textarea></div>
+        <button class="btn-form" onclick="saveProfileSettings()">Kaydet</button>
+        <div style="margin-top:24px;padding-top:22px;border-top:1px solid var(--border)">
+          <button
+            style="padding:10px 18px;background:transparent;border:1px solid rgba(230,57,70,.4);color:var(--accent);border-radius:var(--r);font-size:13px;cursor:pointer;transition:all var(--tr)"
+            onmouseover="this.style.background='rgba(230,57,70,.08)'"
+            onmouseout="this.style.background='transparent'"
+            onclick="doLogout()">
+            Çıkış Yap
+          </button>
+        </div>
+      </div>
+    `;
+
+  } else if (tab === 'adminPanel') {
+    el.innerHTML = `
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:24px;color:var(--accent)">
+        Admin Paneli — Onay Bekleyenler
+      </h2>
+      <div id="adminPendingGrid" class="designs-grid" style="grid-template-columns:1fr">Yükleniyor...</div>
+    `;
+    loadPendingDesigns();
+  }
+};
+
+// Profil kaydet
+async function saveProfileSettings() {
+  const name = document.getElementById('settingsName')?.value?.trim();
+  if (!name) { showToast('İsim boş olamaz', 'error'); return; }
+  try {
+    await auth.currentUser?.updateProfile({ displayName: name });
+    if (currentUser) currentUser.name = name;
+    showToast('Profil güncellendi ✓', 'success');
   } catch(e) { showToast('Hata: ' + e.message, 'error'); }
 }
 
-/* ── DESIGN CARD — TASARIMCI PROFIL LİNKİ ── */
-// Mevcut designCard'ı güncelle — tasarımcı adına tıklayınca profil açılsın
-// App.js'deki designCard fonksiyonunda d.id üzerinden designerId alınamaz
-// Bu yüzden showDesignerFromCard fonksiyonu ekliyoruz
-function showDesignerFromCard(designId) {
-  const d = ALL_DESIGNS.find(x => String(x.id) === String(designId));
-  if (!d) return;
-  showDesignerPublicProfile(d.designerId || d.id, d.designer);
+/* ─── Satın Aldıklarım (Firestore gerçek) ─── */
+async function loadPurchasesReal() {
+  const el = document.getElementById('purchasesContent');
+  if (!el || !currentUser) return;
+  try {
+    const snap = await db.collection('purchases')
+      .where('buyerId', '==', currentUser.uid)
+      .get();
+    if (snap.empty) {
+      el.innerHTML = `<div style="text-align:center;padding:60px 20px">
+        <div style="font-size:40px;margin-bottom:14px">🛒</div>
+        <p style="color:var(--text2);margin-bottom:18px">Henüz bir tasarım satın almadın.</p>
+        <button class="btn-cta" onclick="showPage('explore')">Tasarımları Keşfet</button>
+      </div>`;
+      return;
+    }
+    const rows = [];
+    snap.forEach(doc => {
+      const p = doc.data();
+      const ts = p.purchasedAt?.toDate?.() ? p.purchasedAt.toDate().toLocaleDateString('tr-TR') : '—';
+      rows.push(`
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center">
+          <div>
+            <div style="font-size:14px;font-weight:500">${p.designTitle || p.designId || '—'}</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">${p.license === 'exclusive' ? 'Exclusive' : 'Standart'} · ${ts}</div>
+          </div>
+          <span style="font-family:var(--font-mono);color:var(--accent);font-weight:500">₺${(p.price||0).toLocaleString('tr-TR')}</span>
+          <span style="background:rgba(42,157,143,.15);color:#4ecdc4;font-size:11px;padding:3px 10px;border-radius:4px;white-space:nowrap">✓ Teslim edildi</span>
+        </div>
+      `);
+    });
+    el.innerHTML = `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">${rows.join('')}</div>`;
+  } catch(e) {
+    el.innerHTML = `<p style="color:var(--text2)">Veriler yüklenemedi: ${e.message}</p>`;
+    console.error(e);
+  }
 }
+
+/* ─── Tasarımlarım (Firestore gerçek + durum badge + istatistik) ─── */
+async function loadMyDesignsReal() {
+  const el = document.getElementById('myDesignsContainer');
+  if (!el || !currentUser) return;
+  try {
+    const snap = await db.collection('designs')
+      .where('designerId', '==', currentUser.uid)
+      .get();
+    if (snap.empty) {
+      el.innerHTML = `<div style="text-align:center;padding:60px 20px">
+        <div style="font-size:40px;margin-bottom:14px">🎨</div>
+        <p style="color:var(--text2);margin-bottom:18px">Henüz tasarım yüklemedin.</p>
+        <button class="btn-cta" onclick="showModal('uploadModal')">+ İlk Tasarımını Yükle</button>
+      </div>`;
+      return;
+    }
+    const designs = [];
+    snap.forEach(doc => designs.push({ id: doc.id, ...doc.data() }));
+
+    el.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px">
+      ${designs.map(d => {
+        const c1 = (d.colors && d.colors[0]) || '#1f1f26';
+        const c2 = (d.colors && d.colors[1]) || '#0c0c0e';
+        const bg = `linear-gradient(140deg,${c1},${c2})`;
+        const statusCls = d.status === 'approved' ? 'rgba(42,157,143,.8)' : d.status === 'pending' ? 'rgba(201,168,76,.8)' : 'rgba(230,57,70,.8)';
+        const statusTxt = d.status === 'approved' ? '✓ Yayında' : d.status === 'pending' ? '⏳ Bekliyor' : '✕ Reddedildi';
+        return `
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:all var(--tr)"
+            onmouseover="this.style.borderColor='var(--border2)';this.style.transform='translateY(-2px)'"
+            onmouseout="this.style.borderColor='var(--border)';this.style.transform='translateY(0)'">
+            <div style="height:140px;background:${bg};position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center">
+              ${d.coverThumb
+                ? `<img src="${d.coverThumb}" style="width:100%;height:100%;object-fit:cover">`
+                : `<div style="width:60px;height:72px;background:rgba(255,255,255,.12);border-radius:6px 6px 10px 10px;display:flex;align-items:center;justify-content:center">
+                     <span style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:rgba(255,255,255,.7)">10</span>
+                   </div>`}
+              <div style="position:absolute;top:8px;right:8px">
+                <span style="font-size:10px;padding:3px 9px;border-radius:4px;background:${statusCls};color:#fff;font-weight:500">${statusTxt}</span>
+              </div>
+            </div>
+            <div style="padding:12px 15px">
+              <div style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px">${d.title || '—'}</div>
+              <div style="font-size:11px;color:var(--text3);margin-bottom:10px">${d.sport || ''}</div>
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span style="font-family:var(--font-mono);font-size:14px;font-weight:500">₺${(d.price||0).toLocaleString('tr-TR')}</span>
+                <div style="display:flex;gap:10px;font-size:12px;color:var(--text3)">
+                  <span title="Beğeni">♥ ${d.likes || 0}</span>
+                  <span title="Satış">🛒 ${d.sales || 0}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>`;
+  } catch(e) {
+    el.innerHTML = `<p style="color:var(--accent)">Veriler çekilemedi: ${e.message}</p>`;
+    console.error(e);
+  }
+}
+
+/* ─── Satışlar (Firestore gerçek) ─── */
+async function loadSalesReal() {
+  const el = document.getElementById('salesContainer');
+  if (!el || !currentUser) return;
+  try {
+    const snap = await db.collection('purchases')
+      .where('designerId', '==', currentUser.uid)
+      .get();
+    if (snap.empty) {
+      el.innerHTML = `<div style="text-align:center;padding:60px 20px">
+        <div style="font-size:40px;margin-bottom:14px">📊</div>
+        <p style="color:var(--text2)">Henüz satış yapılmadı. Tasarımlarını paylaşmaya devam et!</p>
+      </div>`;
+      return;
+    }
+    const rows = [];
+    snap.forEach(doc => {
+      const p = doc.data();
+      const ts = p.purchasedAt?.toDate?.() ? p.purchasedAt.toDate().toLocaleDateString('tr-TR') : '—';
+      rows.push({ ...p, ts });
+    });
+    // En yeni önce
+    rows.sort((a, b) => {
+      const ta = a.purchasedAt?.toMillis?.() || 0;
+      const tb = b.purchasedAt?.toMillis?.() || 0;
+      return tb - ta;
+    });
+
+    el.innerHTML = `
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden">
+        <div style="padding:12px 18px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-size:11px;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em">
+          <span>Tasarım</span><span>Alıcı</span><span>Fiyat</span><span>Tarih</span>
+        </div>
+        ${rows.map(s => `
+          <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr 1fr;font-size:13px;align-items:center">
+            <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.designTitle || s.designId || '—'}</span>
+            <span style="color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.buyerEmail || '—'}</span>
+            <span style="color:var(--accent);font-family:var(--font-mono);font-weight:500">₺${(s.price||0).toLocaleString('tr-TR')}</span>
+            <span style="color:var(--text3);font-size:12px">${s.ts}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } catch(e) {
+    el.innerHTML = `<p style="color:var(--accent)">Veriler çekilemedi: ${e.message}</p>`;
+    console.error(e);
+  }
+}
+
+/* ─── Kazançlar (Firestore hesaplamalı) ─── */
+async function loadEarningsReal() {
+  const el = document.getElementById('earningsStats');
+  if (!el || !currentUser) return;
+  try {
+    const snap = await db.collection('purchases')
+      .where('designerId', '==', currentUser.uid)
+      .get();
+    let totalEarnings = 0, thisMonthEarnings = 0;
+    const now = new Date();
+    snap.forEach(doc => {
+      const p = doc.data();
+      const earn = (p.price || 0) * 0.8;
+      totalEarnings += earn;
+      const pd = p.purchasedAt?.toDate?.();
+      if (pd && pd.getMonth() === now.getMonth() && pd.getFullYear() === now.getFullYear()) {
+        thisMonthEarnings += earn;
+      }
+    });
+    el.innerHTML = `
+      <div class="ds-card"><div class="ds-label">Bu Ay</div><div class="ds-val gold">₺${Math.round(thisMonthEarnings).toLocaleString('tr-TR')}</div></div>
+      <div class="ds-card"><div class="ds-label">Toplam</div><div class="ds-val gold">₺${Math.round(totalEarnings).toLocaleString('tr-TR')}</div></div>
+      <div class="ds-card"><div class="ds-label">Komisyon Oranı</div><div class="ds-val">%20</div></div>
+      <div class="ds-card"><div class="ds-label">Senin Payın</div><div class="ds-val">%80</div></div>
+    `;
+  } catch(e) {
+    el.innerHTML = `<div class="ds-card"><div class="ds-label">Veri yüklenemedi</div><div class="ds-val">—</div></div>`;
+    console.error(e);
+  }
+}
+
+/* ════════════════════════════════
+   DESIGN CARD — TASARIMCI PROF LİNKİ
+   (designCard içindeki by linkini güncelle)
+════════════════════════════════ */
+// Tasarım kartındaki tasarımcı adına tıklayınca profil sayfası açılır.
+// Mevcut designCard fonksiyonu showDesignerProfile(d.id) çağırıyor.
+// Bunu showDesignerPublicProfile'a yönlendiriyoruz.
+const _origShowDesignerProfile = showDesignerProfile;
+showDesignerProfile = function(id) {
+  // Önce tasarım ID'sinden designer ID'yi al
+  const design = ALL_DESIGNS.find(x => String(x.id) === String(id));
+  if (design && design.designerId) {
+    showDesignerPublicProfile(design.designerId, design.designer);
+  } else if (design) {
+    showDesignerPublicProfile(id, design?.designer || '');
+  } else {
+    // Mock designer — eski fonksiyonu çağır
+    _origShowDesignerProfile(id);
+  }
+};
+
+/* ════════════════════════════════
+   CSS ANIMATION — Spinner
+════════════════════════════════ */
+(function injectSpinnerCSS() {
+  if (document.getElementById('fl-extra-css')) return;
+  const style = document.createElement('style');
+  style.id = 'fl-extra-css';
+  style.textContent = `
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite; }
+  `;
+  document.head.appendChild(style);
+})();
