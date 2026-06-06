@@ -1,0 +1,5603 @@
+{
+  "players": [
+    {
+      "id": "gk01",
+      "name": "Volkan Demirel",
+      "position": "GK",
+      "rating": 89,
+      "era": "2007-2014",
+      "nation": "TUR",
+      "rarity": "legend",
+      "roles": [
+        "leader",
+        "anchor"
+      ],
+      "links": [
+        "cb01",
+        "cb02",
+        "rb01"
+      ],
+      "stats": {
+        "defense": 92,
+        "clutch": 95,
+        "stability": 80,
+        "pass": 50
+      }
+    },
+    {
+      "id": "gk02",
+      "name": "Rüştü Reçber",
+      "position": "GK",
+      "rating": 90,
+      "era": "1993-2003",
+      "nation": "TUR",
+      "rarity": "legend",
+      "roles": [
+        "anchor",
+        "leader"
+      ],
+      "links": [
+        "st07",
+        "cam02"
+      ],
+      "stats": {
+        "defense": 91,
+        "clutch": 93,
+        "stability": 88,
+        "pass": 48
+      }
+    },
+    {
+      "id": "gk03",
+      "name": "Oscar Cordoba",
+      "position": "GK",
+      "rating": 84,
+      "era": "2001-2004",
+      "nation": "COL",
+      "rarity": "rare",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "st05",
+        "cam01"
+      ],
+      "stats": {
+        "defense": 88,
+        "clutch": 84,
+        "stability": 85,
+        "pass": 52
+      }
+    },
+    {
+      "id": "gk04",
+      "name": "Carlos Kameni",
+      "position": "GK",
+      "rating": 79,
+      "era": "2012-2015",
+      "nation": "CMR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cm05",
+        "dm02"
+      ],
+      "stats": {
+        "defense": 83,
+        "clutch": 78,
+        "stability": 82,
+        "pass": 44
+      }
+    },
+    {
+      "id": "gk05",
+      "name": "Altay Bayındır",
+      "position": "GK",
+      "rating": 83,
+      "era": "2020-2023",
+      "nation": "TUR",
+      "rarity": "rare",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb06",
+        "lb03"
+      ],
+      "stats": {
+        "defense": 86,
+        "clutch": 82,
+        "stability": 84,
+        "pass": 60
+      }
+    },
+    {
+      "id": "gk06",
+      "name": "Mert Günok",
+      "position": "GK",
+      "rating": 80,
+      "era": "2019-2021",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb05",
+        "dm03"
+      ],
+      "stats": {
+        "defense": 84,
+        "clutch": 79,
+        "stability": 83,
+        "pass": 58
+      }
+    },
+    {
+      "id": "gk07",
+      "name": "Tolga Zengin",
+      "position": "GK",
+      "rating": 76,
+      "era": "2010-2013",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb03",
+        "dm02"
+      ],
+      "stats": {
+        "defense": 80,
+        "clutch": 74,
+        "stability": 80,
+        "pass": 50
+      }
+    },
+    {
+      "id": "gk08",
+      "name": "Harun Tekin",
+      "position": "GK",
+      "rating": 75,
+      "era": "2015-2019",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb04",
+        "lb04"
+      ],
+      "stats": {
+        "defense": 79,
+        "clutch": 73,
+        "stability": 81,
+        "pass": 46
+      }
+    },
+    {
+      "id": "gk09",
+      "name": "Fabiano Ribeiro",
+      "position": "GK",
+      "rating": 77,
+      "era": "2004-2007",
+      "nation": "BRA",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cam01",
+        "cb01"
+      ],
+      "stats": {
+        "defense": 81,
+        "clutch": 76,
+        "stability": 79,
+        "pass": 55
+      }
+    },
+    {
+      "id": "gk10",
+      "name": "İlker Yağcıoğlu",
+      "position": "GK",
+      "rating": 72,
+      "era": "1998-2003",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "rb01",
+        "cb02"
+      ],
+      "stats": {
+        "defense": 76,
+        "clutch": 70,
+        "stability": 78,
+        "pass": 42
+      }
+    },
+    {
+      "id": "gk11",
+      "name": "Zafer Öğretmen",
+      "position": "GK",
+      "rating": 74,
+      "era": "1990-1997",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb01",
+        "dm01"
+      ],
+      "stats": {
+        "defense": 78,
+        "clutch": 72,
+        "stability": 80,
+        "pass": 44
+      }
+    },
+    {
+      "id": "gk12",
+      "name": "Adil Aktaş",
+      "position": "GK",
+      "rating": 71,
+      "era": "1985-1993",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb01",
+        "lb01"
+      ],
+      "stats": {
+        "defense": 75,
+        "clutch": 70,
+        "stability": 77,
+        "pass": 40
+      }
+    },
+    {
+      "id": "gk13",
+      "name": "Loris Karius",
+      "position": "GK",
+      "rating": 75,
+      "era": "2018-2019",
+      "nation": "GER",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb04",
+        "rb03"
+      ],
+      "stats": {
+        "defense": 79,
+        "clutch": 74,
+        "stability": 74,
+        "pass": 58
+      }
+    },
+    {
+      "id": "gk14",
+      "name": "Berke Özer",
+      "position": "GK",
+      "rating": 72,
+      "era": "2021-2023",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb06",
+        "rb04"
+      ],
+      "stats": {
+        "defense": 76,
+        "clutch": 71,
+        "stability": 78,
+        "pass": 55
+      }
+    },
+    {
+      "id": "gk15",
+      "name": "Ertuğrul Çetin",
+      "position": "GK",
+      "rating": 70,
+      "era": "2022-Present",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb05",
+        "lb03"
+      ],
+      "stats": {
+        "defense": 74,
+        "clutch": 69,
+        "stability": 76,
+        "pass": 52
+      }
+    },
+    {
+      "id": "rb01",
+      "name": "Gökhan Gönül",
+      "position": "RB",
+      "rating": 84,
+      "era": "2007-2016",
+      "nation": "TUR",
+      "rarity": "epic",
+      "roles": [
+        "anchor",
+        "creator"
+      ],
+      "links": [
+        "gk01",
+        "cb01",
+        "cam01"
+      ],
+      "stats": {
+        "defense": 84,
+        "clutch": 80,
+        "stability": 87,
+        "pass": 77
+      }
+    },
+    {
+      "id": "rb02",
+      "name": "Roberto Carlos",
+      "position": "RB",
+      "rating": 88,
+      "era": "2007-2009",
+      "nation": "BRA",
+      "rarity": "legend",
+      "roles": [
+        "creator",
+        "leader"
+      ],
+      "links": [
+        "cam01",
+        "cb03",
+        "st02"
+      ],
+      "stats": {
+        "defense": 80,
+        "clutch": 87,
+        "stability": 81,
+        "pass": 86
+      }
+    },
+    {
+      "id": "rb03",
+      "name": "Mauricio Isla",
+      "position": "RB",
+      "rating": 79,
+      "era": "2010-2012",
+      "nation": "CHI",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cm04",
+        "cb03"
+      ],
+      "stats": {
+        "defense": 80,
+        "clutch": 75,
+        "stability": 80,
+        "pass": 72
+      }
+    },
+    {
+      "id": "rb04",
+      "name": "Bright Osayi-Samuel",
+      "position": "RB",
+      "rating": 81,
+      "era": "2022-Present",
+      "nation": "NGA",
+      "rarity": "rare",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "lb03",
+        "cb06"
+      ],
+      "stats": {
+        "defense": 76,
+        "clutch": 79,
+        "stability": 78,
+        "pass": 73
+      }
+    },
+    {
+      "id": "rb05",
+      "name": "Mert Müldür",
+      "position": "RB",
+      "rating": 78,
+      "era": "2022-Present",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb06",
+        "lb03"
+      ],
+      "stats": {
+        "defense": 79,
+        "clutch": 75,
+        "stability": 80,
+        "pass": 70
+      }
+    },
+    {
+      "id": "rb06",
+      "name": "Nazım Sangaré",
+      "position": "RB",
+      "rating": 75,
+      "era": "2017-2020",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb04",
+        "dm03"
+      ],
+      "stats": {
+        "defense": 78,
+        "clutch": 72,
+        "stability": 78,
+        "pass": 66
+      }
+    },
+    {
+      "id": "rb07",
+      "name": "Şener Özbayraklı",
+      "position": "RB",
+      "rating": 77,
+      "era": "2017-2020",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb04",
+        "dm03"
+      ],
+      "stats": {
+        "defense": 80,
+        "clutch": 73,
+        "stability": 80,
+        "pass": 68
+      }
+    },
+    {
+      "id": "rb08",
+      "name": "Serkan Balcı",
+      "position": "RB",
+      "rating": 73,
+      "era": "2000-2005",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb01",
+        "dm01"
+      ],
+      "stats": {
+        "defense": 76,
+        "clutch": 70,
+        "stability": 77,
+        "pass": 64
+      }
+    },
+    {
+      "id": "rb09",
+      "name": "Osman Özköylü",
+      "position": "RB",
+      "rating": 72,
+      "era": "1995-2000",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb02",
+        "gk02"
+      ],
+      "stats": {
+        "defense": 75,
+        "clutch": 69,
+        "stability": 76,
+        "pass": 62
+      }
+    },
+    {
+      "id": "rb10",
+      "name": "Nabil Dirar",
+      "position": "RB",
+      "rating": 76,
+      "era": "2012-2015",
+      "nation": "MAR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cm04",
+        "cb03"
+      ],
+      "stats": {
+        "defense": 78,
+        "clutch": 74,
+        "stability": 79,
+        "pass": 72
+      }
+    },
+    {
+      "id": "rb11",
+      "name": "Bekir İrtegün",
+      "position": "RB",
+      "rating": 74,
+      "era": "2004-2009",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cam01",
+        "cb01"
+      ],
+      "stats": {
+        "defense": 77,
+        "clutch": 71,
+        "stability": 79,
+        "pass": 65
+      }
+    },
+    {
+      "id": "rb12",
+      "name": "Uğur Boral",
+      "position": "RB",
+      "rating": 76,
+      "era": "2007-2012",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam01",
+        "cm03"
+      ],
+      "stats": {
+        "defense": 75,
+        "clutch": 76,
+        "stability": 78,
+        "pass": 74
+      }
+    },
+    {
+      "id": "rb13",
+      "name": "İlhan Palut",
+      "position": "RB",
+      "rating": 71,
+      "era": "1992-1998",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb01",
+        "gk02"
+      ],
+      "stats": {
+        "defense": 74,
+        "clutch": 68,
+        "stability": 76,
+        "pass": 60
+      }
+    },
+    {
+      "id": "cb01",
+      "name": "Diego Lugano",
+      "position": "CB",
+      "rating": 89,
+      "era": "2007-2012",
+      "nation": "URU",
+      "rarity": "legend",
+      "roles": [
+        "anchor",
+        "leader"
+      ],
+      "links": [
+        "gk01",
+        "cam01",
+        "cb02"
+      ],
+      "stats": {
+        "defense": 95,
+        "clutch": 90,
+        "stability": 86,
+        "pass": 62
+      }
+    },
+    {
+      "id": "cb02",
+      "name": "Simon Kjær",
+      "position": "CB",
+      "rating": 84,
+      "era": "2009-2012",
+      "nation": "DEN",
+      "rarity": "rare",
+      "roles": [
+        "anchor",
+        "leader"
+      ],
+      "links": [
+        "gk01",
+        "cb01"
+      ],
+      "stats": {
+        "defense": 88,
+        "clutch": 82,
+        "stability": 88,
+        "pass": 66
+      }
+    },
+    {
+      "id": "cb03",
+      "name": "Edu Dracena",
+      "position": "CB",
+      "rating": 82,
+      "era": "2007-2010",
+      "nation": "BRA",
+      "rarity": "rare",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cam01",
+        "cb01"
+      ],
+      "stats": {
+        "defense": 86,
+        "clutch": 79,
+        "stability": 83,
+        "pass": 61
+      }
+    },
+    {
+      "id": "cb04",
+      "name": "Martin Škrtel",
+      "position": "CB",
+      "rating": 83,
+      "era": "2017-2019",
+      "nation": "SVK",
+      "rarity": "rare",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "st08",
+        "rb06"
+      ],
+      "stats": {
+        "defense": 89,
+        "clutch": 81,
+        "stability": 81,
+        "pass": 56
+      }
+    },
+    {
+      "id": "cb05",
+      "name": "Attila Szalai",
+      "position": "CB",
+      "rating": 80,
+      "era": "2021-2023",
+      "nation": "HUN",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "gk05",
+        "lb03"
+      ],
+      "stats": {
+        "defense": 83,
+        "clutch": 78,
+        "stability": 82,
+        "pass": 67
+      }
+    },
+    {
+      "id": "cb06",
+      "name": "Samet Akaydın",
+      "position": "CB",
+      "rating": 77,
+      "era": "2022-Present",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "gk05",
+        "rb04"
+      ],
+      "stats": {
+        "defense": 81,
+        "clutch": 74,
+        "stability": 80,
+        "pass": 64
+      }
+    },
+    {
+      "id": "cb07",
+      "name": "Uche Okechukwu",
+      "position": "CB",
+      "rating": 84,
+      "era": "1992-2000",
+      "nation": "NGA",
+      "rarity": "epic",
+      "roles": [
+        "anchor",
+        "leader"
+      ],
+      "links": [
+        "gk02",
+        "cb08"
+      ],
+      "stats": {
+        "defense": 88,
+        "clutch": 83,
+        "stability": 84,
+        "pass": 58
+      }
+    },
+    {
+      "id": "cb08",
+      "name": "Fábio Luciano",
+      "position": "CB",
+      "rating": 81,
+      "era": "2002-2006",
+      "nation": "BRA",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cam01",
+        "cb07"
+      ],
+      "stats": {
+        "defense": 85,
+        "clutch": 78,
+        "stability": 82,
+        "pass": 60
+      }
+    },
+    {
+      "id": "cb09",
+      "name": "Egemen Korkmaz",
+      "position": "CB",
+      "rating": 78,
+      "era": "2008-2014",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "gk01",
+        "dm02"
+      ],
+      "stats": {
+        "defense": 82,
+        "clutch": 76,
+        "stability": 81,
+        "pass": 63
+      }
+    },
+    {
+      "id": "cb10",
+      "name": "Müjdat Yetkiner",
+      "position": "CB",
+      "rating": 76,
+      "era": "1982-1992",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "gk02",
+        "cb11"
+      ],
+      "stats": {
+        "defense": 81,
+        "clutch": 74,
+        "stability": 80,
+        "pass": 56
+      }
+    },
+    {
+      "id": "cb11",
+      "name": "Diego Reyes",
+      "position": "CB",
+      "rating": 77,
+      "era": "2014-2016",
+      "nation": "MEX",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb04",
+        "dm02"
+      ],
+      "stats": {
+        "defense": 80,
+        "clutch": 75,
+        "stability": 79,
+        "pass": 64
+      }
+    },
+    {
+      "id": "cb12",
+      "name": "Serdar Aziz",
+      "position": "CB",
+      "rating": 76,
+      "era": "2016-2021",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb04",
+        "rb06"
+      ],
+      "stats": {
+        "defense": 80,
+        "clutch": 73,
+        "stability": 79,
+        "pass": 60
+      }
+    },
+    {
+      "id": "cb13",
+      "name": "Roman Neustädter",
+      "position": "CB",
+      "rating": 78,
+      "era": "2017-2019",
+      "nation": "GER",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb04",
+        "dm03"
+      ],
+      "stats": {
+        "defense": 82,
+        "clutch": 76,
+        "stability": 80,
+        "pass": 68
+      }
+    },
+    {
+      "id": "cb14",
+      "name": "Adil Rami",
+      "position": "CB",
+      "rating": 76,
+      "era": "2019-2020",
+      "nation": "FRA",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "gk06",
+        "cb12"
+      ],
+      "stats": {
+        "defense": 80,
+        "clutch": 74,
+        "stability": 78,
+        "pass": 62
+      }
+    },
+    {
+      "id": "lb01",
+      "name": "Fábio Aurélio",
+      "position": "LB",
+      "rating": 85,
+      "era": "2009-2011",
+      "nation": "BRA",
+      "rarity": "epic",
+      "roles": [
+        "creator",
+        "anchor"
+      ],
+      "links": [
+        "cam01",
+        "st01",
+        "st02"
+      ],
+      "stats": {
+        "defense": 82,
+        "clutch": 81,
+        "stability": 84,
+        "pass": 87
+      }
+    },
+    {
+      "id": "lb02",
+      "name": "Ferdi Kadıoğlu",
+      "position": "LB",
+      "rating": 85,
+      "era": "2020-Present",
+      "nation": "NED",
+      "rarity": "epic",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam04",
+        "cm06",
+        "st09"
+      ],
+      "stats": {
+        "defense": 83,
+        "clutch": 82,
+        "stability": 87,
+        "pass": 84
+      }
+    },
+    {
+      "id": "lb03",
+      "name": "Caner Erkin",
+      "position": "LB",
+      "rating": 82,
+      "era": "2013-2016",
+      "nation": "TUR",
+      "rarity": "rare",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "dm02",
+        "cm04"
+      ],
+      "stats": {
+        "defense": 78,
+        "clutch": 78,
+        "stability": 80,
+        "pass": 80
+      }
+    },
+    {
+      "id": "lb04",
+      "name": "Hasan Ali Kaldırım",
+      "position": "LB",
+      "rating": 78,
+      "era": "2012-2017",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "dm02",
+        "cb04"
+      ],
+      "stats": {
+        "defense": 79,
+        "clutch": 74,
+        "stability": 81,
+        "pass": 72
+      }
+    },
+    {
+      "id": "lb05",
+      "name": "Hasan Şaş",
+      "position": "LB",
+      "rating": 80,
+      "era": "1999-2005",
+      "nation": "TUR",
+      "rarity": "rare",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam01",
+        "cm02"
+      ],
+      "stats": {
+        "defense": 77,
+        "clutch": 78,
+        "stability": 79,
+        "pass": 79
+      }
+    },
+    {
+      "id": "lb06",
+      "name": "Jayden Oosterwolde",
+      "position": "LB",
+      "rating": 79,
+      "era": "2022-Present",
+      "nation": "NED",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam04",
+        "lb02"
+      ],
+      "stats": {
+        "defense": 78,
+        "clutch": 76,
+        "stability": 78,
+        "pass": 78
+      }
+    },
+    {
+      "id": "lb07",
+      "name": "Filip Novák",
+      "position": "LB",
+      "rating": 75,
+      "era": "2020-2022",
+      "nation": "CZE",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb05",
+        "dm03"
+      ],
+      "stats": {
+        "defense": 78,
+        "clutch": 72,
+        "stability": 78,
+        "pass": 70
+      }
+    },
+    {
+      "id": "lb08",
+      "name": "İsmail Köybaşı",
+      "position": "LB",
+      "rating": 74,
+      "era": "2016-2020",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb04",
+        "rb06"
+      ],
+      "stats": {
+        "defense": 77,
+        "clutch": 71,
+        "stability": 78,
+        "pass": 67
+      }
+    },
+    {
+      "id": "lb09",
+      "name": "Ogün Temizkanoğlu",
+      "position": "LB",
+      "rating": 72,
+      "era": "1993-2001",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "gk02",
+        "cb07"
+      ],
+      "stats": {
+        "defense": 76,
+        "clutch": 69,
+        "stability": 77,
+        "pass": 64
+      }
+    },
+    {
+      "id": "lb10",
+      "name": "Bülent Uygun",
+      "position": "LB",
+      "rating": 74,
+      "era": "1990-1998",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam07",
+        "cb10"
+      ],
+      "stats": {
+        "defense": 73,
+        "clutch": 73,
+        "stability": 75,
+        "pass": 74
+      }
+    },
+    {
+      "id": "lb11",
+      "name": "Luan Peres",
+      "position": "LB",
+      "rating": 73,
+      "era": "2023-Present",
+      "nation": "BRA",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb06",
+        "lb02"
+      ],
+      "stats": {
+        "defense": 77,
+        "clutch": 70,
+        "stability": 77,
+        "pass": 66
+      }
+    },
+    {
+      "id": "lb12",
+      "name": "Sadık Çiftpınar",
+      "position": "LB",
+      "rating": 72,
+      "era": "2020-2022",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb05",
+        "gk05"
+      ],
+      "stats": {
+        "defense": 75,
+        "clutch": 69,
+        "stability": 76,
+        "pass": 64
+      }
+    },
+    {
+      "id": "dm01",
+      "name": "Mehmet Topal",
+      "position": "DM",
+      "rating": 83,
+      "era": "2013-2018",
+      "nation": "TUR",
+      "rarity": "rare",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "rb01",
+        "cm03"
+      ],
+      "stats": {
+        "defense": 87,
+        "clutch": 80,
+        "stability": 91,
+        "pass": 79
+      }
+    },
+    {
+      "id": "dm02",
+      "name": "Mehmet Aurelio",
+      "position": "DM",
+      "rating": 84,
+      "era": "2006-2009",
+      "nation": "TUR",
+      "rarity": "epic",
+      "roles": [
+        "anchor",
+        "creator"
+      ],
+      "links": [
+        "cam01",
+        "cb01"
+      ],
+      "stats": {
+        "defense": 84,
+        "clutch": 82,
+        "stability": 86,
+        "pass": 82
+      }
+    },
+    {
+      "id": "dm03",
+      "name": "Josef de Souza",
+      "position": "DM",
+      "rating": 82,
+      "era": "2015-2018",
+      "nation": "BRA",
+      "rarity": "rare",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "dm04",
+        "cm04"
+      ],
+      "stats": {
+        "defense": 85,
+        "clutch": 79,
+        "stability": 88,
+        "pass": 78
+      }
+    },
+    {
+      "id": "dm04",
+      "name": "Luís Gustavo",
+      "position": "DM",
+      "rating": 83,
+      "era": "2017-2019",
+      "nation": "BRA",
+      "rarity": "rare",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "dm03",
+        "cm04"
+      ],
+      "stats": {
+        "defense": 86,
+        "clutch": 80,
+        "stability": 87,
+        "pass": 77
+      }
+    },
+    {
+      "id": "dm05",
+      "name": "Tayfun Korkut",
+      "position": "DM",
+      "rating": 78,
+      "era": "1991-1997",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor",
+        "creator"
+      ],
+      "links": [
+        "st07",
+        "cm01"
+      ],
+      "stats": {
+        "defense": 78,
+        "clutch": 75,
+        "stability": 82,
+        "pass": 80
+      }
+    },
+    {
+      "id": "dm06",
+      "name": "Willian Arão",
+      "position": "DM",
+      "rating": 78,
+      "era": "2022-Present",
+      "nation": "BRA",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cam04",
+        "cm06"
+      ],
+      "stats": {
+        "defense": 82,
+        "clutch": 75,
+        "stability": 85,
+        "pass": 76
+      }
+    },
+    {
+      "id": "dm07",
+      "name": "Oğuz Çetin",
+      "position": "DM",
+      "rating": 79,
+      "era": "1980-1990",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "st07",
+        "cam07"
+      ],
+      "stats": {
+        "defense": 80,
+        "clutch": 76,
+        "stability": 83,
+        "pass": 77
+      }
+    },
+    {
+      "id": "dm08",
+      "name": "Raul Meireles",
+      "position": "DM",
+      "rating": 81,
+      "era": "2012-2013",
+      "nation": "POR",
+      "rarity": "rare",
+      "roles": [
+        "creator",
+        "anchor"
+      ],
+      "links": [
+        "cm04",
+        "cam03"
+      ],
+      "stats": {
+        "defense": 80,
+        "clutch": 80,
+        "stability": 82,
+        "pass": 84
+      }
+    },
+    {
+      "id": "dm09",
+      "name": "Stéphane Mbia",
+      "position": "DM",
+      "rating": 78,
+      "era": "2013-2014",
+      "nation": "CMR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cm04",
+        "cb03"
+      ],
+      "stats": {
+        "defense": 83,
+        "clutch": 76,
+        "stability": 80,
+        "pass": 72
+      }
+    },
+    {
+      "id": "dm10",
+      "name": "Tolgay Arslan",
+      "position": "DM",
+      "rating": 76,
+      "era": "2018-2020",
+      "nation": "GER",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cm05",
+        "cb04"
+      ],
+      "stats": {
+        "defense": 80,
+        "clutch": 73,
+        "stability": 80,
+        "pass": 76
+      }
+    },
+    {
+      "id": "dm11",
+      "name": "Alper Potuk",
+      "position": "DM",
+      "rating": 76,
+      "era": "2014-2020",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cm04",
+        "cam03"
+      ],
+      "stats": {
+        "defense": 76,
+        "clutch": 75,
+        "stability": 78,
+        "pass": 78
+      }
+    },
+    {
+      "id": "dm12",
+      "name": "Souza (José Fonte)",
+      "position": "DM",
+      "rating": 74,
+      "era": "2007-2010",
+      "nation": "BRA",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cam01",
+        "cb03"
+      ],
+      "stats": {
+        "defense": 79,
+        "clutch": 71,
+        "stability": 79,
+        "pass": 70
+      }
+    },
+    {
+      "id": "cm01",
+      "name": "Stephen Appiah",
+      "position": "CM",
+      "rating": 86,
+      "era": "2003-2006",
+      "nation": "GHA",
+      "rarity": "epic",
+      "roles": [
+        "creator",
+        "anchor"
+      ],
+      "links": [
+        "cam01",
+        "st01",
+        "lw01"
+      ],
+      "stats": {
+        "defense": 79,
+        "clutch": 85,
+        "stability": 85,
+        "pass": 87
+      }
+    },
+    {
+      "id": "cm02",
+      "name": "Emre Belözoğlu",
+      "position": "CM",
+      "rating": 87,
+      "era": "2005-2018",
+      "nation": "TUR",
+      "rarity": "legend",
+      "roles": [
+        "creator",
+        "leader"
+      ],
+      "links": [
+        "rb01",
+        "cam01",
+        "gk01"
+      ],
+      "stats": {
+        "defense": 76,
+        "clutch": 89,
+        "stability": 84,
+        "pass": 92
+      }
+    },
+    {
+      "id": "cm03",
+      "name": "Fred",
+      "position": "CM",
+      "rating": 83,
+      "era": "2022-Present",
+      "nation": "BRA",
+      "rarity": "rare",
+      "roles": [
+        "anchor",
+        "creator"
+      ],
+      "links": [
+        "cam04",
+        "lb02",
+        "st09"
+      ],
+      "stats": {
+        "defense": 83,
+        "clutch": 79,
+        "stability": 88,
+        "pass": 83
+      }
+    },
+    {
+      "id": "cm04",
+      "name": "Cristian Baroni",
+      "position": "CM",
+      "rating": 79,
+      "era": "2009-2014",
+      "nation": "BRA",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam02",
+        "st06"
+      ],
+      "stats": {
+        "defense": 72,
+        "clutch": 78,
+        "stability": 81,
+        "pass": 83
+      }
+    },
+    {
+      "id": "cm05",
+      "name": "Eljif Elmas",
+      "position": "CM",
+      "rating": 79,
+      "era": "2018-2019",
+      "nation": "MKD",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam03",
+        "dm04"
+      ],
+      "stats": {
+        "defense": 70,
+        "clutch": 77,
+        "stability": 78,
+        "pass": 84
+      }
+    },
+    {
+      "id": "cm06",
+      "name": "Miguel Crespo",
+      "position": "CM",
+      "rating": 78,
+      "era": "2021-2023",
+      "nation": "POR",
+      "rarity": "common",
+      "roles": [
+        "anchor",
+        "creator"
+      ],
+      "links": [
+        "cam04",
+        "lb02"
+      ],
+      "stats": {
+        "defense": 77,
+        "clutch": 74,
+        "stability": 82,
+        "pass": 80
+      }
+    },
+    {
+      "id": "cm07",
+      "name": "Miroslav Stoch",
+      "position": "CM",
+      "rating": 80,
+      "era": "2009-2013",
+      "nation": "SVK",
+      "rarity": "rare",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "lw01",
+        "rw01"
+      ],
+      "stats": {
+        "defense": 64,
+        "clutch": 80,
+        "stability": 76,
+        "pass": 79
+      }
+    },
+    {
+      "id": "cm08",
+      "name": "Selçuk Şahin",
+      "position": "CM",
+      "rating": 78,
+      "era": "2010-2015",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cm02",
+        "rb01"
+      ],
+      "stats": {
+        "defense": 66,
+        "clutch": 76,
+        "stability": 80,
+        "pass": 84
+      }
+    },
+    {
+      "id": "cm09",
+      "name": "Josué",
+      "position": "CM",
+      "rating": 83,
+      "era": "2007-2010",
+      "nation": "BRA",
+      "rarity": "rare",
+      "roles": [
+        "creator",
+        "anchor"
+      ],
+      "links": [
+        "cam01",
+        "cb01",
+        "cb03"
+      ],
+      "stats": {
+        "defense": 74,
+        "clutch": 82,
+        "stability": 85,
+        "pass": 87
+      }
+    },
+    {
+      "id": "cm10",
+      "name": "İrfan Can Kahveci",
+      "position": "CM",
+      "rating": 83,
+      "era": "2020-Present",
+      "nation": "TUR",
+      "rarity": "rare",
+      "roles": [
+        "creator",
+        "finisher"
+      ],
+      "links": [
+        "cam04",
+        "dm06"
+      ],
+      "stats": {
+        "defense": 64,
+        "clutch": 84,
+        "stability": 78,
+        "pass": 84
+      }
+    },
+    {
+      "id": "cm11",
+      "name": "Ozan Tufan",
+      "position": "CM",
+      "rating": 78,
+      "era": "2015-2020",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam03",
+        "dm03"
+      ],
+      "stats": {
+        "defense": 72,
+        "clutch": 77,
+        "stability": 78,
+        "pass": 80
+      }
+    },
+    {
+      "id": "cm12",
+      "name": "Mehmet Ekici",
+      "position": "CM",
+      "rating": 76,
+      "era": "2013-2016",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam03",
+        "cm04"
+      ],
+      "stats": {
+        "defense": 68,
+        "clutch": 75,
+        "stability": 76,
+        "pass": 82
+      }
+    },
+    {
+      "id": "cm13",
+      "name": "Kuchta (Volkan)",
+      "position": "CM",
+      "rating": 74,
+      "era": "2015-2018",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "dm03",
+        "cb04"
+      ],
+      "stats": {
+        "defense": 74,
+        "clutch": 72,
+        "stability": 79,
+        "pass": 74
+      }
+    },
+    {
+      "id": "cm14",
+      "name": "Sadri Şen",
+      "position": "CM",
+      "rating": 76,
+      "era": "1985-1992",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam07",
+        "dm07"
+      ],
+      "stats": {
+        "defense": 70,
+        "clutch": 74,
+        "stability": 78,
+        "pass": 80
+      }
+    },
+    {
+      "id": "cam01",
+      "name": "Alex de Souza",
+      "position": "CAM",
+      "rating": 96,
+      "era": "2004-2012",
+      "nation": "BRA",
+      "rarity": "icon",
+      "roles": [
+        "creator",
+        "leader",
+        "finisher"
+      ],
+      "links": [
+        "cb01",
+        "lb01",
+        "cm01",
+        "cm02",
+        "cm09",
+        "st02",
+        "dm02"
+      ],
+      "stats": {
+        "defense": 46,
+        "clutch": 99,
+        "stability": 93,
+        "pass": 99
+      }
+    },
+    {
+      "id": "cam02",
+      "name": "Dušan Tadić",
+      "position": "CAM",
+      "rating": 87,
+      "era": "2022-Present",
+      "nation": "SRB",
+      "rarity": "legend",
+      "roles": [
+        "creator",
+        "leader"
+      ],
+      "links": [
+        "st09",
+        "lb02",
+        "cm03"
+      ],
+      "stats": {
+        "defense": 52,
+        "clutch": 86,
+        "stability": 90,
+        "pass": 93
+      }
+    },
+    {
+      "id": "cam03",
+      "name": "Mesut Özil",
+      "position": "CAM",
+      "rating": 86,
+      "era": "2021-2022",
+      "nation": "GER",
+      "rarity": "legend",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cm05",
+        "dm04"
+      ],
+      "stats": {
+        "defense": 42,
+        "clutch": 85,
+        "stability": 80,
+        "pass": 96
+      }
+    },
+    {
+      "id": "cam04",
+      "name": "İrfan Can Eğribayat",
+      "position": "CAM",
+      "rating": 80,
+      "era": "2023-Present",
+      "nation": "TUR",
+      "rarity": "rare",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "lb02",
+        "cm03",
+        "cm10"
+      ],
+      "stats": {
+        "defense": 54,
+        "clutch": 79,
+        "stability": 78,
+        "pass": 86
+      }
+    },
+    {
+      "id": "cam05",
+      "name": "Rıdvan Dilmen",
+      "position": "CAM",
+      "rating": 88,
+      "era": "1978-1988",
+      "nation": "TUR",
+      "rarity": "legend",
+      "roles": [
+        "creator",
+        "leader"
+      ],
+      "links": [
+        "st07",
+        "dm07",
+        "cm14"
+      ],
+      "stats": {
+        "defense": 52,
+        "clutch": 88,
+        "stability": 82,
+        "pass": 91
+      }
+    },
+    {
+      "id": "cam06",
+      "name": "Jay-Jay Okocha",
+      "position": "CAM",
+      "rating": 87,
+      "era": "1996-1998",
+      "nation": "NGA",
+      "rarity": "legend",
+      "roles": [
+        "creator",
+        "finisher"
+      ],
+      "links": [
+        "gk02",
+        "cb07"
+      ],
+      "stats": {
+        "defense": 48,
+        "clutch": 87,
+        "stability": 78,
+        "pass": 92
+      }
+    },
+    {
+      "id": "cam07",
+      "name": "Lefter Küçükandonyadis",
+      "position": "CAM",
+      "rating": 94,
+      "era": "1947-1966",
+      "nation": "TUR",
+      "rarity": "icon",
+      "roles": [
+        "creator",
+        "leader",
+        "finisher"
+      ],
+      "links": [
+        "st10",
+        "gk02"
+      ],
+      "stats": {
+        "defense": 54,
+        "clutch": 95,
+        "stability": 88,
+        "pass": 93
+      }
+    },
+    {
+      "id": "cam08",
+      "name": "Nobre",
+      "position": "CAM",
+      "rating": 81,
+      "era": "2006-2008",
+      "nation": "BRA",
+      "rarity": "rare",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam01",
+        "st02"
+      ],
+      "stats": {
+        "defense": 42,
+        "clutch": 80,
+        "stability": 77,
+        "pass": 88
+      }
+    },
+    {
+      "id": "cam09",
+      "name": "Szymański",
+      "position": "CAM",
+      "rating": 82,
+      "era": "2023-Present",
+      "nation": "POL",
+      "rarity": "rare",
+      "roles": [
+        "creator",
+        "finisher"
+      ],
+      "links": [
+        "cam02",
+        "cm03"
+      ],
+      "stats": {
+        "defense": 56,
+        "clutch": 81,
+        "stability": 79,
+        "pass": 85
+      }
+    },
+    {
+      "id": "cam10",
+      "name": "Diego Ribas",
+      "position": "CAM",
+      "rating": 82,
+      "era": "2012-2013",
+      "nation": "BRA",
+      "rarity": "rare",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "st06",
+        "dm04"
+      ],
+      "stats": {
+        "defense": 48,
+        "clutch": 81,
+        "stability": 78,
+        "pass": 88
+      }
+    },
+    {
+      "id": "cam11",
+      "name": "Garry Rodrigues",
+      "position": "CAM",
+      "rating": 78,
+      "era": "2016-2019",
+      "nation": "CPV",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "st08",
+        "dm03"
+      ],
+      "stats": {
+        "defense": 54,
+        "clutch": 77,
+        "stability": 75,
+        "pass": 80
+      }
+    },
+    {
+      "id": "cam12",
+      "name": "Bekir Can Kalkan",
+      "position": "CAM",
+      "rating": 74,
+      "era": "2020-2022",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cm10",
+        "dm06"
+      ],
+      "stats": {
+        "defense": 52,
+        "clutch": 73,
+        "stability": 73,
+        "pass": 78
+      }
+    },
+    {
+      "id": "cam13",
+      "name": "Yusuf Sari",
+      "position": "CAM",
+      "rating": 72,
+      "era": "1995-2002",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "gk02",
+        "dm05"
+      ],
+      "stats": {
+        "defense": 50,
+        "clutch": 71,
+        "stability": 74,
+        "pass": 76
+      }
+    },
+    {
+      "id": "lw01",
+      "name": "Tuncay Şanlı",
+      "position": "LW",
+      "rating": 83,
+      "era": "2001-2005",
+      "nation": "TUR",
+      "rarity": "rare",
+      "roles": [
+        "finisher",
+        "creator"
+      ],
+      "links": [
+        "cm01",
+        "st01",
+        "cam01"
+      ],
+      "stats": {
+        "defense": 56,
+        "clutch": 82,
+        "stability": 82,
+        "pass": 78
+      }
+    },
+    {
+      "id": "lw02",
+      "name": "Dirk Kuyt",
+      "position": "LW",
+      "rating": 84,
+      "era": "2013-2015",
+      "nation": "NED",
+      "rarity": "epic",
+      "roles": [
+        "finisher",
+        "leader",
+        "anchor"
+      ],
+      "links": [
+        "cm02",
+        "rw02"
+      ],
+      "stats": {
+        "defense": 70,
+        "clutch": 85,
+        "stability": 88,
+        "pass": 77
+      }
+    },
+    {
+      "id": "lw03",
+      "name": "Arda Güler",
+      "position": "LW",
+      "rating": 83,
+      "era": "2021-2023",
+      "nation": "TUR",
+      "rarity": "epic",
+      "roles": [
+        "creator",
+        "finisher"
+      ],
+      "links": [
+        "cam02",
+        "dm06"
+      ],
+      "stats": {
+        "defense": 48,
+        "clutch": 83,
+        "stability": 76,
+        "pass": 87
+      }
+    },
+    {
+      "id": "lw04",
+      "name": "Miloš Krasić",
+      "position": "LW",
+      "rating": 80,
+      "era": "2011-2013",
+      "nation": "SRB",
+      "rarity": "rare",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam02",
+        "cm04"
+      ],
+      "stats": {
+        "defense": 54,
+        "clutch": 79,
+        "stability": 76,
+        "pass": 78
+      }
+    },
+    {
+      "id": "lw05",
+      "name": "Nani",
+      "position": "LW",
+      "rating": 80,
+      "era": "2014-2015",
+      "nation": "POR",
+      "rarity": "rare",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cm05",
+        "rw01"
+      ],
+      "stats": {
+        "defense": 60,
+        "clutch": 79,
+        "stability": 73,
+        "pass": 82
+      }
+    },
+    {
+      "id": "lw06",
+      "name": "Serhat Akın",
+      "position": "LW",
+      "rating": 77,
+      "era": "2001-2005",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "cam01",
+        "lw01"
+      ],
+      "stats": {
+        "defense": 52,
+        "clutch": 77,
+        "stability": 75,
+        "pass": 70
+      }
+    },
+    {
+      "id": "lw07",
+      "name": "Bruma",
+      "position": "LW",
+      "rating": 77,
+      "era": "2019-2020",
+      "nation": "POR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "dm06",
+        "cm10"
+      ],
+      "stats": {
+        "defense": 48,
+        "clutch": 76,
+        "stability": 72,
+        "pass": 76
+      }
+    },
+    {
+      "id": "lw08",
+      "name": "Kazım-Kazım",
+      "position": "LW",
+      "rating": 76,
+      "era": "2007-2009",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam01",
+        "cm09"
+      ],
+      "stats": {
+        "defense": 56,
+        "clutch": 75,
+        "stability": 73,
+        "pass": 74
+      }
+    },
+    {
+      "id": "lw09",
+      "name": "Özer Hurmacı",
+      "position": "LW",
+      "rating": 74,
+      "era": "2008-2013",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam01",
+        "cm04"
+      ],
+      "stats": {
+        "defense": 54,
+        "clutch": 73,
+        "stability": 75,
+        "pass": 72
+      }
+    },
+    {
+      "id": "lw10",
+      "name": "Elvir Bolić",
+      "position": "LW",
+      "rating": 79,
+      "era": "1996-2000",
+      "nation": "BIH",
+      "rarity": "rare",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "gk02",
+        "cb07",
+        "cam06"
+      ],
+      "stats": {
+        "defense": 50,
+        "clutch": 79,
+        "stability": 76,
+        "pass": 72
+      }
+    },
+    {
+      "id": "lw11",
+      "name": "Gökçek Vederson",
+      "position": "LW",
+      "rating": 78,
+      "era": "2005-2009",
+      "nation": "BRA",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam01",
+        "lb01"
+      ],
+      "stats": {
+        "defense": 58,
+        "clutch": 77,
+        "stability": 77,
+        "pass": 76
+      }
+    },
+    {
+      "id": "lw12",
+      "name": "İlhan Mansız",
+      "position": "LW",
+      "rating": 78,
+      "era": "1999-2003",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "finisher",
+        "creator"
+      ],
+      "links": [
+        "gk02",
+        "cam06"
+      ],
+      "stats": {
+        "defense": 52,
+        "clutch": 78,
+        "stability": 74,
+        "pass": 72
+      }
+    },
+    {
+      "id": "lw13",
+      "name": "Deniz Türüç",
+      "position": "LW",
+      "rating": 74,
+      "era": "2018-2021",
+      "nation": "TUR",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cm10",
+        "dm06"
+      ],
+      "stats": {
+        "defense": 54,
+        "clutch": 73,
+        "stability": 75,
+        "pass": 74
+      }
+    },
+    {
+      "id": "rw01",
+      "name": "Robin van Persie",
+      "position": "RW",
+      "rating": 88,
+      "era": "2015-2018",
+      "nation": "NED",
+      "rarity": "legend",
+      "roles": [
+        "finisher",
+        "creator"
+      ],
+      "links": [
+        "st04",
+        "cb04"
+      ],
+      "stats": {
+        "defense": 42,
+        "clutch": 89,
+        "stability": 82,
+        "pass": 81
+      }
+    },
+    {
+      "id": "rw02",
+      "name": "Moussa Sow",
+      "position": "RW",
+      "rating": 83,
+      "era": "2011-2015",
+      "nation": "SEN",
+      "rarity": "rare",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "cm04",
+        "lw02"
+      ],
+      "stats": {
+        "defense": 44,
+        "clutch": 83,
+        "stability": 81,
+        "pass": 68
+      }
+    },
+    {
+      "id": "rw03",
+      "name": "Pierre Webo",
+      "position": "RW",
+      "rating": 78,
+      "era": "2010-2012",
+      "nation": "CMR",
+      "rarity": "common",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "cm04",
+        "cb03"
+      ],
+      "stats": {
+        "defense": 46,
+        "clutch": 78,
+        "stability": 76,
+        "pass": 65
+      }
+    },
+    {
+      "id": "rw04",
+      "name": "André Ayew",
+      "position": "RW",
+      "rating": 79,
+      "era": "2014-2015",
+      "nation": "GHA",
+      "rarity": "common",
+      "roles": [
+        "finisher",
+        "creator"
+      ],
+      "links": [
+        "cm05",
+        "dm04"
+      ],
+      "stats": {
+        "defense": 58,
+        "clutch": 78,
+        "stability": 77,
+        "pass": 75
+      }
+    },
+    {
+      "id": "rw05",
+      "name": "Enner Valencia",
+      "position": "RW",
+      "rating": 79,
+      "era": "2017-2019",
+      "nation": "ECU",
+      "rarity": "common",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "st08",
+        "dm04"
+      ],
+      "stats": {
+        "defense": 52,
+        "clutch": 79,
+        "stability": 77,
+        "pass": 68
+      }
+    },
+    {
+      "id": "rw06",
+      "name": "Cemil Turan",
+      "position": "RW",
+      "rating": 87,
+      "era": "1970-1982",
+      "nation": "TUR",
+      "rarity": "legend",
+      "roles": [
+        "creator",
+        "finisher"
+      ],
+      "links": [
+        "cam07",
+        "st10"
+      ],
+      "stats": {
+        "defense": 54,
+        "clutch": 87,
+        "stability": 80,
+        "pass": 86
+      }
+    },
+    {
+      "id": "rw07",
+      "name": "Can Bartu",
+      "position": "RW",
+      "rating": 90,
+      "era": "1955-1966",
+      "nation": "TUR",
+      "rarity": "icon",
+      "roles": [
+        "creator",
+        "finisher",
+        "leader"
+      ],
+      "links": [
+        "cam07",
+        "gk02"
+      ],
+      "stats": {
+        "defense": 60,
+        "clutch": 91,
+        "stability": 86,
+        "pass": 89
+      }
+    },
+    {
+      "id": "rw08",
+      "name": "Miha Zajc",
+      "position": "RW",
+      "rating": 77,
+      "era": "2019-2022",
+      "nation": "SVN",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam04",
+        "cm06"
+      ],
+      "stats": {
+        "defense": 58,
+        "clutch": 75,
+        "stability": 78,
+        "pass": 79
+      }
+    },
+    {
+      "id": "rw09",
+      "name": "Kenneth Andersson",
+      "position": "RW",
+      "rating": 80,
+      "era": "2001-2003",
+      "nation": "SWE",
+      "rarity": "rare",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "gk03",
+        "cb08"
+      ],
+      "stats": {
+        "defense": 46,
+        "clutch": 80,
+        "stability": 78,
+        "pass": 70
+      }
+    },
+    {
+      "id": "rw10",
+      "name": "Mateja Kežman",
+      "position": "RW",
+      "rating": 79,
+      "era": "2008-2009",
+      "nation": "SRB",
+      "rarity": "common",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "cam01",
+        "lw08"
+      ],
+      "stats": {
+        "defense": 42,
+        "clutch": 79,
+        "stability": 72,
+        "pass": 64
+      }
+    },
+    {
+      "id": "rw11",
+      "name": "João Pedro",
+      "position": "RW",
+      "rating": 76,
+      "era": "2023-Present",
+      "nation": "BRA",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam09",
+        "cm03"
+      ],
+      "stats": {
+        "defense": 54,
+        "clutch": 75,
+        "stability": 74,
+        "pass": 78
+      }
+    },
+    {
+      "id": "rw12",
+      "name": "Garry Rodrigues",
+      "position": "RW",
+      "rating": 77,
+      "era": "2018-2020",
+      "nation": "CPV",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "cam11",
+        "dm06"
+      ],
+      "stats": {
+        "defense": 54,
+        "clutch": 76,
+        "stability": 74,
+        "pass": 78
+      }
+    },
+    {
+      "id": "st01",
+      "name": "Pierre van Hooijdonk",
+      "position": "ST",
+      "rating": 91,
+      "era": "2003-2005",
+      "nation": "NED",
+      "rarity": "legend",
+      "roles": [
+        "finisher",
+        "leader"
+      ],
+      "links": [
+        "cm01",
+        "lb01",
+        "lw01"
+      ],
+      "stats": {
+        "defense": 40,
+        "clutch": 96,
+        "stability": 88,
+        "pass": 76
+      }
+    },
+    {
+      "id": "st02",
+      "name": "Deivid de Souza",
+      "position": "ST",
+      "rating": 85,
+      "era": "2005-2009",
+      "nation": "BRA",
+      "rarity": "epic",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "cam01",
+        "lb01",
+        "cam08"
+      ],
+      "stats": {
+        "defense": 36,
+        "clutch": 86,
+        "stability": 83,
+        "pass": 69
+      }
+    },
+    {
+      "id": "st03",
+      "name": "Edin Džeko",
+      "position": "ST",
+      "rating": 87,
+      "era": "2022-Present",
+      "nation": "BIH",
+      "rarity": "legend",
+      "roles": [
+        "finisher",
+        "leader"
+      ],
+      "links": [
+        "cam02",
+        "lb02",
+        "cm03"
+      ],
+      "stats": {
+        "defense": 40,
+        "clutch": 88,
+        "stability": 85,
+        "pass": 79
+      }
+    },
+    {
+      "id": "st04",
+      "name": "Nicolas Anelka",
+      "position": "ST",
+      "rating": 85,
+      "era": "2005-2006",
+      "nation": "FRA",
+      "rarity": "epic",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "gk03",
+        "cm01"
+      ],
+      "stats": {
+        "defense": 38,
+        "clutch": 86,
+        "stability": 78,
+        "pass": 73
+      }
+    },
+    {
+      "id": "st05",
+      "name": "Aykut Kocaman",
+      "position": "ST",
+      "rating": 84,
+      "era": "1988-1998",
+      "nation": "TUR",
+      "rarity": "epic",
+      "roles": [
+        "finisher",
+        "leader"
+      ],
+      "links": [
+        "gk02",
+        "cam05"
+      ],
+      "stats": {
+        "defense": 32,
+        "clutch": 88,
+        "stability": 88,
+        "pass": 66
+      }
+    },
+    {
+      "id": "st06",
+      "name": "Moussa Sow (ST)",
+      "position": "ST",
+      "rating": 83,
+      "era": "2012-2015",
+      "nation": "SEN",
+      "rarity": "rare",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "cam10",
+        "dm04"
+      ],
+      "stats": {
+        "defense": 36,
+        "clutch": 84,
+        "stability": 80,
+        "pass": 67
+      }
+    },
+    {
+      "id": "st07",
+      "name": "Zeki Rıza Sporel",
+      "position": "ST",
+      "rating": 92,
+      "era": "1920-1938",
+      "nation": "TUR",
+      "rarity": "icon",
+      "roles": [
+        "finisher",
+        "leader"
+      ],
+      "links": [
+        "gk02",
+        "cam07",
+        "dm05"
+      ],
+      "stats": {
+        "defense": 30,
+        "clutch": 95,
+        "stability": 90,
+        "pass": 68
+      }
+    },
+    {
+      "id": "st08",
+      "name": "Roberto Soldado",
+      "position": "ST",
+      "rating": 82,
+      "era": "2016-2019",
+      "nation": "ESP",
+      "rarity": "rare",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "cb04",
+        "rw05"
+      ],
+      "stats": {
+        "defense": 33,
+        "clutch": 83,
+        "stability": 80,
+        "pass": 71
+      }
+    },
+    {
+      "id": "st09",
+      "name": "Edin Džeko (junge)",
+      "position": "ST",
+      "rating": 87,
+      "era": "2022-2024",
+      "nation": "BIH",
+      "rarity": "legend",
+      "roles": [
+        "finisher",
+        "leader"
+      ],
+      "links": [
+        "cam02",
+        "lb02",
+        "cm03"
+      ],
+      "stats": {
+        "defense": 40,
+        "clutch": 88,
+        "stability": 85,
+        "pass": 79
+      }
+    },
+    {
+      "id": "st10",
+      "name": "Selçuk Yula",
+      "position": "ST",
+      "rating": 83,
+      "era": "1977-1989",
+      "nation": "TUR",
+      "rarity": "epic",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "cam07",
+        "rw06"
+      ],
+      "stats": {
+        "defense": 30,
+        "clutch": 86,
+        "stability": 82,
+        "pass": 65
+      }
+    },
+    {
+      "id": "st11",
+      "name": "Semih Şentürk",
+      "position": "ST",
+      "rating": 80,
+      "era": "2007-2011",
+      "nation": "TUR",
+      "rarity": "rare",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "cam01",
+        "cm01"
+      ],
+      "stats": {
+        "defense": 34,
+        "clutch": 82,
+        "stability": 78,
+        "pass": 65
+      }
+    },
+    {
+      "id": "st12",
+      "name": "Vedat Muriqi",
+      "position": "ST",
+      "rating": 79,
+      "era": "2019-2020",
+      "nation": "XKX",
+      "rarity": "common",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "dm04",
+        "cm05"
+      ],
+      "stats": {
+        "defense": 36,
+        "clutch": 79,
+        "stability": 76,
+        "pass": 60
+      }
+    },
+    {
+      "id": "st13",
+      "name": "Fernandão",
+      "position": "ST",
+      "rating": 82,
+      "era": "2004-2007",
+      "nation": "BRA",
+      "rarity": "rare",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "cam01",
+        "lb05"
+      ],
+      "stats": {
+        "defense": 34,
+        "clutch": 82,
+        "stability": 79,
+        "pass": 64
+      }
+    },
+    {
+      "id": "st14",
+      "name": "Kim Min-jae",
+      "position": "ST",
+      "rating": 78,
+      "era": "2021-2022",
+      "nation": "KOR",
+      "rarity": "common",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "cb05",
+        "gk05"
+      ],
+      "stats": {
+        "defense": 88,
+        "clutch": 76,
+        "stability": 80,
+        "pass": 62
+      }
+    }
+  ],
+  "chemistry_links": [
+    {
+      "id": "cl001",
+      "p1": "cam01",
+      "p2": "st02",
+      "bonus": 8,
+      "desc": "Alex & Deivid - Brezilya ikizleri, sezonun en tehlikeli hücum ikilisi."
+    },
+    {
+      "id": "cl002",
+      "p1": "cam01",
+      "p2": "lb01",
+      "bonus": 7,
+      "desc": "Alex & Aurélio - Sol kanattan kurulan Brezilya ekseninin temeli."
+    },
+    {
+      "id": "cl003",
+      "p1": "cam01",
+      "p2": "cm01",
+      "bonus": 7,
+      "desc": "Alex & Appiah - Orta sahanın vurucu çifti; yaratıcılık ve güç bir arada."
+    },
+    {
+      "id": "cl004",
+      "p1": "cam01",
+      "p2": "cm02",
+      "bonus": 8,
+      "desc": "Alex & Emre - Fenerbahçe'nin en ikonik orta saha ortaklığı."
+    },
+    {
+      "id": "cl005",
+      "p1": "cam01",
+      "p2": "cm09",
+      "bonus": 6,
+      "desc": "Alex & Josué - Brezilya üçlüsünün merkezi."
+    },
+    {
+      "id": "cl006",
+      "p1": "cam01",
+      "p2": "cb01",
+      "bonus": 6,
+      "desc": "Alex & Lugano - Güney Amerikalı liderler, saha içi otorite."
+    },
+    {
+      "id": "cl007",
+      "p1": "cam01",
+      "p2": "dm02",
+      "bonus": 7,
+      "desc": "Alex & Mehmet Aurelio - Hücum ve savunma arasındaki köprü."
+    },
+    {
+      "id": "cl008",
+      "p1": "cam01",
+      "p2": "cam08",
+      "bonus": 5,
+      "desc": "Alex & Nobre - Brezilya aura çift yaratıcı ortaklık."
+    },
+    {
+      "id": "cl009",
+      "p1": "cb01",
+      "p2": "gk01",
+      "bonus": 7,
+      "desc": "Lugano & Volkan - Savunmanın iki lideri, kaleyi kaleden koruyanlar."
+    },
+    {
+      "id": "cl010",
+      "p1": "cb01",
+      "p2": "cb02",
+      "bonus": 6,
+      "desc": "Lugano & Kjær - Farklı karakterde ama mükemmel uyumlu stoper ikilisi."
+    },
+    {
+      "id": "cl011",
+      "p1": "cam02",
+      "p2": "st03",
+      "bonus": 8,
+      "desc": "Tadić & Džeko - Modern Fenerbahçe'nin gol makinası ikilisi."
+    },
+    {
+      "id": "cl012",
+      "p1": "cam02",
+      "p2": "lb02",
+      "bonus": 7,
+      "desc": "Tadić & Ferdi - Sol taraftaki yaratıcı sinerji."
+    },
+    {
+      "id": "cl013",
+      "p1": "cam02",
+      "p2": "cm03",
+      "bonus": 6,
+      "desc": "Tadić & Fred - Liderlik ve motor, sahayı birlikte yöneten ikili."
+    },
+    {
+      "id": "cl014",
+      "p1": "lb02",
+      "p2": "cm03",
+      "bonus": 6,
+      "desc": "Ferdi & Fred - Orta saha ve sol kanat dinamosu."
+    },
+    {
+      "id": "cl015",
+      "p1": "st01",
+      "p2": "lw01",
+      "bonus": 6,
+      "desc": "Hooijdonk & Tuncay - Hızın ve yüksekliğin uyumu."
+    },
+    {
+      "id": "cl016",
+      "p1": "st01",
+      "p2": "cm01",
+      "bonus": 6,
+      "desc": "Hooijdonk & Appiah - Güçlü orta saha, güçlü forvet hattı."
+    },
+    {
+      "id": "cl017",
+      "p1": "rb01",
+      "p2": "cm02",
+      "bonus": 6,
+      "desc": "Gökhan & Emre - Sağ kanattan kurulan Türk sinerji."
+    },
+    {
+      "id": "cl018",
+      "p1": "rb01",
+      "p2": "gk01",
+      "bonus": 5,
+      "desc": "Gökhan & Volkan - Sağ taraftaki Türk duvarı."
+    },
+    {
+      "id": "cl019",
+      "p1": "cb02",
+      "p2": "gk01",
+      "bonus": 5,
+      "desc": "Kjær & Volkan - İskandinav sakinliği Türk ateşini dengeler."
+    },
+    {
+      "id": "cl020",
+      "p1": "cm01",
+      "p2": "lb05",
+      "bonus": 5,
+      "desc": "Appiah & Hasan Şaş - Çalışkan ikilinin kanat hakimiyeti."
+    },
+    {
+      "id": "cl021",
+      "p1": "rw07",
+      "p2": "cam07",
+      "bonus": 9,
+      "desc": "Can Bartu & Lefter - Fenerbahçe tarihinin en büyük efsane ikilisi."
+    },
+    {
+      "id": "cl022",
+      "p1": "cam05",
+      "p2": "st07",
+      "bonus": 8,
+      "desc": "Rıdvan & Zeki Rıza - 80'lerin efsane orta saha-forvet bağı."
+    },
+    {
+      "id": "cl023",
+      "p1": "cam07",
+      "p2": "st10",
+      "bonus": 7,
+      "desc": "Lefter & Selçuk Yula - Dönemin en güzide hücum ortaklığı."
+    },
+    {
+      "id": "cl024",
+      "p1": "gk02",
+      "p2": "cb07",
+      "bonus": 6,
+      "desc": "Rüştü & Uche - 90'ların savunma bedeni."
+    },
+    {
+      "id": "cl025",
+      "p1": "cam06",
+      "p2": "lw10",
+      "bonus": 6,
+      "desc": "Okocha & Bolić - 90'ların egzotik yabancı çifti."
+    },
+    {
+      "id": "cl026",
+      "p1": "rb02",
+      "p2": "cam01",
+      "bonus": 7,
+      "desc": "Roberto Carlos & Alex - Brezilya çetesinin iki devi."
+    },
+    {
+      "id": "cl027",
+      "p1": "rb02",
+      "p2": "st02",
+      "bonus": 6,
+      "desc": "Roberto Carlos & Deivid - Sol-sağ Brezilya kanadı kapsamı."
+    },
+    {
+      "id": "cl028",
+      "p1": "rb02",
+      "p2": "cb03",
+      "bonus": 5,
+      "desc": "Roberto Carlos & Edu - Brezilyalı savunma koridoru."
+    },
+    {
+      "id": "cl029",
+      "p1": "lb01",
+      "p2": "st02",
+      "bonus": 7,
+      "desc": "Aurélio & Deivid - Sol kanat atağının çıkış noktası."
+    },
+    {
+      "id": "cl030",
+      "p1": "lb01",
+      "p2": "st01",
+      "bonus": 6,
+      "desc": "Aurélio & Hooijdonk - Hız ve yüksekliği buluşturan köprü."
+    },
+    {
+      "id": "cl031",
+      "p1": "dm02",
+      "p2": "cam01",
+      "bonus": 7,
+      "desc": "Aurelio & Alex - Orta sahanın yaratıcı yüzü ve koruyucu kalkanı."
+    },
+    {
+      "id": "cl032",
+      "p1": "dm04",
+      "p2": "dm03",
+      "bonus": 6,
+      "desc": "Luís Gustavo & Josef - Ön libero çiftinin savunma sağlamlığı."
+    },
+    {
+      "id": "cl033",
+      "p1": "cm07",
+      "p2": "lw01",
+      "bonus": 5,
+      "desc": "Stoch & Tuncay - Kanat kreasyonunda Türk-Slovak uyumu."
+    },
+    {
+      "id": "cl034",
+      "p1": "rw01",
+      "p2": "st04",
+      "bonus": 6,
+      "desc": "Van Persie & Anelka - Hollanda-Fransız bomba hücum ikili."
+    },
+    {
+      "id": "cl035",
+      "p1": "cb04",
+      "p2": "st08",
+      "bonus": 5,
+      "desc": "Škrtel & Soldado - 2017 dönemi Slovak-İspanyol arka-ön bağı."
+    },
+    {
+      "id": "cl036",
+      "p1": "cam03",
+      "p2": "cm05",
+      "bonus": 5,
+      "desc": "Özil & Elmas - Yaratıcılık tabanlı paslaşma sinerji."
+    },
+    {
+      "id": "cl037",
+      "p1": "lw02",
+      "p2": "cm02",
+      "bonus": 6,
+      "desc": "Kuyt & Emre - Çalışkanlık ve teknik, sahayı koşturan ikili."
+    },
+    {
+      "id": "cl038",
+      "p1": "lw03",
+      "p2": "cam02",
+      "bonus": 6,
+      "desc": "Arda & Tadić - Genç ile deneyimlinin yaratıcı uyumu."
+    },
+    {
+      "id": "cl039",
+      "p1": "lw03",
+      "p2": "dm06",
+      "bonus": 5,
+      "desc": "Arda & Arão - Genç yıldızı koruyan Brezilya kalkanı."
+    },
+    {
+      "id": "cl040",
+      "p1": "gk02",
+      "p2": "st05",
+      "bonus": 5,
+      "desc": "Rüştü & Aykut - 90'ların Türk çekirdeğinin iki sembolü."
+    },
+    {
+      "id": "cl041",
+      "p1": "cam01",
+      "p2": "st13",
+      "bonus": 6,
+      "desc": "Alex & Fernandão - Brezilyalı ağır top ve maestronun bağı."
+    },
+    {
+      "id": "cl042",
+      "p1": "gk01",
+      "p2": "cb01",
+      "bonus": 7,
+      "desc": "Volkan & Lugano - Savunmanın konuşan iki sesi."
+    },
+    {
+      "id": "cl043",
+      "p1": "cm09",
+      "p2": "cb03",
+      "bonus": 5,
+      "desc": "Josué & Edu - Brezilya hattının disiplinli omurgası."
+    },
+    {
+      "id": "cl044",
+      "p1": "rw06",
+      "p2": "cam07",
+      "bonus": 8,
+      "desc": "Cemil Turan & Lefter - Tarihin en prestijli sağ kanat-orta saha ikili."
+    },
+    {
+      "id": "cl045",
+      "p1": "st07",
+      "p2": "rw06",
+      "bonus": 7,
+      "desc": "Zeki Rıza & Cemil Turan - Fenerbahçe'nin kuruluş döneminin efsane ikilisi."
+    },
+    {
+      "id": "cl046",
+      "p1": "dm08",
+      "p2": "cm04",
+      "bonus": 5,
+      "desc": "Meireles & Baroni - Portekiz-Brezilya orta saha köprüsü."
+    },
+    {
+      "id": "cl047",
+      "p1": "lw04",
+      "p2": "cam02",
+      "bonus": 5,
+      "desc": "Krasić & Tadić - Balkan hızı ve yaratıcılık birleşimi."
+    },
+    {
+      "id": "cl048",
+      "p1": "rw04",
+      "p2": "cm05",
+      "bonus": 4,
+      "desc": "Ayew & Elmas - Genç dinamik kanat ve orta saha ikilisi."
+    },
+    {
+      "id": "cl049",
+      "p1": "lb03",
+      "p2": "dm01",
+      "bonus": 5,
+      "desc": "Caner & Mehmet Topal - Sol kanat-orta saha 2013 dönemi uyumu."
+    },
+    {
+      "id": "cl050",
+      "p1": "cb09",
+      "p2": "gk01",
+      "bonus": 4,
+      "desc": "Egemen & Volkan - Türk savunma omurgasının çift kalesi."
+    },
+    {
+      "id": "cl051",
+      "p1": "st11",
+      "p2": "cam01",
+      "bonus": 6,
+      "desc": "Semih & Alex - Golü bekleyen kılıç ve onu besleyen kalp."
+    },
+    {
+      "id": "cl052",
+      "p1": "cm10",
+      "p2": "cam04",
+      "bonus": 5,
+      "desc": "İrfan Can K. & Fenerbahçe CAM - Türk yaratıcı motor uyumu."
+    },
+    {
+      "id": "cl053",
+      "p1": "lw11",
+      "p2": "cam01",
+      "bonus": 5,
+      "desc": "Vederson & Alex - Sol kanadın Brezilya sinerji çifti."
+    },
+    {
+      "id": "cl054",
+      "p1": "lb05",
+      "p2": "cam01",
+      "bonus": 5,
+      "desc": "Hasan Şaş & Alex - Sol taraftan başlayan ataklarda uyum."
+    },
+    {
+      "id": "cl055",
+      "p1": "rw09",
+      "p2": "gk03",
+      "bonus": 4,
+      "desc": "Andersson & Cordoba - Yabancı güç kombinasyonu."
+    },
+    {
+      "id": "cl056",
+      "p1": "dm05",
+      "p2": "cam05",
+      "bonus": 6,
+      "desc": "Tayfun & Rıdvan - Fenerbahçe'nin 90'lar orta saha çifti."
+    },
+    {
+      "id": "cl057",
+      "p1": "cam06",
+      "p2": "gk02",
+      "bonus": 6,
+      "desc": "Okocha & Rüştü - 90'ların yabancı-yerli kapı-kanat dengesi."
+    },
+    {
+      "id": "cl058",
+      "p1": "lw12",
+      "p2": "cam06",
+      "bonus": 5,
+      "desc": "İlhan & Okocha - 99 döneminin eğlenceli ikisi."
+    },
+    {
+      "id": "cl059",
+      "p1": "st04",
+      "p2": "cm01",
+      "bonus": 5,
+      "desc": "Anelka & Appiah - Fransız çevikliği ve Gana motorunun birleşimi."
+    },
+    {
+      "id": "cl060",
+      "p1": "st05",
+      "p2": "cam05",
+      "bonus": 6,
+      "desc": "Aykut & Rıdvan - 80'lerin gol-pas makinesi ikilisi."
+    },
+    {
+      "id": "cl061",
+      "p1": "rb01",
+      "p2": "cam01",
+      "bonus": 6,
+      "desc": "Gökhan & Alex - Sağ kanattan üretilen 200 pası anımsatan uyum."
+    },
+    {
+      "id": "cl062",
+      "p1": "lb02",
+      "p2": "lb01",
+      "bonus": 4,
+      "desc": "Ferdi & Aurélio - Sol bek geleneğinin iki temsilcisi."
+    },
+    {
+      "id": "cl063",
+      "p1": "st03",
+      "p2": "lb02",
+      "bonus": 6,
+      "desc": "Džeko & Ferdi - Kanat penetre ve kafa vuruş sinerji."
+    },
+    {
+      "id": "cl064",
+      "p1": "cm03",
+      "p2": "dm06",
+      "bonus": 5,
+      "desc": "Fred & Arão - Brezilya orta saha çift motor."
+    },
+    {
+      "id": "cl065",
+      "p1": "cm10",
+      "p2": "lb02",
+      "bonus": 5,
+      "desc": "İrfan Can & Ferdi - Türk-Hollanda yaratıcı sağ-sol dengesi."
+    },
+    {
+      "id": "cl066",
+      "p1": "gk05",
+      "p2": "cb05",
+      "bonus": 4,
+      "desc": "Altay & Szalai - Modern dönem kale önü kale."
+    },
+    {
+      "id": "cl067",
+      "p1": "cb05",
+      "p2": "lb02",
+      "bonus": 4,
+      "desc": "Szalai & Ferdi - Sol blok sağlamlık ve kanat açılımı."
+    },
+    {
+      "id": "cl068",
+      "p1": "cam09",
+      "p2": "cam02",
+      "bonus": 5,
+      "desc": "Szymański & Tadić - Orta saha senkron yıldız çifti."
+    },
+    {
+      "id": "cl069",
+      "p1": "rw01",
+      "p2": "cb04",
+      "bonus": 4,
+      "desc": "Van Persie & Škrtel - Hollanda gücü her iki uçta."
+    },
+    {
+      "id": "cl070",
+      "p1": "cm11",
+      "p2": "dm03",
+      "bonus": 4,
+      "desc": "Ozan Tufan & Josef - Türk-Brezilyalı baskı duvarı."
+    },
+    {
+      "id": "cl071",
+      "p1": "dm07",
+      "p2": "cam05",
+      "bonus": 5,
+      "desc": "Oğuz & Rıdvan - 80'lerin sert-yumuşak dengesi."
+    },
+    {
+      "id": "cl072",
+      "p1": "lw05",
+      "p2": "cm05",
+      "bonus": 4,
+      "desc": "Nani & Elmas - İki teknik kanat sinerji."
+    },
+    {
+      "id": "cl073",
+      "p1": "st06",
+      "p2": "cam10",
+      "bonus": 5,
+      "desc": "Sow & Diego Ribas - Brezilyalı orta ile Senegalli forvet kimyası."
+    },
+    {
+      "id": "cl074",
+      "p1": "rw03",
+      "p2": "dm04",
+      "bonus": 4,
+      "desc": "Webo & Luís Gustavo - Afrikalı güç odaklı baskı çifti."
+    },
+    {
+      "id": "cl075",
+      "p1": "lw08",
+      "p2": "cam01",
+      "bonus": 4,
+      "desc": "Kazım & Alex - Boylu hedef ve maestro pasının buluşması."
+    },
+    {
+      "id": "cl076",
+      "p1": "st13",
+      "p2": "lb01",
+      "bonus": 5,
+      "desc": "Fernandão & Aurélio - Brezilya gol hattının omurgası."
+    },
+    {
+      "id": "cl077",
+      "p1": "cb08",
+      "p2": "cam01",
+      "bonus": 4,
+      "desc": "Fábio Luciano & Alex - Brezilya savunma-hücum köprüsü."
+    },
+    {
+      "id": "cl078",
+      "p1": "rw05",
+      "p2": "cb04",
+      "bonus": 4,
+      "desc": "Valencia & Škrtel - Güney Amerika-Avrupa güç koridoru."
+    },
+    {
+      "id": "cl079",
+      "p1": "lw06",
+      "p2": "lw01",
+      "bonus": 4,
+      "desc": "Serhat & Tuncay - Dönemin kanat ikiz koşucuları."
+    },
+    {
+      "id": "cl080",
+      "p1": "cam01",
+      "p2": "lw08",
+      "bonus": 4,
+      "desc": "Alex & Kazım - Yüksek kale hedefine besleme bağı."
+    },
+    {
+      "id": "cl081",
+      "p1": "dm01",
+      "p2": "cm02",
+      "bonus": 5,
+      "desc": "Topal & Emre - Savunma tampon ve dağıtım ustası çifti."
+    },
+    {
+      "id": "cl082",
+      "p1": "cb02",
+      "p2": "cb04",
+      "bonus": 4,
+      "desc": "Kjær & Škrtel - Farklı dönemin İskandinavya-Slav demir çifti."
+    },
+    {
+      "id": "cl083",
+      "p1": "lw02",
+      "p2": "rw01",
+      "bonus": 5,
+      "desc": "Kuyt & Van Persie - Hollanda'nın iki süper gücünün Kadıköy buluşması."
+    },
+    {
+      "id": "cl084",
+      "p1": "dm03",
+      "p2": "dm04",
+      "bonus": 6,
+      "desc": "Josef & Luís - Brezilya çift ön libero savunma katmanı."
+    },
+    {
+      "id": "cl085",
+      "p1": "cam07",
+      "p2": "gk02",
+      "bonus": 8,
+      "desc": "Lefter & Rüştü - Fenerbahçe'nin iki zamansız efsanesi."
+    },
+    {
+      "id": "cl086",
+      "p1": "st07",
+      "p2": "cam05",
+      "bonus": 6,
+      "desc": "Zeki Rıza & Rıdvan - Farklı dönemlerin zirvelerinin buluşması."
+    },
+    {
+      "id": "cl087",
+      "p1": "cm02",
+      "p2": "lw02",
+      "bonus": 5,
+      "desc": "Emre & Kuyt - Çalışkanlık ve tekniğin saha koşturması."
+    },
+    {
+      "id": "cl088",
+      "p1": "lb03",
+      "p2": "rb01",
+      "bonus": 4,
+      "desc": "Caner & Gökhan - Türk kanat ikilisinin dinamik baskısı."
+    },
+    {
+      "id": "cl089",
+      "p1": "rb02",
+      "p2": "lb01",
+      "bonus": 6,
+      "desc": "Roberto Carlos & Aurélio - Brezilya'nın sol-sağ kanat efsaneleri."
+    },
+    {
+      "id": "cl090",
+      "p1": "lw07",
+      "p2": "dm06",
+      "bonus": 4,
+      "desc": "Bruma & Arão - Portekizce konuşan kanat-motor çifti."
+    },
+    {
+      "id": "cl091",
+      "p1": "cam04",
+      "p2": "lb02",
+      "bonus": 5,
+      "desc": "İrfan Can E. & Ferdi - Genç Türk-Hollanda dinamosu."
+    },
+    {
+      "id": "cl092",
+      "p1": "st10",
+      "p2": "cam05",
+      "bonus": 6,
+      "desc": "Selçuk & Rıdvan - 80'lerin efsane gol-pas ortaklığı."
+    },
+    {
+      "id": "cl093",
+      "p1": "gk03",
+      "p2": "cam06",
+      "bonus": 4,
+      "desc": "Cordoba & Okocha - Yabancı premium çifti."
+    },
+    {
+      "id": "cl094",
+      "p1": "cm04",
+      "p2": "dm02",
+      "bonus": 5,
+      "desc": "Baroni & Aurelio - Brezilya orta saha iskelet çifti."
+    },
+    {
+      "id": "cl095",
+      "p1": "st12",
+      "p2": "dm04",
+      "bonus": 3,
+      "desc": "Muriqi & Luís Gustavo - Güç ve destek hatlarının uyumu."
+    },
+    {
+      "id": "cl096",
+      "p1": "rw07",
+      "p2": "st07",
+      "bonus": 7,
+      "desc": "Can Bartu & Zeki Rıza - Tarihin en köklü saldırı ikilisi."
+    },
+    {
+      "id": "cl097",
+      "p1": "cm06",
+      "p2": "lb02",
+      "bonus": 4,
+      "desc": "Crespo & Ferdi - Portekizli motor sol kanadı besler."
+    },
+    {
+      "id": "cl098",
+      "p1": "cm08",
+      "p2": "rb01",
+      "bonus": 4,
+      "desc": "Selçuk Şahin & Gökhan - Türk sağ kanat akış çifti."
+    },
+    {
+      "id": "cl099",
+      "p1": "lw03",
+      "p2": "st03",
+      "bonus": 5,
+      "desc": "Arda & Džeko - Türk yeteneği ile Balkanlı güç forvetin sinerji."
+    },
+    {
+      "id": "cl100",
+      "p1": "cam02",
+      "p2": "rw08",
+      "bonus": 4,
+      "desc": "Tadić & Zajc - Balkan ikili yaratıcı bağ."
+    },
+    {
+      "id": "cl101",
+      "p1": "lw09",
+      "p2": "cam01",
+      "bonus": 4,
+      "desc": "Özer & Alex - Kanat açılımı ve merkez besleme."
+    },
+    {
+      "id": "cl102",
+      "p1": "st11",
+      "p2": "lw01",
+      "bonus": 4,
+      "desc": "Semih & Tuncay - Türk hücum ikizleri."
+    },
+    {
+      "id": "cl103",
+      "p1": "dm09",
+      "p2": "cb03",
+      "bonus": 3,
+      "desc": "Mbia & Edu - Afrika gücü savunma katkısı."
+    },
+    {
+      "id": "cl104",
+      "p1": "rw11",
+      "p2": "cam09",
+      "bonus": 3,
+      "desc": "João Pedro & Szymański - Modern dönem kanat-CAM koşu."
+    },
+    {
+      "id": "cl105",
+      "p1": "lb04",
+      "p2": "dm01",
+      "bonus": 4,
+      "desc": "Hasan Ali & Topal - Sol blok Türk disiplin çifti."
+    }
+  ],
+  "story_templates": {
+    "dominant_season": [
+      "{mvp} önderliğindeki Fenerbahçe, Kadıköy ruhunu sahaya yansıtarak {achievement} kazandı ve sezonu adeta domine etti.",
+      "Rakiplerine şans tanımayan takım, {mvp} ustalık dolu oyunuyla {achievement} hedefine rahat ulaştı.",
+      "Tarihi bir sezon geçiren Fenerbahçe, {mvp}'nin omuzladığı yükle sezonu {achievement} ile kapattı.",
+      "{mvp} sahada olduğu sürece rakipler şans bulamadı; sezon {achievement} ile noktalandı.",
+      "Ligi {points} puanla tamamlayan sarı-lacivertliler, {mvp} liderliğinde tahtı kimseye bırakmadı.",
+      "Her maç ayrı bir şölen, her galibiyet ayrı bir derdi kucaklayan sezon; {mvp} ve Fenerbahçe {achievement} kutladı.",
+      "Sezon boyunca çizelgenin zirvesinden inmeyen takım, {mvp} katkısıyla {achievement} ile turu kapattı.",
+      "Güçlü kimyası ve {mvp}'nin karizma ile sezon boyunca lider kalan Fener, {achievement} ile taçlandı.",
+      "{points} puan toplayarak ezber bozan Kanarya, {mvp} sürükledi ve {achievement} getirdi.",
+      "Tarihe geçen bir performans: {mvp} ustalığı ile {achievement} kupasına uzanıldı.",
+      "Kimse yaklaşamadı. {mvp} ve ekip, sahada tartışmasız üstünlük kurarak {achievement} aldı.",
+      "İlk haftadan son haftaya kadar liderlik koltuğunu bırakmayan takım {achievement} ile tarihe geçti.",
+      "{mvp}'nin fark yaratan oyunuyla Fenerbahçe, rakiplerine soluk aldırmadan {achievement} sevincini yaşadı.",
+      "Bu sezon bir form değil, bir güç gösterisidir: {achievement} şampiyonluğu {mvp} liderliğinde alındı.",
+      "Sezonun en iyi kadrosu, en iyi kimyası ve en iyi {mvp} ile {achievement} kupası Kadıköy'e geldi.",
+      "İstatistikler konuştu: En çok galibiyet, en az mağlubiyet. {mvp} farkıyla {achievement} sağlandı."
+    ],
+    "late_drop": [
+      "Harika başlayan sezonun son bölümündeki dramatik form düşüşü, Fenerbahçe'yi {achievement} hedefinden kopardı.",
+      "{mvp} tüm çabasına rağmen, kritik dönemeçteki form çöküşü sezonun hüsranla bitmesine neden oldu.",
+      "Bahar aylarındaki üst üste puan kayıpları şampiyonluk umutlarını yıktı; takım {achievement} ile yetindi.",
+      "Son 8 haftada yakalanan çöküş, liderlik koltuğunu rakibe kaptırdı ve {achievement} ile avunuldu.",
+      "Kimya yüksekti, güç vardı, ama kış dönemi form sorunu sezonun seyrini değiştirdi. {achievement} ile turu kapandı.",
+      "Ligi lider kapatan takım, bahar yorgunluğunda puan kaybetti; {achievement} en fazlasıydı.",
+      "Rakipler şansını kolladı, Fener yorgunluğa yenik düştü. {mvp} sahaya her çıkışında mücadele etti ama olmadı.",
+      "Form düşüşünün faturası ağır oldu: {achievement} ve kayıp puanların acı sonucu.",
+      "Sezonun ilk yarısında harika oynayan Kanarya, final düzlüğünde ayağı takıldı: {achievement}.",
+      "Son 5 maçta 1 galibiyet. Bu rakam her şeyi özetliyor; {achievement} ile teselli bulundu.",
+      "Şampiyonluğu en yakın hissettiren dönemde yaşanan çöküş, sezonu {achievement} ile kapattı.",
+      "{mvp} elinden geleni yaptı ama takımın genel formu şampiyonluğa yetmedi.",
+      "Kadro derinliği sınandığında cevap verilemedi. Sezon {achievement} ile nihayete erdi.",
+      "Şubat'ta açılan 7 puanlık fark son haftada kapandı ama şampiyonluk kaçtı: {achievement}.",
+      "Bu sezon çok şey vadediyordu. Son 10 hafta her şeyi sildi. {achievement} ile nokta konuldu."
+    ],
+    "comeback": [
+      "Sezona kabus gibi giren takım kenetlendi ve {mvp} liderliğinde {achievement} kazandı.",
+      "Kimse inanmazken ayağa kalkan Fenerbahçe, muazzam bir ikinci yarı performansıyla {achievement} kupasına uzandı.",
+      "{mvp} kritik anlarda takımı sırtladı; zorlu bir başlangıcın ardından {achievement} şeref kürsüsüne çıkıldı.",
+      "İlk 10 hafta puanı feci olan bir takımın sezonu {achievement} ile kapatması başlı başına epik.",
+      "Devre arasında çöktük sandılar, ama çıkarken güçlenerek döndük. {mvp} bu dönüşün sembolü.",
+      "Alt sıraları zorlayan Kanarya, {mvp}'nin liderliğinde ikinci yarıda uçuşa geçti: {achievement}.",
+      "Herkes pes demişti. Fenerbahçe dönüşü yaşattı, {achievement} ile mücadelesini taçlandırdı.",
+      "{mvp} ve ekip, sezonu kurtarmakla kalmayıp {achievement} kutlamak için sahaya çıktı.",
+      "15. haftaya kadar çok eleştirilen kadro, son 19 haftada sahne aldı ve {achievement} kazandı.",
+      "Bu sezon bir geri dönüş hikâyesiydi: {mvp} öncülüğünde {achievement} kutlandı.",
+      "İkinci yarı Fenerbahçe'si başka bir takıptı. {mvp} ipi göğüsleyerek {achievement} yaşattı.",
+      "Puanlar yazılmaz gibi görünüyordu, ama {mvp} her maçı savaşa çevirdi ve {achievement} geldi.",
+      "İlk devre kabusa dönmüştü. İkinci devrede Kadıköy'e yakışır bir Fener göründü: {achievement}.",
+      "Rakipler morali bozuk sandı, ama Kanarya pençelerini çıkardı ve {achievement} kanatlandı.",
+      "Sezonun en güzel hikâyesi bir geri dönüştür: {mvp} ile başlayan {achievement} zaferi."
+    ],
+    "chaos_season": [
+      "Düşük takım kimyası ve istikrarsız sonuçlar sezonu kaosa sürükledi; Fenerbahçe {achievement} ile bitirdi.",
+      "Kimya eksikliği ve sürekli değişen form grafiği potansiyeli boşa harcattı.",
+      "Her galibiyetin arkasından gelen mağlubiyet, sezonu öngörülemez kıldı; sonuç {achievement}.",
+      "Kadro güçlüydü ama uyumsuzluk sezonu rayından çıkardı. {achievement} ile hayal kırıklığı kapandı.",
+      "Derbiler kazanıldı, lig kaybedildi. Bu paradoksla geçen sezonda {achievement} hasara uğradı.",
+      "Savunma ve hücum hiç uyuşamadı. Her maç ayrı bir tiyatro oldu ve {achievement} yakalandı.",
+      "{mvp} tek başına mücadele etti ama kadronun dağınıklığı {achievement} ile bitişe yol açtı.",
+      "Sezonda 3 farklı teknik direktör dönemi gibi geçti. Sonuç: {achievement} ve tartışmalar.",
+      "Form grafiği W şekli çizdi: iyi-kötü-iyi-kötü. {achievement} bu kaosun özeti.",
+      "Sahaya çıkan her maç ayrı bir bilinmezlik taşıdı; {achievement} sezonu kapattı.",
+      "Yıldız kadro, yıldızsız performans. {achievement} bu çelişkili sezonun kristalize özeti.",
+      "Taraftarın sineye çekmekte zorlandığı bir sezon; {achievement} sonuçla kapandı.",
+      "Sezon boyunca kime güveneceği belli olmayan bir ekip; {achievement} en mantıklı son.",
+      "Kimya sıfırda, sonuçlar tutarsız, hedefler uzakta. {achievement} şaşırtmadı.",
+      "Bu sezonda sürpriz her zaman geldi ama çoğu olumsuzdu. {achievement} ile tarih kapandı."
+    ],
+    "balanced_season": [
+      "İstikrarlı bir sezon geçiren Fenerbahçe, {mvp} katkılarıyla {achievement} ile turu kapattı.",
+      "Ne çok parlak ne de dramatik; dengeli gidişatıyla takım {achievement} sınırında konuşlandı.",
+      "{mvp} tecrübesiyle kadroyu dengede tuttu; sezon {achievement} ile nihayete erdi.",
+      "Sezon boyunca tutarlı performans gösteren Kanarya, {achievement} ile mükemmel bir denge kurdu.",
+      "Galibiyet, beraberlik, mağlubiyet birbirini izledi ama sonuç itibariyle {achievement} alındı.",
+      "Taraftarı ne çıldırtmayan ne de umutsuzluğa sürüklemeyen bir sezon; {achievement} ile son.",
+      "Kimya orta seviyedeydi, güç ortalamaydı. Sonuç da buna uygun: {achievement}.",
+      "{mvp}'nin dengeli performansı kadroyu bir arada tuttu; {achievement} ile tatmin olundu.",
+      "Ligin ortasında sıkışan bir sezon: ne şampiyonluk ne de düşüş kaygısı. {achievement}.",
+      "Hesaplı futbol, hesaplı sonuç. {achievement} bu sezonu en iyi özetleyen ifadedir.",
+      "Sezon boyunca çıta tutuldu ama yükseltilmedi. {mvp} ve takım {achievement} ile nihayete ulaştı.",
+      "Her şey yeterince iyiydi ama hiçbir şey yeterince harika değildi. {achievement} sonuçta yerleşti.",
+      "Sahada güven vardı, ama coşku yoktu. {achievement} bu sakin sezonu özetler.",
+      "{mvp} oyun kurarken takım takip etti. Süreç de, sonuç da dengeli: {achievement}.",
+      "Beklentiler orta düzeyde tutuldu, performans da öyle. {achievement} hedefine ulaşıldı."
+    ],
+    "legendary": [
+      "{mvp} bu sezonda kendini tarihe yazdırdı; {achievement} zaferi onun mührünü taşır.",
+      "Yıllar sonra hatırlanacak bir sezon geçti; {mvp} efsanesini pekiştirdi ve {achievement} yaşandı.",
+      "{mvp}'nin sahaya her çıkışı bir ders, her golü bir destan. {achievement} bunu taçlandırdı.",
+      "Fenerbahçe tarihinin sayfalarına {mvp} ve {achievement} altın harflerle işlendi.",
+      "Efsane oyuncu, efsane sezon. {mvp} ile birlikte {achievement} tarihin rafına kaldırıldı.",
+      "Sadece bu sezonu değil, bu oyuncuyu hatırlayacaksın: {mvp}. {achievement} ile unutulmaz oldu.",
+      "{mvp} gibi bir oyuncu elli yılda bir gelir. Bu sezon onun için yazıldı. {achievement} ile kapandı.",
+      "Bu sezon {mvp}'ye adanmıştır. Onun olmadığı tek bir an bile eksik kalırdı. {achievement}.",
+      "Karakter, kalite ve liderlik; bunlar {mvp} için kullanılan kelimelerdir. {achievement} bu kelimelerin sembolüdür.",
+      "Sahadan çekildiğinde taraftarlar ayağa kalktı. {mvp} bu sezonu {achievement} ile şiire dönüştürdü.",
+      "Tarihin her döneminde böyle bir oyuncu olsa, futbol başka şeyler anlatırdı. {mvp}: {achievement}.",
+      "{mvp}'nin bu sezondaki oyunu nesiller sonra da konuşulacak. {achievement} onun başyapıtıdır.",
+      "Efsaneler böyle anılır: sahaya her adımını {achievement} yolunda atan {mvp}.",
+      "Bir oyuncunun takımı kendi başına taşıdığı anlar nadirdir. {mvp} bu sezonu böyle geçirdi.",
+      "Kulüp tarihi {mvp} ile yeni bir sayfa açtı ve o sayfa {achievement} zaferiyle süslendi."
+    ],
+    "defensive": [
+      "Volkan ve stoper ikili bu sezonda yalnızca {goals_conceded} gol yedi; {achievement} savunmayla inşa edildi.",
+      "Savunma hattı bu sezonda maçları önde kapatarak {achievement} yolunu açtı.",
+      "Kale sıfır maçları rekora gitti; {mvp} önlerinde duran savunma bloku {achievement} getirdi.",
+      "Rakipleri şut bile atmadan dağıtan savunma, {achievement} kupasını kazanmanın temel taşı oldu.",
+      "Bu sezonun mimarları savunma hattıdır. {mvp} liderliğinde inşa edilen kale, {achievement} için yeterliydi.",
+      "Saldırmadılar, savundular ve kazandılar. {mvp}'nin önderliğinde {achievement} sağlandı.",
+      "Birlikte savunmak birlikte kazanmak demek. Bu sezon bu ilke {achievement} ile ödüllendirildi.",
+      "Defans bu sezon gerçek anlamda bir kale ördü. Rakipler çaresiz kaldı; {achievement} geldi.",
+      "{mvp} savunmayı yönetirken takım inanç kazandı. {achievement} bu güvenin meyvesi.",
+      "Sezon sonu istatistikleri: az gol, çok puan, tek kelime: {achievement}.",
+      "Savunma sağlam olunca her şey kolaylaşır. {mvp} ve bloğu {achievement} için düşmanı geçemez hale getirdi.",
+      "Bu sezon oyun güzel olmayabilirdi, ama sonuç güzeldi: savunma temelli {achievement}.",
+      "Kalenin önünde duvar vardı. Adı: {mvp} ve savunma bloğu. Ödül: {achievement}.",
+      "Sadece kazanmak değil, kazanarak yenmemek. {mvp} ekibi {achievement} ile bu felsefeyi doğruladı.",
+      "Rakipler gol bulamadı, Fener puan topladı. Sezon özeti: {achievement} savunma inşaatı."
+    ],
+    "offensive": [
+      "Bu sezon gol festivali gibiydi; {mvp} önderliğinde yüzlerce gol kutlandı ve {achievement} alındı.",
+      "Hücum motoru hiç durmadı. {mvp} hem golü buldu hem yarattı; {achievement} sezon ödülüdür.",
+      "Rakip kaleler bu sezonda İFADESİZ kaldı. {mvp}'nin ayakları {achievement} için çalıştı.",
+      "Sezon boyunca her maçta gol geldi. {mvp} liderliğinde ofansif futbol {achievement} kapattı.",
+      "Hücumda bu kadar verim az görülür. {mvp} ve forvet hattı {achievement} için üst düzey çıktı.",
+      "En çok gol atan, en çok asist yapan; {mvp} sahada var olunca {achievement} an meselesiydi.",
+      "Rakip kaleciler en korku dolu sezonu yaşadı. {mvp} asist ve gollerle {achievement} hediye etti.",
+      "Top {mvp}'ye geldiğinde harika bir şeyler olurdu. Sezon bu anların toplamıydı: {achievement}.",
+      "{mvp} bu sezon tüm hücum istatistiklerini alt üst etti. {achievement} sonuç olarak yerleşti.",
+      "Futbolu güzel kılmak bazen gol atmakla olur. {mvp} ve ekip bunu {achievement} ile kanıtladı.",
+      "Her hücum atağı tehdit içeriyordu. {mvp} merkezinde şekillenen Fener {achievement} ile coştu.",
+      "Sezonun gol yelpazesi etkileyiciydi. {mvp} bu senfoninin şefi, {achievement} finali.",
+      "Bireysel yeteneğin takım gücüne dönüştüğü sezon: {mvp} ve hücum hattı {achievement} aldı.",
+      "Bu sezon futbol bir şov oldu. {mvp}'nin önderliğindeki hücum sezonunu {achievement} ile kapattı.",
+      "Gol atmak bir sanat ise, bu sezon bir sergi gibiydi. {mvp} ve ekip {achievement} ile kapattı."
+    ],
+    "underdog": [
+      "Kimse Fenerbahçe'ye şans vermemişti. {mvp} ve ekip {achievement} ile tüm tahminleri çürüttü.",
+      "Bütçesi en düşük, iddiası en yüksek: {mvp}'li Fener {achievement} ile büyük sürpriz yaptı.",
+      "Rakipler güçlüydü, Fener daha güçlüydü. {mvp} liderliğinde {achievement} geldi.",
+      "Bu sezon güçsüz sandılar, ama {mvp} ve ekip her maç savaştı. {achievement} ile haklı çıktılar.",
+      "İstatistikler aleyhimizdi ama sahada {mvp} vardı. {achievement} ile mucizenin adı yazıldı.",
+      "Siyah-beyaz tabloda Fener'e yer yoktu. Ama {mvp} tabloyu kırdı ve {achievement} kutlandı.",
+      "Küçük görüldük, büyük oynadık. {mvp}'nin gücüyle {achievement} yazıldı tarihe.",
+      "{mvp}'nin kaptanlığıyla savaşan bir takım, {achievement} ile şansızların değil güçsüzlerin değil kazananların listesine girdi.",
+      "Bu sezon Fenerbahçe için mitolojik bir destan: {mvp} ve {achievement} sonucu.",
+      "Kimse inanmadı. {mvp} inandı. {achievement} geldi. Artık herkes biliyor.",
+      "Favori değildiniz. Kazandınız. {mvp} ve {achievement} bu cümlenin somut halidir.",
+      "Şampiyonluğa mahkûm sanılan rakipler duraksadı; {mvp}'li Fener {achievement} kanatlandı.",
+      "En zayıf kadro en büyük ödülü aldı mı? {mvp} varsa cevap evet: {achievement}.",
+      "Masa başında kaybettiler, sahada kazandılar. {mvp} merkezli bu destan {achievement} ile yazıldı.",
+      "Tahminler yanıldı, {mvp} haklı çıktı. {achievement} ile sezon kapandı ve efsane başladı."
+    ],
+    "last_week": [
+      "Son haftaya lider giren Fener, {mvp}'nin son dakika golüyle {achievement} ile noktaladı.",
+      "{mvp} 90. dakikada topu teslim aldığında herkes nefes kesti; atış kaleye girdi: {achievement}.",
+      "Şampiyonluk son maça kaldı. {mvp} sahaya girdi ve sahneyi aldı: {achievement}.",
+      "Son haftanın son dakikası ve {mvp}'nin golü. Bu sezonu özetleyen tek kare.",
+      "Sezon son düzlükte belirlendi. {mvp} ve ekip sinirlerine hâkim olup {achievement} kazandı.",
+      "Rakip lider de kazandı, ama Fener daha fazla kazandı. Son haftada {achievement} geldi.",
+      "{mvp} kritik son maçta üstesinden geldi ve {achievement} sarı-lacivert oldu.",
+      "Şampiyonluk bitiş çizgisinde verildi. {mvp}'nin son düzlükteki performansı {achievement} kazdı.",
+      "Bu sezonu son maçta oturarak seyredebilirdik, {mvp} izin vermedi. {achievement} alındı.",
+      "Kader son haftada belli oldu. {mvp} kendi kaderini yazdı: {achievement}.",
+      "Son maçta tek fark yeten iki gol. {mvp} ikisini de üretti. {achievement} sarı-lacivert oldu.",
+      "Final düzlüğüne girildiğinde puan farkı 1'di. {mvp} çıktı, 4 oldu. {achievement}.",
+      "Son hafta maçına sanki finaldeymiş gibi çıkıldı. {mvp} öncülüğünde {achievement} kazanıldı.",
+      "Sezonun son maçı bittiğinde saha bir bayram yerine döndü. {mvp} ve {achievement}.",
+      "Son haftada rakip düşerken Fener yükseldi. {mvp} ve sezon: {achievement}."
+    ],
+    "derby": [
+      "Derbide {mvp}'nin golüyle Kadıköy'de ezeli rakip {score} yenildi. {achievement} yolunda kritik adım.",
+      "Rakip sahada {score} geriye düşen Fenerbahçe, {mvp} ile derbiyi çevirdi. Destansı.",
+      "Derbi {mvp}'ye ait oldu. Kazanmak değil, hükmetmek. {achievement} için zemin hazırlandı.",
+      "Kadıköy coştu, {mvp} parladı, derbi 3 puanla kapandı. {achievement} yaklaşıyor.",
+      "Büyük rekabet, büyük sahne, büyük {mvp}. Derby {score} bitti ve {achievement} için moral doldu.",
+      "Derbilerde kaybolmak yok; {mvp} liderliğinde {score} ile kazanıldı. {achievement} adına.",
+      "Maçın en kritik anında {mvp} sahneye çıktı. Derbi Fenerbahçe'ye kaldı: {score}.",
+      "Rakip morali bozuk, Kadıköy coşkulu. {mvp} sahneyi aldı, {score} ile derbi bitti.",
+      "Bu derbide {mvp} bir oyuncu olarak değil, lider olarak çıktı sahaya. Sonuç: {score}.",
+      "Şehrin en büyük maçında en büyük isim öne çıktı: {mvp}. Derbi {score}.",
+      "Derbilerde kahraman doğar. Bu kez {mvp} doğdu. {score} ile Kadıköy güldü.",
+      "Teknik maç değil, kalp maçıydı. {mvp} kalbiyle oynadı: {score}.",
+      "Ezeli rakibe {score} ile verilen cevap, {achievement} mücadelesinde kritik 3 puan.",
+      "Derbinin kazanıldığı gün {achievement} anlamlı hale geldi. {mvp} ve {score} ile.",
+      "Bu derbi başka bir şeydi. {mvp} sahada, Kadıköy ayakta. {score} ile kapandı."
+    ],
+    "invincible": [
+      "Sezonu namağlup tamamlayan Fenerbahçe, {mvp} liderliğinde {achievement} ile tarihe geçti.",
+      "34 maç, hiçbir mağlubiyet. {mvp} ve ekip bu sezon aşılamaz göründü. {achievement}.",
+      "Namağlup sezon; yalnızca bu iki kelime {achievement}'ı ve {mvp}'yi anlatmak için yeterli.",
+      "Tarihte kaç kez namağlup sezon olmuş? Şimdi bir kez daha: {mvp} ile {achievement}.",
+      "{mvp} sahada olduğu sürece rakipler kazanamadı. Sezon sonu: namağlup ve {achievement}.",
+      "Bu sezonu kim hatırlamayacak? {mvp} ve namağlup {achievement} zaferi.",
+      "Mağlubiyet görmeyen bir sezon. Bu başarı {mvp} ve ekibin {achievement} hediyesidir.",
+      "Sezon boyunca kimse geçemedi; {mvp} merkezli bu güç namağlup {achievement} kazandı.",
+      "Her maç zor gibiydi ama hiçbir maç kaybedilmedi. {mvp} varsa bu mümkün: namağlup {achievement}.",
+      "Bu sezonu anlatmak için tek kelime: Namağlup. Ve bir isim: {mvp}.",
+      "34 haftada 34 'yenilmedik' anı. {mvp} ve ekip tarihin en büyük sezonlarından birini yaşattı.",
+      "{achievement} yeterince büyük bir ödül müydü? Namağlup sezon için belki bile diyemeyiz.",
+      "Futbolda namağlup kalmak mucizedir. {mvp} ve Fenerbahçe bu sezonu mucize ile kapattı.",
+      "Namağlupluğun bedeli sürekli odak ve inanç. {mvp} her ikisini de taşıdı: {achievement}.",
+      "Sezon bitti, rekabetsiz geçti, {mvp} hükmediyordu. Tarih yeniden yazıldı: namağlup {achievement}."
+    ]
+  },
+  "season_events": [
+    {
+      "id": "ev01",
+      "title": "Derbi Zaferi",
+      "desc": "Kadıköy'de ezeli rakibi {score} ile yenildi; taraftarlar sahayı terk etmedi.",
+      "impact": "moral:+20,press:+10"
+    },
+    {
+      "id": "ev02",
+      "title": "Derbi Mağlubiyeti",
+      "desc": "Rakip sahada {score} ile yenilindi; eleştiriler arttı.",
+      "impact": "moral:-18,press:-12"
+    },
+    {
+      "id": "ev03",
+      "title": "Kaptan Konuşması",
+      "desc": "{player} soyunma odasında takımı ayağa kaldırdı.",
+      "impact": "moral:+12,unity:+10"
+    },
+    {
+      "id": "ev04",
+      "title": "Taraftar Baskısı",
+      "desc": "Kadıköy {fans} kişiyle doldu taştı; tribün baskısı rakibi etkiledi.",
+      "impact": "home_boost:+15,rival_moral:-8"
+    },
+    {
+      "id": "ev05",
+      "title": "Kritik Sakatlık",
+      "desc": "{player} sakatlandı, {weeks} hafta yok.",
+      "impact": "squad:-10,moral:-8"
+    },
+    {
+      "id": "ev06",
+      "title": "Son Dakika Golü",
+      "desc": "{player} 90+{minute} dakikada attığı golle 3 puanı kurtardı.",
+      "impact": "moral:+15,clutch_bonus:+10"
+    },
+    {
+      "id": "ev07",
+      "title": "Kaleci Duvarı",
+      "desc": "{player} kurtardığı {saves} kritik müdahaleyle maçın adamı oldu.",
+      "impact": "defense_moral:+12,cleansheet:+8"
+    },
+    {
+      "id": "ev08",
+      "title": "Transfer Kaosu",
+      "desc": "{player} ayrılık söylentileri takımı sarstı.",
+      "impact": "moral:-10,focus:-8"
+    },
+    {
+      "id": "ev09",
+      "title": "Medya Baskısı",
+      "desc": "Gazeteler manşetten eleştirdi; soyunma odası gerildi.",
+      "impact": "press:-15,moral:-6"
+    },
+    {
+      "id": "ev10",
+      "title": "Kış Çöküşü",
+      "desc": "Devre arasında {losses} galibiyet {wins} mağlubiyet; moral kırık.",
+      "impact": "moral:-20,form:-12"
+    },
+    {
+      "id": "ev11",
+      "title": "Süper Kupa Zaferi",
+      "desc": "Sezonu kupa kazanarak açan Kanarya güven doldu.",
+      "impact": "moral:+18,season_start:+12"
+    },
+    {
+      "id": "ev12",
+      "title": "Avrupa Gecesi",
+      "desc": "{opponent} Avrupa kupasında {score} ile mağlup edildi.",
+      "impact": "prestige:+18,moral:+12"
+    },
+    {
+      "id": "ev13",
+      "title": "Penaltı Faciası",
+      "desc": "Kritik maçta {player} penaltıyı kaçırdı.",
+      "impact": "moral:-15,confidence:-10"
+    },
+    {
+      "id": "ev14",
+      "title": "VAR Şoku",
+      "desc": "VAR golümüzü iptal etti; tartışmalar alevlendi.",
+      "impact": "moral:-12,press:-8"
+    },
+    {
+      "id": "ev15",
+      "title": "Kırmızı Kart Fırtınası",
+      "desc": "{player} 55. dakikada kırmızı gördü; 10 kişiyle tamamlandı.",
+      "impact": "squad:-8,moral:-10"
+    },
+    {
+      "id": "ev16",
+      "title": "Yenilmezlik Serisi",
+      "desc": "Art arda {streak} maç kazanıldı; rakipler uzaklaştı.",
+      "impact": "moral:+20,form:+15"
+    },
+    {
+      "id": "ev17",
+      "title": "Gol Kralı Yarışı",
+      "desc": "{player} topun başına geçince gol için sahaya çıkıyor; yarış kızışıyor.",
+      "impact": "motivation:+10,attack_bonus:+8"
+    },
+    {
+      "id": "ev18",
+      "title": "Asist Rekoru",
+      "desc": "{player} rekor kıracak pas üretiyor; takım onun üzerinden akıyor.",
+      "impact": "team_flow:+12,attack:+10"
+    },
+    {
+      "id": "ev19",
+      "title": "Bahar Yükselişi",
+      "desc": "Mart'tan itibaren form şahlandı; final düzlüğüne güçlü girildi.",
+      "impact": "form:+15,moral:+10"
+    },
+    {
+      "id": "ev20",
+      "title": "Şampiyonluk Maçı",
+      "desc": "Son hafta kupayı belirleyecek maça çıkıldı; her şey bu 90 dakikada.",
+      "impact": "clutch:+20,press:+15"
+    },
+    {
+      "id": "ev21",
+      "title": "İlk Mağlubiyet",
+      "desc": "Sezonun ilk kaybı yaşandı; eleştiriler başladı.",
+      "impact": "moral:-10,form:-6"
+    },
+    {
+      "id": "ev22",
+      "title": "Tarihi Galibiyet",
+      "desc": "{years} yıl sonra ilk kez {opponent} deplasmanda yenildi.",
+      "impact": "moral:+18,prestige:+15"
+    },
+    {
+      "id": "ev23",
+      "title": "Kale Farklı Kapandı",
+      "desc": "5-0'lık galibiyet ile sezonun en büyük skoru yazıldı.",
+      "impact": "moral:+20,attack_confidence:+15"
+    },
+    {
+      "id": "ev24",
+      "title": "Puan Farkı Kapandı",
+      "desc": "Lider ile aradaki fark 1'e geriledi; final düzlüğü kızıştı.",
+      "impact": "tension:+15,moral:+10"
+    },
+    {
+      "id": "ev25",
+      "title": "Efsane Veda",
+      "desc": "{player} son maçını oynadı; Kadıköy ayakta.",
+      "impact": "moral:+8,nostalgia:+20"
+    },
+    {
+      "id": "ev26",
+      "title": "Genç Yıldız Patlıyor",
+      "desc": "{player} gol-asiste imza attı; transferi konuşuluyor.",
+      "impact": "attack:+10,future_bonus:+8"
+    },
+    {
+      "id": "ev27",
+      "title": "Rakip Kaybetti",
+      "desc": "Lider rakip puan kaybetti; Fener öne geçti.",
+      "impact": "moral:+12,momentum:+10"
+    },
+    {
+      "id": "ev28",
+      "title": "Yoğun Fikstür",
+      "desc": "10 günde 4 maç; yorgunluk sinyalleri geldi.",
+      "impact": "stamina:-12,rotation_needed:+10"
+    },
+    {
+      "id": "ev29",
+      "title": "Soğuk Hava Etkisi",
+      "desc": "Kış maçında zemin dondu; mücadele renksiz geçti.",
+      "impact": "performance:-8,form:-5"
+    },
+    {
+      "id": "ev30",
+      "title": "Taraftar Tezahüratı",
+      "desc": "Maç boyunca durmayan tezahürat takıma kanat verdi.",
+      "impact": "home_boost:+15,moral:+8"
+    },
+    {
+      "id": "ev31",
+      "title": "Teknik Direktör Krizi",
+      "desc": "Kulüp ile teknik direktör arasında gerginlik haberleri çıktı.",
+      "impact": "moral:-12,focus:-10"
+    },
+    {
+      "id": "ev32",
+      "title": "Başarılı Pres",
+      "desc": "Rakip takımın topuyla oynamasına izin verilmedi; maç kontrol altında.",
+      "impact": "defense:+10,possession:+8"
+    },
+    {
+      "id": "ev33",
+      "title": "Seyircisiz Maç",
+      "desc": "Ceza nedeniyle tribünler boştu; Kadıköy sesi eksik kaldı.",
+      "impact": "home_boost:-15,moral:-5"
+    },
+    {
+      "id": "ev34",
+      "title": "Hat-Trick Şov",
+      "desc": "{player} tek maçta 3 gol attı; tribünler çıldırdı.",
+      "impact": "moral:+18,attack:+12"
+    },
+    {
+      "id": "ev35",
+      "title": "Boş Kale",
+      "desc": "Son dakika boş kale kaçırıldı; puan kaybedildi.",
+      "impact": "moral:-15,confidence:-10"
+    },
+    {
+      "id": "ev36",
+      "title": "Erken Gol",
+      "desc": "İlk 3 dakikada gol geldi; rakip paniğe düştü.",
+      "impact": "momentum:+15,moral:+10"
+    },
+    {
+      "id": "ev37",
+      "title": "Uzatma Draması",
+      "desc": "90+5'te beraberlik golü yendi; büyük üzüntü.",
+      "impact": "moral:-18,fatigue:-5"
+    },
+    {
+      "id": "ev38",
+      "title": "Çift Kaptan",
+      "desc": "Sakatlanana kaptanlık {player}'a geçti; liderlik sınavı.",
+      "impact": "unity:+8,moral:+5"
+    },
+    {
+      "id": "ev39",
+      "title": "İstatistik Rekoru",
+      "desc": "Takım sezon rekorunu kırdı; en çok gol, en az gol yeme vb.",
+      "impact": "confidence:+12,prestige:+10"
+    },
+    {
+      "id": "ev40",
+      "title": "Kupa Çeyrek Finali",
+      "desc": "Ulusal kupada ilerlendi; iki cephede mücadele arttı.",
+      "impact": "rotation:+8,fatigue:-8"
+    },
+    {
+      "id": "ev41",
+      "title": "Savunma Hatası",
+      "desc": "Kritik maçta hatalar gol yenilmesine yol açtı.",
+      "impact": "defense_moral:-12,press:-8"
+    },
+    {
+      "id": "ev42",
+      "title": "Avrupa Eleme",
+      "desc": "Avrupa kupasında gruptan çıkılamadı; lig odaklanması arttı.",
+      "impact": "lig_focus:+12,moral:-8"
+    },
+    {
+      "id": "ev43",
+      "title": "Taraftar Boykotu",
+      "desc": "Protestolar nedeniyle tribünler kısmen boştu.",
+      "impact": "home_boost:-10,press:-5"
+    },
+    {
+      "id": "ev44",
+      "title": "Seri Bozuldu",
+      "desc": "Art arda gelen galibiyetler serisinin sonu geldi.",
+      "impact": "moral:-10,form:-8"
+    },
+    {
+      "id": "ev45",
+      "title": "Güçlü Deplasman",
+      "desc": "Zor deplasmandan 3 puanla döndü; moral arttı.",
+      "impact": "moral:+15,away_confidence:+12"
+    },
+    {
+      "id": "ev46",
+      "title": "Kış Transferi",
+      "desc": "Devre arasında kritik takviye yapıldı.",
+      "impact": "squad_depth:+15,moral:+10"
+    },
+    {
+      "id": "ev47",
+      "title": "İlk Onbire Genç",
+      "desc": "Genç oyuncu ilk kez 11'de başladı ve parlak oynadı.",
+      "impact": "future:+10,moral:+8"
+    },
+    {
+      "id": "ev48",
+      "title": "Gol Kuraklığı",
+      "desc": "3 maç gol atılamadı; hücum istatistikleri düştü.",
+      "impact": "attack_moral:-12,press:-8"
+    },
+    {
+      "id": "ev49",
+      "title": "Hakem Tartışması",
+      "desc": "Yönetim hakem kararlarını protesto etti.",
+      "impact": "press:-10,focus:-6"
+    },
+    {
+      "id": "ev50",
+      "title": "Kapalı Kapılar Antrenmanı",
+      "desc": "Kritik maç öncesi yoğun çalışma dönemine girildi.",
+      "impact": "form:+10,unity:+8"
+    },
+    {
+      "id": "ev51",
+      "title": "Şampiyonluk Partisi",
+      "desc": "Şampiyonluk kutlamaları tüm şehri sardı; taraftar geceyi kutladı.",
+      "impact": "season_end_bonus:+20,morale:+25"
+    },
+    {
+      "id": "ev52",
+      "title": "Futbol Felsefesi Değişti",
+      "desc": "Yeni taktik anlayış sahada görünmeye başladı; verimliliğe etti.",
+      "impact": "form:+10,adapt_bonus:+8"
+    }
+  ],
+  "game_modes": [
+    {
+      "id": "gm01",
+      "name": "Klasik Draft",
+      "desc": "Standart 11 oyuncu seç, sezonu simüle et.",
+      "rules": [
+        "Tüm oyuncular kullanılabilir"
+      ]
+    },
+    {
+      "id": "gm02",
+      "name": "Sadece Efsaneler",
+      "desc": "Yalnızca rarity 'legend' veya 'icon' oyuncular.",
+      "rules": [
+        "Rarity: legend veya icon"
+      ]
+    },
+    {
+      "id": "gm03",
+      "name": "Sadece Türk",
+      "desc": "Kadroda yalnızca Türk oyuncular.",
+      "rules": [
+        "Nation: TUR"
+      ]
+    },
+    {
+      "id": "gm04",
+      "name": "Sadece Yabancı",
+      "desc": "Kadroda yalnızca yabancı oyuncular.",
+      "rules": [
+        "Nation: TUR değil"
+      ]
+    },
+    {
+      "id": "gm05",
+      "name": "Alex Dönemi",
+      "desc": "2004-2012 arası oyuncularla oyna; Alex garantili.",
+      "rules": [
+        "Era: 2004-2012",
+        "Alex zorunlu"
+      ]
+    },
+    {
+      "id": "gm06",
+      "name": "Modern Era",
+      "desc": "Sadece 2020 ve sonrası oyuncular.",
+      "rules": [
+        "Era: 2020-Present"
+      ]
+    },
+    {
+      "id": "gm07",
+      "name": "Brezilya Çetesi",
+      "desc": "Kadroda en az 5 Brezilyalı.",
+      "rules": [
+        "En az 5 BRA uyruklu oyuncu"
+      ]
+    },
+    {
+      "id": "gm08",
+      "name": "Derbi Modu",
+      "desc": "Her maç derbi gibi oynandı; basın baskısı 2 kat.",
+      "rules": [
+        "Tüm maçlar derbi zorluğunda",
+        "Pressure x2"
+      ]
+    },
+    {
+      "id": "gm09",
+      "name": "Kaos Modu",
+      "desc": "Sakatlık ve olaylar 3 kat sık; hazır ol.",
+      "rules": [
+        "Event sıklığı x3",
+        "Sakatlık +%50"
+      ]
+    },
+    {
+      "id": "gm10",
+      "name": "Hardcore",
+      "desc": "Tek deneme; kaydetme yok.",
+      "rules": [
+        "Oyuncu sakatlanırsa sezon boyu yok",
+        "Kayıt yok"
+      ]
+    },
+    {
+      "id": "gm11",
+      "name": "Genç Yıldızlar",
+      "desc": "Sadece 25 yaş altı oyuncular (modern dönem temsili).",
+      "rules": [
+        "Rating max 82",
+        "Gelişim hızlı"
+      ]
+    },
+    {
+      "id": "gm12",
+      "name": "Efsane Karması",
+      "desc": "Her dönemden 2'şer oyuncu seç; kimya zorlaşır.",
+      "rules": [
+        "Her dönemden max 2",
+        "Min 5 farklı era"
+      ]
+    },
+    {
+      "id": "gm13",
+      "name": "Gol Krallığı",
+      "desc": "Gol atan forvet seni şampiyon yapacak; savunma önemsiz.",
+      "rules": [
+        "Forvet etki puanı x2",
+        "Savunma katkısı x0.5"
+      ]
+    },
+    {
+      "id": "gm14",
+      "name": "Savunma Kalesi",
+      "desc": "Gol yememek her şeyden önce gelir.",
+      "rules": [
+        "Savunma katkısı x2",
+        "Hücum etki x0.5"
+      ]
+    },
+    {
+      "id": "gm15",
+      "name": "Tarihin En İyisi",
+      "desc": "Her pozisyonda en yüksek ratingli oyuncu seçilmeli.",
+      "rules": [
+        "Her pozisyonda min rating 85",
+        "10 pozisyon 10 efsane"
+      ]
+    },
+    {
+      "id": "gm16",
+      "name": "Hollanda Gücü",
+      "desc": "En az 3 Hollandalı, Van Persie veya Hooijdonk zorunlu.",
+      "rules": [
+        "En az 3 NED",
+        "Van Persie veya Hooijdonk zorunlu"
+      ]
+    },
+    {
+      "id": "gm17",
+      "name": "90'lar Nostaljisi",
+      "desc": "Yalnızca 1990-2003 arası oyuncular.",
+      "rules": [
+        "Era: 1990-2003"
+      ]
+    },
+    {
+      "id": "gm18",
+      "name": "80'ler Rönesansı",
+      "desc": "Yalnızca 1980-1993 arası oyuncular.",
+      "rules": [
+        "Era: 1980-1993"
+      ]
+    },
+    {
+      "id": "gm19",
+      "name": "Yabancı Hakimiyeti",
+      "desc": "Her pozisyonda farklı ülkeden oyuncu.",
+      "rules": [
+        "Her oyuncu farklı ülkeden",
+        "En az 9 farklı uyruk"
+      ]
+    },
+    {
+      "id": "gm20",
+      "name": "Kupa Odaklı",
+      "desc": "Derbi ve büyük maç bonusu 2 kat; lig maçları ikinci planda.",
+      "rules": [
+        "Derbi etki x2",
+        "Lig galibiyet puanı x0.8"
+      ]
+    }
+  ],
+  "achievements": [
+    {
+      "id": "ach001",
+      "name": "Kadıköy Fatihi",
+      "desc": "Derbide 5 gol farkla kazan",
+      "condition": "derby_win_5"
+    },
+    {
+      "id": "ach002",
+      "name": "Geri Dönüşün Efendisi",
+      "desc": "3 fark geriden gelip maçı kazan",
+      "condition": "comeback_3"
+    },
+    {
+      "id": "ach003",
+      "name": "Demir Kale",
+      "desc": "10 maç üst üste gol yeme",
+      "condition": "10_cleansheet"
+    },
+    {
+      "id": "ach004",
+      "name": "Gol Makinesi",
+      "desc": "Sezonda 100+ gol at",
+      "condition": "100_goals"
+    },
+    {
+      "id": "ach005",
+      "name": "Asist Sanatçısı",
+      "desc": "Sezonda 40+ asist",
+      "condition": "40_assists"
+    },
+    {
+      "id": "ach006",
+      "name": "Namağlup Şampiyon",
+      "desc": "Sezonu hiç kaybetmeden bitir",
+      "condition": "unbeaten_champ"
+    },
+    {
+      "id": "ach007",
+      "name": "Derbi Dörtlüsü",
+      "desc": "Sezondaki dört derbinin hepsini kazan",
+      "condition": "win_all_derbies"
+    },
+    {
+      "id": "ach008",
+      "name": "Avrupa Yıldızı",
+      "desc": "Avrupa kupasında gruptan çık",
+      "condition": "europe_group"
+    },
+    {
+      "id": "ach009",
+      "name": "Evde Yenilmez",
+      "desc": "Tüm iç saha maçlarını kazan",
+      "condition": "home_invincible"
+    },
+    {
+      "id": "ach010",
+      "name": "Yedek Kahraman",
+      "desc": "Yedekten giren oyuncu son dakika golü atsın",
+      "condition": "sub_hero"
+    },
+    {
+      "id": "ach011",
+      "name": "Alex'in Mirası",
+      "desc": "Kadroda Alex ile şampiyonluk kazan",
+      "condition": "alex_champ"
+    },
+    {
+      "id": "ach012",
+      "name": "Brezilya Çetesi",
+      "desc": "5+ Brezilyalı ile şampiyonluk",
+      "condition": "brazil_5"
+    },
+    {
+      "id": "ach013",
+      "name": "Tarihe Geç",
+      "desc": "96+ puanla sezonu bitir",
+      "condition": "96_points"
+    },
+    {
+      "id": "ach014",
+      "name": "Kimya Ustası",
+      "desc": "90+ kimya puanıyla sezon oyna",
+      "condition": "90_chem"
+    },
+    {
+      "id": "ach015",
+      "name": "Hızlı Başlangıç",
+      "desc": "İlk 5 maçın tamamını kazan",
+      "condition": "win_first_5"
+    },
+    {
+      "id": "ach016",
+      "name": "Son Dakika Uzmanı",
+      "desc": "3 farklı maçta 90+ gol at",
+      "condition": "late_goals_3"
+    },
+    {
+      "id": "ach017",
+      "name": "Liderlik Sembolü",
+      "desc": "Sezon boyunca 1. sıradan düşme",
+      "condition": "leader_all_season"
+    },
+    {
+      "id": "ach018",
+      "name": "İstatistik Canavarı",
+      "desc": "Golde ve asistde ligi birinci bitir",
+      "condition": "top_goals_assists"
+    },
+    {
+      "id": "ach019",
+      "name": "Kaleci Efsanesi",
+      "desc": "Kaleden maç başına 0.4'den az gol ye",
+      "condition": "gk_legend"
+    },
+    {
+      "id": "ach020",
+      "name": "Takım Oyunu",
+      "desc": "Tüm 11 oyuncu gol veya asist yapsın",
+      "condition": "team_effort"
+    },
+    {
+      "id": "ach021",
+      "name": "Rüya Kadro",
+      "desc": "Rating ortalaması 90+ kadroya ulaş",
+      "condition": "avg_90"
+    },
+    {
+      "id": "ach022",
+      "name": "Derbi Seyircisi",
+      "desc": "Tüm derbi maçlarına tıkla",
+      "condition": "derby_watch"
+    },
+    {
+      "id": "ach023",
+      "name": "Zorlu Yolu Seç",
+      "desc": "Kaos modunda şampiyon ol",
+      "condition": "chaos_champ"
+    },
+    {
+      "id": "ach024",
+      "name": "Hardcore Kahraman",
+      "desc": "Hardcore modunda sezonu tamamla",
+      "condition": "hardcore_finish"
+    },
+    {
+      "id": "ach025",
+      "name": "Türk Çekirdeği",
+      "desc": "6+ Türk oyuncuyla şampiyonluk",
+      "condition": "6_turkish_champ"
+    },
+    {
+      "id": "ach026",
+      "name": "Yıldız Doğuyor",
+      "desc": "Genç oyuncular moduyla şampiyonluk",
+      "condition": "youth_champ"
+    },
+    {
+      "id": "ach027",
+      "name": "Jenerasyon Kilitleme",
+      "desc": "Tek dönemden kadro kurup şampiyon ol",
+      "condition": "single_era_champ"
+    },
+    {
+      "id": "ach028",
+      "name": "Golsüz Forvet",
+      "desc": "Forvet pozisyonundaki oyuncu 0 gol atsın",
+      "condition": "st_no_goal"
+    },
+    {
+      "id": "ach029",
+      "name": "Süper Kupa Fatihi",
+      "desc": "Süper kupa simülasyonunu kazan",
+      "condition": "super_cup"
+    },
+    {
+      "id": "ach030",
+      "name": "Hollanda Rüzgarı",
+      "desc": "3+ Hollandalıyla şampiyon ol",
+      "condition": "dutch_champ"
+    },
+    {
+      "id": "ach031",
+      "name": "Savunma Dehası",
+      "desc": "Savunma katkısı 95+ ile şampiyon ol",
+      "condition": "def_master"
+    },
+    {
+      "id": "ach032",
+      "name": "Hücum Deliği",
+      "desc": "75+ gol atarak şampiyon ol",
+      "condition": "75_goals_champ"
+    },
+    {
+      "id": "ach033",
+      "name": "5 Farklı Dönem",
+      "desc": "5 farklı dönemden oyuncu seç",
+      "condition": "5_eras"
+    },
+    {
+      "id": "ach034",
+      "name": "İlk Deneme",
+      "desc": "İlk draftını tamamla",
+      "condition": "first_draft"
+    },
+    {
+      "id": "ach035",
+      "name": "10 Draft",
+      "desc": "10. draftını tamamla",
+      "condition": "10_drafts"
+    },
+    {
+      "id": "ach036",
+      "name": "50 Draft",
+      "desc": "50. draftını tamamla",
+      "condition": "50_drafts"
+    },
+    {
+      "id": "ach037",
+      "name": "Paylaş!",
+      "desc": "Sonuç ekranını paylaş",
+      "condition": "share_result"
+    },
+    {
+      "id": "ach038",
+      "name": "Lefter'in Torunu",
+      "desc": "Kadroda Lefter ile şampiyon ol",
+      "condition": "lefter_champ"
+    },
+    {
+      "id": "ach039",
+      "name": "Volkan'a Güven",
+      "desc": "Volkan ile 15+ kale sıfır",
+      "condition": "volkan_15"
+    },
+    {
+      "id": "ach040",
+      "name": "Roberto Carlos Şov",
+      "desc": "Kadroda Roberto Carlos ile galibiyet",
+      "condition": "carlos_win"
+    },
+    {
+      "id": "ach041",
+      "name": "Efsane İkilisi",
+      "desc": "Alex + Lugano kombinasyonuyla şampiyon ol",
+      "condition": "alex_lugano"
+    },
+    {
+      "id": "ach042",
+      "name": "Orta Saha Hâkimi",
+      "desc": "Emre Belözoğlu + başka bir CM ile MVP",
+      "condition": "emre_mvp"
+    },
+    {
+      "id": "ach043",
+      "name": "Brezilya-Türk Dengesi",
+      "desc": "4 Türk + 4 Brezilyalı + 3 başka",
+      "condition": "bra_tur_balance"
+    },
+    {
+      "id": "ach044",
+      "name": "Dört Derbi Temiz",
+      "desc": "Dört derbide rakibe gol yedirme",
+      "condition": "4_derby_cleansheet"
+    },
+    {
+      "id": "ach045",
+      "name": "Sezon MVP Icon",
+      "desc": "Icon rarity oyuncusu MVP olsun",
+      "condition": "icon_mvp"
+    },
+    {
+      "id": "ach046",
+      "name": "Gol Farkı Rekoru",
+      "desc": "Sezon gol averajı +50 geç",
+      "condition": "goal_diff_50"
+    },
+    {
+      "id": "ach047",
+      "name": "Dominant Sezon",
+      "desc": "dominant_season kategorisinde bitir",
+      "condition": "dominant_category"
+    },
+    {
+      "id": "ach048",
+      "name": "Comeback Şampiyonu",
+      "desc": "comeback kategorisinde şampiyon ol",
+      "condition": "comeback_champ"
+    },
+    {
+      "id": "ach049",
+      "name": "Dengeyi Bul",
+      "desc": "balanced_season kategorisinde bitir",
+      "condition": "balanced_category"
+    },
+    {
+      "id": "ach050",
+      "name": "Kaos'tan Çık",
+      "desc": "chaos_season sonrası comeback sezon oyna",
+      "condition": "chaos_to_comeback"
+    },
+    {
+      "id": "ach051",
+      "name": "Fenerbahçeli Olmak",
+      "desc": "5 sezon oyna",
+      "condition": "5_seasons"
+    },
+    {
+      "id": "ach052",
+      "name": "Tarihin Her Döneminden",
+      "desc": "7 farklı era oyuncusu içer",
+      "condition": "7_eras"
+    },
+    {
+      "id": "ach053",
+      "name": "Hat-Trick Ustası",
+      "desc": "Bir oyuncu 3 maç hat-trick yapsın",
+      "condition": "hattrick_3"
+    },
+    {
+      "id": "ach054",
+      "name": "Pres Krallığı",
+      "desc": "Yüksek kimya ile düşük rakip moral kazan",
+      "condition": "press_king"
+    },
+    {
+      "id": "ach055",
+      "name": "Tek Forvet",
+      "desc": "1 ST pozisyonu, 10 farklı forvet dene",
+      "condition": "10_strikers"
+    },
+    {
+      "id": "ach056",
+      "name": "Stoper Kalesi",
+      "desc": "CB ortalama 92+ savunma ile sezon",
+      "condition": "cb_defense_92"
+    },
+    {
+      "id": "ach057",
+      "name": "Tam İsabet",
+      "desc": "Tüm 11 oyuncu farklı pozisyon gerektirsin",
+      "condition": "11_unique_pos"
+    },
+    {
+      "id": "ach058",
+      "name": "Çift Kaleci",
+      "desc": "İki GK dene aynı sezonda",
+      "condition": "2_gk_try"
+    },
+    {
+      "id": "ach059",
+      "name": "Efsane Sahası",
+      "desc": "Lefter, Can Bartu, Alex'i aynı kadroda bul",
+      "condition": "triple_legend"
+    },
+    {
+      "id": "ach060",
+      "name": "Tek Derbi Kazanır",
+      "desc": "Sadece 1 derbiden puan al ama şampiyon ol",
+      "condition": "1_derby_champ"
+    },
+    {
+      "id": "ach061",
+      "name": "Kış Şampiyonu",
+      "desc": "Devre arasında lider bitir",
+      "condition": "winter_leader"
+    },
+    {
+      "id": "ach062",
+      "name": "Bahar Şampiyonu",
+      "desc": "İkinci yarı liderliği al ve kapat",
+      "condition": "spring_champ"
+    },
+    {
+      "id": "ach063",
+      "name": "Kasım Krizi",
+      "desc": "10-15 haftada 3 mağlubiyet ver",
+      "condition": "november_crisis"
+    },
+    {
+      "id": "ach064",
+      "name": "Şampiyonluk Sezonları",
+      "desc": "3 farklı sezonda şampiyon ol",
+      "condition": "3_champ_seasons"
+    },
+    {
+      "id": "ach065",
+      "name": "Kanat Hakimiyeti",
+      "desc": "LW + RW + LB + RB'de 80+ ortalama",
+      "condition": "wing_mastery"
+    },
+    {
+      "id": "ach066",
+      "name": "Orta Saha Fırtınası",
+      "desc": "3 CM/CAM/DM'nin tamamı MVP topuna girsin",
+      "condition": "midfield_storm"
+    },
+    {
+      "id": "ach067",
+      "name": "Süper Forvet Hattı",
+      "desc": "2 ST/RW/LW kombinasyonu 50+ gol",
+      "condition": "super_attack_line"
+    },
+    {
+      "id": "ach068",
+      "name": "Yerli Ürün",
+      "desc": "6+ Türk oyuncu ile 3 derbi kazan",
+      "condition": "local_product"
+    },
+    {
+      "id": "ach069",
+      "name": "Avrupa Kalibresinde",
+      "desc": "80+ güç ile Avrupa bonusu al",
+      "condition": "europe_caliber"
+    },
+    {
+      "id": "ach070",
+      "name": "Kadıköy Kaleleri",
+      "desc": "5 Türk oyuncu ile 10 kalesiz maç",
+      "condition": "kadiköy_fortress"
+    },
+    {
+      "id": "ach071",
+      "name": "Deneyim Farkı",
+      "desc": "Ortalama era'ları 5+ farklı sezon oyna",
+      "condition": "era_gap"
+    },
+    {
+      "id": "ach072",
+      "name": "Uçuş Modunda",
+      "desc": "6 maçlık galibiyet serisi al",
+      "condition": "6_win_streak"
+    },
+    {
+      "id": "ach073",
+      "name": "Zirvede Denge",
+      "desc": "Hem gol atma hem yememe ligi birincisi",
+      "condition": "top_both_stats"
+    },
+    {
+      "id": "ach074",
+      "name": "Mucize Onar",
+      "desc": "Kaos sezonun ardından dominant sezon",
+      "condition": "chaos_to_dominant"
+    },
+    {
+      "id": "ach075",
+      "name": "50 Gol Farkı",
+      "desc": "Sezon gol averajı +50 üzeri",
+      "condition": "50_goal_diff"
+    },
+    {
+      "id": "ach076",
+      "name": "Sürpriz Paketi",
+      "desc": "En düşük ratingli kadroyla şampiyon",
+      "condition": "lowest_rating_champ"
+    },
+    {
+      "id": "ach077",
+      "name": "10'lu Seri",
+      "desc": "Arka arkaya 10 galibiyet",
+      "condition": "10_consec_wins"
+    },
+    {
+      "id": "ach078",
+      "name": "Derbi Serisi",
+      "desc": "4 derbinin tamamını kazanarak şampiyon ol",
+      "condition": "derby_series_champ"
+    },
+    {
+      "id": "ach079",
+      "name": "İki Koldan Basın",
+      "desc": "Hem lig hem kupa finaline çık",
+      "condition": "double_final"
+    },
+    {
+      "id": "ach080",
+      "name": "Zaman Yolcusu",
+      "desc": "1920'ler ve 2020'ler oyuncularını aynı kadroda kullan",
+      "condition": "time_traveler"
+    },
+    {
+      "id": "ach081",
+      "name": "Çift Efsane CAM",
+      "desc": "2 CAM'dan biri 90+, diğeri 85+ olsun",
+      "condition": "double_cam_legend"
+    },
+    {
+      "id": "ach082",
+      "name": "Penaltı Ustası",
+      "desc": "5 penaltı fırsatı atıp hepsini gol yap",
+      "condition": "5_penalties"
+    },
+    {
+      "id": "ach083",
+      "name": "Defansif Derbi",
+      "desc": "Derbide 1-0 kazan ve gol yeme",
+      "condition": "1_0_derby"
+    },
+    {
+      "id": "ach084",
+      "name": "İlk Sahaya Çıkış",
+      "desc": "İlk maçı kazan",
+      "condition": "first_win"
+    },
+    {
+      "id": "ach085",
+      "name": "Soyunma Odası Şefi",
+      "desc": "Kaptan seçimini doğru yap ve moral 90+",
+      "condition": "captain_right"
+    },
+    {
+      "id": "ach086",
+      "name": "Her Pozisyondan Gol",
+      "desc": "Her mevkideki oyuncu en az 1 gol atsın",
+      "condition": "every_pos_goal"
+    },
+    {
+      "id": "ach087",
+      "name": "Savunmadan Gol",
+      "desc": "CB veya LB/RB gol atsın",
+      "condition": "defender_goal"
+    },
+    {
+      "id": "ach088",
+      "name": "Kaleciye Dokunuş",
+      "desc": "GK kurtarış rekorunu kır",
+      "condition": "gk_saves_record"
+    },
+    {
+      "id": "ach089",
+      "name": "Tekrar Tekrar",
+      "desc": "3. draftında aynı oyuncuyu seç",
+      "condition": "repeat_player"
+    },
+    {
+      "id": "ach090",
+      "name": "Efsane Sezonu",
+      "desc": "Hem şampiyon ol hem de 0 mağlubiyet",
+      "condition": "legend_season"
+    },
+    {
+      "id": "ach091",
+      "name": "Çeyrek Asır",
+      "desc": "25 sezon tamamla",
+      "condition": "25_seasons"
+    },
+    {
+      "id": "ach092",
+      "name": "Sezon Rekoru",
+      "desc": "Tüm zamanların puan rekorunu kır",
+      "condition": "all_time_record"
+    },
+    {
+      "id": "ach093",
+      "name": "Taraftar Sevgilisi",
+      "desc": "Viral paylaşım yap",
+      "condition": "viral_share"
+    },
+    {
+      "id": "ach094",
+      "name": "Kanalı Aç",
+      "desc": "Taraftara ulaş; paylaş",
+      "condition": "open_channel"
+    },
+    {
+      "id": "ach095",
+      "name": "Tek Kişilik Şov",
+      "desc": "MVP 80+ etki puanıyla şampiyon ol",
+      "condition": "mvp_80_champ"
+    },
+    {
+      "id": "ach096",
+      "name": "Oyunu Anla",
+      "desc": "Tüm sistem mekaniklerini öğren",
+      "condition": "understand_game"
+    },
+    {
+      "id": "ach097",
+      "name": "Koleksiyoncu",
+      "desc": "20 farklı oyuncuyu dene",
+      "condition": "20_players_tried"
+    },
+    {
+      "id": "ach098",
+      "name": "Tam Skor",
+      "desc": "Tüm başarıların yarısını tamamla",
+      "condition": "half_achievements"
+    },
+    {
+      "id": "ach099",
+      "name": "Efsaneler Kulübü",
+      "desc": "Tüm başarıları tamamla",
+      "condition": "all_achievements"
+    }
+  ],
+  "share_titles": [
+    {
+      "id": "st001",
+      "title": "Kadıköy Fethedildi!"
+    },
+    {
+      "id": "st002",
+      "title": "Bir Efsane Daha Yazıldı"
+    },
+    {
+      "id": "st003",
+      "title": "Tarih Tekerrür Etti"
+    },
+    {
+      "id": "st004",
+      "title": "Alex'in Mirası"
+    },
+    {
+      "id": "st005",
+      "title": "Kanarya Uçuşta"
+    },
+    {
+      "id": "st006",
+      "title": "Şampiyonluk Gecesi"
+    },
+    {
+      "id": "st007",
+      "title": "Derbinin Kralı"
+    },
+    {
+      "id": "st008",
+      "title": "Bu Takım Yıkılmaz"
+    },
+    {
+      "id": "st009",
+      "title": "Efsane Geri Döndü"
+    },
+    {
+      "id": "st010",
+      "title": "Zirvede Buluştuk"
+    },
+    {
+      "id": "st011",
+      "title": "Sarı Lacivert Gurur"
+    },
+    {
+      "id": "st012",
+      "title": "İnanılmaz Final"
+    },
+    {
+      "id": "st013",
+      "title": "Gol Şöleni"
+    },
+    {
+      "id": "st014",
+      "title": "Savunma Destanı"
+    },
+    {
+      "id": "st015",
+      "title": "Kimse Geçemedi"
+    },
+    {
+      "id": "st016",
+      "title": "Tarihe Geçtik"
+    },
+    {
+      "id": "st017",
+      "title": "Rüya Kadro Kuruldu"
+    },
+    {
+      "id": "st018",
+      "title": "Şampiyonluk Sarı Lacivert"
+    },
+    {
+      "id": "st019",
+      "title": "Alex Büyüsü Yeniden"
+    },
+    {
+      "id": "st020",
+      "title": "Hooijdonk'un Ruhu"
+    },
+    {
+      "id": "st021",
+      "title": "Roberto Carlos'un Kanadı"
+    },
+    {
+      "id": "st022",
+      "title": "Lugano'nun Kalesine Girilmedi"
+    },
+    {
+      "id": "st023",
+      "title": "Volkan Geçit Vermedi"
+    },
+    {
+      "id": "st024",
+      "title": "Emre Geri Döndü"
+    },
+    {
+      "id": "st025",
+      "title": "Lefter'in Torunu"
+    },
+    {
+      "id": "st026",
+      "title": "Zeki Rıza'nın İzi"
+    },
+    {
+      "id": "st027",
+      "title": "Kadıköy'de Bayram"
+    },
+    {
+      "id": "st028",
+      "title": "Fenerbahçe Şampiyon"
+    },
+    {
+      "id": "st029",
+      "title": "Kanarya Uçtu"
+    },
+    {
+      "id": "st030",
+      "title": "Yenilmez Fener"
+    },
+    {
+      "id": "st031",
+      "title": "Şampiyonluk Bende"
+    },
+    {
+      "id": "st032",
+      "title": "Geri Döndük Şampiyon Olduk"
+    },
+    {
+      "id": "st033",
+      "title": "Kimya Mükemmeldi"
+    },
+    {
+      "id": "st034",
+      "title": "Rüya Gerçek Oldu"
+    },
+    {
+      "id": "st035",
+      "title": "Efsaneler Sahnede"
+    },
+    {
+      "id": "st036",
+      "title": "Brezilya Çetesi Kazandı"
+    },
+    {
+      "id": "st037",
+      "title": "Türk Çekirdeği Güçlendi"
+    },
+    {
+      "id": "st038",
+      "title": "Hollanda Ruhu Yaşıyor"
+    },
+    {
+      "id": "st039",
+      "title": "Kanat Fırtınası"
+    },
+    {
+      "id": "st040",
+      "title": "Orta Saha Hâkimi"
+    },
+    {
+      "id": "st041",
+      "title": "Stoper Kalesi Yıkılmadı"
+    },
+    {
+      "id": "st042",
+      "title": "Forvet Hattı Patlıyor"
+    },
+    {
+      "id": "st043",
+      "title": "Kimse Durduramadı"
+    },
+    {
+      "id": "st044",
+      "title": "Son Dakika Şampiyonu"
+    },
+    {
+      "id": "st045",
+      "title": "Tarihin En İyi Sezonu"
+    },
+    {
+      "id": "st046",
+      "title": "Kadıköy'e Yakışır"
+    },
+    {
+      "id": "st047",
+      "title": "Sarı Lacivert Sezon"
+    },
+    {
+      "id": "st048",
+      "title": "Şampiyon Biz"
+    },
+    {
+      "id": "st049",
+      "title": "Kanarya'nın Altın Sezonu"
+    }
+  ],
+  "headlines": [
+    {
+      "id": "hl001",
+      "title": "Fener'den Şampiyonluk Yürüyüşü!",
+      "content": "Sarı lacivertliler sahasında farklı kazandı, rakipler şaşkına döndü."
+    },
+    {
+      "id": "hl002",
+      "title": "Alex Büyüsü Devam Ediyor",
+      "content": "Brezilyalı yıldız yine sahne aldı, taraftar kendinden geçti."
+    },
+    {
+      "id": "hl003",
+      "title": "Kadıköy'de Deprem!",
+      "content": "Fenerbahçe ezeli rakibini 5 golle dağıttı, tarihe geçti."
+    },
+    {
+      "id": "hl004",
+      "title": "Şampiyonlar Ligi'nde Türk Rüzgarı",
+      "content": "Kanarya Avrupa devlerini devirdi, prestij arttı."
+    },
+    {
+      "id": "hl005",
+      "title": "Volkan'a Geçit Yok",
+      "content": "Kaleci 9 kurtarışla yıldızlaştı, takım galip geldi."
+    },
+    {
+      "id": "hl006",
+      "title": "Tadić ve Džeko Yıkıyor",
+      "content": "Goller ve asistler havada uçuştu, rakipler çaresiz kaldı."
+    },
+    {
+      "id": "hl007",
+      "title": "Ferdi Kadıoğlu: Geleceğin Yıldızı",
+      "content": "Genç oyuncu Avrupa devlerinin radarında, fiyatı fırladı."
+    },
+    {
+      "id": "hl008",
+      "title": "Hooijdonk Kafası Yıkıyor",
+      "content": "Hollandalı dev formda, goller durmuyor."
+    },
+    {
+      "id": "hl009",
+      "title": "Lugano: Kale Önünde Duvar",
+      "content": "Uruguay kaptanı hata kabul etmiyor, rakipler geçemiyor."
+    },
+    {
+      "id": "hl010",
+      "title": "Emre Belözoğlu: Maestro Geri Döndü",
+      "content": "Orta sahanın yönetimi onun elinde, paslar mükemmel."
+    },
+    {
+      "id": "hl011",
+      "title": "Roberto Carlos Şok Etti",
+      "content": "Brezilya efsanesi sol kanattan fırtına kopardı."
+    },
+    {
+      "id": "hl012",
+      "title": "Appiah Motoru Durmuyor",
+      "content": "Ganalı dinamonun çalışkanlığı rakipleri bitirdi."
+    },
+    {
+      "id": "hl013",
+      "title": "Rüştü: Fenerbahçe'nin Efsane Kılıcı",
+      "content": "Kaleci dönemin en iyisi olmayı sürdürüyor."
+    },
+    {
+      "id": "hl014",
+      "title": "Lefter'in İzinde Yürüyorlar",
+      "content": "Yeni nesil efsane Fenerbahçeli geleneklerine sahip çıktı."
+    },
+    {
+      "id": "hl015",
+      "title": "Brezilya Çetesi Sahneye Çıktı",
+      "content": "Brezilyalı oyuncular birbirini bulunca kimse durduramıyor."
+    },
+    {
+      "id": "hl016",
+      "title": "Tuncay Forma Kavuştu",
+      "content": "Kanat oyuncusu geri döndü, formun rengi açıldı."
+    },
+    {
+      "id": "hl017",
+      "title": "Arda Güler: Asrın Yeteneği",
+      "content": "Genç yıldız her maçta büyülüyor, teklifler yağıyor."
+    },
+    {
+      "id": "hl018",
+      "title": "Fred: Orta Sahanın Temeli",
+      "content": "Brezilya motorunun dengesi takıma yansıdı."
+    },
+    {
+      "id": "hl019",
+      "title": "Kjær Savunmayı Yönetiyor",
+      "content": "Danimarkalı kaptan gençlere örnek, stoper duvarı kuruldu."
+    },
+    {
+      "id": "hl020",
+      "title": "Anelka Fırtınası",
+      "content": "Fransız golcü formda, rakip kaleler dara düştü."
+    },
+    {
+      "id": "hl021",
+      "title": "Can Bartu: Efsanenin Dönüşü",
+      "content": "Tarihsel kaydın büyük ismi sahnede canlandı."
+    },
+    {
+      "id": "hl022",
+      "title": "Zeki Rıza'nın Rekorları Konuşuluyor",
+      "content": "Tarihin en büyük golcüsü anımsandı."
+    },
+    {
+      "id": "hl023",
+      "title": "Okocha Dans Ediyor",
+      "content": "Nijeryalı dribbling ustası rakipleri çıldırttı."
+    },
+    {
+      "id": "hl024",
+      "title": "Rıdvan Dilmen: Ustalık Dersi",
+      "content": "Efsane 10 numara tarihle konuşuyor."
+    },
+    {
+      "id": "hl025",
+      "title": "Aykut Kocaman: Gol Peşinde",
+      "content": "Eski kaptanın ruhu takımda hâlâ yaşıyor."
+    },
+    {
+      "id": "hl026",
+      "title": "Van Persie Gol Makinesinde",
+      "content": "Hollandalı golcü durdurulamıyor, stat'lar çarpıcı."
+    },
+    {
+      "id": "hl027",
+      "title": "Moussa Sow: Senegalli Forvet Kahraman",
+      "content": "Güç ve hız bir arada, rakipler çaresiz."
+    },
+    {
+      "id": "hl028",
+      "title": "Stoch Kanat Yakarken",
+      "content": "Slovalyalı atlet sürükleyici oyunla parladı."
+    },
+    {
+      "id": "hl029",
+      "title": "Kuyt Durmuyor",
+      "content": "Hollandalı çalışkanlık ikonu sahada her yerde."
+    },
+    {
+      "id": "hl030",
+      "title": "Aurelio'nun Soldan Gelen Gücü",
+      "content": "Sol bek asist rekoru kırmaya devam ediyor."
+    },
+    {
+      "id": "hl031",
+      "title": "Gökhan Gönül: Sağdan Fırtına",
+      "content": "Türkiye'nin en iyi sağ beklerinden biri yeniden zirveye koşuyor."
+    },
+    {
+      "id": "hl032",
+      "title": "Topal'dan Savunma Dersi",
+      "content": "Orta saha kalkanının performansı zirveye taşıdı."
+    },
+    {
+      "id": "hl033",
+      "title": "Mesut Özil: Yaratıcılığın Efendisi",
+      "content": "Alman yıldız paslarla sahneye çıktı."
+    },
+    {
+      "id": "hl034",
+      "title": "Semih Şentürk: Gizli Koz",
+      "content": "Pota altında etkili, gollerle takıma puan kattı."
+    },
+    {
+      "id": "hl035",
+      "title": "Škrtel: Savunmada Şiddet",
+      "content": "Slovalyalı stoper rakipleri korkutuyor."
+    },
+    {
+      "id": "hl036",
+      "title": "Josef de Souza: Çift Kale",
+      "content": "Brezilyalı ön libero her pozisyonda etkili."
+    },
+    {
+      "id": "hl037",
+      "title": "Džeko: Kalabalıkta Kaybolmuyor",
+      "content": "Bosna'nın topçusu ağları defalarca sarstı."
+    },
+    {
+      "id": "hl038",
+      "title": "İrfan Can: Uzaktan Bomba",
+      "content": "Türk orta sahasının uzak şut ustası sezonu parçaladı."
+    },
+    {
+      "id": "hl039",
+      "title": "Szymański'den Sürpriz",
+      "content": "Polonyalı oyuncu beklentilerin üzerinde performans sergiledi."
+    },
+    {
+      "id": "hl040",
+      "title": "Baroni: Uzak Şutların Adamı",
+      "content": "Brezilyalı orta saha sahada her an tehlikeli."
+    },
+    {
+      "id": "hl041",
+      "title": "Elmas: Makedon Fırtınası",
+      "content": "Küçük ülkeden büyük yetenek sahnede."
+    },
+    {
+      "id": "hl042",
+      "title": "Diego Ribas: Yeniden Doğuş",
+      "content": "Brezilyalı CAM formunu zirveye taşıdı."
+    },
+    {
+      "id": "hl043",
+      "title": "Krasić Kanat Kesiyor",
+      "content": "Sırp hızlı kanat arka çizgileri yamulttu."
+    },
+    {
+      "id": "hl044",
+      "title": "Nani: Mükemmelliğin Portresi",
+      "content": "Portekizli yıldız eskiden bildiğimiz hale döndü."
+    },
+    {
+      "id": "hl045",
+      "title": "Fernandão: Ağır Top Hazır",
+      "content": "Brezilyalı golcü kritik maçlarda yükseldi."
+    },
+    {
+      "id": "hl046",
+      "title": "Kim Min-jae: Kore'nin Kalesinde",
+      "content": "Korelyalı stoper formda, Fenerbahçe'ye dev katkı."
+    },
+    {
+      "id": "hl047",
+      "title": "Webo: Kamerun'dan Dev",
+      "content": "Afrika'nın güçlü forvetlerinden biri sahayı salladı."
+    },
+    {
+      "id": "hl048",
+      "title": "Bolić: Bosna'nın Yıldızı",
+      "content": "Bosna'dan gelen golcü taraftarın yüreğine girdi."
+    },
+    {
+      "id": "hl049",
+      "title": "Andersson: İsveç'ten Gol",
+      "content": "İsveçli forvet kritik gol atarak tarihe geçti."
+    },
+    {
+      "id": "hl050",
+      "title": "Meireles: Portekiz Motoru",
+      "content": "Orta sahanın güç merkezi rakipleri soluksuz bıraktı."
+    }
+  ],
+  "fan_comments": [
+    {
+      "id": "fc01",
+      "type": "positive",
+      "text": "Muhteşem takım, hep böyle oynayın!"
+    },
+    {
+      "id": "fc02",
+      "type": "positive",
+      "text": "Alex'imiz var, başka bir şey istemeyiz."
+    },
+    {
+      "id": "fc03",
+      "type": "positive",
+      "text": "Bu sezon tarihe geçecek, emin olun!"
+    },
+    {
+      "id": "fc04",
+      "type": "positive",
+      "text": "Tadić pas verince tüyler diken diken oluyor."
+    },
+    {
+      "id": "fc05",
+      "type": "positive",
+      "text": "Lugano duvara döndü, artık kimse geçemiyor."
+    },
+    {
+      "id": "fc06",
+      "type": "positive",
+      "text": "Volkan varsa kale güvende, her zaman!"
+    },
+    {
+      "id": "fc07",
+      "type": "positive",
+      "text": "Bu kadroyla Avrupa'da da fark yaratırdık."
+    },
+    {
+      "id": "fc08",
+      "type": "positive",
+      "text": "Brezilya çetesi sahaya çıkınca izlemek ayrı keyif."
+    },
+    {
+      "id": "fc09",
+      "type": "positive",
+      "text": "Rüya kadro bu mu? Evet, işte bu!"
+    },
+    {
+      "id": "fc10",
+      "type": "positive",
+      "text": "Şampiyonluk zaten bizimdi, doğru kadroyu bulduk!"
+    },
+    {
+      "id": "fc11",
+      "type": "negative",
+      "text": "Bu savunmayla şampiyon olunmaz, yazıklar olsun!"
+    },
+    {
+      "id": "fc12",
+      "type": "negative",
+      "text": "Teknik direktör istifa, artık yeter!"
+    },
+    {
+      "id": "fc13",
+      "type": "negative",
+      "text": "Hücum takımız ama gol atmıyoruz, anlamadım."
+    },
+    {
+      "id": "fc14",
+      "type": "negative",
+      "text": "Son 5 haftada çöktük, bu kabul edilemez!"
+    },
+    {
+      "id": "fc15",
+      "type": "negative",
+      "text": "Kimya yok, birlik yok, şampiyonluk da yok!"
+    },
+    {
+      "id": "fc16",
+      "type": "negative",
+      "text": "Böyle bir kadroyla bu sonuç mu? Utanç verici."
+    },
+    {
+      "id": "fc17",
+      "type": "negative",
+      "text": "Para harcandı, sonuç yok. Hesap sorulmalı!"
+    },
+    {
+      "id": "fc18",
+      "type": "nostalgic",
+      "text": "Lefter'li, Can Bartu'lu günleri özledim..."
+    },
+    {
+      "id": "fc19",
+      "type": "nostalgic",
+      "text": "2007-2008 sezonu unutulmaz, Zico ve Alex ile ne günlerdi!"
+    },
+    {
+      "id": "fc20",
+      "type": "nostalgic",
+      "text": "Rüştü kale tutarken dünya farklıydı."
+    },
+    {
+      "id": "fc21",
+      "type": "nostalgic",
+      "text": "Zeki Rıza Sporel'i hatırlayan var mı? O bir tanrıydı."
+    },
+    {
+      "id": "fc22",
+      "type": "nostalgic",
+      "text": "Hooijdonk kafaları eğitirdi, hasret kaldım o günlere."
+    },
+    {
+      "id": "fc23",
+      "type": "nostalgic",
+      "text": "Appiah + Alex + Aurelio, en iyi orta saha üçlüsü."
+    },
+    {
+      "id": "fc24",
+      "type": "humorous",
+      "text": "Rakip kaleciye sorsanız, Fener maçı en zor mesleğidir."
+    },
+    {
+      "id": "fc25",
+      "type": "humorous",
+      "text": "Taraftar olarak biz de forvet gibi baskı yapıyoruz!"
+    },
+    {
+      "id": "fc26",
+      "type": "humorous",
+      "text": "Alex oynarken koltukta oturmak imkânsız."
+    },
+    {
+      "id": "fc27",
+      "type": "humorous",
+      "text": "Volkan kurtardığında küfür mü etsek sevinsek mi bilemedik."
+    },
+    {
+      "id": "fc28",
+      "type": "humorous",
+      "text": "Roberto Carlos şut atınca stadyum hopluyor muydu?"
+    },
+    {
+      "id": "fc29",
+      "type": "humorous",
+      "text": "Kimya 20 altındaysa bu draft değil drama!"
+    },
+    {
+      "id": "fc30",
+      "type": "humorous",
+      "text": "5-0 kazandık ya, bu draftı NFT yapıyorum."
+    }
+  ]
+}
