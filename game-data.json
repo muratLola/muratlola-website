@@ -2968,6 +2968,164 @@
         "stability": 80,
         "pass": 62
       }
+    },
+    {
+      "id": "ncb01",
+      "name": "Servet Çetin",
+      "position": "CB",
+      "rating": 85,
+      "era": "2003-2006",
+      "nation": "TUR",
+      "rarity": "epic",
+      "roles": [
+        "anchor",
+        "leader"
+      ],
+      "links": [
+        "ncam02",
+        "nst04"
+      ],
+      "stats": {
+        "defense": 88,
+        "clutch": 82,
+        "stability": 85,
+        "pass": 58
+      }
+    },
+    {
+      "id": "ncb04",
+      "name": "Zoran Mirković",
+      "position": "CB",
+      "rating": 81,
+      "era": "2003-2006",
+      "nation": "SRB",
+      "rarity": "rare",
+      "roles": [
+        "anchor"
+      ],
+      "links": [
+        "ncb01",
+        "ncam02"
+      ],
+      "stats": {
+        "defense": 84,
+        "clutch": 78,
+        "stability": 82,
+        "pass": 58
+      }
+    },
+    {
+      "id": "nlb02",
+      "name": "Andre Santos",
+      "position": "LB",
+      "rating": 82,
+      "era": "2009-2011",
+      "nation": "BRA",
+      "rarity": "rare",
+      "roles": [
+        "creator",
+        "anchor"
+      ],
+      "links": [
+        "cam01",
+        "ncb03"
+      ],
+      "stats": {
+        "defense": 74,
+        "clutch": 78,
+        "stability": 79,
+        "pass": 79
+      }
+    },
+    {
+      "id": "ncam03",
+      "name": "Giuliano",
+      "position": "CAM",
+      "rating": 82,
+      "era": "2016-2018",
+      "nation": "BRA",
+      "rarity": "rare",
+      "roles": [
+        "creator",
+        "finisher"
+      ],
+      "links": [
+        "ncam02",
+        "nst06"
+      ],
+      "stats": {
+        "defense": 46,
+        "clutch": 81,
+        "stability": 77,
+        "pass": 87
+      }
+    },
+    {
+      "id": "nlw02",
+      "name": "Miroslav Stoch LW",
+      "position": "LW",
+      "rating": 80,
+      "era": "2010-2013",
+      "nation": "SVK",
+      "rarity": "rare",
+      "roles": [
+        "creator",
+        "finisher"
+      ],
+      "links": [
+        "cam01",
+        "dm03"
+      ],
+      "stats": {
+        "defense": 56,
+        "clutch": 79,
+        "stability": 76,
+        "pass": 77
+      }
+    },
+    {
+      "id": "nrw03",
+      "name": "Victor Moses",
+      "position": "RW",
+      "rating": 78,
+      "era": "2018-2019",
+      "nation": "NGA",
+      "rarity": "common",
+      "roles": [
+        "creator"
+      ],
+      "links": [
+        "nst06",
+        "ndm02"
+      ],
+      "stats": {
+        "defense": 65,
+        "clutch": 75,
+        "stability": 75,
+        "pass": 70
+      }
+    },
+    {
+      "id": "nst06",
+      "name": "Emmanuel Emenike",
+      "position": "ST",
+      "rating": 82,
+      "era": "2013-2015",
+      "nation": "NGA",
+      "rarity": "rare",
+      "roles": [
+        "finisher"
+      ],
+      "links": [
+        "nrw03",
+        "ncam03"
+      ],
+      "stats": {
+        "defense": 34,
+        "clutch": 82,
+        "stability": 78,
+        "pass": 62
+      }
     }
   ],
   "chemistry_links": [
