@@ -9,15 +9,35 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --navy:#060e1e;--navy2:#0a1830;--navy3:#0f2248;
-  --gold:#FFD700;--gold2:#c9a800;--glow:rgba(255,215,0,.18);
+  --gold:#FFD700;--gold2:#c9a800;--glow:rgba(255,215,0,.16);
   --white:#fff;--gray:#8899bb;--gray2:#aab8d4;
   --red:#e8304a;--green:#22c55e;--purple:#a855f7;--blue:#60a5fa;
   --border:rgba(255,215,0,.13);--card:#0d1d3a;
 }
 body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;-webkit-tap-highlight-color:transparent}
 .screen{display:none;min-height:100vh;flex-direction:column}
-.screen.active{display:flex;animation:fu .32s ease}
+.screen.active{display:flex;animation:fu .3s ease}
 @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── SHARED ── */
+.page-header{background:var(--navy2);border-bottom:2px solid var(--gold);padding:.9rem 1.2rem;text-align:center;flex-shrink:0}
+.page-header h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.5rem;letter-spacing:.06em}
+.page-header p{font-size:.72rem;color:var(--gray);margin-top:.2rem;letter-spacing:.06em}
+.step-indicator{display:flex;justify-content:center;gap:.35rem;padding:.5rem;background:var(--navy2);flex-shrink:0}
+.step-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,215,0,.2);transition:background .3s}
+.step-dot.done{background:var(--gold)}
+.step-dot.active{background:var(--gold);box-shadow:0 0 8px rgba(255,215,0,.5)}
+.btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold);color:var(--navy);
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.12em;
+  text-transform:uppercase;padding:.85rem 2rem;border:none;cursor:pointer;
+  clip-path:polygon(11px 0%,100% 0%,calc(100% - 11px) 100%,0 100%);transition:all .2s}
+.btn-p:hover{background:#ffe033;box-shadow:0 0 26px rgba(255,215,0,.4)}
+.btn-s{display:inline-flex;align-items:center;gap:.45rem;background:transparent;color:var(--gray2);
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:.1em;
+  text-transform:uppercase;padding:.6rem 1.2rem;border:1px solid rgba(255,255,255,.14);cursor:pointer;transition:all .2s}
+.btn-s:hover{border-color:var(--gold);color:var(--gold)}
+.bottom-bar{padding:.9rem 1.2rem;background:var(--navy2);border-top:1px solid var(--border);
+  display:flex;justify-content:center;gap:.7rem;flex-shrink:0}
 
 /* ── MENU ── */
 #menu-screen{align-items:center;justify-content:center;text-align:center;padding:2rem 1.5rem;
@@ -33,374 +53,366 @@ body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;m
 .logo-sub{color:var(--gray2);font-size:.88rem;font-weight:300;line-height:1.65;max-width:340px;margin:0 auto}
 .menu-btns{display:flex;flex-direction:column;align-items:center;gap:.5rem;margin-top:1.8rem}
 .menu-stats{display:flex;gap:2rem;justify-content:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)}
-.stat-item{text-align:center}
 .sv{font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:700;color:var(--gold)}
 .sl{font-size:.62rem;color:var(--gray);letter-spacing:.1em;text-transform:uppercase;margin-top:.1rem}
 
-/* Buttons */
-.btn-p{display:inline-flex;align-items:center;gap:.5rem;background:var(--gold);color:var(--navy);
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.12em;
-  text-transform:uppercase;padding:.85rem 2rem;border:none;cursor:pointer;
-  clip-path:polygon(11px 0%,100% 0%,calc(100% - 11px) 100%,0 100%);transition:all .2s}
-.btn-p:hover{background:#ffe033;box-shadow:0 0 26px rgba(255,215,0,.4)}
-.btn-s{display:inline-flex;align-items:center;gap:.45rem;background:transparent;color:var(--gray2);
-  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.84rem;letter-spacing:.1em;
-  text-transform:uppercase;padding:.6rem 1.2rem;border:1px solid rgba(255,255,255,.14);cursor:pointer;transition:all .2s}
-.btn-s:hover{border-color:var(--gold);color:var(--gold)}
+/* ── SELECTION CARDS (mode, manager, formation) ── */
+.sel-grid{display:flex;flex-direction:column;gap:.7rem;padding:1rem;flex:1;overflow-y:auto}
+.sel-card{background:var(--card);border:2px solid var(--border);border-radius:5px;
+  padding:.9rem 1rem;cursor:pointer;transition:all .22s;display:flex;align-items:center;gap:.9rem}
+.sel-card:hover,.sel-card.active{border-color:var(--gold);background:var(--navy3);box-shadow:0 0 20px rgba(255,215,0,.12)}
+.sel-card-icon{font-size:1.8rem;flex-shrink:0;width:40px;text-align:center}
+.sel-card-body{flex:1}
+.sel-card-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:.2rem}
+.sel-card-desc{font-size:.72rem;color:var(--gray2);line-height:1.5}
+.sel-card-badge{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.12rem .35rem;border-radius:2px;margin-left:.4rem}
+.badge-bonus{background:rgba(34,197,94,.15);color:var(--green)}
+.badge-hard{background:rgba(232,48,74,.15);color:var(--red)}
+.badge-easy{background:rgba(96,165,250,.15);color:var(--blue)}
+.sel-check{font-size:1.2rem;flex-shrink:0;opacity:0;transition:opacity .2s}
+.sel-card.active .sel-check{opacity:1}
 
-/* ── FORMATION PICKER ── */
-#formation-screen{background:var(--navy);padding:0}
-.form-header{background:var(--navy2);border-bottom:2px solid var(--gold);padding:1rem 1.2rem;text-align:center}
-.form-header h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.6rem;letter-spacing:.05em}
-.form-header p{font-size:.75rem;color:var(--gray);margin-top:.2rem;letter-spacing:.06em}
-.form-choices{display:flex;gap:1rem;padding:1.5rem;justify-content:center;flex-wrap:wrap;flex:1;align-items:center}
-.form-card{background:var(--card);border:2px solid var(--border);border-radius:6px;padding:1.2rem;
-  width:140px;cursor:pointer;transition:all .22s;text-align:center}
-.form-card:hover,.form-card.active{border-color:var(--gold);background:var(--navy3);transform:translateY(-4px);box-shadow:0 12px 32px rgba(255,215,0,.15)}
-.form-card-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.6rem;color:var(--gold);margin-bottom:.4rem}
-.form-card-desc{font-size:.68rem;color:var(--gray2);line-height:1.5}
-.form-mini-pitch{position:relative;width:60px;height:80px;background:linear-gradient(180deg,#0a3d1a,#0d4d20);
-  border:1px solid rgba(255,255,255,.1);border-radius:3px;margin:0 auto .7rem;overflow:hidden}
-.form-mini-pitch::before{content:'';position:absolute;top:50%;left:5%;right:5%;height:1px;background:rgba(255,255,255,.1)}
-.fmp-dot{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%)}
-.form-start-btn{margin:0 auto 2rem;display:block}
+/* ── FORMATION ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;padding:1rem;flex:1;overflow-y:auto}
+.form-card{background:var(--card);border:2px solid var(--border);border-radius:5px;
+  padding:.8rem;cursor:pointer;transition:all .2s;text-align:center}
+.form-card:hover,.form-card.active{border-color:var(--gold);background:var(--navy3)}
+.form-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.4rem;color:var(--gold)}
+.form-desc{font-size:.64rem;color:var(--gray2);margin-top:.3rem;line-height:1.4}
+.form-mini{position:relative;width:54px;height:72px;background:linear-gradient(180deg,#0a3d1a,#0d4d20);
+  border:1px solid rgba(255,255,255,.1);border-radius:3px;margin:.5rem auto;overflow:hidden}
+.form-mini::before{content:'';position:absolute;top:50%;left:5%;right:5%;height:1px;background:rgba(255,255,255,.1)}
+.fmd{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%)}
+.form-bonus{font-size:.6rem;color:var(--green);margin-top:.3rem}
 
-/* ── DRAFT SCREEN ── */
-#draft-screen{background:var(--navy);flex-direction:row;overflow:hidden;height:100vh}
-
-/* Left: big pitch */
-.pitch-panel{flex-shrink:0;width:200px;background:linear-gradient(180deg,#0a3d1a 0%,#0d5222 50%,#0a3d1a 100%);
-  position:relative;border-right:2px solid rgba(255,255,255,.1);overflow:hidden}
-.pitch-panel::before{content:'';position:absolute;top:50%;left:8%;right:8%;height:1px;background:rgba(255,255,255,.12)}
-.pitch-panel::after{content:'';position:absolute;top:30%;left:20%;right:20%;bottom:30%;
-  border:1px solid rgba(255,255,255,.1);border-radius:50%}
-/* Center circle */
-.pitch-center-circle{position:absolute;top:50%;left:50%;width:40px;height:40px;
-  border:1px solid rgba(255,255,255,.08);border-radius:50%;transform:translate(-50%,-50%)}
-/* Goal areas */
-.pitch-goal-top,.pitch-goal-bot{position:absolute;left:30%;right:30%;height:8%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-.pitch-goal-top{top:0;border-top:none}.pitch-goal-bot{bottom:0;border-bottom:none}
-/* Corner marks */
-.pitch-corner{position:absolute;width:8px;height:8px;border:1px solid rgba(255,255,255,.1)}
-.pitch-corner.tl{top:0;left:0;border-top:none;border-left:none;border-radius:0 0 100% 0}
-.pitch-corner.tr{top:0;right:0;border-top:none;border-right:none;border-radius:0 0 0 100%}
-.pitch-corner.bl{bottom:0;left:0;border-bottom:none;border-left:none;border-radius:0 100% 0 0}
-.pitch-corner.br{bottom:0;right:0;border-bottom:none;border-right:none;border-radius:100% 0 0 0}
-
-/* Pitch slot */
-.pslot{position:absolute;transform:translate(-50%,-50%);cursor:pointer;z-index:5}
-.pslot-inner{width:44px;height:44px;border-radius:50%;border:2px dashed rgba(255,255,255,.25);
-  display:flex;align-items:center;justify-content:center;transition:all .25s;position:relative}
-.pslot.empty .pslot-inner:hover{border-color:rgba(255,215,0,.6);background:rgba(255,215,0,.08)}
-.pslot.active-slot .pslot-inner{border-color:var(--gold);border-style:solid;background:rgba(255,215,0,.12);
-  animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,.4)}50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}}
-.pslot-label{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);
-  font-size:.48rem;color:rgba(255,255,255,.4);letter-spacing:.06em;white-space:nowrap;text-transform:uppercase}
-.pslot.filled .pslot-inner{border-style:solid}
-.pslot.filled.r-common .pslot-inner{border-color:#4a6fa5;background:#2a4a7a}
-.pslot.filled.r-rare .pslot-inner{border-color:#34d399;background:#0d3d28}
-.pslot.filled.r-epic .pslot-inner{border-color:#60a5fa;background:#0d2a5a}
-.pslot.filled.r-legend .pslot-inner{border-color:#c084fc;background:#2d0f5a}
-.pslot.filled.r-icon .pslot-inner{border-color:var(--gold);background:#3d2d00;box-shadow:0 0 12px rgba(255,215,0,.4)}
-.pslot-avatar{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.58rem;
-  color:var(--white);text-align:center;line-height:1.2;padding:.1rem}
-.pslot-rating{position:absolute;top:-6px;right:-4px;background:var(--navy);border:1px solid currentColor;
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.5rem;
-  padding:.08rem .22rem;border-radius:2px;color:var(--gold)}
-
-/* Pitch top bar */
-.pitch-topbar{position:absolute;top:0;left:0;right:0;background:rgba(6,14,30,.85);padding:.4rem .6rem;z-index:10;
+/* ── DRAFT ── */
+#draft-screen{background:var(--navy);flex-direction:row;height:100vh;overflow:hidden}
+.pitch-panel{flex-shrink:0;width:180px;background:linear-gradient(180deg,#0a3d1a,#0d5222 50%,#0a3d1a);
+  position:relative;border-right:2px solid rgba(255,255,255,.08);overflow:hidden}
+.pitch-panel::before{content:'';position:absolute;top:50%;left:8%;right:8%;height:1px;background:rgba(255,255,255,.1)}
+.pitch-panel::after{content:'';position:absolute;top:30%;left:20%;right:20%;bottom:30%;border:1px solid rgba(255,255,255,.07);border-radius:50%}
+.pitch-topbar{position:absolute;top:0;left:0;right:0;background:rgba(6,14,30,.88);padding:.35rem .55rem;z-index:10;
   display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(4px)}
-.pitch-formation-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.85rem;color:var(--gold)}
-.pitch-stats{font-size:.58rem;color:var(--gray2)}
-.pitch-stats b{color:var(--gold)}
+.pitch-form-label{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;color:var(--gold)}
+.pitch-stats-sm{font-size:.55rem;color:var(--gray2)}
+.pitch-stats-sm b{color:var(--gold)}
+.pslot{position:absolute;transform:translate(-50%,-50%);cursor:pointer;z-index:5}
+.pslot-inner{width:40px;height:40px;border-radius:50%;border:2px dashed rgba(255,255,255,.22);
+  display:flex;align-items:center;justify-content:center;transition:all .25s}
+.pslot.active-slot .pslot-inner{border-color:var(--gold);border-style:solid;background:rgba(255,215,0,.12);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,.4)}50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}}
+.pslot.filled.r-common .pslot-inner{border-color:#4a6fa5;background:#1a3060;border-style:solid}
+.pslot.filled.r-rare .pslot-inner{border-color:#34d399;background:#0d3028;border-style:solid}
+.pslot.filled.r-epic .pslot-inner{border-color:#60a5fa;background:#0d1a50;border-style:solid}
+.pslot.filled.r-legend .pslot-inner{border-color:#c084fc;background:#200f50;border-style:solid}
+.pslot.filled.r-icon .pslot-inner{border-color:var(--gold);background:#3d2800;border-style:solid;box-shadow:0 0 10px rgba(255,215,0,.4)}
+.pslot-avatar{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.52rem;color:var(--white);text-align:center;line-height:1.2;padding:.05rem}
+.pslot-label{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);
+  font-size:.44rem;color:rgba(255,255,255,.35);white-space:nowrap;text-transform:uppercase}
 
-/* Right: card panel */
 .card-panel{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
-
-/* Era filter */
-.era-filter{background:var(--navy2);border-bottom:1px solid var(--border);padding:.5rem .8rem;
-  display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.era-filter{background:var(--navy2);border-bottom:1px solid var(--border);padding:.4rem .7rem;
+  display:flex;gap:.28rem;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
 .era-filter::-webkit-scrollbar{display:none}
 .era-btn{flex-shrink:0;background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--gray);
-  font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.06em;
-  text-transform:uppercase;padding:.3rem .55rem;cursor:pointer;border-radius:2px;transition:all .18s;white-space:nowrap}
+  font-family:'Barlow Condensed',sans-serif;font-size:.66rem;font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;padding:.28rem .5rem;cursor:pointer;border-radius:2px;transition:all .18s;white-space:nowrap}
 .era-btn:hover{border-color:rgba(255,215,0,.4);color:var(--gray2)}
 .era-btn.active{background:rgba(255,215,0,.15);border-color:var(--gold);color:var(--gold)}
-
-/* Pos header */
-.pos-header{background:var(--navy3);padding:.55rem .9rem;display:flex;align-items:center;
+.pos-header{background:var(--navy3);padding:.48rem .8rem;display:flex;align-items:center;
   justify-content:space-between;flex-shrink:0;border-bottom:2px solid var(--gold)}
-.pos-badge{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.3rem;color:var(--gold)}
-.pos-name{font-size:.68rem;color:var(--gray2);letter-spacing:.08em;text-transform:uppercase;margin-top:.04rem}
-.pos-right{display:flex;align-items:center;gap:.6rem}
+.pos-badge{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.2rem;color:var(--gold)}
+.pos-name{font-size:.65rem;color:var(--gray2);letter-spacing:.08em;text-transform:uppercase;margin-top:.03rem}
+.pos-right{display:flex;align-items:center;gap:.5rem}
 .reroll-btn{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);color:var(--gold);
-  font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.07em;
-  text-transform:uppercase;padding:.3rem .6rem;cursor:pointer;transition:all .18s;border-radius:2px;white-space:nowrap}
+  font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.07em;
+  text-transform:uppercase;padding:.28rem .55rem;cursor:pointer;transition:all .18s;border-radius:2px;white-space:nowrap}
 .reroll-btn:hover:not(:disabled){background:rgba(255,215,0,.22)}
 .reroll-btn:disabled{opacity:.3;cursor:not-allowed}
-.step-ctr{font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:700;color:var(--white)}
+.step-ctr{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:700}
 .step-ctr b{color:var(--gold)}
-
-/* Chem hint */
-.chem-strip{background:rgba(34,197,94,.08);border-bottom:1px solid rgba(34,197,94,.15);
-  padding:.3rem .8rem;font-size:.68rem;color:var(--green);font-weight:500;min-height:1.9rem;flex-shrink:0}
-
-/* Cards scroll area */
-.cards-scroll{flex:1;overflow-y:auto;padding:.7rem;display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:.6rem;align-content:start;
+.chem-strip{background:rgba(34,197,94,.07);border-bottom:1px solid rgba(34,197,94,.14);
+  padding:.25rem .75rem;font-size:.65rem;color:var(--green);font-weight:500;min-height:1.7rem;flex-shrink:0}
+.cards-scroll{flex:1;overflow-y:auto;padding:.6rem;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.55rem;align-content:start;
   scrollbar-width:thin;scrollbar-color:rgba(255,215,0,.2) transparent}
-.cards-scroll::-webkit-scrollbar{width:4px}
-.cards-scroll::-webkit-scrollbar-track{background:transparent}
+.cards-scroll::-webkit-scrollbar{width:3px}
 .cards-scroll::-webkit-scrollbar-thumb{background:rgba(255,215,0,.2);border-radius:2px}
 
-/* Player card */
-.pcard{background:var(--card);border:1px solid var(--border);border-radius:5px;
-  cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--gold);transform:scaleX(0);transition:transform .16s}
-.pcard:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 8px 24px rgba(255,215,0,.13)}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:4px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold);transform:scaleX(0);transition:transform .16s}
+.pcard:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 8px 22px rgba(255,215,0,.12)}
 .pcard:hover::before{transform:scaleX(1)}
-.pcard.selected{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 6px 20px rgba(255,215,0,.22);transform:translateY(-4px) scale(1.015)}
-.pcard[data-r="icon"]{border-color:rgba(255,215,0,.5);box-shadow:0 0 14px rgba(255,215,0,.15)}
-.pcard[data-r="legend"]{border-color:rgba(192,132,252,.38)}
-.pcard[data-r="epic"]{border-color:rgba(96,165,250,.3)}
-.pcard-top{padding:.65rem .65rem .45rem;background:linear-gradient(135deg,#081428,#0f2248);
-  display:flex;justify-content:space-between;align-items:flex-start}
-.pcard-rating{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.9rem;line-height:1}
-.rt-icon{color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,.45)}
+.pcard.selected{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold),0 6px 18px rgba(255,215,0,.22);transform:translateY(-4px) scale(1.015)}
+.pcard[data-r="icon"]{border-color:rgba(255,215,0,.5);box-shadow:0 0 12px rgba(255,215,0,.14)}
+.pcard[data-r="legend"]{border-color:rgba(192,132,252,.36)}
+.pcard[data-r="epic"]{border-color:rgba(96,165,250,.28)}
+.pcard-top{padding:.6rem .62rem .42rem;background:linear-gradient(135deg,#081428,#0f2248);display:flex;justify-content:space-between;align-items:flex-start}
+.pcard-rating{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.75rem;line-height:1}
+.rt-icon{color:var(--gold);text-shadow:0 0 8px rgba(255,215,0,.4)}
 .rt-legend{color:#c084fc}.rt-epic{color:#60a5fa}.rt-rare{color:#34d399}.rt-common{color:var(--gray2)}
 .pcard-meta{text-align:right}
-.pcard-nation{font-size:.58rem;color:var(--gray);letter-spacing:.07em}
-.pcard-era{font-size:.54rem;color:var(--gold2);margin-top:.12rem}
-.rbadge{font-size:.48rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
-  margin-top:.12rem;padding:.07rem .26rem;border-radius:2px;display:inline-block}
-.rb-icon{background:rgba(255,215,0,.18);color:var(--gold)}
-.rb-legend{background:rgba(192,132,252,.18);color:#c084fc}
-.rb-epic{background:rgba(96,165,250,.16);color:#60a5fa}
-.rb-rare{background:rgba(52,211,153,.13);color:#34d399}
+.pcard-nation{font-size:.56rem;color:var(--gray);letter-spacing:.07em}
+.pcard-era{font-size:.52rem;color:var(--gold2);margin-top:.1rem}
+.rbadge{font-size:.46rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  margin-top:.1rem;padding:.06rem .24rem;border-radius:2px;display:inline-block}
+.rb-icon{background:rgba(255,215,0,.18);color:var(--gold)}.rb-legend{background:rgba(192,132,252,.18);color:#c084fc}
+.rb-epic{background:rgba(96,165,250,.16);color:#60a5fa}.rb-rare{background:rgba(52,211,153,.13);color:#34d399}
 .rb-common{background:rgba(255,255,255,.07);color:var(--gray)}
-.pcard-body{padding:.55rem .65rem}
-.pcard-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;line-height:1.14;margin-bottom:.35rem}
-.pcard-roles{display:flex;flex-wrap:wrap;gap:.18rem;margin-bottom:.45rem}
-.rtag{font-size:.46rem;letter-spacing:.06em;text-transform:uppercase;padding:.09rem .28rem;border-radius:2px;font-weight:600}
-.rtag.finisher{background:rgba(232,48,74,.18);color:#e8304a}
-.rtag.creator{background:rgba(255,215,0,.11);color:var(--gold)}
-.rtag.anchor{background:rgba(34,197,94,.11);color:#22c55e}
-.rtag.leader{background:rgba(168,85,247,.11);color:#a855f7}
-.pcard-stats{display:grid;grid-template-columns:1fr 1fr;gap:.22rem}
-.srow{display:flex;justify-content:space-between;font-size:.59rem;color:var(--gray)}
+.pcard-body{padding:.5rem .62rem}
+.pcard-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.86rem;line-height:1.12;margin-bottom:.32rem}
+.pcard-roles{display:flex;flex-wrap:wrap;gap:.16rem;margin-bottom:.42rem}
+.rtag{font-size:.44rem;letter-spacing:.06em;text-transform:uppercase;padding:.08rem .26rem;border-radius:2px;font-weight:600}
+.rtag.finisher{background:rgba(232,48,74,.18);color:#e8304a}.rtag.creator{background:rgba(255,215,0,.11);color:var(--gold)}
+.rtag.anchor{background:rgba(34,197,94,.11);color:#22c55e}.rtag.leader{background:rgba(168,85,247,.11);color:#a855f7}
+.pcard-stats{display:grid;grid-template-columns:1fr 1fr;gap:.2rem}
+.srow{display:flex;justify-content:space-between;font-size:.57rem;color:var(--gray)}
 .srow b{color:var(--white);font-weight:600;font-variant-numeric:tabular-nums}
-.pcard-chem{font-size:.56rem;color:var(--green);text-align:center;padding:.28rem .5rem 0;font-weight:600;min-height:1em}
-
-/* Bottom summary bar */
-.draft-summary{background:var(--navy2);border-top:1px solid var(--border);
-  padding:.45rem .8rem;display:flex;align-items:center;gap:.5rem;flex-shrink:0;overflow-x:auto}
-.dsm-chip{flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:600;
-  padding:.18rem .48rem;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.25);
-  color:var(--gold);clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0 100%)}
+.pcard-chem{font-size:.54rem;color:var(--green);text-align:center;padding:.25rem .5rem 0;font-weight:600;min-height:.95em}
+.draft-summary{background:var(--navy2);border-top:1px solid var(--border);padding:.4rem .7rem;
+  display:flex;align-items:center;gap:.4rem;flex-shrink:0;overflow-x:auto;scrollbar-width:none;min-height:2.2rem}
+.draft-summary::-webkit-scrollbar{display:none}
+.dsm-chip{flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-size:.66rem;font-weight:600;
+  padding:.16rem .44rem;background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.22);color:var(--gold);
+  clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0 100%)}
 .dsm-chip.ic{background:rgba(255,215,0,.2);border-color:var(--gold)}
-.dsm-sep{color:var(--border);flex-shrink:0}
 
-/* ── SEASON ── */
+/* ── CAPTAIN & SETPIECE ── */
+#captain-screen,.setpiece-inner{flex:1;overflow-y:auto;padding:.8rem}
+.player-pick-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.player-pick-card{background:var(--card);border:2px solid var(--border);border-radius:4px;
+  padding:.7rem .75rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.6rem}
+.player-pick-card:hover,.player-pick-card.active{border-color:var(--gold);background:var(--navy3)}
+.player-pick-card.active .ppcheck{opacity:1}
+.ppc-icon{font-size:1.4rem;flex-shrink:0}
+.ppc-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.85rem;line-height:1.2}
+.ppc-sub{font-size:.6rem;color:var(--gray2);margin-top:.1rem}
+.ppcheck{font-size:.9rem;margin-left:auto;opacity:0;transition:opacity .2s;flex-shrink:0}
+.setpiece-row{margin-bottom:.7rem}
+.setpiece-label{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem;display:flex;align-items:center;gap:.4rem}
+.setpiece-candidates{display:flex;gap:.4rem;flex-wrap:wrap}
+.sp-chip{background:var(--card);border:1px solid var(--border);padding:.3rem .6rem;border-radius:3px;
+  font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .18s;color:var(--gray2)}
+.sp-chip:hover,.sp-chip.active{border-color:var(--gold);color:var(--gold);background:var(--navy3)}
+
+/* ── SEASON SUMMARY ── */
+#summary-screen{padding:0;flex:1;overflow-y:auto}
+.summary-inner{max-width:460px;margin:0 auto;padding:1rem}
+.summary-section{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:.85rem;margin-bottom:.75rem}
+.summary-title{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.summary-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;font-size:.78rem}
+.summary-row:last-child{margin-bottom:0}
+.summary-key{color:var(--gray2)}
+.summary-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--white)}
+.summary-val.gold{color:var(--gold)}
+.config-badges{display:flex;gap:.35rem;flex-wrap:wrap}
+.cfg-badge{font-size:.62rem;font-weight:600;padding:.2rem .5rem;border-radius:2px;
+  background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);color:var(--gold)}
+
+/* ── SEASON SCREEN ── */
 #season-screen{background:var(--navy);flex-direction:column}
-.szn-bar{background:var(--navy2);border-bottom:2px solid var(--gold);padding:.7rem 1rem;
+.szn-bar{background:var(--navy2);border-bottom:2px solid var(--gold);padding:.65rem .9rem;
   display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.szn-bar-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.15rem}
-.szn-bar-sub{font-size:.63rem;color:var(--gray);letter-spacing:.07em;margin-top:.04rem}
-.szn-week{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.75rem;color:var(--gold);font-variant-numeric:tabular-nums}
-.szn-wlabel{font-size:.58rem;color:var(--gray);letter-spacing:.1em;text-align:right}
-.szn-prog{padding:.35rem 1rem;background:var(--navy2);flex-shrink:0}
+.szn-bar-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem}
+.szn-bar-sub{font-size:.6rem;color:var(--gray);letter-spacing:.07em;margin-top:.04rem}
+.szn-week{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.65rem;color:var(--gold);font-variant-numeric:tabular-nums}
+.szn-wlabel{font-size:.56rem;color:var(--gray);letter-spacing:.1em;text-align:right}
+.szn-prog{padding:.3rem .9rem;background:var(--navy2);flex-shrink:0}
 .szn-prog-bar{height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
 .szn-prog-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .3s}
-.szn-prog-labels{display:flex;justify-content:space-between;font-size:.58rem;color:var(--gray);margin-top:.22rem}
-.szn-body{display:flex;gap:.6rem;padding:.6rem;flex:1;min-height:0}
+.szn-prog-labels{display:flex;justify-content:space-between;font-size:.56rem;color:var(--gray);margin-top:.2rem}
+.szn-body{display:flex;gap:.55rem;padding:.55rem;flex:1;min-height:0}
 .feed-col{flex:1;min-width:0;display:flex;flex-direction:column}
-.feed-title{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);margin-bottom:.4rem;flex-shrink:0}
-.feed-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:.35rem;scrollbar-width:none}
+.feed-title{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);margin-bottom:.35rem;flex-shrink:0}
+.feed-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:.3rem;scrollbar-width:none}
 .feed-list::-webkit-scrollbar{display:none}
-.mi{background:var(--card);border:1px solid var(--border);border-radius:3px;padding:.48rem .65rem;
-  flex-shrink:0;animation:miin .25s ease}
-@keyframes miin{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.mi{background:var(--card);border:1px solid var(--border);border-radius:3px;padding:.42rem .58rem;flex-shrink:0;animation:miin .22s ease}
+@keyframes miin{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
 .mi.win{border-left:3px solid var(--green)}.mi.draw{border-left:3px solid var(--gold)}.mi.loss{border-left:3px solid var(--red)}
-.mi.derby{background:linear-gradient(90deg,rgba(255,215,0,.06),var(--card))}
-.mi-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.25rem}
-.mi-week{font-size:.56rem;color:var(--gray)}.mi-derby-tag{font-size:.5rem;background:rgba(255,215,0,.15);color:var(--gold);padding:.05rem .28rem;border-radius:2px;font-weight:700}
-.mi-score{display:flex;align-items:center;gap:.35rem}
-.mi-team{font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:700;flex:1}
+.mi.derby{background:linear-gradient(90deg,rgba(255,215,0,.05),var(--card))}
+.mi-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem}
+.mi-week{font-size:.53rem;color:var(--gray)}.mi-derby-tag{font-size:.48rem;background:rgba(255,215,0,.14);color:var(--gold);padding:.04rem .26rem;border-radius:2px;font-weight:700}
+.mi-score{display:flex;align-items:center;gap:.3rem}
+.mi-team{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;flex:1}
 .mi-team.ours{color:var(--white)}.mi-team.theirs{color:var(--gray2);text-align:right}
-.mi-res{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.95rem;padding:.13rem .38rem;
-  border-radius:2px;font-variant-numeric:tabular-nums;min-width:46px;text-align:center}
-.mi-res.win{background:rgba(34,197,94,.14);color:var(--green)}.mi-res.draw{background:rgba(255,215,0,.11);color:var(--gold)}.mi-res.loss{background:rgba(232,48,74,.14);color:var(--red)}
-.mi-scorers{font-size:.58rem;color:var(--gray2);margin-top:.18rem}
+.mi-res{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.9rem;padding:.11rem .34rem;
+  border-radius:2px;font-variant-numeric:tabular-nums;min-width:44px;text-align:center}
+.mi-res.win{background:rgba(34,197,94,.13);color:var(--green)}.mi-res.draw{background:rgba(255,215,0,.1);color:var(--gold)}.mi-res.loss{background:rgba(232,48,74,.13);color:var(--red)}
+.mi-scorers{font-size:.55rem;color:var(--gray2);margin-top:.15rem}
 .mi-scorers em{color:var(--gold2)}
-.table-col{width:170px;flex-shrink:0;display:flex;flex-direction:column;gap:.4rem}
-.tbl-title{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);flex-shrink:0}
+.table-col{width:165px;flex-shrink:0;display:flex;flex-direction:column;gap:.35rem}
+.tbl-title{font-size:.57rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);flex-shrink:0}
 .ltable{background:var(--card);border:1px solid var(--border);border-radius:3px;overflow:hidden}
-.lt-hdr{display:grid;grid-template-columns:18px 1fr 20px 20px 22px;gap:.18rem;padding:.35rem .45rem;
-  font-size:.52rem;color:var(--gray);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border)}
-.lt-row{display:grid;grid-template-columns:18px 1fr 20px 20px 22px;gap:.18rem;padding:.35rem .45rem;
-  font-size:.63rem;border-bottom:1px solid rgba(255,215,0,.05);align-items:center;transition:background .3s}
+.lt-hdr{display:grid;grid-template-columns:18px 1fr 20px 20px 22px;gap:.15rem;padding:.3rem .42rem;
+  font-size:.5rem;color:var(--gray);letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.lt-row{display:grid;grid-template-columns:18px 1fr 20px 20px 22px;gap:.15rem;padding:.32rem .42rem;
+  font-size:.6rem;border-bottom:1px solid rgba(255,215,0,.05);align-items:center;transition:background .3s}
 .lt-row:last-child{border-bottom:none}
 .lt-row.us{background:rgba(255,215,0,.08)}
 .lt-row.us .lt-tn{color:var(--gold);font-weight:700}
-.lt-pos{color:var(--gray);font-size:.58rem;font-variant-numeric:tabular-nums}
+.lt-pos{color:var(--gray);font-size:.56rem;font-variant-numeric:tabular-nums}
 .lt-pos.t3{color:var(--gold);font-weight:700}
-.lt-tn{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lt-pts{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.75rem;font-variant-numeric:tabular-nums;text-align:right}
-.lt-gd{font-size:.58rem;color:var(--gray2);font-variant-numeric:tabular-nums;text-align:right}
-.lt-w{font-size:.58rem;color:var(--gray);font-variant-numeric:tabular-nums;text-align:right}
-.pstats-box{background:var(--card);border:1px solid var(--border);border-radius:3px;padding:.55rem .65rem}
-.ps-title{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);margin-bottom:.45rem}
-.ps-row{display:flex;align-items:center;gap:.35rem;margin-bottom:.3rem}
+.lt-tn{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.68rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lt-pts{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.72rem;font-variant-numeric:tabular-nums;text-align:right}
+.lt-gd{font-size:.55rem;color:var(--gray2);font-variant-numeric:tabular-nums;text-align:right}
+.lt-w{font-size:.55rem;color:var(--gray);font-variant-numeric:tabular-nums;text-align:right}
+.pstats-box{background:var(--card);border:1px solid var(--border);border-radius:3px;padding:.5rem .6rem}
+.ps-title{font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);margin-bottom:.4rem}
+.ps-row{display:flex;align-items:center;gap:.32rem;margin-bottom:.28rem}
 .ps-row:last-child{margin-bottom:0}
-.ps-nm{font-size:.66rem;flex:1;color:var(--gray2);font-family:'Barlow Condensed',sans-serif;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ps-g{font-size:.6rem;color:var(--green);font-variant-numeric:tabular-nums}
-.ps-a{font-size:.6rem;color:var(--gold2);font-variant-numeric:tabular-nums}
+.ps-nm{font-size:.63rem;flex:1;color:var(--gray2);font-family:'Barlow Condensed',sans-serif;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ps-g{font-size:.58rem;color:var(--green);font-variant-numeric:tabular-nums}
+.ps-a{font-size:.58rem;color:var(--gold2);font-variant-numeric:tabular-nums}
 
 /* ── RESULT ── */
 #result-screen{padding:.65rem;background:var(--navy);align-items:center}
 .res-inner{width:100%;max-width:480px;margin:0 auto;padding-bottom:2rem}
-.res-hdr{text-align:center;padding:1.1rem 1rem .8rem;border-bottom:1px solid var(--border);margin-bottom:.85rem}
-.res-cat{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
-.res-main{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(1.7rem,8vw,2.6rem);letter-spacing:.02em;line-height:1}
+.res-hdr{text-align:center;padding:1.1rem 1rem .75rem;border-bottom:1px solid var(--border);margin-bottom:.8rem}
+.res-cat{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.28rem}
+.res-main{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(1.6rem,7vw,2.4rem);letter-spacing:.02em;line-height:1}
 .res-ach{display:inline-block;background:var(--gold);color:var(--navy);font-family:'Barlow Condensed',sans-serif;
-  font-weight:700;font-size:.76rem;letter-spacing:.1em;padding:.24rem .82rem;margin-top:.6rem;
+  font-weight:700;font-size:.74rem;letter-spacing:.1em;padding:.22rem .8rem;margin-top:.6rem;
   clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0 100%)}
-.res-4{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--border);
-  border-radius:3px;overflow:hidden;margin-bottom:.75rem}
-.r4{padding:.7rem .4rem;text-align:center;border-right:1px solid var(--border)}
+.res-4{display:grid;grid-template-columns:repeat(4,1fr);background:var(--card);border:1px solid var(--border);border-radius:3px;overflow:hidden;margin-bottom:.7rem}
+.r4{padding:.68rem .35rem;text-align:center;border-right:1px solid var(--border)}
 .r4:last-child{border-right:none}
 .r4v{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.4rem;color:var(--gold);font-variant-numeric:tabular-nums}
-.r4l{font-size:.54rem;color:var(--gray);letter-spacing:.07em;text-transform:uppercase;margin-top:.1rem}
-.sec{background:var(--card);border:1px solid var(--border);border-radius:3px;padding:.8rem;margin-bottom:.75rem}
-.sec-t{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);margin-bottom:.6rem}
+.r4l{font-size:.52rem;color:var(--gray);letter-spacing:.07em;text-transform:uppercase;margin-top:.1rem}
+.sec{background:var(--card);border:1px solid var(--border);border-radius:3px;padding:.78rem;margin-bottom:.7rem}
+.sec-t{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);margin-bottom:.58rem}
 .ftable{width:100%;border-collapse:collapse}
-.ftable th{font-size:.54rem;letter-spacing:.07em;text-transform:uppercase;color:var(--gray);padding:.28rem .35rem;text-align:left;border-bottom:1px solid var(--border)}
+.ftable th{font-size:.52rem;letter-spacing:.07em;text-transform:uppercase;color:var(--gray);padding:.26rem .32rem;text-align:left;border-bottom:1px solid var(--border)}
 .ftable th:not(:nth-child(2)){text-align:right}
-.ftable td{font-size:.68rem;padding:.35rem .35rem;border-bottom:1px solid rgba(255,215,0,.05)}
+.ftable td{font-size:.66rem;padding:.32rem .32rem;border-bottom:1px solid rgba(255,215,0,.05)}
 .ftable td:not(:nth-child(2)){text-align:right;font-variant-numeric:tabular-nums}
 .ftable .usr td{background:rgba(255,215,0,.07)}
 .ftable .usr .fn{color:var(--gold);font-weight:700}
 .ftable .pc{color:var(--gray);font-weight:600;width:20px}
 .ftable .pc.gld{color:var(--gold)}
-.sc-row{display:flex;align-items:center;gap:.45rem;margin-bottom:.35rem}
+.sc-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.32rem}
 .sc-row:last-child{margin-bottom:0}
-.sc-rank{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;color:var(--gray);width:14px;flex-shrink:0}
-.sc-nm{font-size:.72rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;flex:1}
-.sc-g{font-size:.6rem;background:rgba(34,197,94,.14);color:var(--green);padding:.08rem .28rem;border-radius:2px}
-.sc-a{font-size:.6rem;background:rgba(255,215,0,.11);color:var(--gold);padding:.08rem .28rem;border-radius:2px}
-.sc-i{font-size:.6rem;background:rgba(168,85,247,.14);color:var(--purple);padding:.08rem .28rem;border-radius:2px}
-.pwr-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.42rem}
+.sc-rank{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.8rem;color:var(--gray);width:14px;flex-shrink:0}
+.sc-nm{font-size:.7rem;font-family:'Barlow Condensed',sans-serif;font-weight:600;flex:1}
+.sc-g{font-size:.58rem;background:rgba(34,197,94,.13);color:var(--green);padding:.07rem .26rem;border-radius:2px}
+.sc-a{font-size:.58rem;background:rgba(255,215,0,.1);color:var(--gold);padding:.07rem .26rem;border-radius:2px}
+.sc-i{font-size:.58rem;background:rgba(168,85,247,.13);color:var(--purple);padding:.07rem .26rem;border-radius:2px}
+.pwr-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem}
 .pwr-row:last-child{margin-bottom:0}
-.pwr-l{font-size:.64rem;color:var(--gray);width:65px;flex-shrink:0}
+.pwr-l{font-size:.62rem;color:var(--gray);width:62px;flex-shrink:0}
 .pwr-bw{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
 .pwr-bf{height:100%;background:var(--gold);border-radius:3px;width:0;transition:width 1s ease}
-.pwr-n{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.84rem;width:24px;text-align:right;font-variant-numeric:tabular-nums}
-.cd-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem;margin-top:.6rem}
-.cd-item{font-size:.61rem;color:var(--gray2);display:flex;justify-content:space-between}
+.pwr-n{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.82rem;width:24px;text-align:right;font-variant-numeric:tabular-nums}
+.cd-grid{display:grid;grid-template-columns:1fr 1fr;gap:.28rem;margin-top:.55rem}
+.cd-item{font-size:.59rem;color:var(--gray2);display:flex;justify-content:space-between}
 .cd-item span{color:var(--green);font-weight:600}
 .mvp-box{display:flex;align-items:center;gap:.8rem;background:linear-gradient(135deg,#0f1e3d,#1a2e55);
-  border:1px solid rgba(255,215,0,.35);border-radius:3px;padding:.8rem;margin-bottom:.75rem}
-.mvp-ico{font-size:1.75rem;flex-shrink:0}
-.mvp-lbl{font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.1rem}
-.mvp-nm{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.18rem}
-.mvp-st{font-size:.68rem;color:var(--gray2);margin-top:.08rem}
-.mvp-st span{color:var(--green);margin-right:.45rem}
+  border:1px solid rgba(255,215,0,.35);border-radius:3px;padding:.78rem;margin-bottom:.7rem}
+.mvp-ico{font-size:1.7rem;flex-shrink:0}
+.mvp-lbl{font-size:.54rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.1rem}
+.mvp-nm{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.14rem}
+.mvp-st{font-size:.66rem;color:var(--gray2);margin-top:.08rem}
+.mvp-st span{color:var(--green);margin-right:.4rem}
 .mvp-st em{color:var(--gold)}
-.story-box{background:var(--card);border-left:3px solid var(--gold);border-radius:0 3px 3px 0;padding:.8rem .95rem;margin-bottom:.75rem}
-.story-lbl{font-size:.56rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.42rem}
-.story-txt{font-size:.84rem;line-height:1.62;color:var(--gray2);font-style:italic}
-.fan-q{margin-top:.55rem;padding-top:.55rem;border-top:1px solid var(--border);font-size:.72rem;color:var(--gray)}
+.story-box{background:var(--card);border-left:3px solid var(--gold);border-radius:0 3px 3px 0;padding:.78rem .92rem;margin-bottom:.7rem}
+.story-lbl{font-size:.54rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.story-txt{font-size:.82rem;line-height:1.62;color:var(--gray2);font-style:italic}
+.fan-q{margin-top:.52rem;padding-top:.52rem;border-top:1px solid var(--border);font-size:.7rem;color:var(--gray)}
 .fan-q em{color:var(--gray2);font-style:italic}
-.hl-box{background:var(--card);border-left:3px solid rgba(168,85,247,.6);border-radius:0 3px 3px 0;padding:.72rem .88rem;margin-bottom:.75rem}
-.hl-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.98rem;margin-bottom:.22rem}
-.hl-body{font-size:.74rem;color:var(--gray2);line-height:1.5}
+.hl-box{background:var(--card);border-left:3px solid rgba(168,85,247,.55);border-radius:0 3px 3px 0;padding:.7rem .86rem;margin-bottom:.7rem}
+.hl-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.96rem;margin-bottom:.2rem}
+.hl-body{font-size:.72rem;color:var(--gray2);line-height:1.5}
 .res-actions{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;padding-top:.35rem}
 .btn-share{display:inline-flex;align-items:center;gap:.4rem;background:var(--gold);color:var(--navy);
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.92rem;letter-spacing:.1em;
-  text-transform:uppercase;padding:.72rem 1.4rem;border:none;cursor:pointer;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem;letter-spacing:.1em;
+  text-transform:uppercase;padding:.7rem 1.4rem;border:none;cursor:pointer;
   clip-path:polygon(9px 0%,100% 0%,calc(100% - 9px) 100%,0 100%);transition:all .2s}
 .btn-share:hover{background:#ffe033;box-shadow:0 0 20px rgba(255,215,0,.4)}
 .btn-restart{display:inline-flex;align-items:center;gap:.4rem;background:transparent;color:var(--white);
-  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.92rem;letter-spacing:.1em;
-  text-transform:uppercase;padding:.72rem 1.4rem;border:1px solid rgba(255,255,255,.18);cursor:pointer;transition:all .2s}
+  font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:.9rem;letter-spacing:.1em;
+  text-transform:uppercase;padding:.7rem 1.4rem;border:1px solid rgba(255,255,255,.18);cursor:pointer;transition:all .2s}
 .btn-restart:hover{border-color:var(--gold);color:var(--gold)}
-.watermark{text-align:center;font-size:.59rem;color:var(--gray);letter-spacing:.1em;margin-top:.85rem}
+.watermark{text-align:center;font-size:.58rem;color:var(--gray);letter-spacing:.1em;margin-top:.8rem}
 
 /* Toasts */
 .ach-toast{position:fixed;top:.85rem;left:50%;transform:translateX(-50%) translateY(-90px);
   background:linear-gradient(135deg,#1a2e55,#0f2248);border:1px solid var(--gold);
-  padding:.6rem 1rem;border-radius:4px;z-index:9999;display:flex;align-items:center;gap:.6rem;
-  transition:transform .32s ease;pointer-events:none;min-width:230px;max-width:88vw}
+  padding:.58rem .98rem;border-radius:4px;z-index:9999;display:flex;align-items:center;gap:.58rem;
+  transition:transform .32s ease;pointer-events:none;min-width:220px;max-width:88vw}
 .ach-toast.show{transform:translateX(-50%) translateY(0)}
-.ach-ico{font-size:1.3rem;flex-shrink:0}
-.ach-lbl{font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.07rem}
-.ach-nm{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.9rem}
+.ach-ico{font-size:1.28rem;flex-shrink:0}
+.ach-lbl{font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.06rem}
+.ach-nm{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.88rem}
 .toast{position:fixed;bottom:1.3rem;left:50%;transform:translateX(-50%) translateY(18px);
   background:var(--gold);color:var(--navy);font-family:'Barlow Condensed',sans-serif;font-weight:700;
-  font-size:.84rem;letter-spacing:.1em;padding:.58rem 1.25rem;
+  font-size:.82rem;letter-spacing:.1em;padding:.56rem 1.22rem;
   clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0 100%);
   opacity:0;transition:all .26s;z-index:9999;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-@media(max-width:380px){
-  .pitch-panel{width:160px}
-  .pcard{font-size:.9em}
-  .table-col{width:148px}
-}
+@media(max-width:380px){.pitch-panel{width:150px}.table-col{width:148px}}
 </style>
 </head>
 <body>
 
-<!-- ═══ MENU ═══ -->
+<!-- ═══ 1. MENU ═══ -->
 <div id="menu-screen" class="screen active">
   <div>
     <div class="logo-badge">★ LEGENDARY SQUAD BUILDER</div>
     <div class="logo-title"><span class="fen">FENER</span><span class="rest">BAHÇE DRAFT</span></div>
-    <div class="logo-deco"></div>
-    <p class="logo-sub">Efsaneleri seç. Kimyayı kur. Sezonu hafta hafta yaşa.</p>
+    <div class="logo-deco" style="width:50px;height:2px;background:var(--gold);margin:1.2rem auto"></div>
+    <p class="logo-sub">Efsaneleri seç. Kimyayı kur. Teknik direktörünü ata. Sezonu yaşa.</p>
   </div>
   <div class="menu-btns">
-    <button class="btn-p" onclick="goFormation()">▶ YENİ DRAFT</button>
+    <button class="btn-p" id="btn-start">▶ YENİ DRAFT</button>
     <button class="btn-s" onclick="showToast('Yakında!')">📊 İSTATİSTİKLER</button>
   </div>
   <div class="menu-stats">
-    <div class="stat-item"><div class="sv" id="ms-players">—</div><div class="sl">Efsane</div></div>
-    <div class="stat-item"><div class="sv">34</div><div class="sl">Hafta</div></div>
-    <div class="stat-item"><div class="sv" id="ms-drafts">0</div><div class="sl">Draftın</div></div>
+    <div><div class="sv" id="ms-players">—</div><div class="sl">Efsane</div></div>
+    <div><div class="sv">34</div><div class="sl">Hafta</div></div>
+    <div><div class="sv" id="ms-drafts">0</div><div class="sl">Draftın</div></div>
   </div>
 </div>
 
-<!-- ═══ FORMATION PICKER ═══ -->
+<!-- ═══ 2. GAME MODE ═══ -->
+<div id="mode-screen" class="screen">
+  <div class="page-header"><h2>⚽ OYUN MODU</h2><p>Nasıl bir sezon kurmak istiyorsun?</p></div>
+  <div class="step-indicator" id="si-mode"></div>
+  <div class="sel-grid" id="mode-grid"></div>
+  <div class="bottom-bar">
+    <button class="btn-p" id="mode-next">DEVAM →</button>
+  </div>
+</div>
+
+<!-- ═══ 3. MANAGER ═══ -->
+<div id="manager-screen" class="screen">
+  <div class="page-header"><h2>🎯 TEKNİK DİREKTÖR</h2><p>Oyun felsefeni belirle</p></div>
+  <div class="step-indicator" id="si-manager"></div>
+  <div class="sel-grid" id="manager-grid"></div>
+  <div class="bottom-bar">
+    <button class="btn-s" id="manager-back">← GERİ</button>
+    <button class="btn-p" id="manager-next">DEVAM →</button>
+  </div>
+</div>
+
+<!-- ═══ 4. FORMATION ═══ -->
 <div id="formation-screen" class="screen">
-  <div class="form-header">
-    <h2>⚽ KADRO DİZİLİŞİ SEÇ</h2>
-    <p>Saha şekillensin, sonra oyuncularını yerleştir</p>
+  <div class="page-header"><h2>📐 KADRO DİZİLİŞİ</h2><p>Sahanı şekillendir</p></div>
+  <div class="step-indicator" id="si-formation"></div>
+  <div class="form-grid" id="form-grid"></div>
+  <div class="bottom-bar">
+    <button class="btn-s" id="formation-back">← GERİ</button>
+    <button class="btn-p" id="formation-next">DRAFTE GEÇ →</button>
   </div>
-  <div class="form-choices" id="form-choices"></div>
-  <button class="btn-p form-start-btn" onclick="startDraft()">DRAFTAI BAŞLAT →</button>
 </div>
 
-<!-- ═══ DRAFT ═══ -->
+<!-- ═══ 5. DRAFT ═══ -->
 <div id="draft-screen" class="screen" style="flex-direction:row;height:100vh;overflow:hidden">
-  <!-- Sol: Saha -->
   <div class="pitch-panel" id="pitch-panel">
     <div class="pitch-topbar">
-      <div>
-        <div class="pitch-formation-label" id="pitch-form-label">4-3-3</div>
-      </div>
-      <div class="pitch-stats">OVR <b id="live-ovr">—</b> · KİM <b id="live-chem">—</b></div>
+      <div class="pitch-form-label" id="pitch-form-label">4-3-3</div>
+      <div class="pitch-stats-sm">OVR <b id="live-ovr">—</b> · KİM <b id="live-chem">—</b></div>
     </div>
-    <div class="pitch-goal-top"></div>
-    <div class="pitch-goal-bot"></div>
-    <div class="pitch-center-circle"></div>
-    <div class="pitch-corner tl"></div><div class="pitch-corner tr"></div>
-    <div class="pitch-corner bl"></div><div class="pitch-corner br"></div>
-    <!-- slots injected here -->
   </div>
-  <!-- Sağ: Kartlar -->
   <div class="card-panel">
     <div class="era-filter" id="era-filter"></div>
     <div class="pos-header">
@@ -409,17 +421,49 @@ body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;m
         <div class="pos-name" id="d-posname">Kaleci Seç</div>
       </div>
       <div class="pos-right">
-        <button class="reroll-btn" id="reroll-btn" onclick="doReroll()">⟳ YENİLE <span id="reroll-left">(1)</span></button>
+        <button class="reroll-btn" id="reroll-btn">⟳ YENİLE <span id="reroll-left">(1)</span></button>
         <div class="step-ctr"><b id="d-step">1</b>/11</div>
       </div>
     </div>
-    <div class="chem-strip" id="chem-strip">🔗 Kimya bağlantıları yükleniyor…</div>
+    <div class="chem-strip" id="chem-strip"></div>
     <div class="cards-scroll" id="cards-scroll"></div>
     <div class="draft-summary" id="draft-summary"></div>
   </div>
 </div>
 
-<!-- ═══ SEASON ═══ -->
+<!-- ═══ 6. CAPTAIN ═══ -->
+<div id="captain-screen" class="screen">
+  <div class="page-header"><h2>🏅 KAPTAN SEÇ</h2><p>Liderlik sahaya yansır</p></div>
+  <div class="step-indicator" id="si-captain"></div>
+  <div style="flex:1;overflow-y:auto;padding:.8rem">
+    <div class="player-pick-grid" id="captain-grid"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn-p" id="captain-next">DEVAM →</button>
+  </div>
+</div>
+
+<!-- ═══ 7. SETPIECE ═══ -->
+<div id="setpiece-screen" class="screen">
+  <div class="page-header"><h2>🎯 DURAN TOPLAR</h2><p>Kritik anlarda kim sorumluluk alıyor?</p></div>
+  <div class="step-indicator" id="si-setpiece"></div>
+  <div class="setpiece-inner" id="setpiece-inner"></div>
+  <div class="bottom-bar">
+    <button class="btn-p" id="setpiece-next">ÖZETE GİT →</button>
+  </div>
+</div>
+
+<!-- ═══ 8. SUMMARY ═══ -->
+<div id="summary-screen" class="screen">
+  <div class="page-header"><h2>📋 SEZON HAZIRLIĞI</h2><p>Her şey tamam mı?</p></div>
+  <div id="summary-content"></div>
+  <div class="bottom-bar" style="position:sticky;bottom:0;background:var(--navy2)">
+    <button class="btn-s" id="summary-back">← DÜZENle</button>
+    <button class="btn-p" id="summary-start">🚀 SEZONU BAŞLAT</button>
+  </div>
+</div>
+
+<!-- ═══ 9. SEASON ═══ -->
 <div id="season-screen" class="screen">
   <div class="szn-bar">
     <div><div class="szn-bar-title">🟡 FENERBAHÇE — SEZON</div>
@@ -438,15 +482,12 @@ body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;m
     <div class="table-col">
       <div class="tbl-title">LİG TABLOSU</div>
       <div class="ltable" id="ltable"></div>
-      <div class="pstats-box">
-        <div class="ps-title">GOL KRALLARI</div>
-        <div id="ps-rows"></div>
-      </div>
+      <div class="pstats-box"><div class="ps-title">GOL KRALLARI</div><div id="ps-rows"></div></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ RESULT ═══ -->
+<!-- ═══ 10. RESULT ═══ -->
 <div id="result-screen" class="screen">
   <div class="res-inner" id="result-content"></div>
 </div>
@@ -458,70 +499,64 @@ body{background:var(--navy);color:var(--white);font-family:'Barlow',sans-serif;m
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════
-// CONSTANTS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
+// STATIC DATA
+// ═══════════════════════════════════════
+const GAME_MODES = [
+  {id:'classic', icon:'🌐', name:'Klasik Draft', desc:'Tüm dönemlerden oyuncu seç. Sınır yok, hayal et.', rerolls:1, badge:'', rarity_boost:false},
+  {id:'legends', icon:'⭐', name:'Sadece Efsaneler', desc:'Yalnızca Legend ve Icon kartlar. Yoğun kimya mücadelesi.', rerolls:0, badge:'ZOR', rarity_filter:['legend','icon']},
+  {id:'modern', icon:'⚡', name:'Güncel Kadro', desc:'2020 ve sonrası oyuncular. Ferdi, Tadić, Džeko ile oyna.', rerolls:2, badge:'KOLAY', era_filter:'2020'},
+  {id:'alex_era', icon:'🇧🇷', name:'Alex Dönemi', desc:'2003-2012 arası altın nesil. Alex, Lugano, Aurelio...', rerolls:1, badge:'', era_filter:'2003'},
+  {id:'turkish', icon:'🔵', name:'Türk Kadrosu', desc:'Sadece Türk oyuncular. Kimya çok farklı hissedilir.', rerolls:2, badge:'KOLAY', nation_filter:'TUR'},
+  {id:'chaos', icon:'💥', name:'Kaos Modu', desc:'5 kart yerine 3, reroll yok. Rastgeleliğe teslim ol.', rerolls:0, badge:'EXTREME', cards:3},
+];
+
+const MANAGERS = [
+  {id:'tactician', icon:'♟️', name:'Taktiksel Deha', desc:'Kimya daha hızlı yükselir. Dizilişe göre +10 form bonusu.', bonus:'Kimya +8, Form +10'},
+  {id:'motivator', icon:'🔥', name:'Motivatör', desc:'Derbilerde ve kritik anlarda takım moralini zirveye çıkarır.', bonus:'Derbi +15, Clutch +10'},
+  {id:'youth',     icon:'🌱', name:'Gençlik Hocası', desc:'Rare ve Common oyuncuların impact puanları 2 katına çıkar.', bonus:'Rare/Common etkisi x2'},
+  {id:'pressing',  icon:'⚡', name:'Pres Ustası', desc:'Her hafta rakip hata şansı artar, ama yorgunluk da.', bonus:'Rakip hata +12, Yorgunluk +5'},
+  {id:'defensive', icon:'🛡️', name:'Defans Dahisi', desc:'Gol yeme şansı düşer, ama hücum biraz kısılır.', bonus:'Savunma +15, Hücum -5'},
+];
+
 const FORMATIONS = {
-  '4-3-3': {
-    desc:'Klasik kanat oyunu. Hücum ağırlıklı.',
-    dots:[[50,88],[20,70],[38,70],[62,70],[80,70],[30,50],[50,50],[70,50],[15,26],[50,26],[85,26]],
-    slots:[
-      {pos:'GK', label:'Kaleci',      t:88, l:50},
-      {pos:'LB', label:'Sol Bek',     t:70, l:18},
-      {pos:'CB', label:'Sol Stoper',  t:70, l:36},
-      {pos:'CB', label:'Sağ Stoper',  t:70, l:64},
-      {pos:'RB', label:'Sağ Bek',     t:70, l:82},
-      {pos:'CM', label:'Sol Orta',    t:50, l:28},
-      {pos:'DM', label:'Merkez Orta', t:50, l:50},
-      {pos:'CM', label:'Sağ Orta',    t:50, l:72},
-      {pos:'LW', label:'Sol Kanat',   t:26, l:16},
-      {pos:'CAM',label:'Merkez Hat',  t:26, l:50},
-      {pos:'RW', label:'Sağ Kanat',   t:26, l:84},
-    ]
-  },
-  '4-2-3-1': {
-    desc:'Dengeli yapı. On numara merkezde.',
-    dots:[[50,88],[20,70],[38,70],[62,70],[80,70],[38,54],[62,54],[20,34],[50,34],[80,34],[50,14]],
-    slots:[
-      {pos:'GK', label:'Kaleci',      t:88, l:50},
-      {pos:'LB', label:'Sol Bek',     t:70, l:18},
-      {pos:'CB', label:'Sol Stoper',  t:70, l:38},
-      {pos:'CB', label:'Sağ Stoper',  t:70, l:62},
-      {pos:'RB', label:'Sağ Bek',     t:70, l:82},
-      {pos:'DM', label:'Sol Ön Lib',  t:52, l:36},
-      {pos:'DM', label:'Sağ Ön Lib',  t:52, l:64},
-      {pos:'LW', label:'Sol Kanat',   t:33, l:18},
-      {pos:'CAM',label:'On Numara',   t:33, l:50},
-      {pos:'RW', label:'Sağ Kanat',   t:33, l:82},
-      {pos:'ST', label:'Forvet',      t:12, l:50},
-    ]
-  },
-  '3-5-2': {
-    desc:'5 orta saha. Kanat bekleri kritik.',
-    dots:[[50,88],[28,70],[50,70],[72,70],[85,52],[65,52],[50,52],[35,52],[15,52],[65,22],[35,22]],
-    slots:[
-      {pos:'GK', label:'Kaleci',       t:88, l:50},
-      {pos:'CB', label:'Sol Stoper',   t:70, l:25},
-      {pos:'CB', label:'Merkez Stoper',t:70, l:50},
-      {pos:'CB', label:'Sağ Stoper',   t:70, l:75},
-      {pos:'RB', label:'Sağ Kanat Bek',t:50, l:86},
-      {pos:'CM', label:'Sağ Orta',     t:50, l:65},
-      {pos:'DM', label:'Pivot',        t:50, l:50},
-      {pos:'CM', label:'Sol Orta',     t:50, l:35},
-      {pos:'LB', label:'Sol Kanat Bek',t:50, l:14},
-      {pos:'ST', label:'Sağ Forvet',   t:20, l:65},
-      {pos:'ST', label:'Sol Forvet',   t:20, l:35},
-    ]
-  }
+  '4-3-3': {desc:'Klasik kanat. Hücum ağırlıklı.',bonus:'Kanat bağ +2',
+    dots:[[50,88],[18,70],[36,70],[64,70],[82,70],[28,50],[50,50],[72,50],[14,26],[50,26],[86,26]],
+    slots:[{pos:'GK',label:'Kaleci',t:88,l:50},{pos:'LB',label:'Sol Bek',t:70,l:16},
+      {pos:'CB',label:'Sol Stoper',t:70,l:36},{pos:'CB',label:'Sağ Stoper',t:70,l:64},
+      {pos:'RB',label:'Sağ Bek',t:70,l:84},{pos:'CM',label:'Sol Orta',t:50,l:28},
+      {pos:'DM',label:'Merkez Orta',t:50,l:50},{pos:'CM',label:'Sağ Orta',t:50,l:72},
+      {pos:'LW',label:'Sol Kanat',t:26,l:14},{pos:'CAM',label:'Merkez Hat',t:26,l:50},{pos:'RW',label:'Sağ Kanat',t:26,l:86}]},
+  '4-2-3-1': {desc:'Dengeli yapı. On numara merkezde.',bonus:'CAM +5 etki',
+    dots:[[50,88],[18,70],[36,70],[64,70],[82,70],[36,54],[64,54],[18,34],[50,34],[82,34],[50,14]],
+    slots:[{pos:'GK',label:'Kaleci',t:88,l:50},{pos:'LB',label:'Sol Bek',t:70,l:16},
+      {pos:'CB',label:'Sol Stoper',t:70,l:38},{pos:'CB',label:'Sağ Stoper',t:70,l:62},
+      {pos:'RB',label:'Sağ Bek',t:70,l:84},{pos:'DM',label:'Sol Ön Lib',t:52,l:36},
+      {pos:'DM',label:'Sağ Ön Lib',t:52,l:64},{pos:'LW',label:'Sol Kanat',t:33,l:16},
+      {pos:'CAM',label:'On Numara',t:33,l:50},{pos:'RW',label:'Sağ Kanat',t:33,l:84},{pos:'ST',label:'Forvet',t:12,l:50}]},
+  '3-5-2': {desc:'5 orta saha. Kanat bekleri kritik.',bonus:'DM+CM kimya +4',
+    dots:[[50,88],[25,70],[50,70],[75,70],[88,50],[65,50],[50,50],[35,50],[12,50],[65,22],[35,22]],
+    slots:[{pos:'GK',label:'Kaleci',t:88,l:50},{pos:'CB',label:'Sol Stoper',t:70,l:22},
+      {pos:'CB',label:'Merkez Stoper',t:70,l:50},{pos:'CB',label:'Sağ Stoper',t:70,l:78},
+      {pos:'RB',label:'Sağ Kanat Bek',t:50,l:88},{pos:'CM',label:'Sağ Orta',t:50,l:65},
+      {pos:'DM',label:'Pivot',t:50,l:50},{pos:'CM',label:'Sol Orta',t:50,l:35},
+      {pos:'LB',label:'Sol Kanat Bek',t:50,l:12},{pos:'ST',label:'Sağ Forvet',t:20,l:65},{pos:'ST',label:'Sol Forvet',t:20,l:35}]},
+  '4-4-2': {desc:'Klasik çift forvet. Hava hakimiyeti.',bonus:'ST ikilisi +5',
+    dots:[[50,88],[18,70],[36,70],[64,70],[82,70],[14,48],[36,48],[64,48],[86,48],[35,20],[65,20]],
+    slots:[{pos:'GK',label:'Kaleci',t:88,l:50},{pos:'LB',label:'Sol Bek',t:70,l:16},
+      {pos:'CB',label:'Sol Stoper',t:70,l:38},{pos:'CB',label:'Sağ Stoper',t:70,l:62},
+      {pos:'RB',label:'Sağ Bek',t:70,l:84},{pos:'LW',label:'Sol Orta',t:48,l:14},
+      {pos:'CM',label:'Sol Merkez',t:48,l:38},{pos:'CM',label:'Sağ Merkez',t:48,l:62},
+      {pos:'RW',label:'Sağ Orta',t:48,l:86},{pos:'ST',label:'Sol Forvet',t:18,l:36},{pos:'ST',label:'Sağ Forvet',t:18,l:64}]},
 };
 
 const ERA_BANDS = [
-  {id:'all',   label:'🌐 Tümü',        sub:'Her dönem', from:0,    to:9999},
-  {id:'efs',   label:'🏛️ Efsaneler',  sub:'1920–1990', from:1920, to:1990},
-  {id:'altin', label:'⭐ Altın',       sub:'1990–2003', from:1990, to:2003},
-  {id:'alex',  label:'🇧🇷 Alex Dönemi',sub:'2003–2012', from:2003, to:2012},
-  {id:'mod',   label:'🔵 Modern',      sub:'2012–2020', from:2012, to:2020},
-  {id:'gun',   label:'⚡ Güncel',      sub:'2020–Bugün',from:2020, to:2030},
+  {id:'all',   label:'🌐 Tümü',      from:0,    to:9999},
+  {id:'efs',   label:'🏛 Efsane',    from:1920, to:1990},
+  {id:'90s',   label:'⭐ 90\'lar',   from:1990, to:2003},
+  {id:'alex',  label:'🇧🇷 Alex Dönemi',from:2003,to:2012},
+  {id:'10s',   label:'🔵 2010\'lar', from:2012, to:2020},
+  {id:'now',   label:'⚡ Güncel',    from:2020, to:2030},
 ];
 
 const RIVALS=['Galatasaray','Trabzonspor','Beşiktaş','Başakşehir','Kayserispor',
@@ -529,72 +564,138 @@ const RIVALS=['Galatasaray','Trabzonspor','Beşiktaş','Başakşehir','Kayserisp
   'Ankaragücü','Kasımpaşa','Alanyaspor','Giresunspor','Rizespor',
   'Pendikspor','Samsunspor','Gaziantepspor'];
 const DERBY_RIVALS=['Galatasaray','Beşiktaş','Trabzonspor'];
+const TOTAL_STEPS = 8; // mode, manager, formation, draft, captain, setpiece, summary, season
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 // STATE
-// ═══════════════════════════════════════════════
-let GD=null, squad=[], draftStep=0, rerollsLeft=1;
-let activeFormation='4-3-3', activeEra='all';
+// ═══════════════════════════════════════
+let GD=null, squad=[], draftStep=0, rerollsLeft=1, activeEra='all';
+let gameConfig={mode:null,manager:null,formation:null,captain:null,setpiece:{penalty:null,freekick:null,corner:null}};
 let seasonResult=null, leagueTable=[], playerStats={};
 let totalDrafts=parseInt(localStorage.getItem('fb_drafts')||'0');
 let unlockedAch=JSON.parse(localStorage.getItem('fb_ach')||'[]');
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 // BOOT
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 document.getElementById('ms-drafts').textContent=totalDrafts;
+document.getElementById('btn-start').addEventListener('click',()=>showScreen('mode-screen'));
+document.getElementById('mode-next').addEventListener('click',()=>{if(!gameConfig.mode){showToast('Bir mod seç!');return;}showScreen('manager-screen');});
+document.getElementById('manager-back').addEventListener('click',()=>showScreen('mode-screen'));
+document.getElementById('manager-next').addEventListener('click',()=>{if(!gameConfig.manager){showToast('Bir teknik direktör seç!');return;}showScreen('formation-screen');});
+document.getElementById('formation-back').addEventListener('click',()=>showScreen('manager-screen'));
+document.getElementById('formation-next').addEventListener('click',()=>{if(!gameConfig.formation){showToast('Bir diziliş seç!');return;}startDraft();});
+document.getElementById('reroll-btn').addEventListener('click',doReroll);
+document.getElementById('captain-next').addEventListener('click',()=>{if(!gameConfig.captain){showToast('Bir kaptan seç!');return;}buildSetpiece();showScreen('setpiece-screen');});
+document.getElementById('setpiece-next').addEventListener('click',()=>{buildSummary();showScreen('summary-screen');});
+document.getElementById('summary-back').addEventListener('click',()=>showScreen('captain-screen'));
+document.getElementById('summary-start').addEventListener('click',startSeason);
+
 (async()=>{
-  try{
-    const r=await fetch('game-data.json');
-    GD=await r.json();
-    document.getElementById('ms-players').textContent=GD.players.length;
-  }catch(e){console.error('game-data.json yüklenemedi',e);}
+  try{const r=await fetch('game-data.json');GD=await r.json();document.getElementById('ms-players').textContent=GD.players.length;buildModeGrid();buildManagerGrid();}
+  catch(e){console.error('game-data.json yüklenemedi',e);showToast('Veri yüklenemedi!');}
 })();
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
+// STEP INDICATOR
+// ═══════════════════════════════════════
+function buildStepIndicator(elId, currentStep){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  el.innerHTML=Array(TOTAL_STEPS).fill(0).map((_,i)=>
+    `<div class="step-dot${i<currentStep?' done':i===currentStep?' active':''}"></div>`).join('');
+}
+
+// ═══════════════════════════════════════
 // SCREENS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
+  const stepMap={
+    'mode-screen':0,'manager-screen':1,'formation-screen':2,
+    'draft-screen':3,'captain-screen':4,'setpiece-screen':5,
+    'summary-screen':6,'season-screen':7,'result-screen':7
+  };
+  const step=stepMap[id]||0;
+  ['si-mode','si-manager','si-formation','si-captain','si-setpiece'].forEach(sid=>{buildStepIndicator(sid,step);});
 }
 
-// ═══════════════════════════════════════════════
-// FORMATION PICKER
-// ═══════════════════════════════════════════════
-function goFormation(){
-  if(!GD){showToast('Veriler yükleniyor...');return;}
-  buildFormationCards();
-  showScreen('formation-screen');
-}
-
-function buildFormationCards(){
-  const el=document.getElementById('form-choices');
-  el.innerHTML=Object.entries(FORMATIONS).map(([key,f])=>`
-    <div class="form-card${activeFormation===key?' active':''}" onclick="selectFormation('${key}',this)">
-      <div class="form-mini-pitch" id="fmp-${key}">
-        ${f.dots.map(([l,t])=>`<div class="fmp-dot" style="left:${l}%;top:${t}%"></div>`).join('')}
+// ═══════════════════════════════════════
+// MODE & MANAGER GRIDS
+// ═══════════════════════════════════════
+function buildModeGrid(){
+  document.getElementById('mode-grid').innerHTML=GAME_MODES.map(m=>`
+    <div class="sel-card" data-id="${m.id}" onclick="selectMode('${m.id}',this)">
+      <div class="sel-card-icon">${m.icon}</div>
+      <div class="sel-card-body">
+        <div class="sel-card-name">${m.name}
+          ${m.badge?`<span class="sel-card-badge badge-${m.badge==='ZOR'?'hard':m.badge==='KOLAY'?'easy':'hard'}">${m.badge}</span>`:''}
+        </div>
+        <div class="sel-card-desc">${m.desc}</div>
       </div>
-      <div class="form-card-name">${key}</div>
-      <div class="form-card-desc">${f.desc}</div>
+      <div class="sel-check">✅</div>
+    </div>`).join('');
+}
+
+function selectMode(id,el){
+  gameConfig.mode=id;
+  document.querySelectorAll('#mode-grid .sel-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  const m=GAME_MODES.find(x=>x.id===id);
+  rerollsLeft=m.rerolls;
+}
+
+function buildManagerGrid(){
+  document.getElementById('manager-grid').innerHTML=MANAGERS.map(m=>`
+    <div class="sel-card" data-id="${m.id}" onclick="selectManager('${m.id}',this)">
+      <div class="sel-card-icon">${m.icon}</div>
+      <div class="sel-card-body">
+        <div class="sel-card-name">${m.name}</div>
+        <div class="sel-card-desc">${m.desc}<br><span style="color:var(--green);font-size:.65rem;font-weight:600">⚡ ${m.bonus}</span></div>
+      </div>
+      <div class="sel-check">✅</div>
+    </div>`).join('');
+}
+
+function selectManager(id,el){
+  gameConfig.manager=id;
+  document.querySelectorAll('#manager-grid .sel-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Formation grid
+function buildFormationGrid(){
+  document.getElementById('form-grid').innerHTML=Object.entries(FORMATIONS).map(([key,f])=>`
+    <div class="form-card${gameConfig.formation===key?' active':''}" onclick="selectFormation('${key}',this)">
+      <div class="form-mini" id="fmp-${key}">
+        ${f.dots.map(([l,t])=>`<div class="fmd" style="left:${l}%;top:${t}%"></div>`).join('')}
+      </div>
+      <div class="form-name">${key}</div>
+      <div class="form-desc">${f.desc}</div>
+      <div class="form-bonus" style="color:var(--green);font-size:.58rem">⚡ ${f.bonus}</div>
     </div>`).join('');
 }
 
 function selectFormation(key,el){
-  activeFormation=key;
+  gameConfig.formation=key;
   document.querySelectorAll('.form-card').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
 }
 
-// ═══════════════════════════════════════════════
-// DRAFT INIT
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
+// DRAFT
+// ═══════════════════════════════════════
 function startDraft(){
-  squad=[];draftStep=0;rerollsLeft=1;playerStats={};activeEra='all';
+  if(!GD){showToast('Veriler yükleniyor...');return;}
+  squad=[];draftStep=0;playerStats={};activeEra='all';
+  const m=GAME_MODES.find(x=>x.id===gameConfig.mode)||GAME_MODES[0];
+  rerollsLeft=m.rerolls;
   totalDrafts++;localStorage.setItem('fb_drafts',totalDrafts);
   document.getElementById('ms-drafts').textContent=totalDrafts;
 
+  buildFormationGrid();// Rebuild in case not built
   buildPitchSlots();
   buildEraFilter();
   showScreen('draft-screen');
@@ -603,59 +704,48 @@ function startDraft(){
 
 function buildPitchSlots(){
   const panel=document.getElementById('pitch-panel');
-  // Remove old slots
   panel.querySelectorAll('.pslot').forEach(el=>el.remove());
-  document.getElementById('pitch-form-label').textContent=activeFormation;
-
-  const form=FORMATIONS[activeFormation];
+  document.getElementById('pitch-form-label').textContent=gameConfig.formation;
+  const form=FORMATIONS[gameConfig.formation];
   form.slots.forEach((slot,i)=>{
     const div=document.createElement('div');
-    div.className='pslot empty';
-    div.id=`ps-${i}`;
-    div.style.top=slot.t+'%';
-    div.style.left=slot.l+'%';
-    div.innerHTML=`<div class="pslot-inner">
-      <span style="font-size:.42rem;color:rgba(255,255,255,.3);text-transform:uppercase">${slot.pos}</span>
-    </div>
-    <div class="pslot-label">${slot.label}</div>`;
-    div.onclick=()=>{if(i===draftStep){}};// active slot click noop
+    div.className='pslot empty';div.id=`ps-${i}`;
+    div.style.top=slot.t+'%';div.style.left=slot.l+'%';
+    div.innerHTML=`<div class="pslot-inner"><span style="font-size:.38rem;color:rgba(255,255,255,.28);text-transform:uppercase">${slot.pos}</span></div><div class="pslot-label">${slot.label}</div>`;
     panel.appendChild(div);
   });
 }
 
 function buildEraFilter(){
-  const el=document.getElementById('era-filter');
-  el.innerHTML=ERA_BANDS.map(b=>`
-    <button class="era-btn${activeEra===b.id?' active':''}" onclick="setEra('${b.id}',this)"
-      title="${b.sub}">${b.label}</button>`).join('');
+  document.getElementById('era-filter').innerHTML=ERA_BANDS.map(b=>`
+    <button class="era-btn${activeEra===b.id?' active':''}" data-id="${b.id}">${b.label}</button>`).join('');
+  document.getElementById('era-filter').querySelectorAll('.era-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      activeEra=btn.dataset.id;
+      document.querySelectorAll('.era-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCandidates(FORMATIONS[gameConfig.formation].slots[draftStep].pos);
+    });
+  });
 }
 
-function setEra(id,el){
-  activeEra=id;
-  document.querySelectorAll('.era-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  renderCandidates(FORMATIONS[activeFormation].slots[draftStep].pos);
-}
-
-// ═══════════════════════════════════════════════
-// DRAFT STEP
-// ═══════════════════════════════════════════════
 function showDraftStep(){
-  if(draftStep>=FORMATIONS[activeFormation].slots.length){startSeason();return;}
-  const slot=FORMATIONS[activeFormation].slots[draftStep];
+  const form=FORMATIONS[gameConfig.formation];
+  if(draftStep>=form.slots.length){goToCaptain();return;}
+  const slot=form.slots[draftStep];
   document.getElementById('d-pos').textContent=slot.pos;
   document.getElementById('d-posname').textContent=slot.label+' Seç';
   document.getElementById('d-step').textContent=draftStep+1;
-  document.getElementById('reroll-btn').disabled=rerollsLeft<=0;
+  const rb=document.getElementById('reroll-btn');
+  rb.disabled=rerollsLeft<=0;
   document.getElementById('reroll-left').textContent=`(${rerollsLeft})`;
-
-  // Highlight active pitch slot
-  FORMATIONS[activeFormation].slots.forEach((_,i)=>{
+  // Highlight active slot
+  form.slots.forEach((_,i)=>{
     const el=document.getElementById(`ps-${i}`);
     if(!el)return;
-    el.classList.toggle('active-slot',i===draftStep);
+    el.classList.remove('active-slot');
+    if(i===draftStep)el.classList.add('active-slot');
   });
-
   renderCandidates(slot.pos);
   updateLiveStats();
   updateSummaryBar();
@@ -663,22 +753,28 @@ function showDraftStep(){
 
 function renderCandidates(pos){
   const pickedIds=new Set(squad.map(p=>p.id));
+  const mode=GAME_MODES.find(x=>x.id===gameConfig.mode)||GAME_MODES[0];
   const eraB=ERA_BANDS.find(b=>b.id===activeEra)||ERA_BANDS[0];
   let pool=GD.players.filter(p=>{
-    if(p.position!==pos)return false;
-    if(pickedIds.has(p.id))return false;
+    if(p.position!==pos||pickedIds.has(p.id))return false;
+    if(mode.rarity_filter&&!mode.rarity_filter.includes(p.rarity||'common'))return false;
+    if(mode.nation_filter&&p.nation!==mode.nation_filter)return false;
+    if(mode.era_filter&&activeEra==='all'){
+      const sy=parseInt(p.era.split('-')[0]);
+      if(sy<parseInt(mode.era_filter))return false;
+    }
     if(activeEra!=='all'){
       const sy=parseInt(p.era.split('-')[0]);
       if(sy<eraB.from||sy>=eraB.to)return false;
     }
     return true;
   });
-  // Fallback: if era filter gives 0 results, use all eras
   if(pool.length===0){
     pool=GD.players.filter(p=>p.position===pos&&!pickedIds.has(p.id));
-    if(pool.length>0)showToast('Bu dönemde '+pos+' yok, tümü gösteriliyor');
+    if(pool.length>0)showToast('Filtre için yeterli oyuncu yok, tümü gösteriliyor');
   }
-  pool=pool.sort(()=>Math.random()-.5).slice(0,5);
+  const cardCount=mode.cards||5;
+  pool=pool.sort(()=>Math.random()-.5).slice(0,cardCount);
   renderCards(pool);
   showChemHint(pool);
 }
@@ -688,50 +784,43 @@ function doReroll(){
   rerollsLeft--;
   document.getElementById('reroll-left').textContent=`(${rerollsLeft})`;
   document.getElementById('reroll-btn').disabled=rerollsLeft<=0;
-  renderCandidates(FORMATIONS[activeFormation].slots[draftStep].pos);
+  renderCandidates(FORMATIONS[gameConfig.formation].slots[draftStep].pos);
   showToast('Kartlar yenilendi!');
 }
 
 function showChemHint(candidates){
   const squadIds=new Set(squad.map(p=>p.id));
   const hints=candidates.map(p=>{
-    const links=(GD.chemistry_links||[]).filter(cl=>
-      (cl.p1===p.id&&squadIds.has(cl.p2))||(cl.p2===p.id&&squadIds.has(cl.p1)));
-    const bonus=links.reduce((s,l)=>s+(l.bonus||0),0);
-    return{name:p.name.split(' ').slice(-1)[0],bonus};
+    const links=(GD.chemistry_links||[]).filter(cl=>(cl.p1===p.id&&squadIds.has(cl.p2))||(cl.p2===p.id&&squadIds.has(cl.p1)));
+    return{name:p.name.split(' ').slice(-1)[0],bonus:links.reduce((s,l)=>s+(l.bonus||0),0)};
   }).filter(h=>h.bonus>0);
-  const el=document.getElementById('chem-strip');
-  el.textContent=hints.length?'🔗 '+hints.slice(0,3).map(h=>`${h.name} +${h.bonus} kimya`).join(' · '):'';
+  document.getElementById('chem-strip').textContent=hints.length?'🔗 '+hints.slice(0,3).map(h=>`${h.name} +${h.bonus} kimya`).join(' · '):'';
 }
 
 function renderCards(players){
   const squadIds=new Set(squad.map(p=>p.id));
-  document.getElementById('cards-scroll').innerHTML=players.length?
-    players.map(p=>{
-      const links=(GD.chemistry_links||[]).filter(cl=>
-        (cl.p1===p.id&&squadIds.has(cl.p2))||(cl.p2===p.id&&squadIds.has(cl.p1)));
-      const cb=links.reduce((s,l)=>s+(l.bonus||0),0);
-      const r=p.rarity||'common';
-      return`<div class="pcard" data-r="${r}" onclick="selectPlayer('${p.id}',this)">
-        <div class="pcard-top">
-          <div class="pcard-rating rt-${r}">${p.rating}</div>
-          <div class="pcard-meta">
-            <div class="pcard-nation">${p.nation}</div>
-            <div class="pcard-era">${p.era}</div>
-            <div class="rbadge rb-${r}">${rarityTR(r)}</div>
-          </div>
-        </div>
-        <div class="pcard-body">
-          <div class="pcard-name">${p.name}</div>
-          <div class="pcard-roles">${(p.roles||[]).map(x=>`<span class="rtag ${x}">${roleTR(x)}</span>`).join('')}</div>
-          <div class="pcard-stats">${renderStats(p)}</div>
-        </div>
-        <div class="pcard-chem">${cb>0?`🔗 +${cb} kimya`:''}</div>
-      </div>`;
-    }).join('')
-    :`<div style="color:var(--gray);font-size:.8rem;padding:1rem;grid-column:1/-1;text-align:center">
-      Bu dönemde ${FORMATIONS[activeFormation].slots[draftStep]?.pos||''} pozisyonunda oyuncu yok.<br>
-      <span style="color:var(--gold2)">Farklı bir dönem seç.</span></div>`;
+  document.getElementById('cards-scroll').innerHTML=players.length?players.map(p=>{
+    const links=(GD.chemistry_links||[]).filter(cl=>(cl.p1===p.id&&squadIds.has(cl.p2))||(cl.p2===p.id&&squadIds.has(cl.p1)));
+    const cb=links.reduce((s,l)=>s+(l.bonus||0),0);
+    const r=p.rarity||'common';
+    return`<div class="pcard" data-r="${r}" data-id="${p.id}">
+      <div class="pcard-top">
+        <div class="pcard-rating rt-${r}">${p.rating}</div>
+        <div class="pcard-meta"><div class="pcard-nation">${p.nation}</div><div class="pcard-era">${p.era}</div>
+          <div class="rbadge rb-${r}">${rarityTR(r)}</div></div>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">${p.name}</div>
+        <div class="pcard-roles">${(p.roles||[]).map(x=>`<span class="rtag ${x}">${roleTR(x)}</span>`).join('')}</div>
+        <div class="pcard-stats">${renderStats(p)}</div>
+      </div>
+      <div class="pcard-chem">${cb>0?`🔗 +${cb} kimya`:''}</div>
+    </div>`;
+  }).join(''):`<div style="color:var(--gray);font-size:.78rem;padding:1rem;grid-column:1/-1;text-align:center">Bu dönemde ${FORMATIONS[gameConfig.formation].slots[draftStep]?.pos||''} yok.<br><span style="color:var(--gold2)">Farklı bir dönem seç.</span></div>`;
+
+  document.querySelectorAll('.pcard').forEach(card=>{
+    card.addEventListener('click',()=>selectPlayer(card.dataset.id,card));
+  });
 }
 
 function renderStats(p){
@@ -741,7 +830,7 @@ function renderStats(p){
     .map(([k,v])=>`<div class="srow"><span>${k}</span><b>${v}</b></div>`).join('');
 }
 
-function rarityTR(r){return{icon:'⭐ ICON',legend:'EFSANE',epic:'EPİK',rare:'NADİR',common:'STD'}[r]||r}
+function rarityTR(r){return{icon:'⭐ICON',legend:'EFSANE',epic:'EPİK',rare:'NADİR',common:'STD'}[r]||r}
 function roleTR(r){return{finisher:'GOLCÜ',creator:'YARATICI',anchor:'DEFANSİF',leader:'LİDER'}[r]||r}
 
 function selectPlayer(id,el){
@@ -749,24 +838,22 @@ function selectPlayer(id,el){
   el.classList.add('selected');
   const p=GD.players.find(x=>x.id===id);
   if(p?.rarity==='icon'||p?.rarity==='legend'){
-    el.style.boxShadow='0 0 32px rgba(255,215,0,.65)';
+    el.style.boxShadow='0 0 30px rgba(255,215,0,.65)';
     setTimeout(()=>{el.style.boxShadow=''},700);
     showToast(`⭐ ${rarityTR(p.rarity)}: ${p.name}!`);
   }
   setTimeout(()=>{
     if(p){squad.push(p);fillPitchSlot(draftStep,p);}
     draftStep++;showDraftStep();
-  },280);
+  },260);
 }
 
 function fillPitchSlot(idx,p){
-  const el=document.getElementById(`ps-${idx}`);
-  if(!el)return;
+  const el=document.getElementById(`ps-${idx}`);if(!el)return;
   el.classList.remove('empty','active-slot');
   el.classList.add('filled',`r-${p.rarity||'common'}`);
-  const initials=p.name.split(' ').map(w=>w[0]).slice(0,2).join('');
-  el.querySelector('.pslot-inner').innerHTML=
-    `<div class="pslot-avatar">${initials}<br>${p.rating}</div>`;
+  const init=p.name.split(' ').map(w=>w[0]).slice(0,2).join('');
+  el.querySelector('.pslot-inner').innerHTML=`<div class="pslot-avatar">${init}<br>${p.rating}</div>`;
 }
 
 function updateLiveStats(){
@@ -782,10 +869,109 @@ function updateSummaryBar(){
     squad.map(p=>`<div class="dsm-chip${p.rarity==='icon'?' ic':''}">${p.name.split(' ').slice(-1)[0]}</div>`).join('');
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
+// CAPTAIN
+// ═══════════════════════════════════════
+function goToCaptain(){
+  // Leaders first
+  const leaders=squad.filter(p=>(p.roles||[]).includes('leader'));
+  const candidates=leaders.length?leaders:squad;
+  document.getElementById('captain-grid').innerHTML=candidates.slice(0,8).map(p=>`
+    <div class="player-pick-card" data-id="${p.id}" onclick="selectCaptain('${p.id}',this)">
+      <div class="ppc-icon">${p.rarity==='icon'?'⭐':p.rarity==='legend'?'🏅':'👤'}</div>
+      <div style="flex:1">
+        <div class="ppc-name">${p.name}</div>
+        <div class="ppc-sub">${p.position} · Rating ${p.rating} · ${rarityTR(p.rarity||'common')}</div>
+        ${(p.roles||[]).includes('leader')?'<div style="font-size:.55rem;color:var(--purple);margin-top:.1rem">★ Lider rolü — Kaptan bonusu +8</div>':''}
+      </div>
+      <div class="ppcheck">✅</div>
+    </div>`).join('');
+  buildStepIndicator('si-captain',4);
+  showScreen('captain-screen');
+}
+
+function selectCaptain(id,el){
+  gameConfig.captain=id;
+  document.querySelectorAll('#captain-grid .player-pick-card').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// SETPIECE
+// ═══════════════════════════════════════
+function buildSetpiece(){
+  const roles={penalty:['finisher','leader'],freekick:['creator','leader'],corner:['creator']};
+  const labels={penalty:'⚽ Penaltı Kullanıcısı',freekick:'🎯 Serbest Vuruş',corner:'🔄 Korner'};
+  const si=document.getElementById('setpiece-inner');
+  si.innerHTML=Object.entries(labels).map(([key,label])=>{
+    const cands=squad.filter(p=>(p.roles||[]).some(r=>roles[key].includes(r))).slice(0,6);
+    return`<div class="setpiece-row">
+      <div class="setpiece-label">${label}</div>
+      <div class="setpiece-candidates">${cands.map(p=>`
+        <div class="sp-chip${gameConfig.setpiece[key]===p.id?' active':''}" 
+          data-key="${key}" data-id="${p.id}" onclick="selectSetpiece('${key}','${p.id}',this)">
+          ${p.name.split(' ').slice(-1)[0]} (${p.rating})
+        </div>`).join('')}</div>
+    </div>`;
+  }).join('');
+  buildStepIndicator('si-setpiece',5);
+}
+
+function selectSetpiece(key,id,el){
+  gameConfig.setpiece[key]=id;
+  document.querySelectorAll(`.sp-chip[data-key="${key}"]`).forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// SUMMARY
+// ═══════════════════════════════════════
+function buildSummary(){
+  const mode=GAME_MODES.find(x=>x.id===gameConfig.mode)||{name:'—'};
+  const mgr=MANAGERS.find(x=>x.id===gameConfig.manager)||{name:'—',icon:'—'};
+  const captain=squad.find(p=>p.id===gameConfig.captain);
+  const chem=calcChemistry(squad);
+  const avgR=Math.round(squad.reduce((s,p)=>s+p.rating,0)/squad.length);
+  const penalty=squad.find(p=>p.id===gameConfig.setpiece?.penalty);
+  const freekick=squad.find(p=>p.id===gameConfig.setpiece?.freekick);
+
+  document.getElementById('summary-content').innerHTML=`
+    <div class="summary-inner">
+      <div class="summary-section">
+        <div class="summary-title">Kadro Kimliği</div>
+        <div class="config-badges">
+          <div class="cfg-badge">${mode.name}</div>
+          <div class="cfg-badge">${mgr.icon} ${mgr.name}</div>
+          <div class="cfg-badge">${gameConfig.formation}</div>
+        </div>
+      </div>
+      <div class="summary-section">
+        <div class="summary-title">Kadro Gücü</div>
+        <div class="summary-row"><span class="summary-key">Ortalama Rating</span><span class="summary-val gold">${avgR}</span></div>
+        <div class="summary-row"><span class="summary-key">Kimya Puanı</span><span class="summary-val gold">${chem}/100</span></div>
+        <div class="summary-row"><span class="summary-key">Kaptan</span><span class="summary-val">${captain?captain.name:'—'}</span></div>
+        <div class="summary-row"><span class="summary-key">Penaltıcı</span><span class="summary-val">${penalty?penalty.name.split(' ').slice(-1)[0]:'—'}</span></div>
+        <div class="summary-row"><span class="summary-key">Frikikçi</span><span class="summary-val">${freekick?freekick.name.split(' ').slice(-1)[0]:'—'}</span></div>
+      </div>
+      <div class="summary-section">
+        <div class="summary-title">11 Oyuncun</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem">
+          ${squad.map(p=>`
+            <div style="display:flex;align-items:center;gap:.38rem;font-size:.72rem">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.58rem;color:var(--gold);width:26px;flex-shrink:0">${p.position}</span>
+              <span style="color:var(--gray2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</span>
+              <span style="font-weight:700;font-size:.68rem;color:${p.rarity==='icon'?'var(--gold)':p.rarity==='legend'?'#c084fc':p.rarity==='epic'?'#60a5fa':'var(--white)'}">${p.rating}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════
 // CHEMISTRY
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 function calcChemistry(sq){
+  if(!sq.length)return 0;
   let t=0;
   const eb={};sq.forEach(p=>{eb[p.era]=(eb[p.era]||0)+1});
   Object.values(eb).forEach(c=>{if(c===2)t+=2;else if(c===3)t+=5;else if(c>=4)t+=9;});
@@ -806,21 +992,20 @@ function calcChemDetails(sq){
   return{eraPts:Math.round(ep),natPts:Math.round(np),linkPts:Math.round(lp)};
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 // SEASON
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 function initLeague(bp){
   const us={name:'Fenerbahçe',pts:0,w:0,d:0,l:0,gf:0,ga:0,power:bp,isUs:true};
   const oth=RIVALS.slice(0,17).map(n=>({name:n,pts:0,w:0,d:0,l:0,gf:0,ga:0,
-    power:52+Math.random()*32+(DERBY_RIVALS.includes(n)?8:0),isUs:false}));
+    power:50+Math.random()*34+(DERBY_RIVALS.includes(n)?9:0),isUs:false}));
   leagueTable=[us,...oth];
 }
 
 function sortTable(){leagueTable.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga)||b.gf-a.gf);}
 
 function renderTable(){
-  const top8=leagueTable.slice(0,8);
-  const ui=leagueTable.findIndex(t=>t.isUs);
+  const top8=leagueTable.slice(0,8);const ui=leagueTable.findIndex(t=>t.isUs);
   let rows=ui<8?top8:[...leagueTable.slice(0,3),...leagueTable.slice(Math.max(0,ui-1),ui+2)];
   document.getElementById('ltable').innerHTML=`
     <div class="lt-hdr"><div></div><div>Takım</div><div>G</div><div>AV</div><div>P</div></div>
@@ -832,8 +1017,7 @@ function renderTable(){
         <div class="lt-gd">${t.gf-t.ga>0?'+':''}${t.gf-t.ga}</div>
         <div class="lt-pts">${t.pts}</div>
       </div>`;}).join('')}`;
-  const us=leagueTable.find(t=>t.isUs);
-  const upos=leagueTable.findIndex(t=>t.isUs)+1;
+  const us=leagueTable.find(t=>t.isUs),upos=leagueTable.findIndex(t=>t.isUs)+1;
   document.getElementById('szn-pts').textContent=`${us.pts} puan`;
   document.getElementById('szn-pos').textContent=`${upos}. sıra`;
   document.getElementById('szn-prog-fill').style.width=Math.min(100,(us.pts/102)*100)+'%';
@@ -844,8 +1028,7 @@ function renderPS(){
   document.getElementById('ps-rows').innerHTML=sorted.map(s=>`
     <div class="ps-row">
       <div class="ps-nm">${s.name.split(' ').slice(-1)[0]}</div>
-      <div class="ps-g">${s.goals}G</div>
-      <div class="ps-a">${s.assists}A</div>
+      <div class="ps-g">${s.goals}G</div><div class="ps-a">${s.assists}A</div>
     </div>`).join('');
 }
 
@@ -854,14 +1037,23 @@ async function startSeason(){
   const chem=calcChemistry(squad);
   const avgR=squad.reduce((s,p)=>s+p.rating,0)/11;
   const avgSt=squad.reduce((s,p)=>s+(p.stats?.stability||80),0)/11;
-  const bp=(avgR*.60)+(chem*.30)+(avgSt*.10);
+
+  // Manager bonuses
+  const mgr=gameConfig.manager;
+  const chemBonus=mgr==='tactician'?8:0;
+  const managerFormBonus=mgr==='tactician'?10:0;
+  const defBonus=mgr==='defensive'?15:0;
+  const pressBonus=mgr==='pressing'?12:0;
+  const captainBonus=(()=>{const cap=squad.find(p=>p.id===gameConfig.captain);return cap&&(cap.roles||[]).includes('leader')?8:3;})();
+
+  const bp=(avgR*.60)+((chem+chemBonus)*.30)+(avgSt*.10)+captainBonus/2;
   initLeague(bp);renderTable();
   squad.forEach(p=>{playerStats[p.id]={name:p.name,goals:0,assists:0,clutch:0,impact:0};});
 
   const wres=[];
   for(let w=0;w<34;w++){
-    await delay(180);
-    // Simulate rivals
+    await delay(165);
+    // Rivals
     for(let i=1;i<leagueTable.length;i++){
       const t=leagueTable[i],o=leagueTable[Math.floor(Math.random()*leagueTable.length)];
       if(o===t)continue;
@@ -871,13 +1063,16 @@ async function startSeason(){
       if(d>0){t.w++;t.pts+=3;}else if(Math.abs(d)<5){t.d++;t.pts+=1;}else{t.l++;}
       t.gf+=gf;t.ga+=ga;
     }
-    // Fener match
-    const sinF=10*Math.sin((w/34)*Math.PI),fat=(w/34)*8,r3=(Math.random()*6)-3;
+    // Fener
+    const sinF=10*Math.sin((w/34)*Math.PI)+managerFormBonus*.3;
+    const fat=(w/34)*(8-pressBonus*.1);
+    const r3=rng(6);
     const mp=bp+sinF-fat+r3;
     const isDerby=[5,12,19,28].includes(w);
+    const derbyBonus=isDerby&&mgr==='motivator'?15:0;
     const rival=isDerby?DERBY_RIVALS[w%3]:RIVALS[w%RIVALS.length];
     const rp=isDerby?84+rng(7):57+rng(22);
-    const df=mp-rp;
+    const df=(mp+derbyBonus)-(rp-defBonus*.2-pressBonus*.3);
     let result,pts,og,tg;
     if(df>10){result='WIN';pts=3;og=2+Math.floor(Math.random()*3);tg=Math.floor(Math.random()*2);}
     else if(df>=0){result='WIN';pts=3;og=1+Math.floor(Math.random()*2);tg=Math.floor(Math.random()*2);}
@@ -891,29 +1086,25 @@ async function startSeason(){
     const scorers=[];
     for(let g=0;g<og;g++){
       const actor=squad[Math.floor(Math.random()*squad.length)];
-      const isClutch=isDerby&&Math.random()>.55&&g===og-1;
+      const isClutch=isDerby&&Math.random()>.52&&g===og-1;
       if(!playerStats[actor.id])playerStats[actor.id]={name:actor.name,goals:0,assists:0,clutch:0,impact:0};
+      const youthBoost=mgr==='youth'&&(actor.rarity==='common'||actor.rarity==='rare')?2:1;
       const isGoal=Math.random()>.3||(actor.roles||[]).includes('finisher');
       if(isGoal){
         playerStats[actor.id].goals++;
         if(isClutch)playerStats[actor.id].clutch++;
-        playerStats[actor.id].impact+=(actor.roles||[]).includes('finisher')?6:4;
+        playerStats[actor.id].impact+=((actor.roles||[]).includes('finisher')?6:4)*youthBoost;
         const min=Math.floor(Math.random()*85)+1+(isClutch?5:0);
         scorers.push(`<em>${actor.name.split(' ').slice(-1)[0]} ${min}'${isClutch?'★':''}</em>`);
       } else {
-        if(playerStats[actor.id]){playerStats[actor.id].assists++;playerStats[actor.id].impact+=3;}
+        if(playerStats[actor.id]){playerStats[actor.id].assists++;playerStats[actor.id].impact+=3*youthBoost;}
       }
     }
     wres.push({w,result,pts,og,tg,isDerby,rival});
-
-    // Match row
     const mi=document.createElement('div');
     mi.className=`mi ${result}${isDerby?' derby':''}`;
     mi.innerHTML=`
-      <div class="mi-head">
-        <span class="mi-week">Hafta ${w+1}</span>
-        ${isDerby?'<span class="mi-derby-tag">⚡ DERBİ</span>':''}
-      </div>
+      <div class="mi-head"><span class="mi-week">Hafta ${w+1}</span>${isDerby?'<span class="mi-derby-tag">⚡ DERBİ</span>':''}</div>
       <div class="mi-score">
         <div class="mi-team ours">Fenerbahçe</div>
         <div class="mi-res ${result}">${og} – ${tg}</div>
@@ -922,23 +1113,17 @@ async function startSeason(){
       ${scorers.length?`<div class="mi-scorers">${scorers.join(' ')}</div>`:''}`;
     const fl=document.getElementById('feed-list');
     fl.appendChild(mi);fl.scrollTop=fl.scrollHeight;
-
     document.getElementById('szn-week').textContent=w+1;
-    document.getElementById('szn-status').textContent=
-      result==='WIN'?`✅ ${rival} mağlup`:result==='DRAW'?`🟡 ${rival} berabere`:`❌ ${rival} mağlup etti`;
-
+    document.getElementById('szn-status').textContent=result==='WIN'?`✅ ${rival} mağlup`:result==='DRAW'?`🟡 ${rival} berabere`:`❌ ${rival} mağlup etti`;
     sortTable();renderTable();renderPS();
   }
 
-  // Build result
-  const us2=leagueTable.find(t=>t.isUs);
-  const upos=leagueTable.findIndex(t=>t.isUs)+1;
+  const us2=leagueTable.find(t=>t.isUs),upos=leagueTable.findIndex(t=>t.isUs)+1;
   const impacts=Object.values(playerStats).sort((a,b)=>b.impact-a.impact||b.goals-a.goals);
   const mvpD=impacts[0]||{name:squad[0]?.name||'—',goals:0,assists:0,clutch:0,impact:0};
   const mvpP=squad.find(p=>p.name===mvpD.name)||squad[0];
   const tp=us2.pts,lss=us2.l,drs=us2.d,wns=us2.w;
-  const late5=wres.slice(-5).reduce((s,x)=>s+x.pts,0);
-  const early10=wres.slice(0,10).reduce((s,x)=>s+x.pts,0);
+  const late5=wres.slice(-5).reduce((s,x)=>s+x.pts,0),early10=wres.slice(0,10).reduce((s,x)=>s+x.pts,0);
   const chem2=calcChemistry(squad);
   let cat;
   if(lss===0)cat='invincible';
@@ -951,40 +1136,39 @@ async function startSeason(){
   const ach=tp>82?'Süper Lig Şampiyonu':tp>72?'Avrupa Ligi Bileti':tp>60?'4. Sıra':'Orta Sıra';
   const tpls=(GD.story_templates||{})[cat]||(GD.story_templates||{}).balanced_season||[];
   const tmpl=tpls.length?tpls[Math.floor(Math.random()*tpls.length)]:'';
-  const storyText=tmpl.replace(/\{mvp\}/g,mvpD.name).replace(/\{player\}/g,mvpD.name)
+  const storyText=(tmpl.replace(/\{mvp\}/g,mvpD.name).replace(/\{player\}/g,mvpD.name)
     .replace(/\{achievement\}/g,ach).replace(/\{points\}/g,tp)
-    .replace(/\{score\}/g,`${Math.floor(Math.random()*3)+1}-${Math.floor(Math.random()*2)}`)
-    .replace(/\{final_score\}/g,'3-2').replace(/\{goals_conceded\}/g,us2.ga)
-    ||`${mvpD.name} önderliğinde ${ach} ile sezon tamamlandı.`;
+    .replace(/\{score\}/g,`${1+Math.floor(Math.random()*3)}-${Math.floor(Math.random()*2)}`)
+    .replace(/\{final_score\}/g,'3-2').replace(/\{goals_conceded\}/g,us2.ga))||`${mvpD.name} önderliğinde ${ach} ile sezon tamamlandı.`;
   const hls=GD.headlines||[];const hl=hls[Math.floor(Math.random()*hls.length)]||{title:'Kanarya Uçuşta',content:'.'};
   const cmts=GD.fan_comments||[];const cmt=cmts[Math.floor(Math.random()*cmts.length)]||{text:'Harika!'};
-  const sts=GD.share_titles||[];const st=sts.length?sts[Math.floor(Math.random()*sts.length)].title:'Fenerbahçe';
+  const sts=GD.share_titles||[];const st=sts.length?sts[Math.floor(Math.random()*sts.length)].title:'Fenerbahçe Şampiyon';
 
   seasonResult={tp,wns,drs,lss,chemistry:chem2,
-    avgRating:Math.round(squad.reduce((s,p)=>s+p.rating,0)/11),
-    avgStab:Math.round(squad.reduce((s,p)=>s+(p.stats?.stability||80),0)/11),
-    basePower:Math.round(bp),mvpP,mvpD,storyText,ach,cat,wres,upos,
+    avgRating:Math.round(avgR),avgStab:Math.round(avgSt),basePower:Math.round(bp),
+    mvpP,mvpD,storyText,ach,cat,wres,upos,
     leagueTable:[...leagueTable],hl,cmt,st,chemDetails:calcChemDetails(squad),
-    topScorers:impacts.slice(0,5)};
+    topScorers:impacts.slice(0,5),
+    gameConfig:{...gameConfig},
+    captainName:(squad.find(p=>p.id===gameConfig.captain)||{}).name||'—',
+    managerName:(MANAGERS.find(x=>x.id===gameConfig.manager)||{}).name||'—',
+    modeName:(GAME_MODES.find(x=>x.id===gameConfig.mode)||{}).name||'—'};
   checkAch(seasonResult);
-  await delay(350);
-  showResults();
+  await delay(350);showResults();
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 // RESULTS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 function showResults(){
   showScreen('result-screen');
   const r=seasonResult;
   const catLabel={dominant_season:'🏆 DOMAİNANT',late_drop:'📉 SON DÜŞÜŞ',comeback:'🔄 GERİ DÖNÜŞ',
     chaos_season:'💥 KAOS',balanced_season:'⚖️ DENGELİ',legendary:'⭐ EFSANE',invincible:'🛡️ NAMAğLUP'}[r.cat]||'SEZON';
-
   const trows=r.leagueTable.slice(0,10).map((t,i)=>{const p=i+1;return`<tr class="${t.isUs?'usr':''}">
     <td class="pc${p<=3?' gld':''}">${p}</td><td class="${t.isUs?'fn':''}">${t.isUs?'Fenerbahçe':t.name}</td>
     <td>${t.w}</td><td>${t.d}</td><td>${t.l}</td><td>${t.gf-t.ga>0?'+':''}${t.gf-t.ga}</td><td><b>${t.pts}</b></td>
   </tr>`}).join('');
-
   const scrows=r.topScorers.slice(0,5).map((s,i)=>`<div class="sc-row">
     <div class="sc-rank">${i+1}</div><div class="sc-nm">${s.name}</div>
     <span class="sc-g">${s.goals}G</span><span class="sc-a">${s.assists}A</span>
@@ -993,23 +1177,27 @@ function showResults(){
 
   document.getElementById('result-content').innerHTML=`
     <div class="res-hdr">
-      <div class="res-cat">${catLabel} · ${r.activeFormation||activeFormation}</div>
+      <div class="res-cat">${catLabel} · ${r.modeName} · ${gameConfig.formation}</div>
       <div class="res-main">${r.st.toUpperCase()}</div>
       <div class="res-ach">${r.ach.toUpperCase()} · ${r.upos}. SIRA</div>
     </div>
+
     <div class="res-4">
       <div class="r4"><div class="r4v">${r.tp}</div><div class="r4l">Puan</div></div>
       <div class="r4"><div class="r4v">${r.wns}</div><div class="r4l">Galibiyet</div></div>
       <div class="r4"><div class="r4v">${r.drs}</div><div class="r4l">Beraberlik</div></div>
       <div class="r4"><div class="r4v">${r.lss}</div><div class="r4l">Mağlubiyet</div></div>
     </div>
+
     <div class="sec">
       <div class="sec-t">📊 Lig Tablosu</div>
       <table class="ftable"><thead><tr>
         <th>#</th><th>Takım</th><th>G</th><th>B</th><th>M</th><th>AV</th><th>P</th>
       </tr></thead><tbody>${trows}</tbody></table>
     </div>
+
     <div class="sec"><div class="sec-t">⚽ Oyuncu İstatistikleri</div>${scrows}</div>
+
     <div class="sec">
       <div class="sec-t">💪 Takım Analizi</div>
       <div class="pwr-row"><div class="pwr-l">Takım Gücü</div>
@@ -1028,57 +1216,72 @@ function showResults(){
         <div class="cd-item">Toplam <span>${r.chemistry}</span></div>
       </div>
     </div>
+
     <div class="mvp-box">
       <div class="mvp-ico">${r.mvpP?.rarity==='icon'?'⭐':'🏅'}</div>
       <div>
         <div class="mvp-lbl">Sezon MVP'si</div>
         <div class="mvp-nm">${r.mvpD.name}</div>
-        <div class="mvp-st"><span>${r.mvpD.goals} Gol</span><em>${r.mvpD.assists} Asist</em>${r.mvpD.clutch>0?` · ${r.mvpD.clutch} Kritik`:''}</div>
+        <div class="mvp-st"><span>${r.mvpD.goals} Gol</span><em>${r.mvpD.assists} Asist</em>${r.mvpD.clutch>0?` · ${r.mvpD.clutch}★`:''}</div>
       </div>
     </div>
+
     <div class="hl-box">
-      <div class="sec-t" style="margin-bottom:.35rem">📰 Manşet</div>
+      <div class="sec-t" style="margin-bottom:.32rem">📰 Manşet</div>
       <div class="hl-title">${r.hl.title}</div>
       <div class="hl-body">${r.hl.content}</div>
     </div>
+
     <div class="story-box">
       <div class="story-lbl">📖 Sezon Hikâyesi</div>
       <div class="story-txt">${r.storyText}</div>
       <div class="fan-q"><em>"${r.cmt.text}"</em> — Taraftar</div>
     </div>
+
     <div class="sec">
-      <div class="sec-t">Kadronuz (${activeFormation})</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.32rem">
-        ${squad.map(p=>`<div style="display:flex;align-items:center;gap:.38rem;font-size:.72rem">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.6rem;color:var(--gold);width:28px;flex-shrink:0">${p.position}</span>
+      <div class="sec-t">🏆 Sezon Kartı</div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.55rem">
+        <div class="cfg-badge">${r.modeName}</div>
+        <div class="cfg-badge">${r.managerName}</div>
+        <div class="cfg-badge">${gameConfig.formation}</div>
+        <div class="cfg-badge">⚽ ${r.captainName}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.3rem">
+        ${squad.map(p=>`<div style="display:flex;align-items:center;gap:.35rem;font-size:.7rem">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.56rem;color:var(--gold);width:26px;flex-shrink:0">${p.position}</span>
           <span style="color:var(--gray2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.name}</span>
-          <span style="font-weight:700;color:${p.rarity==='icon'?'var(--gold)':p.rarity==='legend'?'#c084fc':p.rarity==='epic'?'#60a5fa':'var(--white)'}">${p.rating}</span>
+          <span style="font-weight:700;font-size:.66rem;color:${p.rarity==='icon'?'var(--gold)':p.rarity==='legend'?'#c084fc':p.rarity==='epic'?'#60a5fa':'var(--white)'}">${p.rating}</span>
         </div>`).join('')}
       </div>
     </div>
+
     <div class="res-actions">
       <button class="btn-share" onclick="shareResult()">📤 PAYLAŞ</button>
-      <button class="btn-restart" onclick="goFormation()">↩ YENİ DRAFT</button>
+      <button class="btn-restart" onclick="document.getElementById('btn-start').click()">↩ YENİ DRAFT</button>
     </div>
     <div class="watermark">muratlola.com · #FenerbahçeDraft</div>
   `;
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 // ACHIEVEMENTS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 function checkAch(r){
   const checks=[
     [r.tp>82,'dom','Dominant Şampiyon'],
     [r.lss===0,'unbeaten','Namağlup Efsane'],
     [r.chemistry>=90,'chem90','Kimya Ustası'],
     [r.upos===1,'champ','Süper Lig Şampiyonu'],
-    [squad.some(p=>p.rarity==='icon')&&r.tp>75,'icon','Icon Şampiyonu'],
+    [squad.some(p=>p.rarity==='icon'),'icon_used','Icon Kart Kullandın'],
     [squad.some(p=>p.id==='cam01')&&r.tp>72,'alex','Alex Efsanesi'],
     [squad.filter(p=>p.nation==='BRA').length>=5,'bra5','Brezilya Çetesi'],
     [totalDrafts>=1,'fd','İlk Draft'],
     [totalDrafts>=10,'d10','Seri Oyuncu'],
     [r.mvpD.goals>=20,'gk','Gol Krallığı'],
+    [gameConfig.mode==='chaos'&&r.tp>60,'chaos_champ','Kaos Şampiyonu'],
+    [gameConfig.mode==='legends'&&r.upos===1,'legend_champ','Efsaneler Şampiyonu'],
+    [r.chemistry>=95,'chem95','Kimya Mükemmeli'],
+    [squad.some(p=>p.nation==='TUR')&&squad.filter(p=>p.nation==='TUR').length>=7,'tur7','Türk Kalesi'],
   ];
   checks.forEach(([cond,id,name],i)=>{
     if(cond&&!unlockedAch.includes(id)){
@@ -1091,20 +1294,20 @@ function checkAch(r){
   localStorage.setItem('fb_ach',JSON.stringify(unlockedAch));
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 // SHARE
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 function shareResult(){
   const r=seasonResult;
   const top3=r.topScorers.slice(0,3).map(s=>`${s.name.split(' ').slice(-1)[0]} ${s.goals}G${s.assists}A`).join(' | ');
-  const text=`🟡🔵 Fenerbahçe Draft (${activeFormation})\n\n${r.ach} · ${r.upos}. Sıra\n${r.tp} puan | ${r.wns}G ${r.drs}B ${r.lss}M\nKimya: ${r.chemistry} | MVP: ${r.mvpD.name}\n\n${top3}\n\n"${r.storyText}"\n\n→ muratlola.com #FenerbahçeDraft`;
+  const text=`🟡🔵 Fenerbahçe Draft\n\n${r.ach} · ${r.upos}. Sıra\n${r.tp} puan | ${r.wns}G ${r.drs}B ${r.lss}M\nKimya: ${r.chemistry} | MVP: ${r.mvpD.name}\nTD: ${r.managerName} | ${gameConfig.formation}\n\n${top3}\n\n"${r.storyText}"\n\n→ muratlola.com #FenerbahçeDraft`;
   if(navigator.share)navigator.share({text});
   else if(navigator.clipboard){navigator.clipboard.writeText(text);showToast('📋 Panoya kopyalandı!');}
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 // UTILS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════
 function rng(n){return(Math.random()*n)-(n/2);}
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 function showToast(msg){
