@@ -1,0 +1,10 @@
+<svg viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Atlas Kahve ambalaj uygulaması">
+  <rect width="600" height="450" fill="#F2EAD9"/>
+  <ellipse cx="300" cy="400" rx="150" ry="14" fill="#241712" opacity="0.12"/>
+  <path d="M190,90 q0,-30 30,-30 h160 q30,0 30,30 v270 q0,28 -28,28 h-164 q-28,0 -28,-28 Z" fill="#C97A3F"/>
+  <path d="M190,90 q0,-30 30,-30 h160 q30,0 30,30 v50 h-220 Z" fill="#9C4A1F"/>
+  <rect x="265" y="55" width="70" height="22" rx="4" fill="#241712"/>
+  <circle cx="300" cy="230" r="46" fill="none" stroke="#241712" stroke-width="5"/>
+  <text x="300" y="238" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="26" fill="#241712">ATLAS</text>
+  <text x="300" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" letter-spacing="2" fill="#241712">100% ARABICA — 250G</text>
+</svg>
