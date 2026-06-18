@@ -1,0 +1,21 @@
+<svg viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kök Çay ürün serisi uygulaması">
+  <rect width="600" height="450" fill="#ECEFE2"/>
+  <ellipse cx="300" cy="400" rx="220" ry="14" fill="#2E4131" opacity="0.12"/>
+
+  <g transform="translate(170,90)">
+    <path d="M0,40 q0,-28 28,-28 h64 q28,0 28,28 v210 q0,18 -18,18 h-84 q-18,0 -18,-18 Z" fill="#F7F8F1" stroke="#3F5B43" stroke-width="3"/>
+    <path d="M0,40 q0,-28 28,-28 h64 q28,0 28,28 v30 h-120 Z" fill="#D9E0C8"/>
+    <text x="60" y="120" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="22" fill="#2E4131">KÖK</text>
+  </g>
+
+  <g transform="translate(280,60)">
+    <path d="M0,34 q0,-24 24,-24 h70 q24,0 24,24 v250 q0,20 -20,20 h-78 q-20,0 -20,-20 Z" fill="#3F5B43"/>
+    <path d="M0,34 q0,-24 24,-24 h70 q24,0 24,24 v34 h-118 Z" fill="#2E4131"/>
+    <text x="59" y="140" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="22" fill="#F7F8F1">KÖK</text>
+  </g>
+
+  <g transform="translate(410,110)">
+    <path d="M0,32 q0,-22 22,-22 h54 q22,0 22,22 v180 q0,16 -16,16 h-66 q-16,0 -16,-16 Z" fill="#C9B79A" stroke="#3F5B43" stroke-width="3"/>
+    <text x="49" y="110" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="18" fill="#2E4131">KÖK</text>
+  </g>
+</svg>
