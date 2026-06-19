@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>İletişim — muratLola</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">
+      <span class="brand-grid" aria-hidden="true">
+        <span class="bm-c"></span><span class="bm-m"></span>
+        <span class="bm-y"></span><span class="bm-k"></span>
+      </span>
+      <span class="brand-name">muratLola</span>
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="hakkimda.html">Hakkımda</a>
+      <a href="projeler.html">Projeler</a>
+      <a href="iletisim.html">İletişim</a>
+      <a href="iletisim.html" class="nav-cta-mobile"><span>Birlikte Çalışalım</span></a>
+    </nav>
+    <a href="iletisim.html" class="nav-cta"><span>Birlikte Çalışalım</span></a>
+    <button class="menu-toggle" aria-label="Menü" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <div class="page-hero">
+    <div class="wrap">
+      <div class="page-hero__label">
+        <span class="badge-dot" aria-hidden="true"></span>
+        DOSYA: İLETİŞİM
+      </div>
+      <a href="mailto:muratogur@example.com" class="contact-link glitch reveal" data-text="BİRLİKTE ÇALIŞALIM">
+        BİRLİKTE<br>ÇALIŞALIM
+      </a>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap grid-2" style="gap:5rem;align-items:start;">
+
+      <div class="reveal">
+        <div class="eyebrow"><span class="eyebrow-line"></span>Sosyal</div>
+        <ul class="social-list">
+          <li><a href="https://behance.net/" target="_blank" rel="noopener">Behance <span>↗</span></a></li>
+          <li><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram <span>↗</span></a></li>
+          <li><a href="https://linkedin.com/" target="_blank" rel="noopener">LinkedIn <span>↗</span></a></li>
+          <li><a href="mailto:muratogur@example.com">E-posta <span>↗</span></a></li>
+        </ul>
+
+        <div class="mt-3" style="font-family:var(--f-mono);font-size:var(--fs-xs);color:var(--ink-faint);line-height:2;letter-spacing:.06em;">
+          <div style="color:var(--ink-dim);margin-bottom:6px;text-transform:uppercase;">Konum</div>
+          Elazığ, Türkiye<br>
+          38.3552° K · 38.3095° D<br><br>
+          <div style="color:var(--ink-dim);margin-bottom:6px;text-transform:uppercase;">Durum</div>
+          <span style="color:var(--accent);">●</span> Staj &amp; freelance projelere açık
+        </div>
+      </div>
+
+      <div class="reveal d1">
+        <div class="eyebrow"><span class="eyebrow-line"></span>Form</div>
+        <form id="contact-form" novalidate>
+          <div class="form-field">
+            <label for="name">Ad Soyad</label>
+            <input type="text" id="name" name="name" placeholder="Adınız" required>
+          </div>
+          <div class="form-field">
+            <label for="email">E-posta</label>
+            <input type="email" id="email" name="email" placeholder="eposta@ornek.com" required>
+          </div>
+          <div class="form-field">
+            <label for="message">Mesaj</label>
+            <textarea id="message" name="message" rows="5" placeholder="Projenizden bahsedin..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn--primary"><span>Gönder</span><span class="btn-arr">→</span></button>
+          <p class="form-note" id="form-status"></p>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span style="font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;opacity:.4;">
+      © 2026 muratLola — Murat Ogur
+    </span>
+    <div class="footer-cmyk" aria-hidden="true">
+      <span style="background:var(--accent3)"></span>
+      <span style="background:var(--accent2)"></span>
+      <span style="background:var(--accent4)"></span>
+      <span style="background:var(--ink)"></span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>
