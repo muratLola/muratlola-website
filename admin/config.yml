@@ -4,6 +4,7 @@ backend:
   branch: main
   base_url: https://api.netlify.com
   auth_endpoint: auth
+  site_id: ubiquitous-melomakarona-619917.netlify.app
 
 media_folder: "assets/img"
 public_folder: "/assets/img"
