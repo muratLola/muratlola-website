@@ -1,0 +1,10 @@
+<svg viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kök Çay etiket uygulaması">
+  <rect width="600" height="450" fill="#ECEFE2"/>
+  <circle cx="300" cy="225" r="130" fill="#F7F8F1" stroke="#3F5B43" stroke-width="3"/>
+  <circle cx="300" cy="225" r="112" fill="none" stroke="#3F5B43" stroke-width="1.5" stroke-dasharray="4 6"/>
+  <g fill="none" stroke="#3F5B43" stroke-width="4" stroke-linecap="round">
+    <path d="M300,150 q-26,18 -26,46 q0,28 26,40 q26,-12 26,-40 q0,-28 -26,-46Z" fill="#3F5B43" opacity="0.85" stroke="none"/>
+  </g>
+  <text x="300" y="270" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="34" fill="#2E4131">KÖK</text>
+  <text x="300" y="296" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" letter-spacing="3" fill="#5C7560">BİTKİSEL ÇAY KARIŞIMI</text>
+</svg>
