@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: GITHUB_KULLANICI_ADI/muratlola
+  repo: muratLola/muratlola
   branch: main
 
 media_folder: "assets/img"
