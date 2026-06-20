@@ -1,7 +1,9 @@
 backend:
   name: github
-  repo: muratLola/muratlola-website
+  repo: muratLola/muratlola
   branch: main
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
 
 media_folder: "assets/img"
 public_folder: "/assets/img"
@@ -30,7 +32,7 @@ collections:
         fields:
           - {label: "Ad Soyad", name: "ad", widget: "string"}
           - {label: "Unvan", name: "unvan", widget: "string"}
-          - {label: "Profil Fotografı", name: "foto", widget: "image"}
+          - {label: "Profil Fotoğrafı", name: "foto", widget: "image"}
           - {label: "Biyografi", name: "bio", widget: "markdown"}
           - {label: "E-posta", name: "email", widget: "string"}
           - {label: "Telefon", name: "telefon", widget: "string"}
