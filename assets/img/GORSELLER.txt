@@ -1,0 +1,8 @@
+Bu klasöre ekle:
+- murat-ogur.jpg  → Profil fotoğrafı (CV'deki fotoğraf, 3:4 oran)
+- proje1.jpg      → Fora Creative Studio
+- proje2.jpg      → Diaza World Cup
+- proje3.jpg      → formalOLA
+- proje4.jpg      → Fener Ajans
+- proje5.jpg      → Altay SK
+- proje6.jpg      → Degaj Sports

@@ -1,0 +1,36 @@
+backend:
+  name: github
+  repo: GITHUB_KULLANICI_ADI/muratlola
+  branch: main
+
+media_folder: "assets/img"
+public_folder: "/assets/img"
+
+collections:
+  - name: "projeler"
+    label: "Projeler"
+    folder: "projeler"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Proje Adı", name: "title", widget: "string"}
+      - {label: "Kapak Görseli", name: "kapak", widget: "image"}
+      - {label: "Kategori", name: "kategori", widget: "select", options: ["Kurumsal Kimlik","Forma Tasarımı","Spor Grafik","UI / UX","Ambalaj","3D Render"]}
+      - {label: "Yıl", name: "yil", widget: "string"}
+      - {label: "Açıklama", name: "aciklama", widget: "text"}
+      - {label: "İçerik", name: "body", widget: "markdown"}
+      - {label: "Öne Çıkar", name: "one_cikart", widget: "boolean", default: false}
+
+  - name: "hakkimda"
+    label: "Hakkımda"
+    files:
+      - label: "Profil"
+        name: "profil"
+        file: "_data/profil.json"
+        fields:
+          - {label: "Ad Soyad", name: "ad", widget: "string"}
+          - {label: "Unvan", name: "unvan", widget: "string"}
+          - {label: "Profil Fotografı", name: "foto", widget: "image"}
+          - {label: "Biyografi", name: "bio", widget: "markdown"}
+          - {label: "E-posta", name: "email", widget: "string"}
+          - {label: "Telefon", name: "telefon", widget: "string"}
