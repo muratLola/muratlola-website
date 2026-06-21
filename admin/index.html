@@ -6,26 +6,7 @@
   <title>muratLola Admin</title>
 </head>
 <body>
-  <script>
-    // Netlify Identity'yi muratlola.com'a yönlendir
-    window.netlifyIdentity = { gotrue_instance: null };
-  </script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
-      // Netlify Identity'yi doğru siteye bağla
-      window.netlifyIdentity.init({
-        APIUrl: "http://muratlola.com/.netlify/identity"
-      });
-    }
-  </script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </body>
 </html>
