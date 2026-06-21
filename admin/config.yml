@@ -1,10 +1,9 @@
 backend:
-  name: github
-  repo: muratLola/muratlola-website
+  name: git-gateway
   branch: main
-  base_url: https://api.netlify.com
-  auth_endpoint: auth
-  site_id: ubiquitous-melomakarona-619917.netlify.app
+
+site_url: https://www.muratlola.com
+display_url: https://www.muratlola.com
 
 media_folder: "assets/img"
 public_folder: "/assets/img"
