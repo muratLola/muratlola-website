@@ -1,0 +1,465 @@
+---
+// Admin — vitrin değil, araç. Top imleci / kickoff yok, Base layout kullanmaz.
+// Güvenliği "gizli adres" sağlamaz: Supabase oturumu + RLS politikaları sağlar.
+---
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Yönetim — muratLola</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="/admin.css" />
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <form class="login" id="login">
+    <h1>muratLola</h1>
+    <p class="sub">Yönetim paneli</p>
+    <label>E-posta<input type="email" id="email" required autocomplete="username" /></label>
+    <label>Şifre<input type="password" id="pass" required autocomplete="current-password" /></label>
+    <button type="submit" id="login-btn">Giriş</button>
+    <p class="err" id="login-err"></p>
+    <!-- Tanılama: giriş takılırsa hangi adımda durduğu burada görünür -->
+    <pre class="diag" id="diag"></pre>
+  </form>
+</div>
+
+<div id="app" class="app" hidden>
+  <header class="bar">
+    <strong>muratLola — Yönetim</strong>
+    <div class="bar__right">
+      <span id="who" class="who"></span>
+      <a href="/" class="ghost" target="_blank">Siteyi Gör ↗</a>
+      <button id="out" class="ghost">Çıkış</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab is-active" data-tab="projects">Projeler</button>
+    <button class="tab" data-tab="jerseys">Formalar</button>
+  </nav>
+
+  <!-- ═══ PROJELER ═══ -->
+  <section class="panel" id="panel-projects">
+    <form class="form" id="f-project">
+      <h2 id="f-project-title">Yeni Proje</h2>
+      <input type="hidden" id="p-id" />
+      <div class="row">
+        <label>Başlık *<input id="p-title" required /></label>
+        <label>Slug (adres) *<input id="p-slug" required placeholder="diaza-world-cup" /></label>
+      </div>
+      <div class="row">
+        <label>Kategori<input id="p-category" placeholder="Forma Tasarımı" /></label>
+        <label>Yıl<input id="p-year" placeholder="2025" /></label>
+        <label>Numara<input id="p-number" placeholder="03" /></label>
+      </div>
+      <div class="row">
+        <label>Ödül<input id="p-award" placeholder="Dünya 3." /></label>
+        <label class="check"><input type="checkbox" id="p-featured" /> Ana sayfada öne çıkar</label>
+      </div>
+      <label>Özet<input id="p-summary" /></label>
+      <label>Açıklama<textarea id="p-body" rows="5"></textarea></label>
+
+      <label>Kapak görseli
+        <input type="file" id="p-cover" accept="image/*" />
+      </label>
+      <div class="thumb" id="p-cover-prev"></div>
+
+      <label>Galeri (çoklu seçebilirsin)
+        <input type="file" id="p-images" accept="image/*" multiple />
+      </label>
+      <div class="thumbs" id="p-images-prev"></div>
+
+      <div class="actions">
+        <button type="submit" id="p-save">Kaydet</button>
+        <button type="button" class="ghost" id="p-reset">Temizle</button>
+        <span class="status" id="p-status"></span>
+      </div>
+    </form>
+
+    <div class="list" id="list-projects"></div>
+  </section>
+
+  <!-- ═══ FORMALAR ═══ -->
+  <section class="panel" id="panel-jerseys" hidden>
+    <form class="form" id="f-jersey">
+      <h2 id="f-jersey-title">Yeni Forma</h2>
+      <input type="hidden" id="j-id" />
+      <div class="row">
+        <label>Başlık *<input id="j-title" required placeholder="Deplasman Forması" /></label>
+        <label>Kulüp / Marka<input id="j-club" placeholder="Altay SK" /></label>
+      </div>
+      <div class="row">
+        <label>Sezon<input id="j-season" placeholder="2025/26" /></label>
+        <label>Numara<input id="j-number" placeholder="10" /></label>
+      </div>
+      <label>Forma görseli
+        <input type="file" id="j-cover" accept="image/*" />
+      </label>
+      <div class="thumb" id="j-cover-prev"></div>
+
+      <div class="actions">
+        <button type="submit" id="j-save">Kaydet</button>
+        <button type="button" class="ghost" id="j-reset">Temizle</button>
+        <span class="status" id="j-status"></span>
+      </div>
+    </form>
+
+    <div class="list" id="list-jerseys"></div>
+  </section>
+</div>
+
+<div class="setup" id="setup" hidden>
+  <h1>Supabase bağlı değil</h1>
+  <p>Admin panelinin çalışması için Supabase kurulumu gerekiyor.<br />
+  Proje kökündeki <code>KURULUM.md</code> dosyasındaki adımları izle.</p>
+</div>
+
+<script>
+  import {
+    isConfigured, signIn, signOut, currentUser, supabase,
+    getProjects, getJerseys, upload, saveProject, saveJersey, remove, mediaUrl,
+  } from '../../lib/store.js';
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
+    { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+  ));
+
+  // Supabase yoksa kurulum ekranını göster ve sessizce dur.
+  // Önce throw ediyordu; konsola yakalanmamış hata düşüyordu.
+  const configured = isConfigured;
+  if (!configured) {
+    $('gate').hidden = true;
+    $('setup').hidden = false;
+  }
+
+  const gate = $('gate'), app = $('app');
+
+  /* Tanılama izi. Konsola her zaman yazar; ekrana yalnızca sorun varsa.
+     Normal akışta kullanıcının göreceği bir şey değil. */
+  const diag = (msg, ekranaDa = false) => {
+    console.log('[admin]', msg);
+    if (!ekranaDa) return;
+    const el = $('diag');
+    if (el) el.textContent += msg + '\n';
+  };
+  diag('betik yüklendi · supabase ' + (configured ? 'bağlı' : 'YOK'));
+
+  function show(user) {
+    try {
+      diag('panel açılıyor: ' + user.email);
+      gate.hidden = true;
+      app.hidden = false;
+      $('who').textContent = user.email;
+      diag('panel açıldı');
+    } catch (ex) {
+      diag('PANEL HATASI: ' + ex.message, true);
+      throw ex;
+    }
+    // Liste yüklenmesi paneli engellemesin; hataları yut ama görünür yap.
+    loadProjects().catch(ex => diag('projeler yüklenemedi: ' + ex.message, true));
+    loadJerseys().catch(ex => diag('formalar yüklenemedi: ' + ex.message, true));
+  }
+
+  currentUser()
+    .then(u => {
+      diag('mevcut oturum: ' + (u ? u.email : 'yok'));
+      if (u) show(u);
+    })
+    .catch(ex => diag('oturum kontrolü hatası: ' + ex.message, true));
+
+  /* Supabase hatalarını okunur Türkçeye çevirir.
+     Ham "Failed to fetch" kullanıcıya hiçbir şey anlatmıyor. */
+  function humanError(ex) {
+    const m = String(ex?.message ?? ex);
+    if (/Failed to fetch|NetworkError|fetch failed/i.test(m))
+      return 'Sunucuya ulaşılamadı. İnternet bağlantını ve Supabase adresinin doğruluğunu kontrol et.';
+    if (/Invalid login credentials/i.test(m)) return 'E-posta veya şifre hatalı.';
+    // Email sağlayıcısı komple kapalıysa giriş de kayıt da olmuyor.
+    // Sağlayıcı açılmadan "Allow new users to sign up" ayarı ekranda görünmez.
+    if (/logins are disabled|email_provider_disabled|signups are disabled/i.test(m))
+      return 'Supabase\'de Email sağlayıcısı kapalı. Authentication → Sign In / Providers → Email\'i AÇ, ' +
+             'içindeki "Allow new users to sign up" seçeneğini KAPALI bırak.';
+    if (/Email not confirmed/i.test(m)) return 'E-posta doğrulanmamış. Supabase → Authentication → Users\'tan onayla.';
+    if (/Invalid API key|JWT/i.test(m)) return 'Supabase anahtarı geçersiz. .env dosyasındaki anon anahtarı kontrol et.';
+    if (/rate limit|Too many/i.test(m)) return 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.';
+    if (/row-level security|violates/i.test(m))
+      return 'Yetki hatası: RLS politikaları eksik olabilir. KURULUM.md adım 3-4\'ü kontrol et.';
+    return m;
+  }
+
+  /* Hiçbir işlem sessizce donmasın: süre dolarsa görünür hataya çevir. */
+  function withTimeout(promise, ms, msg) {
+    let t;
+    const timer = new Promise((_, reject) => { t = setTimeout(() => reject(new Error(msg)), ms); });
+    return Promise.race([promise, timer]).finally(() => clearTimeout(t));
+  }
+
+  $('login').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('login-btn'), err = $('login-err');
+    btn.disabled = true; btn.textContent = 'Giriş yapılıyor…'; err.textContent = '';
+    try {
+      diag('giriş isteği gönderiliyor…');
+      const data = await withTimeout(
+        signIn($('email').value.trim(), $('pass').value),
+        15000,
+        'Giriş 15 saniyede yanıt vermedi. Bu sitenin açık BAŞKA sekmelerini kapat ' +
+        've sayfayı yenile (Ctrl+Shift+R) — birden fazla sekme oturum kilidini bloke edebiliyor.'
+      );
+      diag('sunucu yanıtladı · kullanıcı: ' + (data?.user?.email ?? 'YOK'));
+      if (!data?.user) throw new Error('Sunucu oturum döndürmedi.');
+      show(data.user);
+    } catch (ex) {
+      console.error('[giris]', ex);
+      diag('HATA: ' + ex.message, true);
+      err.textContent = humanError(ex);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Giriş';
+    }
+  });
+
+  $('out').addEventListener('click', async () => { await signOut(); location.reload(); });
+
+  /* ── Sekmeler ── */
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('is-active', x === t));
+    $('panel-projects').hidden = t.dataset.tab !== 'projects';
+    $('panel-jerseys').hidden  = t.dataset.tab !== 'jerseys';
+  }));
+
+  /* ── Slug yardımcısı ──
+     Türkçe harfleri toLowerCase()'ten ÖNCE ASCII'ye çeviriyoruz.
+     Sebep: "İ".toLowerCase() tek harf değil, i + U+0307 (ayrı birleşen
+     nokta) üretir; sonraki filtre o noktayı tireye çevirip
+     "İzmir" → "i-zmir" gibi bozuk adresler yaratıyordu.
+     NFD + aksan temizliği de kalan işaretleri süpürür. */
+  const TR = { 'İ':'I','I':'I','ı':'i','Ğ':'G','ğ':'g','Ü':'U','ü':'u',
+               'Ş':'S','ş':'s','Ö':'O','ö':'o','Ç':'C','ç':'c' };
+  const slugify = (s) => String(s)
+    .replace(/[İIıĞğÜüŞşÖöÇç]/g, ch => TR[ch])
+    .toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  $('p-title').addEventListener('input', () => {
+    if (!$('p-id').value && !$('p-slug').dataset.touched) $('p-slug').value = slugify($('p-title').value);
+  });
+  $('p-slug').addEventListener('input', () => { $('p-slug').dataset.touched = '1'; });
+
+  /* ── Önizleme ── */
+  function preview(input, box, multi = false) {
+    input.addEventListener('change', () => {
+      box.innerHTML = '';
+      [...input.files].slice(0, multi ? 20 : 1).forEach(f => {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(f);
+        img.onload = () => URL.revokeObjectURL(img.src);
+        box.appendChild(img);
+      });
+    });
+  }
+  preview($('p-cover'), $('p-cover-prev'));
+  preview($('p-images'), $('p-images-prev'), true);
+  preview($('j-cover'), $('j-cover-prev'));
+
+  /* ── PROJELER ── */
+  let projects = [];
+
+  async function loadProjects() {
+    projects = await getProjects();
+    const list = $('list-projects');
+    if (!projects.length) { list.innerHTML = '<p class="muted">Henüz proje yok.</p>'; return; }
+    list.innerHTML = projects.map(p => `
+      <div class="item">
+        <div class="item__img">${p.cover ? `<img src="${esc(p.cover)}" alt="">` : '<span>—</span>'}</div>
+        <div class="item__meta">
+          <strong>${esc(p.title)}</strong>
+          <span class="muted">${esc(p.category || '')} · ${esc(p.year || '')} · /${esc(p.slug)}</span>
+        </div>
+        <div class="item__act">
+          <button class="ghost" data-edit="${esc(p.id)}">Düzenle</button>
+          <button class="danger" data-del="${esc(p.id)}">Sil</button>
+        </div>
+      </div>`).join('');
+
+    list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => editProject(b.dataset.edit)));
+    list.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => delProject(b.dataset.del)));
+  }
+
+  function editProject(id) {
+    const p = projects.find(x => String(x.id) === String(id));
+    if (!p) return;
+    $('f-project-title').textContent = 'Projeyi Düzenle';
+    $('p-id').value = p.id;
+    $('p-title').value = p.title ?? '';
+    $('p-slug').value = p.slug ?? '';
+    $('p-slug').dataset.touched = '1';
+    $('p-category').value = p.category ?? '';
+    $('p-year').value = p.year ?? '';
+    $('p-number').value = p.number ?? '';
+    $('p-award').value = p.award ?? '';
+    $('p-summary').value = p.summary ?? '';
+    $('p-body').value = p.body ?? '';
+    $('p-featured').checked = !!p.featured;
+    $('p-cover-prev').innerHTML = p.cover ? `<img src="${esc(p.cover)}" alt="">` : '';
+    $('p-images-prev').innerHTML = (p.images ?? []).map(s => `<img src="${esc(s)}" alt="">`).join('');
+    scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function delProject(id) {
+    const p = projects.find(x => String(x.id) === String(id));
+    if (!confirm(`"${p?.title}" silinsin mi? Bu geri alınamaz.`)) return;
+    try { await remove('projects', id); await loadProjects(); }
+    catch (e) { alert('Silinemedi: ' + e.message); }
+  }
+
+  /* Formu boşaltır ama durum mesajına DOKUNMAZ.
+     Kaydetme sonrası da çağrılıyor; burada status silinirse
+     "✓ Kaydedildi" anında siliniyor ve kullanıcı kaydın olduğunu göremiyordu. */
+  function resetProjectForm() {
+    $('f-project').reset();
+    $('p-id').value = '';
+    delete $('p-slug').dataset.touched;
+    $('f-project-title').textContent = 'Yeni Proje';
+    $('p-cover-prev').innerHTML = '';
+    $('p-images-prev').innerHTML = '';
+  }
+
+  // Kullanıcı "Temizle"ye basınca durum mesajı da gitsin.
+  $('p-reset').addEventListener('click', () => {
+    resetProjectForm();
+    $('p-status').textContent = '';
+  });
+
+  $('f-project').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('p-save'), st = $('p-status');
+    btn.disabled = true; st.textContent = 'Yükleniyor…';
+    try {
+      const existing = projects.find(x => String(x.id) === $('p-id').value);
+      const row = {
+        title: $('p-title').value.trim(),
+        slug: $('p-slug').value.trim(),
+        category: $('p-category').value.trim() || null,
+        year: $('p-year').value.trim() || null,
+        number: $('p-number').value.trim() || null,
+        award: $('p-award').value.trim() || null,
+        summary: $('p-summary').value.trim() || null,
+        body: $('p-body').value.trim() || null,
+        featured: $('p-featured').checked,
+      };
+      if ($('p-id').value) row.id = $('p-id').value;
+
+      // Yeni kapak yoksa mevcut HAM YOLU koru. Buraya shape()'in ürettiği
+      // tam URL yazılırsa veritabanına yol yerine URL gider.
+      const coverFile = $('p-cover').files[0];
+      if (coverFile) row.cover = await upload(coverFile, 'projects');
+      else if (existing?.cover_path) row.cover = existing.cover_path;
+
+      const imgFiles = [...$('p-images').files];
+      if (imgFiles.length) {
+        st.textContent = `${imgFiles.length} görsel yükleniyor…`;
+        row.images = await Promise.all(imgFiles.map(f => upload(f, 'projects')));
+      }
+
+      // Boş alanları göndermeyip mevcut değeri koru
+      Object.keys(row).forEach(k => row[k] === undefined && delete row[k]);
+
+      await saveProject(row);
+      resetProjectForm();          // status'a dokunmaz
+      st.textContent = '✓ Kaydedildi — sitede yayında';
+      await loadProjects();
+    } catch (ex) {
+      st.textContent = "✕ " + humanError(ex);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  /* ── FORMALAR ── */
+  let jerseys = [];
+
+  async function loadJerseys() {
+    jerseys = await getJerseys();
+    const list = $('list-jerseys');
+    if (!jerseys.length) { list.innerHTML = '<p class="muted">Henüz forma yok.</p>'; return; }
+    list.innerHTML = jerseys.map(j => `
+      <div class="item">
+        <div class="item__img">${j.cover ? `<img src="${esc(j.cover)}" alt="">` : '<span>—</span>'}</div>
+        <div class="item__meta">
+          <strong>${esc(j.title)}</strong>
+          <span class="muted">${esc(j.club || '')} · ${esc(j.season || '')}</span>
+        </div>
+        <div class="item__act">
+          <button class="ghost" data-edit="${esc(j.id)}">Düzenle</button>
+          <button class="danger" data-del="${esc(j.id)}">Sil</button>
+        </div>
+      </div>`).join('');
+
+    list.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => {
+      const j = jerseys.find(x => String(x.id) === b.dataset.edit);
+      if (!j) return;
+      $('f-jersey-title').textContent = 'Formayı Düzenle';
+      $('j-id').value = j.id;
+      $('j-title').value = j.title ?? '';
+      $('j-club').value = j.club ?? '';
+      $('j-season').value = j.season ?? '';
+      $('j-number').value = j.number ?? '';
+      $('j-cover-prev').innerHTML = j.cover ? `<img src="${esc(j.cover)}" alt="">` : '';
+      scrollTo({ top: 0, behavior: 'smooth' });
+    }));
+
+    list.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', async () => {
+      const j = jerseys.find(x => String(x.id) === b.dataset.del);
+      if (!confirm(`"${j?.title}" silinsin mi?`)) return;
+      try { await remove('jerseys', b.dataset.del); await loadJerseys(); }
+      catch (e) { alert('Silinemedi: ' + e.message); }
+    }));
+  }
+
+  /* Formu boşaltır, durum mesajına dokunmaz — bkz. resetProjectForm. */
+  function resetJerseyForm() {
+    $('f-jersey').reset();
+    $('j-id').value = '';
+    $('f-jersey-title').textContent = 'Yeni Forma';
+    $('j-cover-prev').innerHTML = '';
+  }
+
+  $('j-reset').addEventListener('click', () => {
+    resetJerseyForm();
+    $('j-status').textContent = '';
+  });
+
+  $('f-jersey').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = $('j-save'), st = $('j-status');
+    btn.disabled = true; st.textContent = 'Yükleniyor…';
+    try {
+      const row = {
+        title: $('j-title').value.trim(),
+        club: $('j-club').value.trim() || null,
+        season: $('j-season').value.trim() || null,
+        number: $('j-number').value.trim() || null,
+      };
+      if ($('j-id').value) row.id = $('j-id').value;
+      const f = $('j-cover').files[0];
+      if (f) row.cover = await upload(f, 'jerseys');
+
+      await saveJersey(row);
+      resetJerseyForm();           // status'a dokunmaz
+      st.textContent = '✓ Kaydedildi — sitede yayında';
+      await loadJerseys();
+    } catch (ex) {
+      st.textContent = "✕ " + humanError(ex);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

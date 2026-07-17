@@ -1,0 +1,105 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base veil={true}>
+
+  <!-- ═══ HERO — tipografi tek başına ═══ -->
+  <section class="hero">
+    <div class="hero__type">
+      <!-- Vurgu <em> ile değil sınıfla: splitChars() metni harf harf yeniden
+           kuruyor ve içerideki etiketleri siliyor. Sınıf el'de kalır,
+           harfler stili miras alır. -->
+      <h1>
+        <span class="ln"><span data-split>Murat</span></span>
+        <span class="ln"><span data-split class="is-accent">Ogur</span></span>
+      </h1>
+    </div>
+
+    <div class="hero__rule" aria-hidden="true"></div>
+
+    <div class="hero__meta">
+      <p>
+        Görsel İletişim Tasarımcısı &amp; Art Director. <b>Fora Creative Studio</b>
+        kurucu ortağı. Spor kulüpleri ve markalar için kurumsal kimlik,
+        forma tasarımı ve görsel strateji.
+      </p>
+      <div class="hero__tags">
+        <span>Forma Tasarımı</span>
+        <span>Kurumsal Kimlik</span>
+        <span>Art Direction</span>
+        <span>Elazığ / TR</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ İFADE ═══ -->
+  <section class="section">
+    <p class="statement" data-reveal>
+      Spor estetiğine <em>stratejik</em> bir dil katıyorum.
+    </p>
+  </section>
+
+  <!-- ═══ İŞLER ═══ -->
+  <section class="section" style="padding-top:0;">
+    <div class="head">
+      <div>
+        <div class="eyebrow"><i></i><span>Seçili İşler</span></div>
+        <h2 class="h2" data-split-chars>Arşiv</h2>
+      </div>
+      <a class="btn" href="/projeler"><span>Tümü</span><i>→</i></a>
+    </div>
+    <div class="kit-grid" id="home-grid"></div>
+  </section>
+
+  <!-- ═══ KÜNYE ═══ -->
+  <section class="facts">
+    <!-- Rakamlar HTML'de: JS çalışmasa da doğru okunur -->
+    <div data-reveal>
+      <div class="fact__n"><span data-count="1.5" data-dec="1">1.5</span><i>M+</i></div>
+      <div class="fact__l">Takipçi — dijital spor platformları</div>
+    </div>
+    <div data-reveal>
+      <div class="fact__n"><i>#</i><span data-count="3">3</span></div>
+      <div class="fact__l">Diaza World Cup — dünya sıralaması</div>
+    </div>
+    <div data-reveal>
+      <div class="fact__n"><span data-count="6">6</span></div>
+      <div class="fact__l">Kişilik Fora Creative Studio ekibi</div>
+    </div>
+  </section>
+
+  <!-- ═══ HAKKIMDA ═══ -->
+  <section class="section about">
+    <div class="about__frame" data-reveal>
+      <img src="/img/murat-ogur.jpg" alt="Murat Ogur — muratLola" />
+    </div>
+    <div class="about__body" data-reveal>
+      <div class="eyebrow"><i></i><span>Hakkımda</span></div>
+      <h2 class="h2 h2--sm" style="margin-bottom:1.4rem;">Fırat Üniversitesi'nde okurken kendi stüdyomu kurdum.</h2>
+      <p>6 kişilik yaratıcı ekibimizle markalar için uçtan uca kimlik ve görsel strateji geliştiriyoruz.</p>
+      <p><b>Diaza World Cup</b>'ta dünya 3.'sü oldum.</p>
+      <a class="btn" href="/hakkimda"><span>Devamı</span><i>→</i></a>
+    </div>
+  </section>
+
+  <!-- ═══ İLETİŞİM ═══ -->
+  <section class="section">
+    <div class="eyebrow"><i></i><span>İletişim</span></div>
+    <a class="contact__big" href="mailto:muratlola0526@gmail.com" data-cur="Yaz">
+      <span class="ln"><span data-split-chars>Birlikte</span></span>
+      <span class="ln"><span data-split-chars>çalışalım</span></span>
+    </a>
+    <div class="contact__row" data-reveal>
+      <a href="mailto:muratlola0526@gmail.com">muratlola0526@gmail.com</a>
+      <a href="tel:+905418099987">+90 541 809 9987</a>
+      <span>Elazığ / Türkiye</span>
+    </div>
+  </section>
+
+</Base>
+
+<script>
+  import { getProjects } from '../lib/store.js';
+  import { renderKits } from '../scripts/kits.js';
+  getProjects().then(list => renderKits(document.getElementById('home-grid'), list.slice(0, 4)));
+</script>

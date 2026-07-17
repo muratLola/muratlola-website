@@ -1,0 +1,48 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Formalar — muratLola" description="Murat Ogur imzalı forma tasarımları.">
+  <section class="section" style="padding-top:12rem;">
+    <div class="eyebrow"><i></i><span>Kit Arşivi</span></div>
+    <h1 class="h2" data-split-chars>Formalar</h1>
+    <p style="color:var(--dim);max-width:44ch;margin-top:1.4rem;">
+      Kulüpler ve markalar için tasarladığım formalar.
+    </p>
+    <div class="kit-grid" id="grid" style="margin-top:5rem;"></div>
+  </section>
+</Base>
+
+<script>
+  import { getJerseys } from '../lib/store.js';
+  import { revealAll, guardImages } from '../scripts/dom.js';
+
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
+    { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+  ));
+
+  const root = document.getElementById('grid');
+
+  getJerseys().then(list => {
+    if (!list.length) {
+      root.innerHTML = `<p class="label" style="grid-column:span 12;">Henüz forma eklenmedi.</p>`;
+      return;
+    }
+    root.innerHTML = list.map((j, i) => `
+      <div class="kit" data-reveal>
+        <div class="kit__media${j.cover ? '' : ' no-img'}">
+          ${j.cover ? `<img src="${esc(j.cover)}" alt="${esc(j.title)}" loading="lazy">` : ''}
+        </div>
+        <div class="kit__body">
+          <span class="kit__no">${esc(j.number || String(i + 1).padStart(2, '0'))}</span>
+          <div>
+            <h3 class="kit__title">${esc(j.title)}</h3>
+            ${j.club ? `<div class="kit__tag">${esc(j.club)}</div>` : ''}
+          </div>
+          ${j.season ? `<span class="kit__year">${esc(j.season)}</span>` : ''}
+        </div>
+      </div>`).join('');
+
+    revealAll(root);
+    guardImages(root);
+  });
+</script>

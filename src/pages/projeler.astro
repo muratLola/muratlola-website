@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Projeler — muratLola" description="Murat Ogur'un seçili işleri: kurumsal kimlik, forma tasarımı, art direction.">
+  <section class="section" style="padding-top:12rem;">
+    <div class="eyebrow"><i></i><span>Arşiv</span></div>
+    <h1 class="h2" data-split-chars>Projeler</h1>
+    <div class="kit-grid" id="grid" style="margin-top:5rem;"></div>
+  </section>
+</Base>
+
+<script>
+  import { getProjects } from '../lib/store.js';
+  import { renderKits } from '../scripts/kits.js';
+  getProjects().then(list => renderKits(document.getElementById('grid'), list));
+</script>

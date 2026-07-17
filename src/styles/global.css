@@ -1,0 +1,337 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,600&family=Inter:wght@300;400;500&display=swap');
+
+/* ═══════════ GALERİ ═══════════ */
+:root {
+  --paper: #FBFAF8;   /* galeri duvarı — saf beyaz değil, kağıt */
+  --paper2:#F2F0EC;
+  --ink:   #0E0D0C;
+  --dim:   rgba(14,13,12,.58);
+  --faint: rgba(14,13,12,.32);
+  --line:  rgba(14,13,12,.13);
+  --accent:#FF4A0D;   /* Murat'ın turuncusu — beyazda daha doygun */
+
+  /* Fraunces: Bodoni'nin kıl gibi ince kısımları büyük boyutta kayboluyordu.
+     Bu hem okunaklı hem karakterli; Türkçe İ/Ğ/Ş/ı tam. */
+  --f-display:'Fraunces', Georgia, serif;
+  --f-body:'Inter', system-ui, sans-serif;
+
+  --fs-hero: clamp(4.5rem, 17vw, 17rem);
+  --fs-h2:   clamp(2.6rem, 8vw, 7rem);
+  --fs-xs:   .68rem;
+
+  --pad: clamp(20px, 5vw, 80px);
+  --maxw: 1500px;
+  --ease: cubic-bezier(.16,1,.3,1);
+}
+
+/* ═══════════ KARANLIK MOD ═══════════
+   Galeri duvarı gece. Yalnızca değişkenler değişir — bileşenler bilmez.
+   Turuncu koyu zeminde biraz açılır, yoksa boğuluyor. */
+[data-theme="dark"] {
+  --paper: #0E0D0C;
+  --paper2:#181614;
+  --ink:   #FBFAF8;
+  --dim:   rgba(251,250,248,.60);
+  --faint: rgba(251,250,248,.34);
+  --line:  rgba(251,250,248,.15);
+  --accent:#FF5C22;
+}
+/* Renk geçişi yumuşasın; imleç/başlık difference kullandığı için onlar hariç */
+body, .kit__media, .about__frame { transition:background-color .5s var(--ease), color .5s var(--ease); }
+/* Koyu modda görseller kâğıt beyazı kadar parlamasın */
+[data-theme="dark"] .kit__media img, [data-theme="dark"] .about__frame img { filter:brightness(.92); }
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { background:var(--paper); }
+body {
+  background:var(--paper); color:var(--ink);
+  font-family:var(--f-body); font-weight:300; line-height:1.6;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+body.is-loading { overflow:hidden; height:100vh; }
+body.is-grabbing, body.is-grabbing * { cursor:grabbing !important; }
+a { color:inherit; text-decoration:none; }
+img { display:block; max-width:100%; }
+b, strong { font-weight:500; }
+::selection { background:var(--ink); color:var(--paper); }
+
+/* İnce galeri etiketi */
+.label {
+  font-size:var(--fs-xs); letter-spacing:.16em;
+  text-transform:uppercase; color:var(--faint);
+}
+
+/* ═══════════ İMLEÇ — mürekkep damlası ═══════════
+   mix-blend-mode:difference → altındaki her şeyi ters çevirir:
+   beyaz kâğıtta siyah, koyu görselin üstünde beyaz olur. Tek renkle
+   her zeminde okunur. Hız arttıkça damla hareket yönünde uzar. */
+/* Kaynak BEYAZ olmalı, ink değil. difference = |zemin − kaynak|:
+   beyaz kaynak açık zeminde |0.98−1|=siyah, koyu zeminde |0.05−1|=beyaz verir.
+   Ink kaynak ise açık zeminde |0.98−0.05|=açık gri çıkıyordu — görünmüyordu.
+   Beyaz sayesinde açık/koyu modda ayrı kural gerekmez. */
+#cur, .cur-tail {
+  position:fixed; top:0; left:0; z-index:95;
+  border-radius:50%; background:#fff;
+  pointer-events:none; mix-blend-mode:difference;
+  will-change:transform;
+}
+#cur { width:12px; height:12px; margin:-6px 0 0 -6px; }
+.cur-tail { width:12px; height:12px; margin:-6px 0 0 -6px; z-index:94; }
+
+#cur-txt {
+  position:fixed; top:0; left:0; z-index:96;
+  display:grid; place-items:center;
+  width:84px; height:84px; margin:-42px 0 0 -42px;
+  border-radius:50%; background:var(--accent); color:#fff;
+  font-size:.58rem; letter-spacing:.14em; text-transform:uppercase;
+  pointer-events:none; opacity:0; white-space:nowrap;
+  will-change:transform; transform:scale(.4);
+}
+@media (pointer:coarse) { #cur, #cur-txt, .cur-tail { display:none; } }
+
+/* ═══════════ AÇILIŞ ═══════════ */
+.veil {
+  position:fixed; inset:0; z-index:100; background:var(--paper);
+  display:grid; place-items:center;
+}
+.veil__word {
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2rem,5vw,3.4rem); letter-spacing:.02em;
+  overflow:hidden;
+}
+.veil__word span { display:block; }
+.veil__line {
+  position:absolute; left:var(--pad); right:var(--pad); bottom:14vh;
+  height:1px; background:var(--line);
+}
+.veil__line i { display:block; height:100%; background:var(--ink); transform:scaleX(0); transform-origin:left; }
+
+/* ═══════════ HEADER ═══════════ */
+.hdr {
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.5rem var(--pad);
+  mix-blend-mode:difference; color:#fff;
+}
+.hdr a { color:#fff; }
+.brand__name { font-family:var(--f-display); font-size:1.35rem; letter-spacing:.02em; }
+.nav { display:flex; gap:2.2rem; }
+.nav a {
+  font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;
+  position:relative; padding-block:3px;
+}
+.nav a::after {
+  content:''; position:absolute; left:0; bottom:0; width:100%; height:1px;
+  background:#fff; transform:scaleX(0); transform-origin:right;
+  transition:transform .5s var(--ease);
+}
+.nav a:hover::after, .nav a[aria-current="page"]::after { transform:scaleX(1); transform-origin:left; }
+.nav__cta { display:none; }
+
+.burger { display:none; width:34px; height:34px; background:none; border:0; position:relative; }
+.burger i { position:absolute; left:0; width:100%; height:1px; background:#fff; transition:transform .45s var(--ease); }
+.burger i:nth-child(1){ top:14px; } .burger i:nth-child(2){ top:20px; }
+.burger.is-open i:nth-child(1){ transform:translateY(3px) rotate(45deg); }
+.burger.is-open i:nth-child(2){ transform:translateY(-3px) rotate(-45deg); }
+
+/* ═══════════ HERO — tipografi tek başına ═══════════
+   3D heykel kaldırıldı: klipart gibi duruyordu ve harfleri kapatıyordu.
+   Artık isim okunur, boşluk konuşur. */
+.hero {
+  position:relative; min-height:100svh;
+  display:flex; flex-direction:column; justify-content:center;
+  max-width:var(--maxw); margin-inline:auto;
+  padding:9rem var(--pad) 5rem;
+}
+.hero__type {
+  font-family:var(--f-display); font-weight:400;
+  font-size:var(--fs-hero); line-height:.86;
+  letter-spacing:-.03em;
+}
+/* h1 buraya girince tarayıcının varsayılan font-size:2em'i devreye girip
+   harfleri iki katına çıkarıyor; reset margin/padding sıfırlıyor ama
+   font-size'a dokunmuyor. Açıkça devralıyoruz. */
+.hero__type h1, .hero__type .ln {
+  font-size:inherit; font-weight:inherit; font-family:inherit; line-height:inherit;
+}
+/* Dikey padding: overflow:hidden Türkçe İ'nin noktasını kırpar. */
+.hero__type .ln { display:block; overflow:hidden; padding:.2em 0 .14em; margin:-.2em 0 -.14em; }
+.hero__type .ln > span { display:block; }
+/* Harfler splitChars() ile yeniden kurulunca stili buradan miras alır. */
+.hero__type .is-accent { font-style:italic; color:var(--accent); }
+
+.hero__rule {
+  height:1px; background:var(--line);
+  margin:3.5rem 0 2rem; transform-origin:left; transform:scaleX(0);
+}
+.hero__meta {
+  display:flex; justify-content:space-between; align-items:flex-end;
+  gap:3rem; flex-wrap:wrap;
+}
+.hero__meta p { max-width:38ch; color:var(--dim); font-size:.95rem; }
+.hero__tags {
+  display:flex; flex-direction:column; gap:.35rem; text-align:right;
+  font-size:var(--fs-xs); letter-spacing:.12em;
+  text-transform:uppercase; color:var(--faint);
+}
+
+/* ═══════════ BÖLÜM ═══════════ */
+.section { max-width:var(--maxw); margin-inline:auto; padding:clamp(6rem,14vw,12rem) var(--pad); }
+.eyebrow { display:flex; align-items:center; gap:.8rem; margin-bottom:1.6rem; }
+.eyebrow i { width:40px; height:1px; background:var(--ink); }
+.eyebrow span { font-size:var(--fs-xs); letter-spacing:.16em; text-transform:uppercase; color:var(--faint); }
+
+.h2 {
+  font-family:var(--f-display); font-weight:400;
+  font-size:var(--fs-h2); line-height:.92; letter-spacing:-.015em;
+}
+.h2--sm { font-size:clamp(1.8rem,3.4vw,3rem); line-height:1.1; }
+.ln { display:block; overflow:hidden; padding:.2em 0 .14em; margin:-.2em 0 -.14em; }
+.ln > span { display:block; }
+
+/* Editoryal ifade — işler yazının arasından gelir */
+.statement {
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2rem,5.5vw,4.6rem); line-height:1.06;
+  letter-spacing:-.015em; max-width:22ch;
+}
+.statement em { font-style:italic; color:var(--accent); }
+
+/* ═══════════ BUTON ═══════════ */
+.btn {
+  display:inline-flex; align-items:center; gap:.7rem;
+  font-size:var(--fs-xs); letter-spacing:.14em; text-transform:uppercase;
+  border-bottom:1px solid var(--ink); padding:.4rem 0;
+  transition:gap .4s var(--ease), color .3s; will-change:transform;
+  background:none; color:var(--ink);
+}
+.btn i { font-style:normal; }
+.btn:hover { gap:1.3rem; }
+.btn--accent { color:var(--accent); border-bottom-color:var(--accent); }
+
+/* ═══════════ İŞLER — galeri asımı ═══════════ */
+.head { display:flex; align-items:flex-end; justify-content:space-between; gap:2rem; flex-wrap:wrap; margin-bottom:4rem; }
+
+.kit-grid { display:grid; grid-template-columns:repeat(12,1fr); gap:clamp(2rem,5vw,5rem) clamp(1.5rem,3vw,3rem); }
+/* Asimetrik asım: her iş farklı genişlik ve dikey kayma alır */
+.kit { grid-column:span 7; }
+.kit:nth-child(even) { grid-column:span 5; margin-top:14vh; }
+.kit:nth-child(3n) { grid-column:span 6; }
+
+.kit__media {
+  position:relative; overflow:hidden; background:var(--paper2);
+  aspect-ratio:4/5;
+}
+.kit:nth-child(even) .kit__media { aspect-ratio:3/4; }
+.kit__media img {
+  width:100%; height:100%; object-fit:cover;
+  transform:scale(1.03); transition:transform 1.2s var(--ease);
+}
+.kit:hover .kit__media img { transform:scale(1); }
+.kit__media.no-img::after {
+  content:'GÖRSEL YÜKLENECEK'; position:absolute; inset:0;
+  display:grid; place-items:center;
+  font-size:.58rem; letter-spacing:.2em; color:var(--faint);
+}
+.kit__media.no-img img { display:none; }
+
+.kit__body { display:flex; align-items:baseline; gap:1rem; margin-top:1.2rem; }
+.kit__no { font-size:var(--fs-xs); letter-spacing:.1em; color:var(--faint); flex:none; }
+.kit__title {
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.4rem,2.4vw,2.2rem); line-height:1.1;
+  background:linear-gradient(var(--ink),var(--ink)) 0 100% / 0 1px no-repeat;
+  transition:background-size .6s var(--ease);
+}
+.kit:hover .kit__title { background-size:100% 1px; }
+.kit__tag { font-size:var(--fs-xs); letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+.kit__year { font-size:var(--fs-xs); color:var(--faint); margin-left:auto; flex:none; }
+.kit__award { font-size:var(--fs-xs); letter-spacing:.08em; color:var(--accent); }
+
+/* ═══════════ RAKAMLAR — galeri künyesi ═══════════ */
+.facts {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(1.5rem,4vw,4rem);
+  max-width:var(--maxw); margin-inline:auto;
+  padding:clamp(3rem,7vw,6rem) var(--pad);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+.fact__n {
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(2.6rem,6vw,5rem); line-height:1;
+  font-variant-numeric:tabular-nums; margin-bottom:.5rem;
+}
+.fact__n i { font-style:italic; font-size:.5em; color:var(--accent); }
+.fact__l { font-size:var(--fs-xs); letter-spacing:.1em; text-transform:uppercase; color:var(--faint); line-height:1.7; }
+
+/* ═══════════ HAKKIMDA ═══════════ */
+.about { display:grid; grid-template-columns:1fr 1fr; gap:clamp(2rem,6vw,6rem); align-items:center; }
+.about__frame { position:relative; overflow:hidden; aspect-ratio:4/5; background:var(--paper2); }
+.about__frame img { width:100%; height:112%; object-fit:cover; }
+.about__body p { color:var(--dim); margin-bottom:1.1rem; max-width:46ch; }
+.about__body .btn { margin-top:1rem; }
+
+/* ═══════════ İLETİŞİM ═══════════ */
+.contact__big {
+  display:block; font-family:var(--f-display); font-weight:400;
+  font-size:var(--fs-hero); line-height:.86; letter-spacing:-.02em;
+  margin-block:1.5rem 2.5rem; transition:color .5s var(--ease);
+}
+.contact__big:hover { color:var(--accent); }
+.contact__row { display:flex; gap:3rem; flex-wrap:wrap; }
+.contact__row a, .contact__row span {
+  font-size:var(--fs-xs); letter-spacing:.12em; text-transform:uppercase;
+  color:var(--dim); transition:color .3s;
+}
+.contact__row a:hover { color:var(--accent); }
+
+/* ═══════════ FOOTER ═══════════ */
+.ftr {
+  display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;
+  border-top:1px solid var(--line); padding:2.5rem var(--pad);
+  max-width:var(--maxw); margin-inline:auto;
+  font-size:var(--fs-xs); letter-spacing:.1em; text-transform:uppercase; color:var(--faint);
+}
+
+[data-reveal] { opacity:0; }
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width:900px) {
+  .nav {
+    position:fixed; inset:0; background:var(--ink);
+    mix-blend-mode:normal;
+    flex-direction:column; justify-content:center; align-items:center; gap:1.8rem;
+    clip-path:circle(0% at calc(100% - 40px) 40px); transition:clip-path .8s var(--ease);
+  }
+  .nav.is-open { clip-path:circle(150% at calc(100% - 40px) 40px); }
+  .nav a { font-family:var(--f-display); font-size:2.2rem; text-transform:none; letter-spacing:0; color:var(--paper); }
+  .nav__cta { display:block; color:var(--accent) !important; }
+  .burger { display:block; z-index:60; }
+  .hdr { mix-blend-mode:difference; }
+
+  .kit, .kit:nth-child(even), .kit:nth-child(3n) { grid-column:span 12; margin-top:0; }
+  .about { grid-template-columns:1fr; }
+  .facts { grid-template-columns:1fr; gap:2.5rem; }
+
+  .hero { padding-top:7rem; }
+  .hero__type { font-size:clamp(3.2rem,15vw,6rem); }
+  .hero__meta { flex-direction:column; align-items:flex-start; gap:1.4rem; }
+  .hero__tags { text-align:left; }
+  .hero__meta p { font-size:.8rem; max-width:100%; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  [data-reveal] { opacity:1 !important; }
+  #cur, #cur-txt, .cur-tail { display:none !important; }
+}
+
+/* ═══════════ TEMA DÜĞMESİ ═══════════ */
+.theme {
+  display:grid; place-items:center;
+  width:30px; height:30px; background:none; border:0;
+  position:relative; color:inherit;
+}
+.theme svg { width:17px; height:17px; display:block; }
+.theme .t-sun  { display:none; }
+[data-theme="dark"] .theme .t-sun  { display:block; }
+[data-theme="dark"] .theme .t-moon { display:none; }
