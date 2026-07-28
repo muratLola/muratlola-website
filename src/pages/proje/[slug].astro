@@ -1,0 +1,100 @@
+---
+/* Proje detayı — BUILD SIRASINDA üretilir.
+   Eski /proje?p=slug sayfası içeriği tarayıcıda çiziyordu: kaynak HTML'de
+   tek bir proje adı bile geçmiyordu, dolayısıyla Google hiçbirini
+   indeksleyemiyor ve paylaşılan her link aynı portreyle önizleniyordu.
+   Burada içerik HTML'e gömülüyor ve her sayfa kendi başlığını,
+   açıklamasını ve og:image'ını taşıyor. */
+import Base from '../../layouts/Base.astro';
+import { getProjects } from '../../lib/store.js';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects
+    .filter((p) => p && p.slug)
+    .map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+const { project: p } = Astro.props;
+const gallery = (p.images ?? []).filter(Boolean);
+
+const meta = [p.category, p.year].filter(Boolean).join(' · ');
+
+/* Arama sonucunda ve paylaşım kartında görünecek metin. Özet varsa o,
+   yoksa açıklamanın ilk cümleleri. 300 karakteri geçen bir açıklama
+   Google tarafından zaten kırpılıyor. */
+const raw = (p.summary || p.body || '').replace(/\s+/g, ' ').trim();
+const description = raw
+  ? (raw.length > 200 ? raw.slice(0, 197).trimEnd() + '…' : raw)
+  : `${p.title} — ${meta}. muratLola konsept forma ve kimlik tasarımı.`;
+---
+<Base
+  title={`${p.title} | muratLola`}
+  description={description}
+  image={p.cover}
+  type="article"
+>
+  <section class="section" style="padding-top:12rem;">
+    <a class="btn" href="/projeler" style="margin-bottom:3rem;"><i>←</i><span>Projeler</span></a>
+
+    {meta && (
+      <div class="eyebrow"><i></i><span>{meta}</span></div>
+    )}
+
+    <h1 class="h2">{p.title}</h1>
+
+    {p.award && <p class="kit__award" style="margin-top:1rem;">{p.award}</p>}
+
+    {p.summary && (
+      <p class="statement" style="font-size:clamp(1.4rem,2.8vw,2.4rem);margin-top:2rem;">
+        {p.summary}
+      </p>
+    )}
+
+    {p.cover && (
+      <div class="about__frame" style="aspect-ratio:16/9;margin-top:4rem;" data-reveal>
+        <img src={p.cover} alt={p.title} style="height:100%;" />
+      </div>
+    )}
+
+    {p.body && (
+      <p style="color:var(--dim);max-width:60ch;margin-top:3rem;white-space:pre-line;">
+        {p.body}
+      </p>
+    )}
+
+    {gallery.length > 0 && (
+      <div class="kit-grid" style="margin-top:5rem;">
+        {gallery.map((src, i) => (
+          <div class="kit">
+            <div class="kit__media" data-reveal>
+              <img src={src} alt={`${p.title} — ${i + 1}`} loading="lazy" />
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </section>
+
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      name: p.title,
+      description,
+      ...(p.cover ? { image: p.cover } : {}),
+      ...(p.year ? { dateCreated: String(p.year) } : {}),
+      genre: p.category ?? undefined,
+      creator: { '@type': 'Person', name: 'Murat Ogur', alternateName: 'muratLola' },
+    })}
+  />
+</Base>
+
+<script>
+  /* Görseller Supabase storage'dan geliyor; biri düşerse kart boş kutu
+     olarak kalmasın. Statik içerikte data-reveal'ı app.js zaten yakalıyor. */
+  import { guardImages } from '../../scripts/dom.js';
+  guardImages(document);
+</script>

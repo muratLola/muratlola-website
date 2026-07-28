@@ -7,7 +7,18 @@ const {
   title = 'muratLola — Görsel İletişim Tasarımcısı & Art Director',
   description = 'Murat Ogur (muratLola) — Art Director, Fora Creative Studio kurucu ortağı. Spor kulüpleri ve markalar için kurumsal kimlik, forma tasarımı ve görsel strateji.',
   veil = false,
+  // Sayfaya özel paylaşım görseli. Proje sayfaları kendi kapağını geçer;
+  // yoksa her link aynı portreyle önizlenir ve paylaşılan şeyin ne olduğu
+  // hiçbir yerden anlaşılmaz.
+  image = null,
+  type = 'website',
+  noindex = false,
 } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image
+  ? (/^https?:\/\//.test(image) ? image : new URL(image, Astro.site).href)
+  : new URL('/img/murat-ogur.jpg', Astro.site).href;
 ---
 <!DOCTYPE html>
 <html lang="tr">
@@ -16,14 +27,22 @@ const {
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+  <link rel="canonical" href={canonical} />
   <meta name="theme-color" content="#FBFAF8" />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
 
+  <meta property="og:site_name" content="muratLola" />
+  <meta property="og:locale" content="tr_TR" />
+  <meta property="og:url" content={canonical} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-  <meta property="og:image" content={new URL('/img/murat-ogur.jpg', Astro.site)} />
-  <meta property="og:type" content="website" />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:type" content={type} />
+
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

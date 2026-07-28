@@ -16,7 +16,7 @@ export function renderKits(root, list, { empty = "Henüz iş eklenmedi." } = {})
   root.innerHTML = list.map((p, i) => {
     const no = esc(p.number || String(i + 1).padStart(2, '0'));
     return `
-      <a class="kit" href="/proje?p=${encodeURIComponent(p.slug)}" data-reveal data-cur="Gör">
+      <a class="kit" href="/proje/${encodeURIComponent(p.slug)}" data-reveal data-cur="Gör">
         <div class="kit__media${p.cover ? '' : ' no-img'}">
           ${p.cover ? `<img src="${esc(p.cover)}" alt="${esc(p.title)}" loading="lazy">` : ''}
         </div>
