@@ -438,3 +438,34 @@ b, strong { font-weight:500; }
 /* Footer difference karışımında değil, kendi renklerini kullanır */
 .social--ftr a { color:var(--faint); }
 .social--ftr a:hover { color:var(--accent); }
+
+/* ═══════════ İLETİŞİM & SOSYAL — OKUNURLUK ═══════════
+   Bunlar --fs-xs (.68rem ≈ 11px) ile çiziliyordu: galeri etiketi için
+   doğru ölçü ama e-posta ve telefon sayfanın en önemli iki bağlantısı.
+   Küçük ve soluk olunca fark edilmiyorlardı. */
+.contact__row a, .contact__row span {
+  font-size:.95rem; letter-spacing:.04em; text-transform:none;
+  color:var(--ink);
+}
+.contact__row a { position:relative; padding-block:2px; }
+.contact__row a::after {
+  content:''; position:absolute; left:0; bottom:0; width:100%; height:1px;
+  background:var(--accent); transform:scaleX(0); transform-origin:right;
+  transition:transform .45s var(--ease);
+}
+.contact__row a:hover { color:var(--accent); }
+.contact__row a:hover::after { transform:scaleX(1); transform-origin:left; }
+
+.social a { font-size:.82rem; letter-spacing:.08em; color:var(--dim); }
+.social--ftr a { color:var(--dim); }
+.social--row { margin-top:1.8rem; gap:1.9rem; }
+
+/* ═══════════ DİL DEĞİŞTİRİCİ ═══════════ */
+.lang {
+  font-size:.72rem; letter-spacing:.12em; font-weight:500;
+  padding:.35rem .6rem; margin-left:auto; margin-right:.4rem;
+  border:1px solid rgba(255,255,255,.35); border-radius:2px;
+  transition:border-color .35s var(--ease), background-color .35s var(--ease);
+}
+.lang:hover { border-color:#fff; background:rgba(255,255,255,.12); }
+@media (max-width:900px) { .lang { margin-left:0; } }

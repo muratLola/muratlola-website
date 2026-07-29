@@ -10,6 +10,13 @@ const STATIC = [
   { path: 'hizmetler', priority: '0.9', freq: 'monthly' },
   { path: 'hakkimda', priority: '0.6', freq: 'yearly' },
   { path: 'iletisim', priority: '0.5', freq: 'yearly' },
+  // İngilizce sürüm
+  { path: 'en', priority: '1.0', freq: 'monthly' },
+  { path: 'en/projects', priority: '0.9', freq: 'weekly' },
+  { path: 'en/kits', priority: '0.9', freq: 'weekly' },
+  { path: 'en/services', priority: '0.9', freq: 'monthly' },
+  { path: 'en/about', priority: '0.6', freq: 'yearly' },
+  { path: 'en/contact', priority: '0.5', freq: 'yearly' },
 ];
 
 const xmlEscape = (s) =>
@@ -42,6 +49,14 @@ export async function GET({ site }) {
       .filter((p) => p && p.slug)
       .map((p) => ({
         loc: `${base}/proje/${encodeURIComponent(p.slug)}/`,
+        priority: '0.8',
+        freq: 'monthly',
+        lastmod: p.created_at ? String(p.created_at).slice(0, 10) : null,
+      })),
+    ...projects
+      .filter((p) => p && p.slug)
+      .map((p) => ({
+        loc: `${base}/en/project/${encodeURIComponent(p.slug)}/`,
         priority: '0.8',
         freq: 'monthly',
         lastmod: p.created_at ? String(p.created_at).slice(0, 10) : null,

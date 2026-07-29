@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Work — muratLola" description="Selected projects: football kit design, brand identity and art direction.">
+  <section class="section" style="padding-top:12rem;">
+    <div class="eyebrow"><i></i><span>Archive</span></div>
+    <h1 class="h2" data-split-chars>Work</h1>
+    <div class="kit-grid" id="grid" style="margin-top:5rem;"></div>
+  </section>
+</Base>
+
+<script>
+  import { getProjects } from '../../lib/store.js';
+  import { renderKits } from '../../scripts/kits.js';
+  getProjects().then(list => renderKits(document.getElementById('grid'), list,
+    { empty: 'No work added yet.', base: '/en/project' }));
+</script>

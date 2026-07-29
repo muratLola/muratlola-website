@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Kits — muratLola" description="Football kits designed by muratLola for clubs and brands.">
+  <section class="section" style="padding-top:12rem;">
+    <div class="eyebrow"><i></i><span>Kit Archive</span></div>
+    <h1 class="h2" data-split-chars>Kits</h1>
+    <p style="color:var(--dim);max-width:44ch;margin-top:1.4rem;">
+      Kits designed for clubs and brands.
+    </p>
+    <div class="kit-grid" id="grid" style="margin-top:5rem;"></div>
+  </section>
+</Base>
+
+<script>
+  import { getJerseys } from '../../lib/store.js';
+  import { revealAll, guardImages } from '../../scripts/dom.js';
+
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
+    { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+  ));
+
+  const root = document.getElementById('grid');
+
+  getJerseys().then(list => {
+    if (!list.length) {
+      root.innerHTML = `<p class="label" style="grid-column:span 12;">No kits added yet.</p>`;
+      return;
+    }
+    root.innerHTML = list.map((j, i) => `
+      <div class="kit" data-reveal>
+        <div class="kit__media${j.cover ? '' : ' no-img'}">
+          ${j.cover ? `<img src="${esc(j.cover)}" alt="${esc(j.title)}" loading="lazy">` : ''}
+        </div>
+        <div class="kit__body">
+          <span class="kit__no">${esc(j.number || String(i + 1).padStart(2, '0'))}</span>
+          <div>
+            <h3 class="kit__title">${esc(j.title)}</h3>
+            ${j.club ? `<div class="kit__tag">${esc(j.club)}</div>` : ''}
+          </div>
+          ${j.season ? `<span class="kit__year">${esc(j.season)}</span>` : ''}
+        </div>
+      </div>`).join('');
+
+    revealAll(root);
+    guardImages(root);
+  });
+</script>

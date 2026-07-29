@@ -1,9 +1,11 @@
 ---
 import Social from './Social.astro';
+import { dilBul, T } from '../i18n.js';
 const year = new Date().getFullYear();
+const t = T[dilBul(Astro.url.pathname)];
 ---
 <footer class="ftr">
-  <span>© {year} muratLola — Murat Ogur · Art Director</span>
+  <span>© {year} muratLola — Murat Ogur · {t.rol}</span>
   <Social class="social social--ftr" />
   <div class="swatches" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 </footer>

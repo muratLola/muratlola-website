@@ -1,0 +1,88 @@
+---
+/* İngilizce proje detayı. İçerik Supabase'den geliyor ve şimdilik Türkçe.
+   Kod summary_en / body_en / title_en sütunlarını arıyor; tablo bu
+   sütunları kazandığında İngilizce metin otomatik devreye girer, yoksa
+   Türkçeye düşer. Böylece veritabanı değişikliği beklemeden yayına
+   çıkabiliyoruz. */
+import Base from '../../../layouts/Base.astro';
+import { getProjects } from '../../../lib/store.js';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects
+    .filter((p) => p && p.slug)
+    .map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+const { project: p } = Astro.props;
+const gallery = (p.images ?? []).filter(Boolean);
+
+const title = p.title_en || p.title;
+const summary = p.summary_en || p.summary;
+const body = p.body_en || p.body;
+
+const meta = [p.category_en || p.category, p.year].filter(Boolean).join(' · ');
+
+const raw = (summary || body || '').replace(/\s+/g, ' ').trim();
+const description = raw
+  ? (raw.length > 200 ? raw.slice(0, 197).trimEnd() + '…' : raw)
+  : `${title} — ${meta}. Concept kit and identity design by muratLola.`;
+---
+<Base title={`${title} | muratLola`} description={description} image={p.cover} type="article">
+  <section class="section" style="padding-top:12rem;">
+    <a class="btn" href="/en/projects" style="margin-bottom:3rem;"><i>←</i><span>Work</span></a>
+
+    {meta && <div class="eyebrow"><i></i><span>{meta}</span></div>}
+
+    <h1 class="h2">{title}</h1>
+
+    {p.award && <p class="kit__award" style="margin-top:1rem;">{p.award}</p>}
+
+    {summary && (
+      <p class="statement" style="font-size:clamp(1.4rem,2.8vw,2.4rem);margin-top:2rem;">{summary}</p>
+    )}
+
+    {p.cover && (
+      <div class="about__frame" style="aspect-ratio:16/9;margin-top:4rem;" data-reveal>
+        <img src={p.cover} alt={title} style="height:100%;" />
+      </div>
+    )}
+
+    {body && (
+      <p style="color:var(--dim);max-width:60ch;margin-top:3rem;white-space:pre-line;">{body}</p>
+    )}
+
+    {gallery.length > 0 && (
+      <div class="kit-grid" style="margin-top:5rem;">
+        {gallery.map((src, i) => (
+          <div class="kit">
+            <div class="kit__media" data-reveal>
+              <img src={src} alt={`${title} — ${i + 1}`} loading="lazy" />
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </section>
+
+  <script
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWork',
+      name: title,
+      description,
+      ...(p.cover ? { image: p.cover } : {}),
+      ...(p.year ? { dateCreated: String(p.year) } : {}),
+      genre: p.category ?? undefined,
+      inLanguage: 'en',
+      creator: { '@type': 'Person', name: 'Murat Ogur', alternateName: 'muratLola' },
+    })}
+  />
+</Base>
+
+<script>
+  import { guardImages } from '../../../scripts/dom.js';
+  guardImages(document);
+</script>

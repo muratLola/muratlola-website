@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Header from '../components/Header.astro';
+import { dilBul, digerDil, T } from '../i18n.js';
 import Footer from '../components/Footer.astro';
 
 const {
@@ -26,13 +27,19 @@ const {
 const cfBeacon = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
 const plausible = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
 
+const lang = dilBul(Astro.url.pathname);
+const diger = digerDil(Astro.url.pathname);
 const canonical = new URL(Astro.url.pathname, Astro.site);
+/* hreflang: aynı içeriğin diğer dildeki adresi. Bunu vermezsen Google iki
+   sayfayı birbirinin kopyası sanıp birini eler. */
+const altTr = new URL(diger.lang === 'tr' ? diger.href : Astro.url.pathname, Astro.site).href;
+const altEn = new URL(diger.lang === 'en' ? diger.href : Astro.url.pathname, Astro.site).href;
 const ogImage = image
   ? (/^https?:\/\//.test(image) ? image : new URL(image, Astro.site).href)
   : new URL('/img/murat-ogur.jpg', Astro.site).href;
 ---
 <!DOCTYPE html>
-<html lang="tr">
+<html lang={T[lang].htmlLang}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -40,10 +47,13 @@ const ogImage = image
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
   <meta name="theme-color" content="#FBFAF8" />
+  <link rel="alternate" hreflang="tr" href={altTr} />
+  <link rel="alternate" hreflang="en" href={altEn} />
+  <link rel="alternate" hreflang="x-default" href={altTr} />
   {noindex && <meta name="robots" content="noindex, nofollow" />}
 
   <meta property="og:site_name" content="muratLola" />
-  <meta property="og:locale" content="tr_TR" />
+  <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'tr_TR'} />
   <meta property="og:url" content={canonical} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />

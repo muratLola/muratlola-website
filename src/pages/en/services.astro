@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro';
+import Social from '../../components/Social.astro';
+
+const services = [
+  {
+    no: '01',
+    name: 'Kit Design & 3D',
+    lead: 'I build the concept, design the kit, then model and render it in CLO3D.',
+    items: [
+      'Concept and story development',
+      'Kit design — front, back, sleeve, collar, cuff',
+      'Custom pattern and jacquard texture',
+      'Back-print typography and number set',
+      'CLO3D modelling and cloth simulation',
+      'Rendering and presentation frames',
+    ],
+  },
+  {
+    no: '02',
+    name: 'Brand Identity',
+    lead: 'From the mark to the guidelines — every surface a brand speaks on, in one language.',
+    items: [
+      'Logo and emblem design',
+      'Colour, typography and grid system',
+      'Brand guidelines',
+      'Print applications — cards, stationery, posters',
+      'Digital applications and templates',
+    ],
+  },
+  {
+    no: '03',
+    name: 'Art Direction & Broadcast Graphics',
+    lead: "I build a club's or brand's visual language, then make that language repeatable.",
+    items: [
+      'Social media visual language and template set',
+      'Matchday and squad graphics',
+      'Campaign and advertising visuals',
+      'Broadcast graphics and motion direction',
+      'Seasonal visual strategy',
+    ],
+  },
+];
+
+const process = [
+  { no: '01', name: 'Brief and Research',
+    text: 'We talk about why, not what. The club history, the rivals, what the supporters remember — all of it goes on the table. This stage is free.' },
+  { no: '02', name: 'Concept',
+    text: 'Before drawing anything I build an idea. If I cannot write one sentence explaining why the colour, the cut and the texture are what they are, I do not continue. That is what separates design from decoration.' },
+  { no: '03', name: 'Design',
+    text: 'Once the concept is approved I draw. I present two or three directions, we pick one and sharpen it together.' },
+  { no: '04', name: '3D and Simulation',
+    text: 'The design is modelled in CLO3D with real fabric values. How the pattern falls, how the print sits, where the seams land — you see it on the garment, not on a flat.' },
+  { no: '05', name: 'Presentation and Delivery',
+    text: 'Render set, detail macros and share-ready frames. If it goes to production, technical files and colour references come with it.' },
+];
+---
+<Base
+  title="Services — muratLola"
+  description="Football kit design and 3D, brand identity, art direction and broadcast graphics for clubs and brands."
+>
+  <section class="section" style="padding-top:12rem;padding-bottom:2rem;">
+    <div class="eyebrow"><i></i><span>Services</span></div>
+    <h1 class="statement" data-reveal>
+      The <em>idea</em> first, then the design.
+    </h1>
+    <p style="color:var(--dim);max-width:52ch;margin-top:2.5rem;" data-reveal>
+      I work with football clubs and brands, and I run the process end to end —
+      the same person builds the concept, models it in 3D and prepares the
+      presentation frames.
+    </p>
+  </section>
+
+  <section class="section" style="padding-top:3rem;">
+    <div class="srv">
+      {services.map(s => (
+        <article class="srv__row" data-reveal>
+          <div class="srv__no">{s.no}</div>
+          <div class="srv__main">
+            <h2 class="srv__ad">{s.name}</h2>
+            <p class="srv__ozet">{s.lead}</p>
+          </div>
+          <ul class="srv__list">
+            {s.items.map(i => <li>{i}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="head">
+      <div>
+        <div class="eyebrow"><i></i><span>How I work</span></div>
+        <h2 class="h2" data-split-chars>Process</h2>
+      </div>
+    </div>
+
+    <ol class="proc">
+      {process.map(p => (
+        <li class="proc__step" data-reveal>
+          <span class="proc__no">{p.no}</span>
+          <div>
+            <h3 class="proc__ad">{p.name}</h3>
+            <p class="proc__metin">{p.text}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="section">
+    <div class="eyebrow"><i></i><span>Start here</span></div>
+    <a class="contact__big" href="/en/contact" data-cur="Write">
+      <span class="ln"><span data-split-chars>Let's talk</span></span>
+      <span class="ln"><span data-split-chars>about it</span></span>
+    </a>
+    <p style="color:var(--dim);max-width:46ch;margin-top:1rem;" data-reveal>
+      Pricing depends on scope. Tell me what you want to make and I will come
+      back with a scope and a quote. First conversation is free.
+    </p>
+    <div class="contact__row" data-reveal style="margin-top:2.5rem;">
+      <a href="mailto:muratlola0526@gmail.com">muratlola0526@gmail.com</a>
+      <a href="tel:+905418099987">+90 541 809 9987</a>
+    </div>
+    <Social class="social social--row" />
+  </section>
+</Base>
