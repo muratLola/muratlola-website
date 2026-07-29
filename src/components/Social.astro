@@ -1,0 +1,17 @@
+---
+/* Sosyal bağlantılar — tek yerde tanımlı.
+   Footer ve iletişim satırları aynı listeyi kullanır; hesap adresi
+   değişirse tek dosya düzeltilir. */
+export const SOCIAL = [
+  { label: 'Instagram', href: 'https://www.instagram.com/muratlolaa/' },
+  { label: 'X',         href: 'https://x.com/muratLola' },
+  { label: 'LinkedIn',  href: 'https://www.linkedin.com/in/muratlola26' },
+];
+
+const { class: cls = 'social' } = Astro.props;
+---
+<div class={cls}>
+  {SOCIAL.map(s => (
+    <a href={s.href} target="_blank" rel="noopener noreferrer">{s.label}</a>
+  ))}
+</div>

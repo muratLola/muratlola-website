@@ -416,3 +416,25 @@ b, strong { font-weight:500; }
   .srv__list { grid-column:1 / -1; padding-left:2.5rem; }
   .proc__step { grid-template-columns:3rem 1fr; }
 }
+
+/* ═══════════ SOSYAL ═══════════
+   Ziyaretçi işi beğenip takip edemiyordu: sitede hiçbir hesap bağlantısı
+   yoktu. Tek seferlik ziyaretçiyi takipçiye çeviren bağlantı bu. */
+.social { display:flex; gap:1.6rem; flex-wrap:wrap; }
+.social a {
+  font-size:var(--fs-xs); letter-spacing:.12em; text-transform:uppercase;
+  color:var(--dim); position:relative; padding-block:2px;
+  transition:color .35s var(--ease);
+}
+.social a::after {
+  content:''; position:absolute; left:0; bottom:0; width:100%; height:1px;
+  background:var(--accent); transform:scaleX(0); transform-origin:right;
+  transition:transform .45s var(--ease);
+}
+.social a:hover { color:var(--accent); }
+.social a:hover::after { transform:scaleX(1); transform-origin:left; }
+
+.social--row { margin-top:1.4rem; }
+/* Footer difference karışımında değil, kendi renklerini kullanır */
+.social--ftr a { color:var(--faint); }
+.social--ftr a:hover { color:var(--accent); }
