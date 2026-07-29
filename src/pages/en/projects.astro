@@ -13,5 +13,5 @@ import Base from '../../layouts/Base.astro';
   import { getProjects } from '../../lib/store.js';
   import { renderKits } from '../../scripts/kits.js';
   getProjects().then(list => renderKits(document.getElementById('grid'), list,
-    { empty: 'No work added yet.', base: '/en/project' }));
+    { empty: 'No work added yet.', base: '/en/project', lang: 'en' }));
 </script>

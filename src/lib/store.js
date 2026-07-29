@@ -5,6 +5,7 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { SEED_PROJECTS, SEED_JERSEYS } from './seed.js';
+import { WORKS } from './works.js';
 
 const URL  = import.meta.env.PUBLIC_SUPABASE_URL;
 const ANON = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
@@ -38,22 +39,35 @@ function shape(row) {
   };
 }
 
+/* Depodaki sabit işlerle Supabase satırlarını birleştirir.
+   Aynı slug iki yerdeyse Supabase kazanır: buradaki bir işi panelden
+   düzenleyebilmek için. Supabase satırlarının sort'u boşsa 10 sayılır,
+   yani panelden eklenen yeni işler sabit arşivin önünde durur. */
+function birlestir(rows) {
+  const varolan = new Set(rows.map(r => r.slug).filter(Boolean));
+  const hepsi = [...rows, ...WORKS.filter(w => !varolan.has(w.slug))];
+  return hepsi
+    .map((p, i) => ({ p, i, s: Number.isFinite(p.sort) ? p.sort : 10 }))
+    .sort((a, b) => a.s - b.s || a.i - b.i)   // eşitlikte özgün sıra korunsun
+    .map(x => x.p);
+}
+
 export async function getProjects() {
-  if (!supabase) return SEED_PROJECTS;
+  if (!supabase) return birlestir(SEED_PROJECTS);
   const { data, error } = await supabase
     .from('projects')
     .select('*')
     .order('sort', { ascending: true })
     .order('created_at', { ascending: false });
-  if (error) { console.warn('[projects]', error.message); return SEED_PROJECTS; }
-  // Tablo boşsa tohum veriyi göster; site asla boş görünmesin.
-  return data?.length ? data.map(shape) : SEED_PROJECTS;
+  if (error) { console.warn('[projects]', error.message); return birlestir(SEED_PROJECTS); }
+  return birlestir((data ?? []).map(shape));
 }
 
 export async function getProject(slug) {
-  if (!supabase) return SEED_PROJECTS.find(p => p.slug === slug) ?? null;
+  const sabit = WORKS.find(p => p.slug === slug) ?? SEED_PROJECTS.find(p => p.slug === slug) ?? null;
+  if (!supabase) return sabit;
   const { data, error } = await supabase.from('projects').select('*').eq('slug', slug).maybeSingle();
-  if (error || !data) return SEED_PROJECTS.find(p => p.slug === slug) ?? null;
+  if (error || !data) return sabit;
   return shape(data);
 }
 
