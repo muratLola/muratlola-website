@@ -40,12 +40,37 @@ function shape(row) {
 }
 
 /* Depodaki sabit işlerle Supabase satırlarını birleştirir.
-   Aynı slug iki yerdeyse Supabase kazanır: buradaki bir işi panelden
-   düzenleyebilmek için. Supabase satırlarının sort'u boşsa 10 sayılır,
-   yani panelden eklenen yeni işler sabit arşivin önünde durur. */
+
+   Aynı slug iki yerdeyse ALAN ALAN birleşiyor, satırın tamamı değil:
+   Supabase'in DOLU alanları kazanır, boş bıraktıklarını depodaki kopya
+   tamamlar. Önce satırın tamamını değiştiriyorduk ve şu olmuştu —
+   Arsenal ile Beşiktaş Supabase'de yaşıyor ama tabloda title_en/body_en
+   sütunları yok; depoya İngilizce metin yazdığımız hâlde /en sayfaları
+   Türkçe kalıyordu, çünkü Supabase satırı boş İngilizce alanlarıyla
+   birlikte hepsini eziyordu.
+
+   Sıralama: Supabase satırının kendi sort'u varsa o, yoksa depodaki
+   karşılığının sort'u, o da yoksa 10 (panelden eklenen yeni işler
+   sabit arşivin önünde dursun diye). */
+function dolu(v) {
+  if (v === null || v === undefined || v === '') return false;
+  if (Array.isArray(v) && v.length === 0) return false;
+  return true;
+}
+
 function birlestir(rows) {
-  const varolan = new Set(rows.map(r => r.slug).filter(Boolean));
-  const hepsi = [...rows, ...WORKS.filter(w => !varolan.has(w.slug))];
+  const sabit = new Map(WORKS.map(w => [w.slug, w]));
+
+  const birlesik = rows.map((r) => {
+    const s = r.slug ? sabit.get(r.slug) : null;
+    if (!s) return r;
+    sabit.delete(r.slug);
+    const out = { ...s };
+    for (const [k, v] of Object.entries(r)) if (dolu(v)) out[k] = v;
+    return out;
+  });
+
+  const hepsi = [...birlesik, ...sabit.values()];
   return hepsi
     .map((p, i) => ({ p, i, s: Number.isFinite(p.sort) ? p.sort : 10 }))
     .sort((a, b) => a.s - b.s || a.i - b.i)   // eşitlikte özgün sıra korunsun

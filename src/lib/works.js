@@ -20,7 +20,7 @@ export const WORKS = [
      Supabase erişilebilirse oradaki satır bunu ezer. */
   {
     slug: 'royal-artillery-arsenal',
-    sort: 5,
+    sort: 6,
     title: 'ROYAL ARTILLERY (Arsenal)',
     category: 'Forma Tasarımı',
     year: 2026,
@@ -45,7 +45,7 @@ export const WORKS = [
 
   {
     slug: 'besiktas-sumi',
-    sort: 6,
+    sort: 5,
     title: 'SUMI — Beşiktaş × adidas × Y-3',
     category: 'Forma Tasarımı',
     year: 2026,
