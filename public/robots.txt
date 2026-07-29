@@ -3,4 +3,38 @@ Allow: /
 Disallow: /admin
 Disallow: /proje?
 
+# ── Yapay zekâ eğitim tarayıcıları ──────────────────────────────
+# Sitedeki işler görsel: forma tasarımları, illüstrasyonlar, marka
+# çalışmaları. Bunların model eğitmek için kazınmasını istemiyoruz.
+#
+# Buradakiler YALNIZCA eğitim tarayıcıları. Arama ve asistan botları
+# (Googlebot, OAI-SearchBot, ChatGPT-User, PerplexityBot) kasıtlı
+# olarak DIŞARIDA — onlar siteyi bulunur kılıyor, engellenmemeli.
+# Google-Extended ve Applebot-Extended de yalnızca eğitimi kapatır,
+# Google Araması ve Siri sonuçlarını etkilemez.
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
 Sitemap: https://muratlola.com/sitemap.xml
