@@ -1,0 +1,144 @@
+---
+import Base from '../layouts/Base.astro';
+
+const hizmetler = [
+  {
+    no: '01',
+    ad: 'Forma Tasarımı & 3D',
+    ozet: 'Konsepti kuruyorum, formayı tasarlıyorum, CLO3D\'de modelleyip render alıyorum.',
+    kalemler: [
+      'Konsept ve hikâye kurgusu',
+      'Forma tasarımı — ön, arka, kol, yaka, manşet',
+      'Özel desen ve jakar dokusu üretimi',
+      'Sırt tipografisi ve numara seti',
+      'CLO3D modelleme ve kumaş simülasyonu',
+      'Render ve sunum görselleri',
+    ],
+  },
+  {
+    no: '02',
+    ad: 'Kurumsal Kimlik',
+    ozet: 'Logodan kılavuza, markanın konuştuğu her yüzeyi tek bir dile bağlıyorum.',
+    kalemler: [
+      'Logo ve amblem tasarımı',
+      'Renk, tipografi ve grid sistemi',
+      'Kurumsal kimlik kılavuzu',
+      'Basılı uygulamalar — kartvizit, evrak, afiş',
+      'Dijital uygulamalar ve şablonlar',
+    ],
+  },
+  {
+    no: '03',
+    ad: 'Art Direction & Yayın Grafiği',
+    ozet: 'Kulübün ya da markanın görsel dilini kuruyorum, sonra o dili tekrarlanabilir hâle getiriyorum.',
+    kalemler: [
+      'Sosyal medya görsel dili ve şablon seti',
+      'Maç günü ve kadro grafikleri',
+      'Kampanya ve reklam görselleri',
+      'Yayın grafiği ve hareketli tasarım yönlendirmesi',
+      'Sezonluk görsel strateji',
+    ],
+  },
+];
+
+const surec = [
+  {
+    no: '01',
+    ad: 'Brief ve Araştırma',
+    metin: 'Ne istediğini değil, neden istediğini konuşuyoruz. Kulübün tarihi, rakipleri, taraftarın hafızası — hepsi masaya geliyor. Bu aşama ücretsiz.',
+  },
+  {
+    no: '02',
+    ad: 'Konsept',
+    metin: 'Tasarıma geçmeden önce bir fikir kuruyorum. Renk, kesim ve dokunun neden öyle olduğunu anlatan bir cümle çıkmıyorsa devam etmiyorum. Süsleme ile tasarımı ayıran şey bu.',
+  },
+  {
+    no: '03',
+    ad: 'Tasarım',
+    metin: 'Konsept onaylandıktan sonra çiziyorum. İki ya da üç yön sunuyorum, birini seçip birlikte keskinleştiriyoruz.',
+  },
+  {
+    no: '04',
+    ad: '3D ve Simülasyon',
+    metin: 'Tasarım CLO3D\'de gerçek kumaş değerleriyle modelleniyor. Desen nasıl düşüyor, baskı nasıl duruyor, dikiş nereye geliyor — ekranda değil, üründe görüyorsun.',
+  },
+  {
+    no: '05',
+    ad: 'Sunum ve Teslim',
+    metin: 'Render seti, detay makroları ve paylaşıma hazır görseller. Üretime gidecekse teknik dosyalar ve renk kodlarıyla birlikte.',
+  },
+];
+---
+<Base
+  title="Hizmetler — muratLola"
+  description="Forma tasarımı ve 3D, kurumsal kimlik, art direction ve yayın grafiği. Spor kulüpleri ve markalar için uçtan uca görsel tasarım."
+>
+  <section class="section" style="padding-top:12rem;padding-bottom:2rem;">
+    <div class="eyebrow"><i></i><span>Hizmetler</span></div>
+    <h1 class="statement" data-reveal>
+      Önce <em>fikir</em>, sonra tasarım.
+    </h1>
+    <p style="color:var(--dim);max-width:52ch;margin-top:2.5rem;" data-reveal>
+      Spor kulüpleri ve markalar için çalışıyorum. Süreci uçtan uca yürütüyorum —
+      konsepti kuran da, 3D'de modelleyen de, sunum görselini hazırlayan da benim.
+    </p>
+  </section>
+
+  <!-- ═══ HİZMETLER ═══ -->
+  <section class="section" style="padding-top:3rem;">
+    <div class="srv">
+      {hizmetler.map(h => (
+        <article class="srv__row" data-reveal>
+          <div class="srv__no">{h.no}</div>
+          <div class="srv__main">
+            <h2 class="srv__ad">{h.ad}</h2>
+            <p class="srv__ozet">{h.ozet}</p>
+          </div>
+          <ul class="srv__list">
+            {h.kalemler.map(k => <li>{k}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- ═══ SÜREÇ ═══ -->
+  <section class="section">
+    <div class="head">
+      <div>
+        <div class="eyebrow"><i></i><span>Nasıl çalışıyorum</span></div>
+        <h2 class="h2" data-split-chars>Süreç</h2>
+      </div>
+    </div>
+
+    <ol class="proc">
+      {surec.map(s => (
+        <li class="proc__step" data-reveal>
+          <span class="proc__no">{s.no}</span>
+          <div>
+            <h3 class="proc__ad">{s.ad}</h3>
+            <p class="proc__metin">{s.metin}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- ═══ ÇAĞRI ═══ -->
+  <section class="section">
+    <div class="eyebrow"><i></i><span>Başlayalım</span></div>
+    <a class="contact__big" href="/iletisim" data-cur="Yaz">
+      <span class="ln"><span data-split-chars>Projeni</span></span>
+      <span class="ln"><span data-split-chars>konuşalım</span></span>
+    </a>
+    <p style="color:var(--dim);max-width:46ch;margin-top:1rem;" data-reveal>
+      Fiyat işin kapsamına göre değişiyor. Ne yapmak istediğini yaz, sana
+      kapsam ve teklif çıkarayım. İlk görüşme ücretsiz.
+    </p>
+    <div class="contact__row" data-reveal style="margin-top:2.5rem;">
+      <a href="mailto:muratlola0526@gmail.com">muratlola0526@gmail.com</a>
+      <a href="tel:+905418099987">+90 541 809 9987</a>
+      <span>Elazığ / Türkiye</span>
+    </div>
+  </section>
+</Base>

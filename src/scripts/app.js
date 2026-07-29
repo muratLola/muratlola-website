@@ -33,9 +33,13 @@ if (fine && !reduced) {
   document.body.append(dot, txt);
 
   let mx = innerWidth / 2, my = innerHeight / 2;
-  let px = mx, py = my;          // damlanın kendi konumu
+  let px = mx, py = my;          // nişanın kendi konumu
   let hedefUzama = 0, uzama = 0, aci = 0;
   let etiket = false;
+  // Nişan sürekli ve çok yavaş döner; hızlanınca dönüş sıkılaşır ve halka
+  // hafifçe küçülür — alet "kilitleniyor" hissi verir.
+  let donus = 0;
+  let hedefBuyume = 1, buyume = 1;
 
   addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
@@ -56,10 +60,11 @@ if (fine && !reduced) {
     hedefUzama = Math.min(hiz / 34, .55);
     uzama += (hedefUzama - uzama) * .18;
 
+    donus += .28 + hiz * .10;
+    buyume += (hedefBuyume - buyume) * .16;
     gsap.set(dot, {
-      x: px, y: py, rotation: aci,
-      scaleX: (etiket ? 0 : 1) + uzama,
-      scaleY: (etiket ? 0 : 1) - uzama * .62,
+      x: px, y: py, rotation: donus,
+      scale: (etiket ? 0 : buyume) - uzama * .40,
     });
 
     // Kuyruk halkaları sırayla peşinden sürüklenir
@@ -72,10 +77,11 @@ if (fine && !reduced) {
     }
   });
 
-  // Bağlantı üstünde damla büyür
+  // Bağlantı üstünde nişan açılır. Hedefi değişken üzerinden veriyoruz:
+  // her karede gsap.set çalıştığı için doğrudan tween scale'i eziyordu.
   document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => { if (!etiket) gsap.to(dot, { scale: 2.4, duration: .35 }); });
-    el.addEventListener('mouseleave', () => { if (!etiket) gsap.to(dot, { scale: 1, duration: .35 }); });
+    el.addEventListener('mouseenter', () => { hedefBuyume = 1.75; });
+    el.addEventListener('mouseleave', () => { hedefBuyume = 1; });
   });
 
   // İşlerin üstünde damla kaybolur, yerine etiketli disk gelir

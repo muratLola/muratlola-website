@@ -7,6 +7,7 @@ const STATIC = [
   { path: '', priority: '1.0', freq: 'monthly' },
   { path: 'projeler', priority: '0.9', freq: 'weekly' },
   { path: 'formalar', priority: '0.9', freq: 'weekly' },
+  { path: 'hizmetler', priority: '0.9', freq: 'monthly' },
   { path: 'hakkimda', priority: '0.6', freq: 'yearly' },
   { path: 'iletisim', priority: '0.5', freq: 'yearly' },
 ];

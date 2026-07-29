@@ -71,12 +71,40 @@ b, strong { font-weight:500; }
    Beyaz sayesinde açık/koyu modda ayrı kural gerekmez. */
 #cur, .cur-tail {
   position:fixed; top:0; left:0; z-index:95;
-  border-radius:50%; background:#fff;
   pointer-events:none; mix-blend-mode:difference;
   will-change:transform;
 }
-#cur { width:12px; height:12px; margin:-6px 0 0 -6px; }
-.cur-tail { width:12px; height:12px; margin:-6px 0 0 -6px; z-index:94; }
+
+/* Baskı nişanı: matbaanın renk ayrımını hizalamak için kullandığı işaret.
+   Grafik tasarımcının kendi aleti — sıradan bir daireden hem daha anlamlı
+   hem daha ayırt edici. Halka + dört çentik, ortası boş kalır ki imlecin
+   altındaki şeyi kapatmasın. */
+#cur {
+  width:34px; height:34px; margin:-17px 0 0 -17px;
+  border:1.4px solid #fff; border-radius:50%;
+  background:none;
+}
+#cur::before, #cur::after {
+  content:''; position:absolute; background:#fff;
+}
+/* yatay çentikler — halkanın iki yanından dışarı taşar */
+#cur::before {
+  top:50%; left:-10px; right:-10px; height:1.4px; margin-top:-.7px;
+  -webkit-mask:linear-gradient(90deg,#000 0 26%,transparent 26% 74%,#000 74% 100%);
+          mask:linear-gradient(90deg,#000 0 26%,transparent 26% 74%,#000 74% 100%);
+}
+/* dikey çentikler */
+#cur::after {
+  left:50%; top:-10px; bottom:-10px; width:1.4px; margin-left:-.7px;
+  -webkit-mask:linear-gradient(180deg,#000 0 26%,transparent 26% 74%,#000 74% 100%);
+          mask:linear-gradient(180deg,#000 0 26%,transparent 26% 74%,#000 74% 100%);
+}
+
+/* Kuyruk mürekkep kalır: hassas alet önde, mürekkep arkada. */
+.cur-tail {
+  width:9px; height:9px; margin:-4.5px 0 0 -4.5px; z-index:94;
+  border-radius:50%; background:#fff;
+}
 
 #cur-txt {
   position:fixed; top:0; left:0; z-index:96;
@@ -154,8 +182,11 @@ b, strong { font-weight:500; }
 .hero__type h1, .hero__type .ln {
   font-size:inherit; font-weight:inherit; font-family:inherit; line-height:inherit;
 }
-/* Dikey padding: overflow:hidden Türkçe İ'nin noktasını kırpar. */
-.hero__type .ln { display:block; overflow:hidden; padding:.2em 0 .14em; margin:-.2em 0 -.14em; }
+/* Dikey padding: overflow:hidden hem Türkçe İ'nin noktasını hem de alttaki
+   kuyrukları kırpıyor. line-height .86 satır kutusunu punto boyunun altına
+   indirdiği için "Ogur"daki g'nin kuyruğu taşıyor — alt pay bunu karşılamalı,
+   yoksa isim alttan kesik görünür. */
+.hero__type .ln { display:block; overflow:hidden; padding:.24em 0 .30em; margin:-.24em 0 -.30em; }
 .hero__type .ln > span { display:block; }
 /* Harfler splitChars() ile yeniden kurulunca stili buradan miras alır. */
 .hero__type .is-accent { font-style:italic; color:var(--accent); }
@@ -186,7 +217,7 @@ b, strong { font-weight:500; }
   font-size:var(--fs-h2); line-height:.92; letter-spacing:-.015em;
 }
 .h2--sm { font-size:clamp(1.8rem,3.4vw,3rem); line-height:1.1; }
-.ln { display:block; overflow:hidden; padding:.2em 0 .14em; margin:-.2em 0 -.14em; }
+.ln { display:block; overflow:hidden; padding:.24em 0 .30em; margin:-.24em 0 -.30em; }
 .ln > span { display:block; }
 
 /* Editoryal ifade — işler yazının arasından gelir */
@@ -335,3 +366,53 @@ b, strong { font-weight:500; }
 .theme .t-sun  { display:none; }
 [data-theme="dark"] .theme .t-sun  { display:block; }
 [data-theme="dark"] .theme .t-moon { display:none; }
+
+/* ═══════════ HİZMETLER ═══════════
+   Satır düzeni: numara | başlık+özet | kalem listesi. Kart yerine satır,
+   çünkü sitenin geri kalanı editoryal — kutu kullanmak dili bozardı. */
+.srv { border-top:1px solid var(--line); }
+.srv__row {
+  display:grid; grid-template-columns:4rem 1fr 1fr;
+  gap:clamp(1.5rem,4vw,4rem);
+  padding:clamp(2.5rem,5vw,4rem) 0;
+  border-bottom:1px solid var(--line);
+  transition:background-color .5s var(--ease);
+}
+.srv__row:hover { background:var(--paper2); }
+.srv__no { font-size:var(--fs-xs); letter-spacing:.1em; color:var(--faint); padding-top:.5rem; }
+.srv__ad {
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.6rem,3.2vw,2.6rem); line-height:1.08; letter-spacing:-.015em;
+}
+.srv__ozet { color:var(--dim); margin-top:1rem; max-width:34ch; font-size:.95rem; }
+.srv__list { list-style:none; display:flex; flex-direction:column; gap:.75rem; padding-top:.6rem; }
+.srv__list li {
+  position:relative; padding-left:1.4rem; color:var(--dim); font-size:.92rem;
+}
+.srv__list li::before {
+  content:''; position:absolute; left:0; top:.62em;
+  width:.5rem; height:1px; background:var(--accent);
+}
+
+/* ═══════════ SÜREÇ ═══════════ */
+.proc { list-style:none; margin-top:4rem; counter-reset:proc; }
+.proc__step {
+  display:grid; grid-template-columns:5rem 1fr; gap:clamp(1.5rem,4vw,3rem);
+  padding:clamp(2rem,4vw,3rem) 0; border-top:1px solid var(--line);
+  max-width:62rem;
+}
+.proc__no {
+  font-family:var(--f-display); font-size:clamp(1.6rem,3vw,2.4rem);
+  color:var(--faint); line-height:1;
+}
+.proc__ad {
+  font-family:var(--f-display); font-weight:400;
+  font-size:clamp(1.2rem,2.2vw,1.7rem); margin-bottom:.7rem;
+}
+.proc__metin { color:var(--dim); max-width:52ch; font-size:.95rem; }
+
+@media (max-width:860px) {
+  .srv__row { grid-template-columns:2.5rem 1fr; }
+  .srv__list { grid-column:1 / -1; padding-left:2.5rem; }
+  .proc__step { grid-template-columns:3rem 1fr; }
+}
