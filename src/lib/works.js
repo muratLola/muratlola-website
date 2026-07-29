@@ -12,6 +12,62 @@
    böylece en yeni işler (Arsenal, Beşiktaş) listenin başında kalır. */
 
 export const WORKS = [
+  /* Bu ikisi Supabase'de de duruyor ve panelden düzenlenebilir. Buradaki
+     kopya bir yedek: derleme sırasında Supabase'e ulaşılamazsa (değişken
+     eksikse, ağ düşerse) site bu iki işi SESSİZCE düşürüyordu — iki kez
+     başımıza geldi. Görseller Supabase storage'ın genel adreslerinden
+     geliyor, o yüzden istemci yapılandırılmasa da yükleniyorlar.
+     Supabase erişilebilirse oradaki satır bunu ezer. */
+  {
+    slug: 'royal-artillery-arsenal',
+    sort: 5,
+    title: 'ROYAL ARTILLERY (Arsenal)',
+    category: 'Forma Tasarımı',
+    year: 2026,
+    cover: 'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785166922160-kapak-fotografik.jpg',
+    images: [
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785166923736-galeri-01-renkler.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785166923736-galeri-02-odegaard.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785166923736-galeri-03-salon.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785166923736-galeri-04-apolet.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785166923736-galeri-05-muhur.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785166923736-galeri-06-davul.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785166923736-galeri-07-forma-on.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785166923736-galeri-08-forma-arka.jpg',
+    ],
+    summary: "Arsenal, adını aldığı alaya göre giydirildi: rütbe laciverti ve eskimiş altın.",
+    body: "1886'da Thames kıyısındaki bir cephane fabrikasında, gün boyu Kraliyet için top döken işçiler bu kez bir takım kurdu. Adını Royal Arsenal koydular. Fabrika çoktan yok. İsim kaldı. Top kaldı. Değişen tek şey hep üniforma oldu.\n\nBu konsept o tarihi, aslında hep sahip olduğu tek paletle giydiriyor: alay laciverti ve eskimiş altın.\n\nBuradaki her karar bir tören üniformasından geliyor, bir futbol formasından değil.\n\nAltın raglan panel bir süsleme değil — apolet. Bir subayın kazandığı ve sonra herkesin okuması için taşıdığı omuz işareti. Üç bant altının üstüne lacivert olarak ters akıyor, çünkü rütbe şeridi üniformaya dikilir, asla basılmaz. Manşette lacivert-altın kordon var, doğrudan tören kıyafetinden alınmış. Gövdede ise ton üstüne ton işlenmiş, ancak ışık kayarken fark ettiğin bir şevron: rütbenin en eski işareti, tekrar eden, sessiz, kazanılmış.\n\nArma yok.\n\nSadece top kaldı. Çünkü top armadan da, stadyumdan da, hepsinden de önce oradaydı. Bir kulübü yeterince geriye soyduğunda adını aldığı şeyi bulursun. Arsenal'de o şey bir silah.\n\nÜniforma kostüm değildir. Bir şeye benzemek için giyilmez. Zaten o olduğun için giyilir.\n\nRütbe kazanılır. Taşınmaz.\n\n—\n\nForma CLO3D'de tasarlandı ve modellendi. Fotoğrafik sahneler yapay zekâ ile üretildi (Google Gemini). Konsept çalışmasıdır; Arsenal FC, adidas veya Emirates ile bağlantısı yoktur.",
+    title_en: 'ROYAL ARTILLERY (Arsenal)',
+    category_en: 'Kit design',
+    summary_en: "Arsenal dressed as the regiment it was named after: regimental navy and worn gold.",
+    body_en: "In 1886, in an armaments factory on the Thames, workers who spent their days casting cannon for the Crown put together a football team. They called it Royal Arsenal. The factory is long gone. The name stayed. The cannon stayed. The only thing that ever changed was the uniform.\n\nThis concept dresses that history in the one palette it always had: regimental navy and worn gold.\n\nEvery decision here comes from a ceremonial uniform, not a football shirt.\n\nThe gold raglan panel isn't decoration — it's an epaulette. The shoulder mark an officer earns and then carries for everyone to read. The three stripes run in reverse, navy over gold, because a rank stripe is stitched onto a uniform, never printed. The cuff carries a navy-and-gold cord lifted straight from dress uniform. Across the body, tone on tone, sits a chevron you only catch as the light moves across it: the oldest mark of rank — repeating, quiet, earned.\n\nThere is no crest.\n\nOnly the cannon. Because the cannon was there before the crest, before the stadium, before all of it. Strip a club back far enough and you find the thing it was named after. At Arsenal, that thing is a weapon.\n\nA uniform is not a costume. You don't wear it to look like something. You wear it because you already are it.\n\nRank is earned, not worn.\n\n—\n\nDesigned and modelled in CLO3D. Photographic scenes generated with AI (Google Gemini). Concept work; not affiliated with Arsenal FC, adidas or Emirates.",
+  },
+
+  {
+    slug: 'besiktas-sumi',
+    sort: 6,
+    title: 'SUMI — Beşiktaş × adidas × Y-3',
+    category: 'Forma Tasarımı',
+    year: 2026,
+    cover: 'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785272570406-kapak-atolye.jpg',
+    images: [
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785272571246-galeri-01-tezgah.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785272571246-galeri-02-trossard.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785272571246-galeri-03-atolye.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785272571246-galeri-04-muhur.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785272571246-galeri-05-firca.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785272571246-galeri-06-askida.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785272571246-galeri-07-kolucu.jpg',
+      'https://tjrnymoxnyrzcpembyxl.supabase.co/storage/v1/object/public/media/projects/1785272571246-galeri-08-murekkep.jpg',
+    ],
+    summary: "Sumi-e'de fırça kâğıda bir kez dokunur; Beşiktaş da siyahı bir kez seçti.",
+    body: "Sumi-e'de fırça kâğıda bir kez dokunur. Düzeltemezsin, üstünü boyayamazsın, geri alamazsın. İkinci deneme yoktur. Kâğıt darbeyi kabul eder ve iş odur.\n\n1903'te Beşiktaş'ta bir kulüp kuruldu. 1913'te siyahı seçti. İkisi de bir daha gözden geçirilmedi.\n\nFormanın fikri bu.\n\nGövdeye desen basılmadı — dokundu. Tek yönde çekilmiş bir mürekkep alanı, ton üstüne ton, yalnızca ışık üzerinden kayarken görünen. Kendini ilan etmiyor; yaklaşman ve ışığın doğru olması gerekiyor. Kol ucu, yakanın ribanası, omuzdaki bantlar aynı elin devamı.\n\nYohji Yamamoto siyah için “aynı anda hem alçakgönüllü hem kibirli” der. Bir kariyer boyunca bağırmayı reddetti. Beşiktaş aynı reddedişi 1913'ten beri giyiyor. İki siyah, tek fırça — ve Y-3 zaten adidas ile Yohji'nin ortak markası olduğu için bu iş birliği uydurma değil, olabilir bir şey.\n\nBir de kırmızı var.\n\n1913'ten önce Beşiktaş kırmızı-beyaz giyiyordu. Ama buradaki kırmızı bir nostalji göndermesi değil. Japon geleneğinde iş bitince sanatçı vermilyon mührünü kâğıda bastırır: süs değil, imza. “Bu benim, ve tamamlandı” demektir. Armada, manşette ve sırtta duran kırmızı o mühür.\n\nTek darbe. Düzeltme yok.\n\n—\n\nForma CLO3D'de tasarlandı ve modellendi; desenler, kabartma haritaları ve sırt tipografisi bu proje için üretildi. Fotoğrafik sahneler yapay zekâ ile oluşturuldu (Google Gemini). Konsept çalışmasıdır; Beşiktaş JK, adidas veya Y-3 ile bağlantısı yoktur.",
+    title_en: 'SUMI — Beşiktaş × adidas × Y-3',
+    category_en: 'Kit design',
+    summary_en: "In sumi-e the brush touches the paper once; Beşiktaş chose black once.",
+    body_en: "In sumi-e the brush touches the paper once. You cannot correct it, paint over it, or take it back. There is no second attempt. The paper accepts the stroke and that is the work.\n\nIn 1903 a club was founded in Beşiktaş. In 1913 it chose black. Neither was ever revisited.\n\nThat is the idea behind the shirt.\n\nThe pattern is not printed onto the body — it is brushed. A field of ink pulled in a single direction, tone on tone, visible only as the light travels across it. It doesn't announce itself; you have to be close and the light has to be right. Cuff, collar rib and shoulder stripes continue the same hand.\n\nYohji Yamamoto calls black “modest and arrogant at the same time”. He spent a career refusing to shout. Beşiktaş has worn that same refusal since 1913. Two blacks, one brush — and since Y-3 is already the joint label of adidas and Yohji, this collaboration isn't invented, it's plausible.\n\nThen there is the red.\n\nBefore 1913 Beşiktaş wore red and white. But the red here isn't a nostalgia reference. In the Japanese tradition, when the work is finished the artist presses a vermilion seal into the paper: not ornament, a signature. It says “this is mine, and it is complete.” The red on the crest, the cuff and the back is that seal.\n\nOne stroke. No corrections.\n\n—\n\nDesigned and modelled in CLO3D; the patterns, emboss maps and back typography were produced for this project. Photographic scenes generated with AI (Google Gemini). Concept work; not affiliated with Beşiktaş JK, adidas or Y-3.",
+  },
+
   {
     slug: 'fenerium-urun-gorsellestirme',
     sort: 20,
