@@ -62,6 +62,19 @@
       <label>Özet<input id="p-summary" /></label>
       <label>Açıklama<textarea id="p-body" rows="5"></textarea></label>
 
+      <!-- İngilizce sürüm. Boş bırakılırsa /en sayfaları Türkçe metne düşer,
+           yani doldurmak zorunlu değil. Sütunlar tabloda yoksa boş alanlar
+           gönderilmiyor; dolu gönderirsen Supabase hata verir, önce SQL. -->
+      <details class="en-block">
+        <summary>İngilizce (/en sayfaları için)</summary>
+        <div class="row">
+          <label>Title (EN)<input id="p-title-en" /></label>
+          <label>Category (EN)<input id="p-category-en" placeholder="Kit Design" /></label>
+        </div>
+        <label>Summary (EN)<input id="p-summary-en" /></label>
+        <label>Body (EN)<textarea id="p-body-en" rows="5"></textarea></label>
+      </details>
+
       <label>Kapak görseli
         <input type="file" id="p-cover" accept="image/*" />
       </label>
@@ -305,6 +318,10 @@
     $('p-award').value = p.award ?? '';
     $('p-summary').value = p.summary ?? '';
     $('p-body').value = p.body ?? '';
+    $('p-title-en').value = p.title_en ?? '';
+    $('p-category-en').value = p.category_en ?? '';
+    $('p-summary-en').value = p.summary_en ?? '';
+    $('p-body-en').value = p.body_en ?? '';
     $('p-featured').checked = !!p.featured;
     $('p-cover-prev').innerHTML = p.cover ? `<img src="${esc(p.cover)}" alt="">` : '';
     $('p-images-prev').innerHTML = (p.images ?? []).map(s => `<img src="${esc(s)}" alt="">`).join('');
@@ -353,6 +370,16 @@
         body: $('p-body').value.trim() || null,
         featured: $('p-featured').checked,
       };
+      /* İngilizce alanlar yalnızca doluysa gönderilir. Sütunlar tabloya
+         henüz eklenmediyse boş alan göndermek Supabase'de hata verirdi;
+         böylece SQL çalıştırılmadan da panel çalışmaya devam eder. */
+      [['title_en','p-title-en'], ['category_en','p-category-en'],
+       ['summary_en','p-summary-en'], ['body_en','p-body-en']]
+        .forEach(([kolon, alan]) => {
+          const v = $(alan).value.trim();
+          if (v) row[kolon] = v;
+        });
+
       if ($('p-id').value) row.id = $('p-id').value;
 
       // Yeni kapak yoksa mevcut HAM YOLU koru. Buraya shape()'in ürettiği

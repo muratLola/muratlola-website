@@ -130,3 +130,16 @@ a.ghost {
   max-height: 160px; overflow: auto;
 }
 .diag:empty { display: none; }
+
+/* İngilizce blok — varsayılan kapalı, formu uzatmasın */
+.en-block {
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 6px;
+  padding: .2rem .9rem;
+  margin: .2rem 0 .6rem;
+}
+.en-block > summary {
+  cursor: pointer; padding: .7rem .2rem;
+  font-size: .82rem; letter-spacing: .06em; opacity: .75;
+}
+.en-block[open] > summary { opacity: 1; margin-bottom: .4rem; }

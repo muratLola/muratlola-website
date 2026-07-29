@@ -138,10 +138,12 @@ b, strong { font-weight:500; }
 .hdr {
   position:fixed; top:0; left:0; right:0; z-index:50;
   display:flex; align-items:center; justify-content:space-between;
+  gap:clamp(1.5rem,4vw,3.5rem);
   padding:1.5rem var(--pad);
   mix-blend-mode:difference; color:#fff;
 }
 .hdr a { color:#fff; }
+.brand { flex:none; }
 .brand__name { font-family:var(--f-display); font-size:1.35rem; letter-spacing:.02em; }
 .nav { display:flex; gap:2.2rem; }
 .nav a {
@@ -461,11 +463,13 @@ b, strong { font-weight:500; }
 .social--row { margin-top:1.8rem; gap:1.9rem; }
 
 /* ═══════════ DİL DEĞİŞTİRİCİ ═══════════ */
+/* Sağdaki kontroller tek grup: başlık böylece 3 öğeli kalır ve
+   space-between marka ile menüyü birbirine yapıştırmaz. */
+.hdr__tools { display:flex; align-items:center; gap:1rem; flex:none; }
 .lang {
   font-size:.72rem; letter-spacing:.12em; font-weight:500;
-  padding:.35rem .6rem; margin-left:auto; margin-right:.4rem;
+  padding:.35rem .6rem; line-height:1;
   border:1px solid rgba(255,255,255,.35); border-radius:2px;
   transition:border-color .35s var(--ease), background-color .35s var(--ease);
 }
 .lang:hover { border-color:#fff; background:rgba(255,255,255,.12); }
-@media (max-width:900px) { .lang { margin-left:0; } }
