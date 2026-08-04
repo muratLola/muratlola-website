@@ -18,6 +18,37 @@ export const WORKS = [
      başımıza geldi. Görseller Supabase storage'ın genel adreslerinden
      geliyor, o yüzden istemci yapılandırılmasa da yükleniyorlar.
      Supabase erişilebilirse oradaki satır bunu ezer. */
+  /* PSG × Spider-Man. sort 4: Arsenal (6) ve Beşiktaş'ın (5) önüne geçiyor,
+     listenin başında duruyor. Görseller depoda, Supabase gerekmiyor. */
+  {
+    slug: 'psg-spider-man',
+    sort: 4,
+    title: 'PSG × SPIDER-MAN',
+    category: 'Forma konsepti · CLO3D',
+    year: 2026,
+    cover: '/is/psg-spider-man/kapak.jpg',
+    images: [
+      '/is/psg-spider-man/01.jpg',
+      '/is/psg-spider-man/02.jpg',
+      '/is/psg-spider-man/03.jpg',
+      '/is/psg-spider-man/04.jpg',
+      '/is/psg-spider-man/05.jpg',
+      '/is/psg-spider-man/06.jpg',
+      '/is/psg-spider-man/07.jpg',
+      '/is/psg-spider-man/08.jpg',
+    ],
+    summary:
+      "Spider-Man Paris'e hiç gitmedi. Ama yukarı bakınca Paris zaten hep onun şehriydi.",
+    body:
+      "Su deposu yerine çinko dam. Yangın merdiveni yerine baca öbeği. Ve hepsinin üstünde bina bile olmayan bir şey: Gustave Eiffel demirden bir ağ örüp şehrin ortasına dikmiş.\n\nYeraltında da aynısı. Hector Guimard 1900'de metro girişleri için dökme demiri sarmaşığa çevirdi — Gaudí'nin Barcelona'da çalıştığı yıllar. O yeşil kemerlere gece bakınca ağdan başka bir şey görmek zor.\n\nBu forma Paris'i ziyaret eden Spider-Man değil. Zaten ağ gibi kurulmuş bir şehrin bunu kabul etmesi.\n\nDesen bir baskı değil, örgünün kendisi. İlmekler ağın geçtiği yerde yükselip sıkışıyor, renk neredeyse hiç değişmiyor: düz ışıkta sade lacivert bir forma, ışık yandan vurunca ağ ortaya çıkıyor. 600 mm'lik karo üzerinde 372 × 455 ilmek var ve her biri tek tek çizildi.\n\nAğın göbeği karonun köşesine yerleştirildi. Dört karo birleştiğinde köşedeki dört çeyrek tam bir ağ kuruyor — yani desen tekrar ederken merkez tekrar etmiyor. Bir örümcek ağını dikişsiz döşemenin tek yolu bu.\n\nRenkler kulübün resmî paleti: lacivert #004170, beyaz, kırmızı #DA291C, altın #CEAB5D. Spider-Man'in kırmızı-mavisi zaten bu paletin içindeydi; kulüp seçimi oradan çıktı.\n\n—\n\nForma CLO3D'de kuruldu, kumaş haritaları Python ile üretildi. Sahneler yapay zekâ ile oluşturuldu (Google Gemini, ChatGPT) ve Photoshop'ta renklendirildi. Konsept çalışmasıdır; Paris Saint-Germain, Nike veya Marvel ile bağlantısı yoktur.",
+    title_en: 'PSG × SPIDER-MAN',
+    category_en: 'Kit concept · CLO3D',
+    summary_en:
+      "Spider-Man has never set foot in Paris. But look up, and Paris has always been his city.",
+    body_en:
+      "Zinc roofs instead of water towers. Chimney pots instead of fire escapes. And above all of it something that isn't a building at all: Gustave Eiffel wove a web out of iron and stood it up in the middle of the city.\n\nUnderground, the same. Hector Guimard bent cast iron into vines and tendrils for the Métro entrances in 1900 — the same years Gaudí was working in Barcelona. Look at one of those green arches at night and try to see anything other than a web.\n\nSo this kit isn't Spider-Man visiting Paris. It's a city that was always built like a web, finally admitting it.\n\nThe pattern isn't printed, it's knitted. The loops rise and tighten where the web runs and the colour barely changes: flat navy under even light, the web appearing only when the light comes from the side. There are 372 × 455 loops across a 600 mm tile, each one drawn individually.\n\nThe hub of the web sits at the corner of the tile. When four tiles meet, the four quarters at that corner form one complete web — so the pattern repeats without the centre repeating. It's the only way to tile a spider's web seamlessly.\n\nColours are the club's official palette: navy #004170, white, red #DA291C, gold #CEAB5D. Spider-Man's red and blue were already inside it; that's where the club choice came from.\n\n—\n\nBuilt in CLO3D, fabric maps generated in Python. Scenes made with AI (Google Gemini, ChatGPT) and graded in Photoshop. Concept work; not affiliated with Paris Saint-Germain, Nike or Marvel.",
+  },
+
   {
     slug: 'royal-artillery-arsenal',
     sort: 6,
